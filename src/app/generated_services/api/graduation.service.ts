@@ -32,13 +32,14 @@ import {
 } from './graduation.serviceInterface';
 
 
+import {environment} from '../../enviroments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class GraduationService implements GraduationServiceInterface {
 
-    protected basePath = 'http://localhost:8080';
+    protected basePath = environment.server;
     public defaultHeaders = new HttpHeaders();
     public configuration = new Configuration();
     public encoder: HttpParameterCodec;

@@ -41,14 +41,14 @@ import {
     StudentsServiceInterface
 } from './students.serviceInterface';
 
-
+import {environment} from '../../enviroments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class StudentsService implements StudentsServiceInterface {
 
-    protected basePath = 'http://localhost:8080';
+    protected basePath = environment.server;
     public defaultHeaders = new HttpHeaders();
     public configuration = new Configuration();
     public encoder: HttpParameterCodec;
