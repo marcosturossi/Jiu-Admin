@@ -1,3 +1,6 @@
 <router-outlet />
-<app-toast *ngIf="notification" [notification]="notificationData"/>
+@if(notification){
+    <app-toast [notification]="notificationData"/>
+}
+
 

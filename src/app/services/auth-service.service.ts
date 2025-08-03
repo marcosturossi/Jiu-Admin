@@ -28,8 +28,8 @@ export class AuthServiceService {
 
   isLoggedIn(): boolean {
     let token = this.loadToken()
-    if (token.token != "") {
-      return true
+    if (token.token && token.token !== "") {
+      return true;
     }
     return false
   }

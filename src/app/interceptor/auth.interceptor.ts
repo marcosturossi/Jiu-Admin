@@ -1,7 +1,7 @@
-import { HttpHeaders, HttpInterceptorFn, HttpErrorResponse } from '@angular/common/http';
+import { HttpInterceptorFn, HttpErrorResponse } from '@angular/common/http';
 import { inject } from "@angular/core";
 import { Router } from '@angular/router';
-import { throwError, of } from "rxjs"; // Import 'of' for returning an observable
+import { throwError, of } from "rxjs";
 import { catchError, switchMap } from "rxjs/operators";
 import { AuthServiceService } from '../services/auth-service.service';
 import { AuthService as GeneratedAuthService } from '../generated_services/api/auth.service';
@@ -25,7 +25,7 @@ export const AuthInterceptor: HttpInterceptorFn = (req, next) => {
   const router = inject(Router);
 
   if (req.url.includes('login') || req.url.includes('refresh')) {
-    return next(req);
+      return next(req);
   }
 
   const { token, refreshToken } = authService.loadToken();
