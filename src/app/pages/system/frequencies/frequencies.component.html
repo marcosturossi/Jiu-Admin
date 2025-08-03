@@ -1,0 +1,40 @@
+<section class="mt-5 p-3">
+  <div class="container">
+    <button class="btn btn-primary" (click)="openCreateFrequency()" style="background-color:#383838">Nova Frequência</button>
+    <div class="mt-5">
+      <table class="table">
+        <thead>
+          <tr class="">
+            <th scope="col">Aluno</th>
+            <th scope="col">Data de Criação</th>
+            <th scope="col">Aula</th>
+            <th scope="col">Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (frequency of frequencies; track frequency.id){
+          <tr>
+            <td>{{frequency.studentName}}</td>
+            <td>{{frequency.createdAt | date:'dd/MM/yyyy hh:mm:ss a'}}</td>
+            <td>{{frequency.lessonTitle}}</td>
+            <td>
+              <a class="p-2" (click)="openUpdateFrequency(frequency)"><img src="../../../../assets/icons/structural-icons/pencil-square.svg" /></a>
+              <a class="p-2" (click)="deleteFrequency(frequency)" style="cursor: pointer;"><img src="../../../../assets/icons/structural-icons/trash.svg" /></a>
+            </td>
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+@if(openedCreateFrequency){
+<app-create-frequency (closeEvent)="closeCreateFrequency()" (frequencyCreated)="onFrequencyCreated()">
+</app-create-frequency>
+}
+
+@if(openedUpdateFrequency){
+<app-update-frequency [frequency]="selectedFrequency" (closeEvent)="closeUpdateFrequency()" (frequencyUpdated)="onFrequencyUpdated()">
+</app-update-frequency>
+}

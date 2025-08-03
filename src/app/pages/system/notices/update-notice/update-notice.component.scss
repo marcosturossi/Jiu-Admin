@@ -1,0 +1,19 @@
+.modal {
+  z-index: 1050;
+}
+
+.modal-dialog {
+  max-width: 600px;
+}
+
+.btn-close {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+.text-danger {
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+}

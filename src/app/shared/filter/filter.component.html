@@ -1,0 +1,28 @@
+<div class="modal fade show">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Filtro</h5>
+                <button type="button" class="btn-close" (click)="close()" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="container">
+                    <div class="container">
+                        <select class="form-select" [(ngModel)]="selectedFilterKey">
+                            <option *ngFor="let item of filterKeys" [ngValue]="item">{{item}}</option>
+                        </select>
+                    </div>
+                  <div class="container">
+                    <select class="form-select" [(ngModel)]="selectedOperation">
+                      <option *ngFor="let item of operations" [ngValue]="item">{{item}}</option>
+                    </select>
+                  </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" (click)="close()">Fechar</button>
+                <button type="button" class="btn btn-primary" (click)="save()">Salvar</button>
+            </div>
+        </div>
+    </div>
+</div>

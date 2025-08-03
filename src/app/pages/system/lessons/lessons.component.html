@@ -1,0 +1,45 @@
+<section class="mt-5 p-3">
+  <div class="container">
+    <button class="btn btn-primary" (click)="openCreateLesson()" style="background-color:#383838">Nova Aula</button>
+    <div class="mt-5">
+      <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">Titulo</th>
+            <th scope="col">Descrição</th>
+            <th scope="col">Início</th>
+            <th scope="col">Duração</th>
+            <th scope="col">Ativo</th>
+            <th scope="col">Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for(lesson of lessons; track lesson.id){
+          <tr>
+            <td>{{lesson.title}}</td>
+            <td>{{lesson.description}}</td>
+            <td>{{lesson.scheduledDate | date:'dd/MM/yyyy HH:mm'}}</td>
+            <td>{{lesson.duration}}</td>
+            <td>{{lesson.isActive ? 'Sim' : 'Não'}}</td>
+            <td>
+              <a class="p-2" (click)="openUpdateLesson(lesson)"><img src="../../../../assets/icons/structural-icons/pencil-square.svg" /></a>
+              <a class="p-2" (click)="deleteLesson(lesson)" style="cursor: pointer;"><img src="../../../../assets/icons/structural-icons/trash.svg" /></a>
+            </td>
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+@if(openedCreateLesson){
+<app-create-lesson (closeEvent)="closeCreateLesson()" (lessonCreated)="onLessonCreated()">
+</app-create-lesson>
+}
+
+@if(openedUpdateLesson){
+<app-update-lesson [lesson]="selectedLesson" (closeEvent)="closeUpdateLesson()" (lessonUpdated)="onLessonUpdated()">
+</app-update-lesson>
+}
+

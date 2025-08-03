@@ -1,0 +1,51 @@
+.sidebar{
+  margin:0;
+  padding:0;
+  width: 220px;
+  background-color: #383838;
+  min-height: 100vh;
+  position: fixed;
+  top: 50px;
+  height: 100vh;
+  overflow: auto;
+  color: white;
+}
+
+.nav-item{
+  margin-bottom: 1rem;
+}
+
+ul{
+  padding-left: 0.5rem;
+}
+
+.dropdown-item{
+  margin: 0.75rem 0 0.75rem 0;
+}
+
+.dropdown-container{
+  display:none;
+}
+
+.show{
+  display: block;
+}
+
+h6{
+  font-size: small;
+  color: white;
+}
+
+a{
+  text-decoration: none;
+  &:hover{
+    background-color: #353c49;
+  }
+}
+
+p{
+  font-size: small;
+  color: #a5b3c5;
+}
+
+

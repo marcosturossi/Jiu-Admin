@@ -1,0 +1,14 @@
+<section class="d-flex vh-100 align-items-center justify-content-center" style="background: #383838;">
+  <div class="m-2 p-5 bg-white" style="min-width: 400px;">
+    <h2>Login</h2>
+    <form [formGroup]="loginForm">
+      <input class="form-control mb-2" placeholder="email" type="email" formControlName="username">
+      <input class="form-control mb-2" placeholder="senha" type="password" formControlName="password">
+      <button (click)="sendLoginRequest()" class="btn btn-primary w-100" type="button">Entrar</button>
+    </form>
+    @if(error){
+    <p class="text-danger">{{error}}</p>
+    }
+  </div>
+
+</section>

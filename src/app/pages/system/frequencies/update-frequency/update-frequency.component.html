@@ -1,0 +1,27 @@
+<div class="modal fade show" tabindex="-1" role="dialog" style="display:block">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Editar Frequência</h5>
+        <button type="button" (click)="close()" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="frequencyForm">
+          <div class="mb-3">
+            <label for="studentSelect" class="form-label">Selecione o Aluno *</label>
+            <select class="form-select" formControlName="studentId" id="studentSelect">
+              <option value="">Selecione um aluno...</option>
+              @for (student of students; track student.id) {
+                <option [value]="student.id">{{student.firstName}} {{student.lastName}}</option>
+              }
+            </select>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" (click)="update()" [disabled]="!frequencyForm.valid">Salvar</button>
+        <button type="button" (click)="close()" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+      </div>
+    </div>
+  </div>
+</div>

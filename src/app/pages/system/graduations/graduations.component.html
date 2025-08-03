@@ -1,0 +1,44 @@
+<section class="mt-5 p-3">
+  <div class="container">
+    <button class="btn btn-primary" (click)="openCreateGraduation()" style="background-color:#383838">Nova Graduação</button>
+    <div class="mt-5">
+      <table class="table">
+        <thead>
+          <tr class="">
+            <th scope="col">Aluno</th>
+            <th scope="col">Email</th>
+            <th scope="col">Graduação</th>
+            <th scope="col">Ordem da Faixa</th>
+            <th scope="col">Faixa para Crianças</th>
+            <th scope="col">Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (graduation of graduations; track graduation.id){
+          <tr>
+            <td>{{graduation.userName}}</td>
+            <td>{{graduation.userEmail}}</td>
+            <td>{{graduation.beltColor}}</td>
+            <td>{{graduation.beltOrderIndex}}</td>
+            <td>{{graduation.beltIsForKids ? 'Sim' : 'Não'}}</td>
+            <td>
+              <a class="p-2" (click)="openUpdateGraduation(graduation)"><img src="../../../../assets/icons/structural-icons/pencil-square.svg" /></a>
+              <a class="p-2" (click)="deleteGraduation(graduation)" style="cursor: pointer;"><img src="../../../../assets/icons/structural-icons/trash.svg" /></a>
+            </td>
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+@if(openedCreateGraduation){
+<app-create-graduation (closeEvent)="closeCreateGraduation()" (graduationCreated)="onGraduationCreated()">
+</app-create-graduation>
+}
+
+@if(openedUpdateGraduation){
+<app-update-graduation [graduation]="selectedGraduation" (closeEvent)="closeUpdateGraduation()" (graduationUpdated)="onGraduationUpdated()">
+</app-update-graduation>
+}

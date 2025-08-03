@@ -1,0 +1,35 @@
+<div class="modal fade show" tabindex="-1" role="dialog" style="display:block">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Editar Requisito de Graduação</h5>
+        <button type="button" (click)="close()" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="graduationRequirementForm">
+          <div class="mb-3">
+            <label for="beltSelect" class="form-label">Selecione a Faixa *</label>
+            <select class="form-select" formControlName="beltId" id="beltSelect">
+              <option value="">Selecione uma faixa...</option>
+              @for (belt of belts; track belt.id) {
+                <option [value]="belt.id">{{belt.color}}</option>
+              }
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="description" class="form-label">Descrição do Requisito *</label>
+            <textarea id="description" class="form-control" placeholder="Digite a descrição do requisito" formControlName="description" rows="3"></textarea>
+          </div>
+          <div class="mb-3">
+            <label for="minimumClasses" class="form-label">Número Mínimo de Aulas</label>
+            <input id="minimumClasses" class="form-control" placeholder="Digite o número mínimo de aulas" type="number" formControlName="minimumClasses" />
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" (click)="update()" [disabled]="!graduationRequirementForm.valid">Salvar</button>
+        <button type="button" (click)="close()" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+      </div>
+    </div>
+  </div>
+</div>
