@@ -49,4 +49,50 @@ export class AuthServiceService {
       return null;
     }
   }
+
+  getRoles(): string[] {
+    const { token } = this.loadToken();
+    if (!token) return [];
+    
+    try {
+      const payload = token.split('.')[1];
+      const decoded = JSON.parse(atob(payload.replace(/-/g, '+').replace(/_/g, '/')));
+      
+      // Keycloak typically stores roles in different places, check all possibilities
+      const roles: string[] = [];
+      
+      // Check realm_access.roles for realm-level roles
+      if (decoded.realm_access?.roles) {
+        roles.push(...decoded.realm_access.roles);
+      }
+      
+      // Check resource_access for client-specific roles
+      if (decoded.resource_access) {
+        Object.keys(decoded.resource_access).forEach(client => {
+          if (decoded.resource_access[client]?.roles) {
+            roles.push(...decoded.resource_access[client].roles);
+          }
+        });
+      }
+      
+      // Check for direct roles claim (some setups use this)
+      if (decoded.roles && Array.isArray(decoded.roles)) {
+        roles.push(...decoded.roles);
+      }
+      
+      // Remove duplicates and return
+      return [...new Set(roles)];
+    } catch {
+      return [];
+    }
+  }
+
+  hasRole(role: string): boolean {
+    return this.getRoles().includes(role);
+  }
+
+  hasAnyRole(roles: string[]): boolean {
+    const userRoles = this.getRoles();
+    return roles.some(role => userRoles.includes(role));
+  }
 }
