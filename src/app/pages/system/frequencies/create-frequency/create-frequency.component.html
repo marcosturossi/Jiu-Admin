@@ -1,5 +1,5 @@
 <div class="modal fade show" tabindex="-1" role="dialog" style="display:block">
-  <div class="modal-dialog modal-dialog-centered" role="document">
+  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Nova Frequência</h5>
@@ -8,25 +8,60 @@
       <div class="modal-body">
         <form [formGroup]="frequencyForm">
           <div class="mb-3">
-            <label for="studentSelect" class="form-label">Selecione o Aluno *</label>
-            <select class="form-select" formControlName="studentId" id="studentSelect">
-              <option value="">Selecione um aluno...</option>
-              @for (student of students; track student.id) {
-              <option [value]="student.id">{{student.firstName}} {{student.lastName}}</option>
-              }
-            </select>
             <label for="lessonSelect" class="form-label">Selecione a Aula *</label>
             <select class="form-select" formControlName="lessonId" id="lessonSelect">
-              <option value="">Selecione um aluno...</option>
+              <option value="">Selecione uma aula...</option>
               @for (lesson of lessons; track lesson.id) {
               <option [value]="lesson.id">{{lesson.title}}</option>
               }
             </select>
           </div>
+          
+          <div class="mb-3">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <label class="form-label mb-0">Selecione os Alunos *</label>
+              <div>
+                <button 
+                  type="button" 
+                  class="btn btn-sm btn-outline-primary me-2" 
+                  (click)="toggleSelectAll()">
+                  {{isAllSelected() ? 'Desmarcar Todos' : 'Selecionar Todos'}}
+                </button>
+                <span class="badge bg-secondary">{{getSelectedStudentsCount()}} selecionados</span>
+              </div>
+            </div>
+            
+            <div class="border rounded p-3" style="max-height: 300px; overflow-y: auto;">
+              <div formArrayName="students">
+                @for (student of students; track student.id; let i = $index) {
+                <div class="form-check mb-2">
+                  <input 
+                    class="form-check-input" 
+                    type="checkbox" 
+                    [formControlName]="i" 
+                    [id]="'student-' + i">
+                  <label class="form-check-label" [for]="'student-' + i">
+                    {{student.firstName}} {{student.lastName}}
+                  </label>
+                </div>
+                }
+              </div>
+            </div>
+            <small class="form-text text-muted">
+              Será criada uma frequência individual para cada aluno selecionado na aula escolhida
+            </small>
+          </div>
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-primary" (click)="create()" [disabled]="!frequencyForm.valid">Salvar</button>
+        <button 
+          type="button" 
+          class="btn btn-primary" 
+          (click)="create()" 
+          [disabled]="!isFormValid() || isCreating">
+          <span *ngIf="isCreating" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+          {{isCreating ? 'Criando ' + getSelectedStudentsCount() + ' frequências...' : 'Criar ' + getSelectedStudentsCount() + ' frequências'}}
+        </button>
         <button type="button" (click)="close()" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
       </div>
     </div>
