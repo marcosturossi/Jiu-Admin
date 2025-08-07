@@ -1,0 +1,109 @@
+﻿import { Component, Output, EventEmitter, OnInit } from '@angular/core';
+import { FrequencyService, StudentsService, ShowStudentDTO, ShowLessonDTO, LessonService } from '../../../../generated_services';
+import { FormBuilder, FormGroup, FormArray, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
+import { CreateFrequencyDTO } from '../../../../generated_services/model/createFrequencyDTO';
+import { CommonModule } from '@angular/common';
+import { forkJoin, Observable } from 'rxjs';
+
+@Component({
+  selector: 'app-create-frequency',
+  imports: [ReactiveFormsModule, CommonModule],
+  templateUrl: './create-frequency.component.html',
+  styleUrl: './create-frequency.component.scss'
+})
+export class CreateFrequencyComponent implements OnInit {
+  @Output() closeEvent = new EventEmitter<void>();
+  @Output() frequencyCreated = new EventEmitter<void>();
+  frequencyForm!: FormGroup;
+  students: ShowStudentDTO[] = [];
+  lessons: ShowLessonDTO[] = [];
+  isCreating = false;
+
+  constructor(
+    private frequencyService: FrequencyService,
+    private studentsService: StudentsService,
+    private lessonService: LessonService,
+    private formBuilder: FormBuilder,
+  ) {
+    this.frequencyForm = this.formBuilder.group({
+      lessonId: ["", Validators.required],
+      students: this.formBuilder.array([])
+    })
+  }
+
+  ngOnInit(): void {
+    this.studentsService.apiStudentsGet().subscribe(
+      {
+        next: (result) => {
+          this.students = result;
+          this.initializeStudentFormArray();
+        }
+      }
+    )
+
+    this.lessonService.apiLessonGet().subscribe({
+      next: (result) => this.lessons = result
+    })
+  }
+
+  get studentsFormArray(): FormArray {
+    return this.frequencyForm.get('students') as FormArray;
+  }
+
+  private initializeStudentFormArray(): void {
+    const studentsArray = this.formBuilder.array([]);
+    this.students.forEach(() => {
+      studentsArray.push(new FormControl(false));
+    });
+    this.frequencyForm.setControl('students', studentsArray);
+  }
+
+  getSelectedStudents(): ShowStudentDTO[] {
+    return this.students.filter((student, index) => 
+      this.studentsFormArray.at(index).value === true
+    );
+  }
+
+  isFormValid(): boolean {
+    const hasSelectedStudents = this.studentsFormArray.value.some((selected: boolean) => selected);
+    const hasSelectedLesson = this.frequencyForm.get('lessonId')?.value;
+    return hasSelectedStudents && hasSelectedLesson;
+  }
+
+  close() {
+    this.closeEvent.emit();
+  }
+
+  create() {
+    if (!this.isFormValid() || this.isCreating) return;
+    
+    this.isCreating = true;
+    const selectedStudents = this.getSelectedStudents();
+    const lessonId = this.frequencyForm.get('lessonId')?.value;
+    
+    // Create array of observables for each frequency creation
+    const frequencyRequests: Observable<any>[] = selectedStudents.map(student => {
+      const frequencyData: CreateFrequencyDTO = {
+        studentId: student.id!,
+        lessonId: lessonId
+      };
+      return this.frequencyService.apiFrequencyPost(frequencyData);
+    });
+
+    // Execute all requests in parallel
+    forkJoin(frequencyRequests).subscribe({
+      next: (results) => {
+        console.log(`Created ${results.length} frequencies successfully`);
+        this.frequencyCreated.emit();
+        this.close();
+      },
+      error: (error) => {
+        console.error('Error creating frequencies:', error);
+        this.isCreating = false;
+      },
+      complete: () => {
+        this.isCreating = false;
+      }
+    });
+  }
+}
