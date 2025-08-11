@@ -16,11 +16,9 @@
         <tbody>
           @for (graduation of graduations; track graduation.id){
           <tr>
-            <td>{{graduation.userName}}</td>
-            <td>{{graduation.userEmail}}</td>
-            <td>{{graduation.beltColor}}</td>
-            <td>{{graduation.beltOrderIndex}}</td>
-            <td>{{graduation.beltIsForKids ? 'Sim' : 'Não'}}</td>
+            <td>{{graduation.student.FirstName}} {{graduation.student.LastName}}</td>
+            <td>{{graduation.belt.color}}</td>
+            <td>{{graduation.belt.orderIndex}}</td>
             <td>
               <a class="p-2" (click)="openUpdateGraduation(graduation)"><img src="../../../../assets/icons/structural-icons/pencil-square.svg" /></a>
               <a class="p-2" (click)="deleteGraduation(graduation)" style="cursor: pointer;"><img src="../../../../assets/icons/structural-icons/trash.svg" /></a>
