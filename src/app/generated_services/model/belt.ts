@@ -8,17 +8,12 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { ShowStudentDTO } from './showStudentDTO';
-import { ShowBeltDTO } from './showBeltDTO';
 
 
-export interface ShowGraduationDTO { 
+export interface Belt { 
     id?: string;
-    userName?: string | null;
-    fullName?: string | null;
-    student?: ShowStudentDTO | null;
-    belt?: ShowBeltDTO | null;
-    studentId: string;
-    beltId: string;
+    color: string;
+    orderIndex?: number;
+    isForKids?: boolean;
 }
 
