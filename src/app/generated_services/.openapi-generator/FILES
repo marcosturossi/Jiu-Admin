@@ -12,6 +12,8 @@ api/graduation.service.ts
 api/graduation.serviceInterface.ts
 api/graduationRequirements.service.ts
 api/graduationRequirements.serviceInterface.ts
+api/health.service.ts
+api/health.serviceInterface.ts
 api/lesson.service.ts
 api/lesson.serviceInterface.ts
 api/notices.service.ts
