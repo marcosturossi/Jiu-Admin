@@ -11,6 +11,7 @@ import { CreateStudentDTO} from '../../../../generated_services/model/createStud
 })
 export class CreateStudentComponent {
   @Output() closeEvent = new EventEmitter<void>();
+  @Output() studentCreated = new EventEmitter<void>();
   studentForm!:FormGroup
 
   constructor(
@@ -36,7 +37,7 @@ export class CreateStudentComponent {
   create() {
     this.studentService.apiStudentsPost(this.formToCreateStudent()).subscribe(
       {
-        next: result => console.log(result),
+        next: result => this.studentCreated.emit(),
         error: error => console.log(error)
       })
   }

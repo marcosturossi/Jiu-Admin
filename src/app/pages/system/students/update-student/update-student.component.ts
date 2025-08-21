@@ -11,6 +11,7 @@ import { ShowStudentDTO, UpdateStudentDTO } from '../../../../generated_services
 })
 export class UpdateStudentComponent implements OnInit {
   @Output() closeEvent = new EventEmitter<void>();
+  @Output() studentUpdated = new EventEmitter<void>();
   @Input() student!: ShowStudentDTO;
   studentForm!: FormGroup
 
@@ -47,10 +48,10 @@ export class UpdateStudentComponent implements OnInit {
     this.closeEvent.emit();
   }
 
-  create() {
+  update() {
     this.studentService.apiStudentsIdPut(this.student.id!, this.formToUpdateStudent()).subscribe(
       {
-        next: result => this.close(),
+        next: result => this.studentUpdated.emit(),
         error: error => console.log(error)
       })
   }
