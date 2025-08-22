@@ -1,8 +1,10 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Output, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { PersonsService } from '../../../../generated_services/api2/api/persons.service';
 import { RegisterMultipleResponse } from '../../../../generated_services/api2/model/registerMultipleResponse';
+import { StudentsService } from '../../../../generated_services/api/students.service';
+import { ShowStudentDTO } from '../../../../generated_services/model/showStudentDTO';
 
 @Component({
   selector: 'app-create-persons',
@@ -11,7 +13,7 @@ import { RegisterMultipleResponse } from '../../../../generated_services/api2/mo
   templateUrl: './create-persons.component.html',
   styleUrl: './create-persons.component.scss'
 })
-export class CreatePersonsComponent {
+export class CreatePersonsComponent implements OnInit {
   @Output() closeEvent = new EventEmitter<void>();
   @Output() personCreated = new EventEmitter<RegisterMultipleResponse>();
 
@@ -19,14 +21,27 @@ export class CreatePersonsComponent {
   isCreating = false;
   selectedFiles: File[] = [];
   previewUrls: string[] = [];
+  students: ShowStudentDTO[] = [];
 
   constructor(
     private formBuilder: FormBuilder,
-    private personsService: PersonsService
+    private personsService: PersonsService,
+    private studentsService: StudentsService
   ) {
     this.personForm = this.formBuilder.group({
-      name: ['', Validators.required],
+      studentId: ['', Validators.required],
       images: [null, Validators.required]
+    });
+  }
+
+  ngOnInit(): void {
+    this.studentsService.apiStudentsActiveGet().subscribe({
+      next: (students) => {
+        this.students = students;
+      },
+      error: () => {
+        alert('Erro ao carregar alunos.');
+      }
     });
   }
 
@@ -67,14 +82,16 @@ export class CreatePersonsComponent {
   create(): void {
     if (this.personForm.invalid || this.isCreating) return;
     this.isCreating = true;
-    const name = this.personForm.get('name')?.value;
+    const studentId = this.personForm.get('studentId')?.value;
     const images = this.selectedFiles;
-    if (!name || !images || images.length === 0) {
+    if (!studentId || !images || images.length === 0) {
       alert('Preencha todos os campos obrigatórios.');
       this.isCreating = false;
       return;
     }
-    this.personsService.registerMultiplePhotosApiV1RegisterMultiplePost(name, images).subscribe({
+    const student = this.students.find(s => s.id === studentId);
+    const name = student ? `${student.firstName || ''} ${student.lastName || ''}`.trim() : '';
+    this.personsService.registerMultiplePhotosApiV1RegisterMultiplePost(name, images, studentId).subscribe({
       next: (result: RegisterMultipleResponse) => {
         alert('Pessoa criada com sucesso!');
         this.personCreated.emit(result);
