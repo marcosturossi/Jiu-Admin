@@ -1,0 +1,62 @@
+<div class="modal fade show" tabindex="-1" role="dialog" style="display:block">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Editar Pessoa (Reconhecimento Facial)</h5>
+        <button type="button" (click)="close()" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="personForm">
+          <div class="mb-3">
+            <label for="name" class="form-label">Nome *</label>
+            <input id="name" class="form-control" placeholder="Digite o nome completo" formControlName="name" />
+          </div>
+          <div class="mb-3">
+            <label for="imagesInput" class="form-label">Adicionar novas fotos</label>
+            <input 
+              type="file" 
+              class="form-control" 
+              id="imagesInput"
+              accept="image/*"
+              multiple
+              (change)="onFilesSelected($event)">
+            <div class="form-text">
+              Formatos aceitos: JPG, PNG, GIF. Tamanho máximo: 5MB por imagem.
+            </div>
+          </div>
+          <div *ngIf="previewUrls.length > 0" class="mb-3 text-center">
+            <label class="form-label">Pré-visualização</label>
+            <div class="d-flex flex-wrap gap-2 justify-content-center">
+              <div *ngFor="let url of previewUrls" class="border rounded p-2">
+                <img [src]="url" alt="Preview" class="img-fluid rounded" style="max-height: 120px; max-width: 100px">
+              </div>
+            </div>
+            <button type="button" class="btn btn-outline-secondary mt-2" (click)="clearImages()">
+              <i class="bi bi-trash me-1"></i> Limpar
+            </button>
+          </div>
+        </form>
+        <div *ngIf="person.images?.length" class="mb-2">
+          <label class="form-label">Imagens já cadastradas:</label>
+          <div class="d-flex flex-wrap gap-2">
+            <div *ngFor="let img of person.images" class="border rounded p-2">
+              <img [src]="img.url" alt="Imagem cadastrada" class="img-fluid rounded" style="max-height: 80px; max-width: 80px">
+              <div *ngIf="img.is_primary" class="badge bg-success mt-1">Principal</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button 
+          type="button" 
+          class="btn btn-primary" 
+          (click)="update()" 
+          [disabled]="!personForm.valid || isUpdating">
+          <span *ngIf="isUpdating" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+          {{isUpdating ? 'Salvando...' : 'Salvar Alterações'}}
+        </button>
+        <button type="button" (click)="close()" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,50 @@
+<div class="container py-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <button class="btn btn-primary" style="background-color: #383838; border-color: #383838;" (click)="openCreatePersonModal()">
+      <i class="bi bi-person-plus me-2" style="color: #fff;"></i>
+      Adicionar Pessoa
+    </button>
+  </div>
+  @if (showCreateModal) {
+    <app-create-persons (closeEvent)="onCloseCreateModal()" (personCreated)="onPersonCreated()"></app-create-persons>
+  }
+  @if (isLoading) {
+    <div class="text-center my-4">
+      <span class="spinner-border" role="status"></span>
+      <span class="ms-2">Carregando...</span>
+    </div>
+  }
+  @if (error) {
+    <div class="alert alert-danger">{{error}}</div>
+  }
+  @if (!isLoading && persons.length === 0) {
+    <div class="alert alert-info">Nenhuma pessoa cadastrada.</div>
+  }
+  @if (!isLoading && persons.length > 0) {
+    <div class="row">
+      @for (person of persons; track person.id) {
+        <div class="col-md-4 mb-4">
+          <div class="card h-100">
+            <div class="card-body">
+              <h5 class="card-title mb-2">{{person.name}}</h5>
+              @if (person.images?.length) {
+                <div class="d-flex flex-wrap gap-2">
+                  @for (img of person.images; track img.id) {
+                    <div class="border rounded p-1 position-relative">
+                      <img [src]="img.url" [alt]="person.name" class="img-fluid rounded" style="max-height: 80px; max-width: 80px">
+                      @if (img.is_primary) {
+                        <span class="badge bg-success position-absolute top-0 start-0">Principal</span>
+                      }
+                    </div>
+                  }
+                </div>
+              } @else {
+                <div class="text-muted">Nenhuma imagem cadastrada.</div>
+              }
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  }
+</div>

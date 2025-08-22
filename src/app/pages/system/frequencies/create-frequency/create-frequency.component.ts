@@ -4,6 +4,10 @@ import { FormBuilder, FormGroup, FormArray, FormControl, ReactiveFormsModule, Va
 import { CreateFrequencyDTO } from '../../../../generated_services/model/createFrequencyDTO';
 import { CommonModule } from '@angular/common';
 import { forkJoin, Observable } from 'rxjs';
+// Import PersonsService and models from api2
+import { PersonsService } from '../../../../generated_services/api2/api/persons.service';
+import { RecognitionResponse } from '../../../../generated_services/api2/model/recognitionResponse';
+import { PersonListResponse } from '../../../../generated_services/api2/model/personListResponse';
 
 @Component({
   selector: 'app-create-frequency',
@@ -25,11 +29,15 @@ export class CreateFrequencyComponent implements OnInit {
   previewUrl: string | null = null;
   recognizedStudentIds: string[] = [];
 
+  // Add property to cache person list from api2
+  private api2Persons: PersonListResponse | null = null;
+
   constructor(
     private frequencyService: FrequencyService,
     private studentsService: StudentsService,
     private lessonService: LessonService,
     private formBuilder: FormBuilder,
+    private personsService: PersonsService // Inject api2 PersonsService
   ) {
     this.frequencyForm = this.formBuilder.group({
       lessonId: ["", Validators.required],
@@ -49,7 +57,12 @@ export class CreateFrequencyComponent implements OnInit {
 
     this.lessonService.apiLessonGet().subscribe({
       next: (result) => this.lessons = result
-    })
+    });
+
+    // Load api2 persons for recognition mapping
+    this.personsService.listPersonsApiV1PersonsGet().subscribe({
+      next: (result) => this.api2Persons = result
+    });
   }
 
   get studentsFormArray(): FormArray {
@@ -146,34 +159,36 @@ export class CreateFrequencyComponent implements OnInit {
     }
 
     this.isRecognizing = true;
-    
     try {
-      // Convert file to base64
-      const base64Data = await this.fileToBase64(this.selectedFile);
-      
-      // TODO: Call your recognition service here
-      // const recognitionResult = await this.recognitionService.recognizeStudents({
-      //   image: base64Data,
-      //   lessonId: this.frequencyForm.get('lessonId')?.value,
-      //   contentType: this.selectedFile.type
-      // });
-      
-      // For now, simulate the call
-      console.log('Sending image for recognition:', {
-        lessonId: this.frequencyForm.get('lessonId')?.value,
-        imageSize: this.selectedFile.size,
-        imageType: this.selectedFile.type,
-        base64Length: base64Data.length
-      });
-      
-      // Simulate API response with recognized student IDs
-      // Replace this with actual API call when service is ready
-      setTimeout(() => {
-        // Example: simulate recognition of some students
-        this.handleRecognitionResult(['student-id-1', 'student-id-2']); // Replace with actual response
-        this.isRecognizing = false;
-      }, 2000);
-      
+      // Call the API2 recognition service
+      const recognitionResult = await this.personsService
+        .recognizeFacesApiV1RecognizePost(this.selectedFile, false)
+        .toPromise() as RecognitionResponse;
+
+      // Map recognized faces to student IDs
+      const recognizedIds: string[] = [];
+      if (recognitionResult && recognitionResult.faces && this.api2Persons) {
+        for (const face of recognitionResult.faces) {
+          if (face.person_id) {
+            // Try to find a student with the same id as person_id
+            const student = this.students.find(s => s.id === face.person_id);
+            if (student) {
+              recognizedIds.push(student.id!);
+            } else {
+              // Try to match by name if id is not found
+              const person = this.api2Persons.persons.find(p => p.id === face.person_id);
+              if (person) {
+                const matchByName = this.students.find(s => `${s.firstName} ${s.lastName}`.trim().toLowerCase() === person.name.trim().toLowerCase());
+                if (matchByName) {
+                  recognizedIds.push(matchByName.id!);
+                }
+              }
+            }
+          }
+        }
+      }
+      this.handleRecognitionResult(recognizedIds);
+      this.isRecognizing = false;
     } catch (error) {
       console.error('Error recognizing students:', error);
       alert('Erro ao reconhecer alunos. Tente novamente.');

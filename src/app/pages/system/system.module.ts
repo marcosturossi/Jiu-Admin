@@ -15,6 +15,7 @@ import { FrequenciesComponent } from './frequencies/frequencies.component';
 import { BeltsComponent } from './belts/belts.component';
 import { GraduationRequirementsComponent } from './graduation-requirements/graduation-requirements.component';
 import { NoticesComponent } from './notices/notices.component';
+import { FaceRecognitionComponent } from './face-recognition/face-recognition.component';
 
 export const routes: Routes = [
   {
@@ -66,6 +67,11 @@ export const routes: Routes = [
         path: 'notices',
         pathMatch: 'full',
         component: NoticesComponent,
+      },
+      {
+        path: 'face-recognition',
+        pathMatch: 'full',
+        component: FaceRecognitionComponent,
       }
     ]
   }
