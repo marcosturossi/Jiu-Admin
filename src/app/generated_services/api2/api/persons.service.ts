@@ -46,7 +46,7 @@ import {
 })
 export class PersonsService implements PersonsServiceInterface {
 
-    protected basePath = 'http://localhost:8003';
+    protected basePath = 'http://vision.jiu.pixelvision.tec.br';
     public defaultHeaders = new HttpHeaders();
     public configuration = new Configuration();
     public encoder: HttpParameterCodec;

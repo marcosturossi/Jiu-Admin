@@ -3,8 +3,14 @@
     "",
     "\\src",
     "\\src\\app",
-    "\\src\\app\\enviroments",
-    "\\src\\app\\guard"
+    "\\src\\app\\pages",
+    "\\src\\app\\pages\\system",
+    "\\src\\app\\pages\\system\\face-recognition",
+    "\\src\\app\\pages\\system\\face-recognition\\create-persons",
+    "\\src\\app\\pages\\system\\students\\update-student",
+    "\\src\\app\\shared\\sidebar",
+    "\\src\\assets\\icons\\sidebar"
   ],
+  "SelectedNode": "\\src\\app\\pages\\system\\face-recognition\\create-persons\\create-persons.component.html",
   "PreviewInSolutionExplorer": false
 }
