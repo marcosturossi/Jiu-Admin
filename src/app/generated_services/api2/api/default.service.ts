@@ -34,7 +34,7 @@ import {
 })
 export class DefaultService implements DefaultServiceInterface {
 
-    protected basePath = 'http://vision.jiu.pixelvision.tec.br';
+    protected basePath = 'https://vision.jiu.pixelvision.tec.br';
     public defaultHeaders = new HttpHeaders();
     public configuration = new Configuration();
     public encoder: HttpParameterCodec;
