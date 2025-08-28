@@ -23,7 +23,6 @@ export interface FaceImageResponse {
      */
     confidence_threshold?: number;
     id: number;
-    image_path: string;
     /**
      * Imagem em formato base64
      */
