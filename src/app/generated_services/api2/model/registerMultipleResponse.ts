@@ -16,7 +16,7 @@
 export interface RegisterMultipleResponse { 
     message: string;
     /**
-     * Dados da pessoa registrada
+     * Dados da pessoa registrada com imagens em base64
      */
     person: { [key: string]: any; };
 }

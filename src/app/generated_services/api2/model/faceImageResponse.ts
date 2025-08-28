@@ -25,9 +25,9 @@ export interface FaceImageResponse {
     id: number;
     image_path: string;
     /**
-     * URL pré-assinada para acesso à imagem
+     * Imagem em formato base64
      */
-    url: string;
+    base64: string;
     created_at: string;
 }
 
