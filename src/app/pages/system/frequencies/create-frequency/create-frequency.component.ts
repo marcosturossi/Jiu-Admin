@@ -56,7 +56,10 @@ export class CreateFrequencyComponent implements OnInit {
     )
 
     this.lessonService.apiLessonGet().subscribe({
-      next: (result) => this.lessons = result
+      next: (result) => {
+        // Filter only active lessons
+        this.lessons = result.filter(lesson => lesson.isActive === true);
+      }
     });
 
     // Load api2 persons for recognition mapping
