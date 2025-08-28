@@ -8,6 +8,13 @@
   @if (showCreateModal) {
     <app-create-persons (closeEvent)="onCloseCreateModal()" (personCreated)="onPersonCreated()"></app-create-persons>
   }
+  @if (showUpdateModal && selectedPerson) {
+    <app-update-persons 
+      [person]="selectedPerson" 
+      (closeEvent)="onCloseUpdateModal()" 
+      (personUpdated)="onPersonUpdated($event)">
+    </app-update-persons>
+  }
   @if (isLoading) {
     <div class="text-center my-4">
       <span class="spinner-border" role="status"></span>
@@ -26,12 +33,22 @@
         <div class="col-md-4 mb-4">
           <div class="card h-100">
             <div class="card-body">
-              <h5 class="card-title mb-2">{{person.name}}</h5>
+              <div class="d-flex justify-content-between align-items-start mb-2">
+                <h5 class="card-title mb-0">{{person.name}}</h5>
+                <div class="btn-group" role="group">
+                  <button class="btn btn-sm btn-outline-primary" (click)="openUpdatePersonModal(person)" title="Editar">
+                    <img src="../../../../assets/icons/structural-icons/pencil-square.svg" style="width: 16px; height: 16px;" />
+                  </button>
+                  <button class="btn btn-sm btn-outline-danger" (click)="deletePerson(person)" title="Excluir">
+                    <img src="../../../../assets/icons/structural-icons/trash.svg" style="width: 16px; height: 16px;" />
+                  </button>
+                </div>
+              </div>
               @if (person.images?.length) {
                 <div class="d-flex flex-wrap gap-2">
                   @for (img of person.images; track img.id) {
                     <div class="border rounded p-1 position-relative">
-                      <img [src]="'data:image/png;base64,' + img.base64" [alt]="person.name" class="img-fluid rounded" style="max-height: 80px; max-width: 80px">
+                      <img [src]="getImageSrc(img)" [alt]="person.name" class="img-fluid rounded" style="max-height: 80px; max-width: 80px">
                       @if (img.is_primary) {
                         <span class="badge bg-success position-absolute top-0 start-0">Principal</span>
                       }

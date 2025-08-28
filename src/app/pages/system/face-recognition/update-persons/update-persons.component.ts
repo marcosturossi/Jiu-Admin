@@ -37,7 +37,7 @@ export class UpdatePersonsComponent implements OnInit {
       this.personForm.patchValue({
         name: this.person.name
       });
-      this.previewUrls = this.person.images?.map(img => 'data:image/png;base64,' + img.base64) || [];
+      this.previewUrls = this.person.images?.map(img => this.getImageSrc(img)) || [];
     }
   }
 
@@ -69,7 +69,7 @@ export class UpdatePersonsComponent implements OnInit {
 
   clearImages(): void {
     this.selectedFiles = [];
-    this.previewUrls = this.person.images?.map(img => 'data:image/png;base64,' + img.base64) || [];
+    this.previewUrls = this.person.images?.map(img => this.getImageSrc(img)) || [];
     this.personForm.get('images')?.setValue(null);
     const fileInput = document.getElementById('imagesInput') as HTMLInputElement;
     if (fileInput) fileInput.value = '';
@@ -111,5 +111,51 @@ export class UpdatePersonsComponent implements OnInit {
 
   close() {
     this.closeEvent.emit();
+  }
+
+  removeImage(img: FaceImageResponse): void {
+    if (confirm('Tem certeza que deseja remover esta imagem?')) {
+      this.personsService.removePersonImageApiV1PersonsPersonIdImagesImageIdDelete(this.person.id, img.id).subscribe({
+        next: () => {
+          // Remove the image from the local array
+          this.person.images = this.person.images?.filter(image => image.id !== img.id) || [];
+          // Update preview URLs
+          this.previewUrls = this.person.images?.map(image => this.getImageSrc(image)) || [];
+          alert('Imagem removida com sucesso!');
+        },
+        error: (error) => {
+          console.error('Erro ao remover imagem:', error);
+          alert('Erro ao remover imagem.');
+        }
+      });
+    }
+  }
+
+  getImageSrc(img: any): string {
+    if (!img || !img.base64) {
+      console.warn('Image or base64 data is missing:', img);
+      return '';
+    }
+    
+    // Clean the base64 string (remove any whitespace or invalid characters)
+    let base64 = img.base64.trim();
+    
+    // Check if base64 already includes data:image prefix
+    if (base64.startsWith('data:image')) {
+      return base64;
+    }
+    
+    // Remove any data:image prefix that might be embedded in the base64 string
+    if (base64.includes('base64,')) {
+      base64 = base64.split('base64,')[1];
+    }
+    
+    // If not, add the prefix
+    try {
+      return `data:image/png;base64,${base64}`;
+    } catch (error) {
+      console.error('Error creating image src:', error, img);
+      return '';
+    }
   }
 }

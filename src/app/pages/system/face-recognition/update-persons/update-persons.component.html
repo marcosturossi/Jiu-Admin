@@ -39,8 +39,14 @@
         <div *ngIf="person.images?.length" class="mb-2">
           <label class="form-label">Imagens já cadastradas:</label>
           <div class="d-flex flex-wrap gap-2">
-            <div *ngFor="let img of person.images" class="border rounded p-2">
-              <img [src]="'data:image/png;base64,' + img.base64" alt="Imagem cadastrada" class="img-fluid rounded" style="max-height: 80px; max-width: 80px">
+            <div *ngFor="let img of person.images" class="border rounded p-2 position-relative">
+              <img [src]="getImageSrc(img)" alt="Imagem cadastrada" class="img-fluid rounded" style="max-height: 80px; max-width: 80px">
+              <button type="button" class="btn btn-sm btn-outline-danger position-absolute top-0 end-0" 
+                      (click)="removeImage(img)" 
+                      title="Remover imagem"
+                      style="font-size: 10px; padding: 2px 4px;">
+                ×
+              </button>
               <div *ngIf="img.is_primary" class="badge bg-success mt-1">Principal</div>
             </div>
           </div>
