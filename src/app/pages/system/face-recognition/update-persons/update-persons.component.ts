@@ -37,7 +37,7 @@ export class UpdatePersonsComponent implements OnInit {
       this.personForm.patchValue({
         name: this.person.name
       });
-      this.previewUrls = this.person.images?.map(img => img.url) || [];
+      this.previewUrls = this.person.images?.map(img => 'data:image/png;base64,' + img.base64) || [];
     }
   }
 
@@ -69,7 +69,7 @@ export class UpdatePersonsComponent implements OnInit {
 
   clearImages(): void {
     this.selectedFiles = [];
-    this.previewUrls = this.person.images?.map(img => img.url) || [];
+    this.previewUrls = this.person.images?.map(img => 'data:image/png;base64,' + img.base64) || [];
     this.personForm.get('images')?.setValue(null);
     const fileInput = document.getElementById('imagesInput') as HTMLInputElement;
     if (fileInput) fileInput.value = '';

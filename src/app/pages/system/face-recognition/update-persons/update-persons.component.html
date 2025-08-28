@@ -40,7 +40,7 @@
           <label class="form-label">Imagens já cadastradas:</label>
           <div class="d-flex flex-wrap gap-2">
             <div *ngFor="let img of person.images" class="border rounded p-2">
-              <img [src]="img.url" alt="Imagem cadastrada" class="img-fluid rounded" style="max-height: 80px; max-width: 80px">
+              <img [src]="'data:image/png;base64,' + img.base64" alt="Imagem cadastrada" class="img-fluid rounded" style="max-height: 80px; max-width: 80px">
               <div *ngIf="img.is_primary" class="badge bg-success mt-1">Principal</div>
             </div>
           </div>

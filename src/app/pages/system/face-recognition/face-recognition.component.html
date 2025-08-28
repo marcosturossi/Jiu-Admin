@@ -31,7 +31,7 @@
                 <div class="d-flex flex-wrap gap-2">
                   @for (img of person.images; track img.id) {
                     <div class="border rounded p-1 position-relative">
-                      <img [src]="img.url" [alt]="person.name" class="img-fluid rounded" style="max-height: 80px; max-width: 80px">
+                      <img [src]="'data:image/png;base64,' + img.base64" [alt]="person.name" class="img-fluid rounded" style="max-height: 80px; max-width: 80px">
                       @if (img.is_primary) {
                         <span class="badge bg-success position-absolute top-0 start-0">Principal</span>
                       }
