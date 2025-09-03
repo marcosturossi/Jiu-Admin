@@ -7,7 +7,7 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "generate:api1": "openapi-generator-cli generate -i http://localhost:8080/swagger/v1/swagger.json -g typescript-angular -o ./src/app/generated_services/api1 --additional-properties=ngVersion=18.2.5,supportsES6=true,npmVersion=10.3.0,withInterfaces=true,apiBasePath=http://localhost:8080",
+    "generate:api1": "openapi-generator-cli generate -i http://localhost:8080/swagger/v1/swagger.json -g typescript-angular -o ./src/app/generated_services/ --additional-properties=ngVersion=18.2.5,supportsES6=true,npmVersion=10.3.0,withInterfaces=true,apiBasePath=http://localhost:8080",
     "generate:api2": "openapi-generator-cli generate -i https://vision.jiu.pixelvision.tec.br/openapi.json -g typescript-angular -o ./src/app/generated_services/api2 --additional-properties=ngVersion=18.2.5,supportsES6=true,npmVersion=10.3.0,withInterfaces=true,apiBasePath=http://localhost:8003",
     "generate:all": "npm run generate:api1 && npm run generate:api2"
   },

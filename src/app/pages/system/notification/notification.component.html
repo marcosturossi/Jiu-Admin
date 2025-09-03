@@ -1,0 +1,62 @@
+<section class="mt-5 p-3" >
+  <div class="container">
+    <button class="btn btn-primary" (click)="openCreateNotification()" style="background-color:#383838">Nova Notificação</button>
+    <div class="mt-5">
+      <table class="table">
+        <thead>
+          <tr class="">
+            <th scope="col">Título</th>
+            <th scope="col">Tipo</th>
+            <th scope="col">Prioridade</th>
+            <th scope="col">Status</th>
+            <th scope="col">Usuário</th>
+            <th scope="col">Data de Criação</th>
+            <th scope="col">Data de Expiração</th>
+            <th scope="col">Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (notification of notifications; track notification.id){
+          <tr>
+            <td>
+              <div>
+                <strong>{{notification.title}}</strong>
+                <br>
+                <small class="text-muted">{{notification.message}}</small>
+              </div>
+            </td>
+            <td>{{getNotificationTypeText(notification.type)}}</td>
+            <td>
+              <span [class]="getPriorityClass(notification.priority)">
+                {{getNotificationPriorityText(notification.priority)}}
+              </span>
+            </td>
+            <td>
+              <span [class]="getStatusClass(notification.isActive)">
+                {{getStatusText(notification.isActive)}}
+              </span>
+            </td>
+            <td>{{notification.userName || 'Todos'}}</td>
+            <td>{{notification.createdAt | date:'dd/MM/yyyy hh:mm:ss a' }}</td>
+            <td>{{notification.expiresAt ? (notification.expiresAt | date:'dd/MM/yyyy hh:mm:ss a') : 'Sem expiração'}}</td>
+            <td>
+              <a class="p-2" (click)="openUpdateNotification(notification)"><img src="../../../../assets/icons/structural-icons/pencil-square.svg" /></a>
+              <a class="p-2" (click)="deleteNotification(notification)" style="cursor: pointer;"><img src="../../../../assets/icons/structural-icons/trash.svg" /></a>
+            </td>
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+@if(openedCreateNotification){
+<app-create-notification (closeEvent)="closeCreateNotification()" (notificationCreated)="onNotificationCreated()">
+</app-create-notification>
+}
+
+@if(openedUpdateNotification){
+<app-update-notification [notification]="selectedNotification" (closeEvent)="closeUpdateNotification()" (notificationUpdated)="onNotificationUpdated()">
+</app-update-notification>
+}

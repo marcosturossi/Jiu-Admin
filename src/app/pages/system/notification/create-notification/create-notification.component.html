@@ -1,0 +1,76 @@
+<div class="modal fade show" tabindex="-1" role="dialog" style="display:block">
+  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Nova Notificação</h5>
+        <button type="button" (click)="close()" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="notificationForm">
+          <div class="row">
+            <div class="col-md-8 mb-3">
+              <label for="title" class="form-label">Título *</label>
+              <input id="title" class="form-control" placeholder="Digite o título da notificação" formControlName="title" />
+            </div>
+            <div class="col-md-4 mb-3">
+              <label for="type" class="form-label">Tipo *</label>
+              <select id="type" class="form-select" formControlName="type">
+                @for (type of notificationTypes; track type.value) {
+                  <option [value]="type.value">{{type.label}}</option>
+                }
+              </select>
+            </div>
+          </div>
+          
+          <div class="mb-3">
+            <label for="message" class="form-label">Mensagem *</label>
+            <textarea id="message" class="form-control" rows="4" placeholder="Digite a mensagem da notificação" formControlName="message"></textarea>
+          </div>
+          
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label for="priority" class="form-label">Prioridade</label>
+              <select id="priority" class="form-select" formControlName="priority">
+                @for (priority of notificationPriorities; track priority.value) {
+                  <option [value]="priority.value">{{priority.label}}</option>
+                }
+              </select>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label for="userId" class="form-label">ID do Usuário</label>
+              <input id="userId" class="form-control" placeholder="Deixe vazio para todos os usuários" formControlName="userId" />
+              <small class="form-text text-muted">Deixe vazio para enviar para todos os usuários</small>
+            </div>
+          </div>
+          
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label for="expiresAt" class="form-label">Data de Expiração</label>
+              <input id="expiresAt" class="form-control" type="datetime-local" formControlName="expiresAt" />
+              <small class="form-text text-muted">Deixe vazio para notificação sem expiração</small>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label for="actionUrl" class="form-label">URL de Ação</label>
+              <input id="actionUrl" class="form-control" placeholder="URL opcional para ação" formControlName="actionUrl" />
+            </div>
+          </div>
+          
+          <div class="mb-3">
+            <label for="metadata" class="form-label">Metadados (JSON)</label>
+            <textarea id="metadata" class="form-control" rows="2" placeholder='{"key": "value"}' formControlName="metadata"></textarea>
+            <small class="form-text text-muted">Dados adicionais em formato JSON (opcional)</small>
+          </div>
+          
+          <div class="form-check mb-3">
+            <input class="form-check-input" type="checkbox" formControlName="isActive" id="isActiveCheck">
+            <label class="form-check-label" for="isActiveCheck">Notificação Ativa</label>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" (click)="create()" [disabled]="!notificationForm.valid">Salvar</button>
+        <button type="button" (click)="close()" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+      </div>
+    </div>
+  </div>
+</div>

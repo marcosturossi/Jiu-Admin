@@ -18,6 +18,8 @@ api/lesson.service.ts
 api/lesson.serviceInterface.ts
 api/notices.service.ts
 api/notices.serviceInterface.ts
+api/notification.service.ts
+api/notification.serviceInterface.ts
 api/students.service.ts
 api/students.serviceInterface.ts
 configuration.ts
@@ -31,6 +33,7 @@ model/baseGraduationDTO.ts
 model/baseGraduationRequirementsDTO.ts
 model/baseLessonDTO.ts
 model/baseNoticesDTO.ts
+model/baseNotificationDTO.ts
 model/baseStudentDTO.ts
 model/changePasswordRequest.ts
 model/createBeltDTO.ts
@@ -39,13 +42,20 @@ model/createGraduationDTO.ts
 model/createGraduationRequirementsDTO.ts
 model/createLessonDTO.ts
 model/createNoticesDTO.ts
+model/createNotificationDTO.ts
 model/createStudentDTO.ts
 model/httpValidationProblemDetails.ts
 model/keycloakTokenResponse.ts
 model/keycloakUserInfo.ts
 model/loginRequest.ts
 model/logoutRequest.ts
+model/markAsReadDTO.ts
 model/models.ts
+model/notificationPriority.ts
+model/notificationStatsDTO.ts
+model/notificationStatsDTONotificationsByPriority.ts
+model/notificationStatsDTONotificationsByType.ts
+model/notificationType.ts
 model/photoResponseDTO.ts
 model/problemDetails.ts
 model/refreshTokenRequest.ts
@@ -56,6 +66,7 @@ model/showGraduationDTO.ts
 model/showGraduationRequirementsDTO.ts
 model/showLessonDTO.ts
 model/showNoticesDTO.ts
+model/showNotificationDTO.ts
 model/showStudentDTO.ts
 model/studentSearchDTO.ts
 model/updateBeltDTO.ts
@@ -64,6 +75,7 @@ model/updateGraduationDTO.ts
 model/updateGraduationRequirementsDTO.ts
 model/updateLessonDTO.ts
 model/updateNoticesDTO.ts
+model/updateNotificationDTO.ts
 model/updateStudentDTO.ts
 model/uploadPhotoBase64DTO.ts
 model/validationProblemDetails.ts

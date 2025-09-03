@@ -16,6 +16,7 @@ import { BeltsComponent } from './belts/belts.component';
 import { GraduationRequirementsComponent } from './graduation-requirements/graduation-requirements.component';
 import { NoticesComponent } from './notices/notices.component';
 import { FaceRecognitionComponent } from './face-recognition/face-recognition.component';
+import { NotificationComponent } from './notification/notification.component';
 
 export const routes: Routes = [
   {
@@ -67,6 +68,11 @@ export const routes: Routes = [
         path: 'notices',
         pathMatch: 'full',
         component: NoticesComponent,
+      },
+      {
+        path: 'notification',
+        pathMatch: 'full',
+        component: NotificationComponent,
       },
       {
         path: 'face-recognition',
