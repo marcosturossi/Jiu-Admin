@@ -1,4 +1,30 @@
-.content{
+.content {
     margin-left: 220px;
-    margin-top: calc(68px + 53px);
+    margin-top: 60px; /* Reduced to eliminate gap between navbar and subnav */
+    transition: margin-left 0.3s ease;
+    min-height: calc(100vh - 60px);
+}
+
+/* Mobile responsive layout */
+@media (max-width: 991.98px) {
+  .content {
+    margin-left: 0;
+    margin-top: 60px;
+  }
+}
+
+/* Tablet adjustments */
+@media (min-width: 768px) and (max-width: 991.98px) {
+  .content {
+    margin-left: 0;
+  }
+}
+
+/* Ensure content doesn't overflow on small screens */
+@media (max-width: 575.98px) {
+  .content {
+    margin-top: 56px; /* Further reduced for mobile navbar */
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
 }

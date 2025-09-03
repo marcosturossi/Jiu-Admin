@@ -3,18 +3,105 @@ li{
 }
 
 .header{
-  min-height: 3rem;
-  max-height: 5rem;
+  min-height: 2.5rem;
+  max-height: 4rem;
+  z-index: 1030; /* Ensure navbar is above sidebar */
 }
 
 .logo{
-  max-height: 5rem;
-  margin-left: 5rem;
+  max-height: 3.5rem;
+  margin-left: 0;
+  transition: margin-left 0.3s ease;
 }
 
+/* Responsive logo positioning */
+@media (min-width: 992px) {
+  .logo {
+    margin-left: 1rem;
+  }
+}
+
+@media (min-width: 1200px) {
+  .logo {
+    margin-left: 2rem;
+  }
+}
 
 .navbar{
   background-color: #383838;
+  padding-left: 1rem;
+  padding-right: 1rem;
+
+  // Override global text color for navbar elements
+  * {
+    color: white !important;
+  }
+
+  .dropdown-menu * {
+    color: #495057 !important; // Reset dropdown menu text to dark for light background
+  }
+}
+
+/* Sidebar toggle button - visible on mobile/tablet */
+.btn-sidebar-toggle {
+  border: 2px solid rgba(255, 255, 255, 0.2) !important;
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  color: white !important;
+  padding: 0.5rem !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-width: 42px !important;
+  min-height: 42px !important;
+  border-radius: 0.375rem !important;
+  transition: all 0.2s ease !important;
+  
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.2) !important;
+    border-color: rgba(255, 255, 255, 0.4) !important;
+    color: white !important;
+    transform: scale(1.05) !important;
+  }
+  
+  &:focus {
+    box-shadow: 0 0 0 0.2rem rgba(255, 255, 255, 0.25) !important;
+    color: white !important;
+    background-color: rgba(255, 255, 255, 0.15) !important;
+    border-color: rgba(255, 255, 255, 0.4) !important;
+  }
+  
+  &:active {
+    background-color: rgba(255, 255, 255, 0.3) !important;
+    border-color: rgba(255, 255, 255, 0.5) !important;
+    color: white !important;
+    transform: scale(0.98) !important;
+  }
+
+  &.active {
+    background-color: rgba(255, 255, 255, 0.25) !important;
+    border-color: rgba(255, 255, 255, 0.5) !important;
+    color: white !important;
+  }
+
+  i {
+    font-size: 1.2rem !important;
+    line-height: 1 !important;
+    transition: transform 0.2s ease !important;
+  }
+}
+
+/* Hide toggle button on large screens where sidebar is always visible */
+@media (min-width: 992px) {
+  .btn-sidebar-toggle {
+    display: none !important;
+  }
+}
+
+/* Ensure toggle button is visible on mobile/tablet */
+@media (max-width: 991.98px) {
+  .btn-sidebar-toggle {
+    display: flex !important;
+  }
 }
 
 ul{
@@ -24,12 +111,20 @@ ul{
 button {
   border: None;
   background-color: #383838;
-  color: white;
+  color: white !important;
 
   &:hover{
     font-weight: 800;
     background-color: #353c49;
-    color: white;
+    color: white !important;
+  }
+
+  span {
+    color: white !important;
+  }
+
+  i {
+    color: white !important;
   }
 }
 
@@ -38,19 +133,53 @@ button {
   padding-top: 0;
   padding-bottom: 0;
   border-radius: 5px;
+  right: 0;
+  left: auto;
+  min-width: 120px;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  
   a{
-    color: #353c49;
+    color: #495057; /* Darker gray for better contrast on white */
     border-radius: 5px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    transition: all 0.2s ease;
+    
     &:hover{
-      font-weight: 800;
-      background-color: #353c49;
-      color: white;
+      font-weight: 600;
+      background-color: #f8f9fa; /* Light gray background instead of dark */
+      color: #212529; /* Darker text on hover for better contrast */
+    }
+    
+    &:focus {
+      outline: 2px solid #0d6efd;
+      outline-offset: -2px;
     }
   }
 
   &:hover{
-    font-weight: 800;
-    background-color: #1D2127;
-    color: white;
+    font-weight: 600;
+    background-color: #ffffff;
+    color: #212529;
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 575.98px) {
+  .navbar {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+  
+  .logo {
+    max-height: 3rem;
+  }
+  
+  .btn-sidebar-toggle {
+    min-width: 38px !important;
+    min-height: 38px !important;
+    padding: 0.4rem !important;
   }
 }

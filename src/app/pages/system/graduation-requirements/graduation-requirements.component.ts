@@ -4,6 +4,7 @@ import { GraduationRequirementsService, ShowGraduationRequirementsDTO, BeltServi
 import { CreateGraduationRequirementComponent } from './create-graduation-requirement/create-graduation-requirement.component';
 import { UpdateGraduationRequirementComponent } from './update-graduation-requirement/update-graduation-requirement.component';
 import { DatePipe } from '@angular/common';
+import { SubnavService } from '../../../services/subnav.service';
 
 @Component({
   selector: 'app-graduation-requirements',
@@ -20,10 +21,12 @@ export class GraduationRequirementsComponent implements OnInit {
 
   constructor(
     private graduationRequirementsService: GraduationRequirementsService,
-    private beltService: BeltService
+    private beltService: BeltService,
+    private subnavService: SubnavService
   ) { }
 
   ngOnInit(): void {
+    this.subnavService.setTitle("Requisitos de Graduação");
     this.loadGraduationRequirements();
     this.loadBelts();
   }

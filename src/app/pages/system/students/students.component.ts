@@ -5,6 +5,7 @@ import { ShowStudentDTO } from '../../../generated_services/model/showStudentDTO
 import { CreateStudentComponent } from './create-student/create-student.component';
 import { UpdateStudentComponent } from './update-student/update-student.component';
 import { DatePipe } from '@angular/common';
+import { SubnavService } from '../../../services/subnav.service';
 
 @Component({
   selector: 'app-students',
@@ -18,9 +19,13 @@ export class StudentsComponent implements OnInit {
   selectedStudent!: ShowStudentDTO;
   openedUpdateStudent: boolean = false;
 
-  constructor(private studentsService: StudentsService) { }
+  constructor(
+    private studentsService: StudentsService,
+    private subnavService: SubnavService
+  ) { }
 
   ngOnInit(): void {
+    this.subnavService.setTitle("Estudantes");
     this.loadStudents();
   }
 

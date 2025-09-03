@@ -6,6 +6,7 @@ import { CreateNotificationComponent } from './create-notification/create-notifi
 import { UpdateNotificationComponent } from './update-notification/update-notification.component';
 import { NotificationType } from '../../../generated_services/model/notificationType';
 import { NotificationPriority } from '../../../generated_services/model/notificationPriority';
+import { SubnavService } from '../../../services/subnav.service';
 
 @Component({
   selector: 'app-notification',
@@ -19,9 +20,13 @@ export class NotificationComponent implements OnInit {
   selectedNotification!: ShowNotificationDTO;
   openedUpdateNotification: boolean = false;
 
-  constructor(private notificationService: NotificationService) { }
+  constructor(
+    private notificationService: NotificationService,
+    private subnavService: SubnavService
+  ) { }
 
   ngOnInit(): void {
+    this.subnavService.setTitle("Notificações");
     this.loadNotifications();
   }
 

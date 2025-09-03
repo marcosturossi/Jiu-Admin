@@ -1,12 +1,31 @@
-<nav class="navbar fixed-top header d-flex py-3 align-items-center justify-content-between">
-    <img class="logo" src="../../../assets/company/carlson_logo.png" alt="Logo Empresa">
+<nav class="navbar fixed-top header d-flex py-2 align-items-center justify-content-between">
+    <div class="d-flex align-items-center">
+      <!-- Sidebar toggle button (visible on mobile/tablet) -->
+      <button 
+        class="btn btn-sidebar-toggle me-3" 
+        [class.active]="sidebarOpen"
+        type="button" 
+        (click)="toggleSidebar()"
+        aria-label="Toggle sidebar navigation"
+        title="Toggle sidebar">
+        <i class="bi" [class.bi-list]="!sidebarOpen" [class.bi-x-lg]="sidebarOpen"></i>
+      </button>
+      <img class="logo" src="../../../assets/company/carlson_logo.png" alt="Logo Empresa">
+    </div>
+    
     <ul class="d-flex">
       <div class="dropdown ms-5" [class.show] = "profileDropDown === true" (click)="openProfileDropDown()">
         <button class="btn dropdown-toggle" type="button">
-          {{userName}}
+          <i class="bi bi-person-circle me-2 d-none d-md-inline"></i>
+          <span class="d-none d-sm-inline">{{userName}}</span>
+          <span class="d-sm-none">
+            <i class="bi bi-person-circle fs-5"></i>
+          </span>
         </button>
         <ul class="dropdown-menu" [class.show] = "profileDropDown === true" >
-          <li><a class="dropdown-item" type="button" (click)="logout()">Sair</a></li>
+          <li><a class="dropdown-item" type="button" (click)="logout()">
+            <i class="bi bi-box-arrow-right me-2"></i>Sair
+          </a></li>
         </ul>
       </div>
     </ul>

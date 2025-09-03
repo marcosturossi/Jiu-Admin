@@ -1,73 +1,97 @@
 <nav class="sidebar navbar-expand-lg my-0 pe-1">
-  <div class="mt-3">
+  <!-- Mobile overlay background -->
+  <div class="sidebar-overlay d-lg-none" (click)="closeSidebar()"></div>
+  
+  <!-- Sidebar header for mobile -->
+  <div class="sidebar-header d-lg-none">
+    <div class="d-flex justify-content-between align-items-center p-3">
+      <span class="sidebar-title text-white">Menu</span>
+      <button class="btn btn-close-sidebar" (click)="closeSidebar()">
+        <i class="bi bi-x-lg text-white"></i>
+      </button>
+    </div>
+  </div>
+
+  <div class="sidebar-content">
     <ul class="pt-3">
       <li>
-        <a class="d-flex p-4" routerLink="/system/home">
-          <img class="pe-2" style="min-width: 1.25rem" src="../../../assets/icons/sidebar/house.svg">
-          <p class="nav">Home</p>
+        <a class="d-flex p-3 p-lg-4 sidebar-link" 
+           [class.active]="isActiveRoute('/system/home')"
+           (click)="navigateTo('/system/home', $event)">
+          <img class="pe-2 sidebar-icon" src="../../../assets/icons/sidebar/house.svg">
+          <p class="nav mb-0">Home</p>
         </a>
       </li>
       <li>
-        <a class="d-flex p-4" routerLink="/system/students">
-          <img class="pe-2" style="min-width: 1.25rem" src="../../../assets/icons/sidebar/person.svg"
-               alt="Alunos">
-          <p class="nav">Alunos</p>
+        <a class="d-flex p-3 p-lg-4 sidebar-link" 
+           [class.active]="isActiveRoute('/system/students')"
+           (click)="navigateTo('/system/students', $event)">
+          <img class="pe-2 sidebar-icon" src="../../../assets/icons/sidebar/person.svg" alt="Alunos">
+          <p class="nav mb-0">Alunos</p>
         </a>
       </li>
       <li>
-        <a class="d-flex p-4" routerLink="/system/lessons">
-          <img class="pe-2" style="min-width: 1.25rem" src="../../../assets/icons/sidebar/calendar3.svg"
-               alt="Aulas">
-          <p class="nav">Aulas</p>
+        <a class="d-flex p-3 p-lg-4 sidebar-link" 
+           [class.active]="isActiveRoute('/system/lessons')"
+           (click)="navigateTo('/system/lessons', $event)">
+          <img class="pe-2 sidebar-icon" src="../../../assets/icons/sidebar/calendar3.svg" alt="Aulas">
+          <p class="nav mb-0">Aulas</p>
         </a>
       </li>
       <li>
-        <a class="d-flex p-4" routerLink="/system/graduations">
-          <img class="pe-2" style="min-width: 1.25rem" src="../../../assets/icons/sidebar/award.svg"
-               alt="Graduações">
-          <p class="nav">Graduações</p>
+        <a class="d-flex p-3 p-lg-4 sidebar-link" 
+           [class.active]="isActiveRoute('/system/graduations')"
+           (click)="navigateTo('/system/graduations', $event)">
+          <img class="pe-2 sidebar-icon" src="../../../assets/icons/sidebar/award.svg" alt="Graduações">
+          <p class="nav mb-0">Graduações</p>
         </a>
       </li>
       <li>
-        <a class="d-flex p-4" routerLink="/system/frequencies">
-          <img class="pe-2" style="min-width: 1.25rem" src="../../../assets/icons/sidebar/check2-square.svg"
-               alt="Frequencias">
-          <p class="nav">Frequências</p>
+        <a class="d-flex p-3 p-lg-4 sidebar-link" 
+           [class.active]="isActiveRoute('/system/frequencies')"
+           (click)="navigateTo('/system/frequencies', $event)">
+          <img class="pe-2 sidebar-icon" src="../../../assets/icons/sidebar/check2-square.svg" alt="Frequencias">
+          <p class="nav mb-0">Frequências</p>
         </a>
       </li>
       <li>
-        <a class="d-flex p-4" routerLink="/system/belts">
-          <img class="pe-2" style="min-width: 1.25rem" src="../../../assets/icons/sidebar/bookmark-star.svg"
-               alt="Faixas">
-          <p class="nav">Faixas</p>
+        <a class="d-flex p-3 p-lg-4 sidebar-link" 
+           [class.active]="isActiveRoute('/system/belts')"
+           (click)="navigateTo('/system/belts', $event)">
+          <img class="pe-2 sidebar-icon" src="../../../assets/icons/sidebar/bookmark-star.svg" alt="Faixas">
+          <p class="nav mb-0">Faixas</p>
         </a>
       </li>
       <li>
-        <a class="d-flex p-4" routerLink="/system/graduation-requirements">
-          <img class="pe-2" style="min-width: 1.25rem" src="../../../assets/icons/sidebar/list-check.svg"
-               alt="Requisitos de Faixas">
-          <p class="nav">Requisitos de Faixas</p>
+        <a class="d-flex p-3 p-lg-4 sidebar-link" 
+           [class.active]="isActiveRoute('/system/graduation-requirements')"
+           (click)="navigateTo('/system/graduation-requirements', $event)">
+          <img class="pe-2 sidebar-icon" src="../../../assets/icons/sidebar/list-check.svg" alt="Requisitos de Faixas">
+          <p class="nav mb-0">Requisitos de Faixas</p>
         </a>
       </li>
       <li>
-        <a class="d-flex p-4" routerLink="/system/notices">
-          <img class="pe-2" style="min-width: 1.25rem" src="../../../assets/icons/sidebar/info-circle.svg"
-               alt="Noticias">
-          <p class="nav">Noticias</p>
+        <a class="d-flex p-3 p-lg-4 sidebar-link" 
+           [class.active]="isActiveRoute('/system/notices')"
+           (click)="navigateTo('/system/notices', $event)">
+          <img class="pe-2 sidebar-icon" src="../../../assets/icons/sidebar/info-circle.svg" alt="Noticias">
+          <p class="nav mb-0">Avisos</p>
         </a>
       </li>
       <li>
-        <a class="d-flex p-4" routerLink="/system/notification">
-          <img class="pe-2" style="min-width: 1.25rem" src="../../../assets/icons/sidebar/info-circle.svg"
-               alt="Notificações">
-          <p class="nav">Notificações</p>
+        <a class="d-flex p-3 p-lg-4 sidebar-link" 
+           [class.active]="isActiveRoute('/system/notification')"
+           (click)="navigateTo('/system/notification', $event)">
+          <img class="pe-2 sidebar-icon" src="../../../assets/icons/sidebar/info-circle.svg" alt="Notificações">
+          <p class="nav mb-0">Notificações</p>
         </a>
       </li>
       <li>
-        <a class="d-flex p-4" routerLink="/system/face-recognition">
-          <img class="pe-2" style="min-width: 1.25rem" src="../../../assets/icons/sidebar/person-check.svg"
-               alt="Reconhecimento">
-          <p class="nav">Reconhecimento</p>
+        <a class="d-flex p-3 p-lg-4 sidebar-link" 
+           [class.active]="isActiveRoute('/system/face-recognition')"
+           (click)="navigateTo('/system/face-recognition', $event)">
+          <img class="pe-2 sidebar-icon" src="../../../assets/icons/sidebar/person-check.svg" alt="Reconhecimento">
+          <p class="nav mb-0">Reconhecimento</p>
         </a>
       </li>
     </ul>

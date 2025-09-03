@@ -4,6 +4,7 @@ import { PersonDetailResponse } from '../../../generated_services/api2/model/per
 import { PersonListResponse } from '../../../generated_services/api2/model/personListResponse';
 import { CreatePersonsComponent } from './create-persons/create-persons.component';
 import { UpdatePersonsComponent } from './update-persons/update-persons.component';
+import { SubnavService } from '../../../services/subnav.service';
 
 @Component({
   selector: 'app-face-recognition',
@@ -20,9 +21,13 @@ export class FaceRecognitionComponent implements OnInit {
   showUpdateModal = false;
   selectedPerson: PersonDetailResponse | null = null;
 
-  constructor(private personsService: PersonsService) {}
+  constructor(
+    private personsService: PersonsService,
+    private subnavService: SubnavService
+  ) {}
 
   ngOnInit(): void {
+    this.subnavService.setTitle("Reconhecimento Facial");
     this.loadPersons();
   }
 

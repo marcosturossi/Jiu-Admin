@@ -1,6 +1,6 @@
 .sidebar{
-  margin:0;
-  padding:0;
+  margin: 0;
+  padding: 0;
   width: 220px;
   background-color: #383838;
   min-height: 100vh;
@@ -9,6 +9,81 @@
   height: 100vh;
   overflow: auto;
   color: white;
+  z-index: 1020;
+  transition: transform 0.3s ease;
+  left: 0;
+
+  /* Ensure all text elements have proper contrast */
+  *, i, span, small, strong, em, p, h1, h2, h3, h4, h5, h6 {
+    color: #e9ecef !important;
+  }
+}
+
+/* Mobile responsive behavior - hide sidebar by default */
+@media (max-width: 991.98px) {
+  .sidebar {
+    transform: translateX(-100%);
+    top: 0;
+    width: 280px;
+    z-index: 1050;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.3);
+  }
+}
+
+/* Sidebar overlay for mobile */
+.sidebar-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1040;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+  pointer-events: none;
+}
+
+/* Sidebar header for mobile */
+.sidebar-header {
+  background-color: #2c2c2c;
+  border-bottom: 1px solid #4a4a4a;
+}
+
+.sidebar-title {
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+.btn-close-sidebar {
+  background: none;
+  border: none;
+  color: white;
+  padding: 0.25rem;
+  border-radius: 0.25rem;
+  
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+  
+  &:focus {
+    outline: 2px solid rgba(255, 255, 255, 0.3);
+  }
+}
+
+.sidebar-content {
+  padding-top: 0;
+  height: 100%;
+  overflow-y: auto;
+  position: relative;
+  z-index: 1060; /* Ensure content is above overlay */
+}
+
+@media (min-width: 992px) {
+  .sidebar-content {
+    padding-top: 1rem;
+  }
 }
 
 .nav-item{
@@ -17,6 +92,8 @@
 
 ul{
   padding-left: 0.5rem;
+  list-style: none;
+  margin: 0;
 }
 
 .dropdown-item{
@@ -36,16 +113,72 @@ h6{
   color: white;
 }
 
-a{
+.sidebar-link {
   text-decoration: none;
+  border-radius: 0.375rem;
+  margin-bottom: 0.25rem;
+  transition: all 0.2s ease;
+  color: #e9ecef; /* Lighter text for better contrast on dark background */
+  
   &:hover{
-    background-color: #353c49;
+    background-color: #495057; /* Lighter hover background */
+    color: #ffffff; /* Pure white on hover */
+    
+    p {
+      color: #ffffff;
+    }
+  }
+  
+  &.active {
+    background-color: #6c757d; /* Lighter active background */
+    color: #ffffff; /* Pure white for active state */
+    
+    p {
+      color: #ffffff;
+    }
   }
 }
 
+.sidebar-icon {
+  min-width: 1.25rem;
+  width: 1.25rem;
+  height: 1.25rem;
+  flex-shrink: 0;
+  filter: brightness(1.3); /* Brighter icons for better visibility */
+}
+
+.sidebar-link:hover .sidebar-icon,
+.sidebar-link.active .sidebar-icon {
+  filter: brightness(1.8); /* Even brighter on hover/active */
+}
+
 p{
-  font-size: small;
-  color: #a5b3c5;
+  font-size: 0.875rem;
+  color: #e9ecef; /* Lighter text for better contrast */
+  margin: 0;
+  white-space: nowrap;
+  transition: color 0.2s ease;
+}
+
+/* Responsive text sizing */
+@media (max-width: 991.98px) {
+  p {
+    font-size: 0.95rem;
+  }
+}
+
+/* Tablet adjustments */
+@media (min-width: 768px) and (max-width: 991.98px) {
+  .sidebar {
+    width: 260px;
+  }
+}
+
+/* Small mobile adjustments */
+@media (max-width: 575.98px) {
+  .sidebar {
+    width: 100vw;
+  }
 }
 
 

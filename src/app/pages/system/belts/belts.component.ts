@@ -4,6 +4,7 @@ import { BeltService, ShowBeltDTO } from '../../../generated_services';
 import { CreateBeltComponent } from './create-belt/create-belt.component';
 import { UpdateBeltComponent } from './update-belt/update-belt.component';
 import { DatePipe } from '@angular/common';
+import { SubnavService } from '../../../services/subnav.service';
 
 @Component({
   selector: 'app-belts',
@@ -17,9 +18,13 @@ export class BeltsComponent implements OnInit {
   selectedBelt!: ShowBeltDTO;
   openedUpdateBelt: boolean = false;
 
-  constructor(private beltService: BeltService) { }
+  constructor(
+    private beltService: BeltService,
+    private subnavService: SubnavService
+  ) { }
 
   ngOnInit(): void {
+    this.subnavService.setTitle("Faixas");
     this.loadBelts();
   }
 

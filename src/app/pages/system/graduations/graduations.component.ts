@@ -4,6 +4,7 @@ import { GraduationService } from '../../../generated_services/api/graduation.se
 import { ShowGraduationDTO } from '../../../generated_services';
 import { UpdateGraduationComponent } from './update-graduation/update-graduation.component';
 import { CreateGraduationComponent } from './create-graduation/create-graduation.component';
+import { SubnavService } from '../../../services/subnav.service';
 
 @Component({
   selector: 'app-graduations',
@@ -18,11 +19,15 @@ export class GraduationsComponent implements OnInit {
   openedUpdateGraduation: boolean = false
   selectedGraduation!: ShowGraduationDTO;
 
-  constructor(private graduationService: GraduationService) {
+  constructor(
+    private graduationService: GraduationService,
+    private subnavService: SubnavService
+  ) {
 
   }
 
   ngOnInit(): void {
+    this.subnavService.setTitle("Graduações");
     this.loadGraduations();
   }
 

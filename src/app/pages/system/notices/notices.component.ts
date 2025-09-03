@@ -5,6 +5,7 @@ import { ShowNoticesDTO } from '../../../generated_services/model/showNoticesDTO
 import { CreateNoticeComponent } from './create-notice/create-notice.component';
 import { UpdateNoticeComponent } from './update-notice/update-notice.component';
 import { DatePipe } from '@angular/common';
+import { SubnavService } from '../../../services/subnav.service';
 
 @Component({
   selector: 'app-notices',
@@ -18,9 +19,13 @@ export class NoticesComponent implements OnInit {
   selectedNotice!: ShowNoticesDTO;
   openedUpdateNotice: boolean = false;
 
-  constructor(private noticesService: NoticesService) { }
+  constructor(
+    private noticesService: NoticesService,
+    private subnavService: SubnavService
+  ) { }
 
   ngOnInit(): void {
+    this.subnavService.setTitle("Avisos");
     this.loadNotices();
   }
 

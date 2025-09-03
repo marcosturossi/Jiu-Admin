@@ -4,6 +4,7 @@ import { FrequencyService, ShowFrequencyDTO } from '../../../generated_services'
 import { CreateFrequencyComponent } from './create-frequency/create-frequency.component';
 import { UpdateFrequencyComponent } from './update-frequency/update-frequency.component';
 import { DatePipe } from '@angular/common';
+import { SubnavService } from '../../../services/subnav.service';
 
 @Component({
   selector: 'app-frequencies',
@@ -17,9 +18,13 @@ export class FrequenciesComponent implements OnInit {
   selectedFrequency!: ShowFrequencyDTO;
   openedUpdateFrequency: boolean = false;
 
-  constructor(private frequencyService: FrequencyService) { }
+  constructor(
+    private frequencyService: FrequencyService,
+    private subnavService: SubnavService
+  ) { }
 
   ngOnInit(): void {
+    this.subnavService.setTitle("Frequências");
     this.loadFrequencies();
   }
 

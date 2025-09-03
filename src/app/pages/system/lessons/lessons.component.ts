@@ -5,6 +5,7 @@ import { ShowLessonDTO } from '../../../generated_services/model/showLessonDTO';
 import { CreateLessonComponent } from './create-lesson/create-lesson.component';
 import { UpdateLessonComponent } from './update-lesson/update-lesson.component';
 import { DatePipe } from '@angular/common';
+import { SubnavService } from '../../../services/subnav.service';
 
 @Component({
   selector: 'app-lessons',
@@ -18,9 +19,13 @@ export class LessonsComponent implements OnInit {
   selectedLesson!: ShowLessonDTO;
   openedUpdateLesson: boolean = false;
 
-  constructor(private lessonService: LessonService) { }
+  constructor(
+    private lessonService: LessonService,
+    private subnavService: SubnavService
+  ) { }
 
   ngOnInit(): void {
+    this.subnavService.setTitle("Aulas");
     this.loadLessons();
   }
 
