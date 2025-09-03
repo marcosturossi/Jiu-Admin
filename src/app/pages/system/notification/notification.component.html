@@ -1,53 +1,108 @@
-<section class="mt-5 p-3" >
-  <div class="container">
-    <button class="btn btn-primary" (click)="openCreateNotification()" style="background-color:#383838">Nova Notificação</button>
-    <div class="mt-5">
-      <table class="table">
-        <thead>
-          <tr class="">
-            <th scope="col">Título</th>
-            <th scope="col">Tipo</th>
-            <th scope="col">Prioridade</th>
-            <th scope="col">Status</th>
-            <th scope="col">Usuário</th>
-            <th scope="col">Data de Criação</th>
-            <th scope="col">Data de Expiração</th>
-            <th scope="col">Ações</th>
+<section class="mt-3 mt-md-5 p-2 p-md-3">
+  <div class="container-fluid">
+    <!-- Header with responsive button -->
+    <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center mb-3 mb-md-4">
+      <h2 class="h4 mb-2 mb-sm-0">Notificações</h2>
+      <button class="btn btn-custom-primary btn-desktop-compact" (click)="openCreateNotification()">
+        <i class="bi bi-plus-circle me-2"></i>Nova Notificação
+      </button>
+    </div>
+
+    <!-- Responsive table wrapper -->
+    <div class="table-responsive">
+      <table class="table table-hover">
+        <thead class="table-light">
+          <tr>
+            <th scope="col" class="d-none d-lg-table-cell">Título</th>
+            <th scope="col" class="d-table-cell d-lg-none">Notificação</th>
+            <th scope="col" class="d-none d-md-table-cell">Tipo</th>
+            <th scope="col" class="d-none d-md-table-cell">Prioridade</th>
+            <th scope="col" class="d-none d-lg-table-cell">Status</th>
+            <th scope="col" class="d-none d-lg-table-cell">Usuário</th>
+            <th scope="col" class="d-none d-xl-table-cell">Data de Criação</th>
+            <th scope="col" class="d-none d-xl-table-cell">Data de Expiração</th>
+            <th scope="col" class="text-center">Ações</th>
           </tr>
         </thead>
         <tbody>
           @for (notification of notifications; track notification.id){
           <tr>
-            <td>
+            <!-- Desktop view - full title and message -->
+            <td class="d-none d-lg-table-cell">
               <div>
-                <strong>{{notification.title}}</strong>
+                <strong class="text-primary">{{notification.title}}</strong>
                 <br>
                 <small class="text-muted">{{notification.message}}</small>
               </div>
             </td>
-            <td>{{getNotificationTypeText(notification.type)}}</td>
-            <td>
+            
+            <!-- Mobile/Tablet view - condensed info -->
+            <td class="d-table-cell d-lg-none">
+              <div>
+                <strong class="text-primary d-block">{{notification.title}}</strong>
+                <small class="text-muted d-block mb-1">{{notification.message}}</small>
+                <div class="d-flex flex-wrap gap-1">
+                  <span class="badge bg-outline-secondary text-dark border">{{getNotificationTypeText(notification.type)}}</span>
+                  <span [class]="getPriorityClass(notification.priority)">{{getNotificationPriorityText(notification.priority)}}</span>
+                  <span [class]="getStatusClass(notification.isActive)" class="d-md-none">{{getStatusText(notification.isActive)}}</span>
+                </div>
+                <small class="text-muted d-block mt-1">
+                  <i class="bi bi-person me-1"></i>{{notification.userName || 'Todos'}}
+                  <span class="d-xl-none ms-2">
+                    <i class="bi bi-calendar me-1"></i>{{notification.createdAt | date:'dd/MM/yyyy'}}
+                  </span>
+                </small>
+              </div>
+            </td>
+            
+            <td class="d-none d-md-table-cell">
+              <span class="badge bg-outline-primary text-primary border">{{getNotificationTypeText(notification.type)}}</span>
+            </td>
+            <td class="d-none d-md-table-cell">
               <span [class]="getPriorityClass(notification.priority)">
                 {{getNotificationPriorityText(notification.priority)}}
               </span>
             </td>
-            <td>
+            <td class="d-none d-lg-table-cell">
               <span [class]="getStatusClass(notification.isActive)">
                 {{getStatusText(notification.isActive)}}
               </span>
             </td>
-            <td>{{notification.userName || 'Todos'}}</td>
-            <td>{{notification.createdAt | date:'dd/MM/yyyy hh:mm:ss a' }}</td>
-            <td>{{notification.expiresAt ? (notification.expiresAt | date:'dd/MM/yyyy hh:mm:ss a') : 'Sem expiração'}}</td>
-            <td>
-              <a class="p-2" (click)="openUpdateNotification(notification)"><img src="../../../../assets/icons/structural-icons/pencil-square.svg" /></a>
-              <a class="p-2" (click)="deleteNotification(notification)" style="cursor: pointer;"><img src="../../../../assets/icons/structural-icons/trash.svg" /></a>
+            <td class="d-none d-lg-table-cell">
+              <i class="bi bi-person me-1"></i>{{notification.userName || 'Todos'}}
+            </td>
+            <td class="d-none d-xl-table-cell">
+              <small>{{notification.createdAt | date:'dd/MM/yyyy HH:mm'}}</small>
+            </td>
+            <td class="d-none d-xl-table-cell">
+              <small>{{notification.expiresAt ? (notification.expiresAt | date:'dd/MM/yyyy HH:mm') : 'Sem expiração'}}</small>
+            </td>
+            <td class="text-center">
+              <div class="btn-group" role="group">
+                <button type="button" class="btn btn-sm btn-outline-primary" (click)="openUpdateNotification(notification)" title="Editar">
+                  <img src="../../../../assets/icons/structural-icons/pencil-square.svg" alt="Editar" style="width: 16px; height: 16px;" />
+                </button>
+                <button type="button" class="btn btn-sm btn-outline-danger" (click)="deleteNotification(notification)" title="Excluir">
+                  <img src="../../../../assets/icons/structural-icons/trash.svg" alt="Excluir" style="width: 16px; height: 16px;" />
+                </button>
+              </div>
             </td>
           </tr>
           }
         </tbody>
       </table>
     </div>
+
+    <!-- Empty state -->
+    @if (notifications.length === 0) {
+      <div class="text-center py-5">
+        <div class="mb-3">
+          <i class="bi bi-bell-slash display-1 text-muted"></i>
+        </div>
+        <h5 class="text-muted">Nenhuma notificação encontrada</h5>
+        <p class="text-muted">Clique em "Nova Notificação" para criar sua primeira notificação.</p>
+      </div>
+    }
   </div>
 </section>
 

@@ -1,5 +1,5 @@
 <div class="modal fade show" tabindex="-1" role="dialog" style="display:block">
-  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-custom" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Nova Notificação</h5>
@@ -68,7 +68,7 @@
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-primary" (click)="create()" [disabled]="!notificationForm.valid">Salvar</button>
+        <button type="button" class="btn btn-custom-primary" (click)="create()" [disabled]="!notificationForm.valid">Salvar</button>
         <button type="button" (click)="close()" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
       </div>
     </div>

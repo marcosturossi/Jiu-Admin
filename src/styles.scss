@@ -30,3 +30,65 @@ table, th, td {
   color: #101434 !important;
 }
 
+/* Custom button styles for consistent design */
+.btn-custom-primary {
+  background-color: #383838 !important;
+  border-color: #383838 !important;
+  color: white !important;
+}
+
+.btn-custom-primary:hover {
+  background-color: #2c2c2c !important;
+  border-color: #2c2c2c !important;
+  color: white !important;
+}
+
+.btn-custom-primary:focus,
+.btn-custom-primary:active {
+  background-color: #383838 !important;
+  border-color: #383838 !important;
+  color: white !important;
+  box-shadow: 0 0 0 0.2rem rgba(56, 56, 56, 0.25) !important;
+}
+
+/* Custom button sizing for better desktop experience */
+.btn-desktop-compact {
+  width: 100% !important;
+}
+
+@media (min-width: 768px) {
+  .btn-desktop-compact {
+    width: auto !important;
+    max-width: 200px !important;
+  }
+}
+
+@media (min-width: 992px) {
+  .btn-desktop-compact {
+    max-width: 180px !important;
+  }
+}
+
+/* Custom modal sizes for better desktop experience */
+@media (min-width: 992px) {
+  .modal-dialog-custom {
+    max-width: 50% !important;
+    width: 50% !important;
+  }
+}
+
+@media (max-width: 991.98px) {
+  .modal-dialog-custom {
+    max-width: 90% !important;
+    width: 90% !important;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .modal-dialog-custom {
+    max-width: 95% !important;
+    width: 95% !important;
+    margin: 0.5rem auto !important;
+  }
+}
+

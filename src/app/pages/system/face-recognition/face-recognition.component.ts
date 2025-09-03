@@ -110,4 +110,14 @@ export class FaceRecognitionComponent implements OnInit {
       return '';
     }
   }
+
+  getTotalImages(): number {
+    return this.persons.reduce((total, person) => {
+      return total + (person.images?.length || 0);
+    }, 0);
+  }
+
+  getPersonsWithImages(): number {
+    return this.persons.filter(person => person.images && person.images.length > 0).length;
+  }
 }

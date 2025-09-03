@@ -1,31 +1,82 @@
-<section class="mt-5 p-3">
-  <div class="container">
-    <button class="btn btn-primary" (click)="openCreateGraduationRequirement()" style="background-color:#383838">Novo Requisito de Graduação</button>
-    <div class="mt-5">
-      <table class="table">
-        <thead>
-          <tr class="">
-            <th scope="col">Faixa</th>
-            <th scope="col">Descrição</th>
-            <th scope="col">Aulas Mínimas</th>
-            <th scope="col">Ações</th>
+<section class="mt-3 mt-md-5 p-2 p-md-3">
+  <div class="container-fluid">
+    <!-- Header with responsive button -->
+    <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center mb-3 mb-md-4">
+      <h2 class="h4 mb-2 mb-sm-0">Requisitos de Graduação</h2>
+      <button class="btn btn-custom-primary btn-desktop-compact" (click)="openCreateGraduationRequirement()">
+        <i class="bi bi-list-check me-2"></i>Novo Requisito
+      </button>
+    </div>
+
+    <!-- Responsive table wrapper -->
+    <div class="table-responsive">
+      <table class="table table-hover">
+        <thead class="table-light">
+          <tr>
+            <th scope="col" class="d-none d-lg-table-cell">Faixa</th>
+            <th scope="col" class="d-table-cell d-lg-none">Requisito</th>
+            <th scope="col" class="d-none d-md-table-cell">Descrição</th>
+            <th scope="col" class="d-none d-lg-table-cell">Aulas Mínimas</th>
+            <th scope="col" class="text-center">Ações</th>
           </tr>
         </thead>
         <tbody>
           @for (requirement of graduationRequirements; track requirement.id){
           <tr>
-            <td>{{requirement.belt?.color || getBeltColor(requirement.beltId)}}</td>
-            <td>{{requirement.description}}</td>
-            <td>{{requirement.minimumClasses || 0}}</td>
-            <td>
-              <a class="p-2" (click)="openUpdateGraduationRequirement(requirement)"><img src="../../../../assets/icons/structural-icons/pencil-square.svg" /></a>
-              <a class="p-2" (click)="deleteGraduationRequirement(requirement)" style="cursor: pointer;"><img src="../../../../assets/icons/structural-icons/trash.svg" /></a>
+            <!-- Desktop view - belt color only -->
+            <td class="d-none d-lg-table-cell">
+              <div>
+                <span class="badge bg-outline-primary text-primary border">{{requirement.belt?.color || getBeltColor(requirement.beltId)}}</span>
+              </div>
+            </td>
+            
+            <!-- Mobile/Tablet view - condensed info -->
+            <td class="d-table-cell d-lg-none">
+              <div>
+                <span class="badge bg-outline-primary text-primary border d-block mb-2">{{requirement.belt?.color || getBeltColor(requirement.beltId)}}</span>
+                <small class="text-muted d-block d-md-none">{{requirement.description}}</small>
+                <div class="d-flex flex-wrap gap-1 mt-1">
+                  <span class="badge bg-outline-info text-info border d-lg-none">
+                    <i class="bi bi-calendar-check me-1"></i>{{requirement.minimumClasses || 0}} aulas
+                  </span>
+                </div>
+              </div>
+            </td>
+            
+            <td class="d-none d-md-table-cell">
+              <small class="text-muted">{{requirement.description}}</small>
+            </td>
+            <td class="d-none d-lg-table-cell">
+              <span class="badge bg-outline-info text-info border">
+                <i class="bi bi-calendar-check me-1"></i>{{requirement.minimumClasses || 0}}
+              </span>
+            </td>
+            <td class="text-center">
+              <div class="btn-group" role="group">
+                <button type="button" class="btn btn-sm btn-outline-primary" (click)="openUpdateGraduationRequirement(requirement)" title="Editar">
+                  <img src="../../../../assets/icons/structural-icons/pencil-square.svg" alt="Editar" style="width: 16px; height: 16px;" />
+                </button>
+                <button type="button" class="btn btn-sm btn-outline-danger" (click)="deleteGraduationRequirement(requirement)" title="Excluir">
+                  <img src="../../../../assets/icons/structural-icons/trash.svg" alt="Excluir" style="width: 16px; height: 16px;" />
+                </button>
+              </div>
             </td>
           </tr>
           }
         </tbody>
       </table>
     </div>
+
+    <!-- Empty state -->
+    @if (graduationRequirements.length === 0) {
+      <div class="text-center py-5">
+        <div class="mb-3">
+          <i class="bi bi-list-check display-1 text-muted"></i>
+        </div>
+        <h5 class="text-muted">Nenhum requisito encontrado</h5>
+        <p class="text-muted">Clique em "Novo Requisito" para definir o primeiro requisito de graduação.</p>
+      </div>
+    }
   </div>
 </section>
 

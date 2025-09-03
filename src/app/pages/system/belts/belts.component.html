@@ -1,31 +1,82 @@
-<section class="mt-5 p-3">
-  <div class="container">
-    <button class="btn btn-primary" (click)="openCreateBelt()" style="background-color:#383838">Nova Faixa</button>
-    <div class="mt-5">
-      <table class="table">
-        <thead>
-          <tr class="">
-            <th scope="col">Cor</th>
-            <th scope="col">Ordem</th>
-            <th scope="col">Para Crianças</th>
-            <th scope="col">Ações</th>
+<section class="mt-3 mt-md-5 p-2 p-md-3">
+  <div class="container-fluid">
+    <!-- Header with responsive button -->
+    <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center mb-3 mb-md-4">
+      <h2 class="h4 mb-2 mb-sm-0">Faixas</h2>
+      <button class="btn btn-custom-primary btn-desktop-compact" (click)="openCreateBelt()">
+        <i class="bi bi-bookmark-star me-2"></i>Nova Faixa
+      </button>
+    </div>
+
+    <!-- Responsive table wrapper -->
+    <div class="table-responsive">
+      <table class="table table-hover">
+        <thead class="table-light">
+          <tr>
+            <th scope="col" class="d-none d-md-table-cell">Cor</th>
+            <th scope="col" class="d-table-cell d-md-none">Faixa</th>
+            <th scope="col" class="d-none d-lg-table-cell">Ordem</th>
+            <th scope="col" class="d-none d-lg-table-cell">Para Crianças</th>
+            <th scope="col" class="text-center">Ações</th>
           </tr>
         </thead>
         <tbody>
           @for (belt of belts; track belt.id){
           <tr>
-            <td>{{belt.color}}</td>
-            <td>{{belt.orderIndex}}</td>
-            <td>{{belt.isForKids ? 'Sim' : 'Não'}}</td>
-            <td>
-              <a class="p-2" (click)="openUpdateBelt(belt)"><img src="../../../../assets/icons/structural-icons/pencil-square.svg" /></a>
-              <a class="p-2" (click)="deleteBelt(belt)" style="cursor: pointer;"><img src="../../../../assets/icons/structural-icons/trash.svg" /></a>
+            <!-- Desktop view - color only -->
+            <td class="d-none d-md-table-cell">
+              <div>
+                <strong class="text-primary">{{belt.color}}</strong>
+              </div>
+            </td>
+            
+            <!-- Mobile view - condensed info -->
+            <td class="d-table-cell d-md-none">
+              <div>
+                <strong class="text-primary d-block">{{belt.color}}</strong>
+                <div class="d-flex flex-wrap gap-1 mt-1">
+                  <span class="badge bg-outline-secondary text-dark border">Ordem: {{belt.orderIndex}}</span>
+                  <span class="badge {{belt.isForKids ? 'bg-outline-success text-success' : 'bg-outline-warning text-warning'}} border">
+                    {{belt.isForKids ? 'Crianças' : 'Adultos'}}
+                  </span>
+                </div>
+              </div>
+            </td>
+            
+            <td class="d-none d-lg-table-cell">
+              <span class="badge bg-outline-info text-info border">{{belt.orderIndex}}</span>
+            </td>
+            <td class="d-none d-lg-table-cell">
+              <span class="badge {{belt.isForKids ? 'bg-outline-success text-success' : 'bg-outline-warning text-warning'}} border">
+                {{belt.isForKids ? 'Sim' : 'Não'}}
+              </span>
+            </td>
+            <td class="text-center">
+              <div class="btn-group" role="group">
+                <button type="button" class="btn btn-sm btn-outline-primary" (click)="openUpdateBelt(belt)" title="Editar">
+                  <img src="../../../../assets/icons/structural-icons/pencil-square.svg" alt="Editar" style="width: 16px; height: 16px;" />
+                </button>
+                <button type="button" class="btn btn-sm btn-outline-danger" (click)="deleteBelt(belt)" title="Excluir">
+                  <img src="../../../../assets/icons/structural-icons/trash.svg" alt="Excluir" style="width: 16px; height: 16px;" />
+                </button>
+              </div>
             </td>
           </tr>
           }
         </tbody>
       </table>
     </div>
+
+    <!-- Empty state -->
+    @if (belts.length === 0) {
+      <div class="text-center py-5">
+        <div class="mb-3">
+          <i class="bi bi-bookmark-star display-1 text-muted"></i>
+        </div>
+        <h5 class="text-muted">Nenhuma faixa encontrada</h5>
+        <p class="text-muted">Clique em "Nova Faixa" para cadastrar a primeira faixa.</p>
+      </div>
+    }
   </div>
 </section>
 
