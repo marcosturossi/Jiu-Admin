@@ -1,12 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
-import { NotificationService } from '../../../generated_services/api/notification.service';
+import { NotificationService as ApiNotificationService } from '../../../generated_services/api/notification.service';
 import { ShowNotificationDTO } from '../../../generated_services/model/showNotificationDTO';
 import { CreateNotificationComponent } from './create-notification/create-notification.component';
 import { UpdateNotificationComponent } from './update-notification/update-notification.component';
 import { NotificationType } from '../../../generated_services/model/notificationType';
 import { NotificationPriority } from '../../../generated_services/model/notificationPriority';
 import { SubnavService } from '../../../services/subnav.service';
+import { NotificationService } from '../../../services/notification.service';
 
 @Component({
   selector: 'app-notification',
@@ -21,8 +22,9 @@ export class NotificationComponent implements OnInit {
   openedUpdateNotification: boolean = false;
 
   constructor(
-    private notificationService: NotificationService,
-    private subnavService: SubnavService
+    private apiNotificationService: ApiNotificationService,
+    private subnavService: SubnavService,
+    private notificationService: NotificationService
   ) { }
 
   ngOnInit(): void {
@@ -31,9 +33,18 @@ export class NotificationComponent implements OnInit {
   }
 
   loadNotifications(): void {
-    this.notificationService.apiNotificationGet().subscribe(
+    this.apiNotificationService.apiNotificationGet().subscribe(
       {
-        next: (result) => this.notifications = result
+        next: (result) => {
+          this.notifications = result;
+        },
+        error: (error) => {
+          console.log(error);
+          this.notificationService.showError(
+            'Erro ao Carregar Notificações!', 
+            'Não foi possível carregar a lista de notificações. Tente novamente.'
+          );
+        }
       }
     )
   }
@@ -67,11 +78,21 @@ export class NotificationComponent implements OnInit {
 
   deleteNotification(notification: ShowNotificationDTO) {
     if (confirm('Tem certeza que deseja excluir esta notificação? Esta ação não pode ser desfeita.')) {
-      this.notificationService.apiNotificationIdDelete(notification.id!).subscribe({
+      this.apiNotificationService.apiNotificationIdDelete(notification.id!).subscribe({
         next: () => {
+          this.notificationService.showSuccess(
+            'Notificação Excluída!', 
+            `A notificação "${notification.title}" foi excluída com sucesso.`
+          );
           this.loadNotifications();
         },
-        error: (error) => console.log(error)
+        error: (error) => {
+          console.log(error);
+          this.notificationService.showError(
+            'Erro ao Excluir Notificação!', 
+            'Não foi possível excluir a notificação. Tente novamente.'
+          );
+        }
       });
     }
   }

@@ -5,6 +5,7 @@ import { CreateGraduationRequirementComponent } from './create-graduation-requir
 import { UpdateGraduationRequirementComponent } from './update-graduation-requirement/update-graduation-requirement.component';
 import { DatePipe } from '@angular/common';
 import { SubnavService } from '../../../services/subnav.service';
+import { NotificationService } from '../../../services/notification.service';
 
 @Component({
   selector: 'app-graduation-requirements',
@@ -22,7 +23,8 @@ export class GraduationRequirementsComponent implements OnInit {
   constructor(
     private graduationRequirementsService: GraduationRequirementsService,
     private beltService: BeltService,
-    private subnavService: SubnavService
+    private subnavService: SubnavService,
+    private notificationService: NotificationService
   ) { }
 
   ngOnInit(): void {
@@ -34,7 +36,16 @@ export class GraduationRequirementsComponent implements OnInit {
   loadGraduationRequirements(): void {
     this.graduationRequirementsService.apiGraduationRequirementsGet().subscribe(
       {
-        next: (result) => this.graduationRequirements = result
+        next: (result) => {
+          this.graduationRequirements = result;
+        },
+        error: (error) => {
+          console.log(error);
+          this.notificationService.showError(
+            'Erro ao Carregar Requisitos!', 
+            'Não foi possível carregar a lista de requisitos de graduação. Tente novamente.'
+          );
+        }
       }
     )
   }
@@ -42,7 +53,16 @@ export class GraduationRequirementsComponent implements OnInit {
   loadBelts(): void {
     this.beltService.apiBeltGet().subscribe(
       {
-        next: (result) => this.belts = result
+        next: (result) => {
+          this.belts = result;
+        },
+        error: (error) => {
+          console.log(error);
+          this.notificationService.showError(
+            'Erro ao Carregar Faixas!', 
+            'Não foi possível carregar a lista de faixas. Tente novamente.'
+          );
+        }
       }
     )
   }
@@ -83,9 +103,19 @@ export class GraduationRequirementsComponent implements OnInit {
     if (confirm('Tem certeza que deseja excluir este requisito de graduação?')) {
       this.graduationRequirementsService.apiGraduationRequirementsIdDelete(graduationRequirement.id!).subscribe({
         next: () => {
+          this.notificationService.showSuccess(
+            'Requisito Excluído!', 
+            'O requisito de graduação foi excluído com sucesso.'
+          );
           this.loadGraduationRequirements();
         },
-        error: (error) => console.log(error)
+        error: (error) => {
+          console.log(error);
+          this.notificationService.showError(
+            'Erro ao Excluir Requisito!', 
+            'Não foi possível excluir o requisito de graduação. Tente novamente.'
+          );
+        }
       });
     }
   }

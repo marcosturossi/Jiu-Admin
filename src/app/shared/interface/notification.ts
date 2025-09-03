@@ -1,5 +1,15 @@
 export interface NotificationInterface {
-  title: string
-  message: string
-  success: boolean
+  id?: string;
+  title: string;
+  message: string;
+  type: 'success' | 'error' | 'warning' | 'info';
+  duration?: number;
+  closable?: boolean;
+}
+
+export interface ToastPosition {
+  top?: string;
+  bottom?: string;
+  left?: string;
+  right?: string;
 }

@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { BeltService } from '../../../../generated_services';
 import { ShowBeltDTO, UpdateBeltDTO } from '../../../../generated_services';
 import { CommonModule } from '@angular/common';
+import { NotificationService } from '../../../../services/notification.service';
 
 @Component({
   selector: 'app-update-belt',
@@ -19,6 +20,7 @@ export class UpdateBeltComponent implements OnInit {
   constructor(
     private beltService: BeltService,
     private formBuilder: FormBuilder,
+    private notificationService: NotificationService
   ) {
     this.beltForm = this.formBuilder.group({
       color: ["", Validators.required],
@@ -40,14 +42,31 @@ export class UpdateBeltComponent implements OnInit {
   }
 
   update() {
-    this.beltService.apiBeltIdPut(this.belt.id!, this.formToUpdateBelt()).subscribe(
-      {
-        next: result => {
-          this.beltUpdated.emit();
-          this.close();
-        },
-        error: error => console.log(error)
-      })
+    if (this.beltForm.invalid) {
+      this.notificationService.showError(
+        'Formulário Inválido', 
+        'Por favor, preencha todos os campos obrigatórios.'
+      );
+      return;
+    }
+
+    this.beltService.apiBeltIdPut(this.belt.id!, this.formToUpdateBelt()).subscribe({
+      next: result => {
+        this.notificationService.showSuccess(
+          'Faixa Atualizada!', 
+          `A faixa ${this.belt.color} foi atualizada com sucesso.`
+        );
+        this.beltUpdated.emit();
+        this.close();
+      },
+      error: error => {
+        console.log(error);
+        this.notificationService.showError(
+          'Erro ao Atualizar Faixa!', 
+          'Não foi possível atualizar a faixa. Tente novamente.'
+        );
+      }
+    });
   }
 
   formToUpdateBelt(): UpdateBeltDTO {

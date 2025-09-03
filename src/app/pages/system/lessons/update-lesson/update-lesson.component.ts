@@ -4,6 +4,7 @@ import { LessonService } from '../../../../generated_services/api/lesson.service
 import { ShowLessonDTO } from '../../../../generated_services/model/showLessonDTO';
 import { UpdateLessonDTO } from '../../../../generated_services/model/updateLessonDTO';
 import { CommonModule } from '@angular/common';
+import { NotificationService } from '../../../../services/notification.service';
 
 @Component({
   selector: 'app-update-lesson',
@@ -20,6 +21,7 @@ export class UpdateLessonComponent implements OnInit {
   constructor(
     private lessonService: LessonService,
     private formBuilder: FormBuilder,
+    private notificationService: NotificationService
   ) {
     this.lessonForm = this.formBuilder.group({
       title: ["", Validators.required],
@@ -57,13 +59,31 @@ export class UpdateLessonComponent implements OnInit {
   }
 
   update() {
+    if (this.lessonForm.invalid) {
+      this.notificationService.showError(
+        'Formulário Inválido', 
+        'Por favor, preencha todos os campos obrigatórios.'
+      );
+      return;
+    }
+
     this.lessonService.apiLessonIdPut(this.lesson.id!, this.formToUpdateLesson()).subscribe(
       {
         next: result => {
+          this.notificationService.showSuccess(
+            'Aula Atualizada!', 
+            `A aula "${this.lessonForm.value.title}" foi atualizada com sucesso.`
+          );
           this.lessonUpdated.emit();
           this.close();
         },
-        error: error => console.log(error)
+        error: error => {
+          console.log(error);
+          this.notificationService.showError(
+            'Erro ao Atualizar Aula!', 
+            'Não foi possível atualizar a aula. Tente novamente.'
+          );
+        }
       })
   }
 

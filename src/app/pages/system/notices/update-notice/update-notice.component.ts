@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { NoticesService } from '../../../../generated_services/api/notices.service';
 import { ShowNoticesDTO, UpdateNoticesDTO } from '../../../../generated_services/model/models';
 import { CommonModule } from '@angular/common';
+import { NotificationService } from '../../../../services/notification.service';
 
 @Component({
   selector: 'app-update-notice',
@@ -19,6 +20,7 @@ export class UpdateNoticeComponent implements OnInit {
   constructor(
     private noticesService: NoticesService,
     private formBuilder: FormBuilder,
+    private notificationService: NotificationService
   ) {
     this.noticeForm = this.formBuilder.group({
       description: ["", Validators.required],
@@ -38,13 +40,31 @@ export class UpdateNoticeComponent implements OnInit {
   }
 
   update() {
+    if (this.noticeForm.invalid) {
+      this.notificationService.showError(
+        'Formulário Inválido', 
+        'Por favor, preencha todos os campos obrigatórios.'
+      );
+      return;
+    }
+
     if (this.noticeForm.valid) {
       this.noticesService.apiNoticesIdPut(this.notice.id!, this.formToUpdateNotice()).subscribe({
         next: result => {
+          this.notificationService.showSuccess(
+            'Aviso Atualizado!', 
+            'O aviso foi atualizado com sucesso.'
+          );
           this.noticeUpdated.emit();
           this.close();
         },
-        error: error => console.log(error)
+        error: error => {
+          console.log(error);
+          this.notificationService.showError(
+            'Erro ao Atualizar Aviso!', 
+            'Não foi possível atualizar o aviso. Tente novamente.'
+          );
+        }
       });
     }
   }

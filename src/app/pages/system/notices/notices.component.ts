@@ -6,6 +6,7 @@ import { CreateNoticeComponent } from './create-notice/create-notice.component';
 import { UpdateNoticeComponent } from './update-notice/update-notice.component';
 import { DatePipe } from '@angular/common';
 import { SubnavService } from '../../../services/subnav.service';
+import { NotificationService } from '../../../services/notification.service';
 
 @Component({
   selector: 'app-notices',
@@ -21,7 +22,8 @@ export class NoticesComponent implements OnInit {
 
   constructor(
     private noticesService: NoticesService,
-    private subnavService: SubnavService
+    private subnavService: SubnavService,
+    private notificationService: NotificationService
   ) { }
 
   ngOnInit(): void {
@@ -32,7 +34,16 @@ export class NoticesComponent implements OnInit {
   loadNotices(): void {
     this.noticesService.apiNoticesGet().subscribe(
       {
-        next: (result) => this.notices = result
+        next: (result) => {
+          this.notices = result;
+        },
+        error: (error) => {
+          console.log(error);
+          this.notificationService.showError(
+            'Erro ao Carregar Avisos!', 
+            'Não foi possível carregar a lista de avisos. Tente novamente.'
+          );
+        }
       }
     )
   }
@@ -65,12 +76,22 @@ export class NoticesComponent implements OnInit {
   }
 
   deleteNotice(notice: ShowNoticesDTO) {
-    if (confirm('Tem certeza que deseja excluir este aviso?')) {
+    if (confirm(`Tem certeza que deseja excluir o aviso "${notice.description}"?`)) {
       this.noticesService.apiNoticesIdDelete(notice.id!).subscribe({
         next: () => {
+          this.notificationService.showSuccess(
+            'Aviso Excluído!', 
+            'O aviso foi excluído com sucesso.'
+          );
           this.loadNotices();
         },
-        error: (error) => console.log(error)
+        error: (error) => {
+          console.log(error);
+          this.notificationService.showError(
+            'Erro ao Excluir Aviso!', 
+            'Não foi possível excluir o aviso. Tente novamente.'
+          );
+        }
       });
     }
   }

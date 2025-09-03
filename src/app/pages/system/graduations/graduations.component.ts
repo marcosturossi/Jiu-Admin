@@ -5,6 +5,7 @@ import { ShowGraduationDTO } from '../../../generated_services';
 import { UpdateGraduationComponent } from './update-graduation/update-graduation.component';
 import { CreateGraduationComponent } from './create-graduation/create-graduation.component';
 import { SubnavService } from '../../../services/subnav.service';
+import { NotificationService } from '../../../services/notification.service';
 
 @Component({
   selector: 'app-graduations',
@@ -21,7 +22,8 @@ export class GraduationsComponent implements OnInit {
 
   constructor(
     private graduationService: GraduationService,
-    private subnavService: SubnavService
+    private subnavService: SubnavService,
+    private notificationService: NotificationService
   ) {
 
   }
@@ -34,7 +36,16 @@ export class GraduationsComponent implements OnInit {
   loadGraduations(): void {
     this.graduationService.apiGraduationGet().subscribe(
       {
-        next: (result) => this.graduations = result
+        next: (result) => {
+          this.graduations = result;
+        },
+        error: (error) => {
+          console.log(error);
+          this.notificationService.showError(
+            'Erro ao Carregar Graduações!', 
+            'Não foi possível carregar a lista de graduações. Tente novamente.'
+          );
+        }
       }
     )
   }
@@ -72,9 +83,19 @@ export class GraduationsComponent implements OnInit {
     if (confirm('Tem certeza que deseja excluir esta graduação?')) {
       this.graduationService.apiGraduationIdDelete(graduation.id!).subscribe({
         next: () => {
+          this.notificationService.showSuccess(
+            'Graduação Excluída!', 
+            'A graduação foi excluída com sucesso.'
+          );
           this.loadGraduations();
         },
-        error: (error) => console.log(error)
+        error: (error) => {
+          console.log(error);
+          this.notificationService.showError(
+            'Erro ao Excluir Graduação!', 
+            'Não foi possível excluir a graduação. Tente novamente.'
+          );
+        }
       });
     }
   }

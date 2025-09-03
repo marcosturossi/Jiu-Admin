@@ -6,6 +6,7 @@ import { CreateLessonComponent } from './create-lesson/create-lesson.component';
 import { UpdateLessonComponent } from './update-lesson/update-lesson.component';
 import { DatePipe } from '@angular/common';
 import { SubnavService } from '../../../services/subnav.service';
+import { NotificationService } from '../../../services/notification.service';
 
 @Component({
   selector: 'app-lessons',
@@ -21,7 +22,8 @@ export class LessonsComponent implements OnInit {
 
   constructor(
     private lessonService: LessonService,
-    private subnavService: SubnavService
+    private subnavService: SubnavService,
+    private notificationService: NotificationService
   ) { }
 
   ngOnInit(): void {
@@ -32,7 +34,16 @@ export class LessonsComponent implements OnInit {
   loadLessons(): void {
     this.lessonService.apiLessonGet().subscribe(
       {
-        next: (result) => this.lessons = result
+        next: (result) => {
+          this.lessons = result;
+        },
+        error: (error) => {
+          console.log(error);
+          this.notificationService.showError(
+            'Erro ao Carregar Aulas!', 
+            'Não foi possível carregar a lista de aulas. Tente novamente.'
+          );
+        }
       }
     )
   }
@@ -65,12 +76,23 @@ export class LessonsComponent implements OnInit {
   }
 
   deleteLesson(lesson: ShowLessonDTO) {
-    if (confirm('Tem certeza que deseja excluir esta aula?')) {
+    // You can implement a proper confirmation dialog here if needed
+    if (confirm(`Tem certeza que deseja excluir a aula "${lesson.title}"?`)) {
       this.lessonService.apiLessonIdDelete(lesson.id!).subscribe({
         next: () => {
+          this.notificationService.showSuccess(
+            'Aula Excluída!', 
+            `A aula "${lesson.title}" foi excluída com sucesso.`
+          );
           this.loadLessons();
         },
-        error: (error) => console.log(error)
+        error: (error) => {
+          console.log(error);
+          this.notificationService.showError(
+            'Erro ao Excluir Aula!', 
+            'Não foi possível excluir a aula. Tente novamente.'
+          );
+        }
       });
     }
   }

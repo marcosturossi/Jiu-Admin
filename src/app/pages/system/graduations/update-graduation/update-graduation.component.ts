@@ -5,6 +5,7 @@ import { GraduationService } from '../../../../generated_services/api/graduation
 import { BeltService } from '../../../../generated_services/api/belt.service';
 import { StudentsService } from '../../../../generated_services/api/students.service';
 import { ShowGraduationDTO, UpdateGraduationDTO, ShowBeltDTO, ShowStudentDTO } from '../../../../generated_services';
+import { NotificationService } from '../../../../services/notification.service';
 
 @Component({
   selector: 'app-update-graduation',
@@ -14,6 +15,7 @@ import { ShowGraduationDTO, UpdateGraduationDTO, ShowBeltDTO, ShowStudentDTO } f
 })
 export class UpdateGraduationComponent implements OnInit {
   @Output() closeEvent = new EventEmitter<void>();
+  @Output() graduationUpdated = new EventEmitter<void>();
   @Input() graduation!: ShowGraduationDTO;
   graduationForm!: FormGroup;
   belts: ShowBeltDTO[] = [];
@@ -24,6 +26,7 @@ export class UpdateGraduationComponent implements OnInit {
     private beltService: BeltService,
     private studentsService: StudentsService,
     private formBuilder: FormBuilder,
+    private notificationService: NotificationService
   ) {
     this.graduationForm = this.formBuilder.group({
       studentId: ["", Validators.required],
@@ -43,7 +46,13 @@ export class UpdateGraduationComponent implements OnInit {
         this.belts = belts;
         this.populateForm();
       },
-      error: (error) => console.log('Error loading belts:', error)
+      error: (error) => {
+        console.log('Error loading belts:', error);
+        this.notificationService.showError(
+          'Erro ao Carregar Faixas!', 
+          'Não foi possível carregar a lista de faixas. Tente novamente.'
+        );
+      }
     });
   }
 
@@ -53,7 +62,13 @@ export class UpdateGraduationComponent implements OnInit {
         this.students = students;
         this.populateForm();
       },
-      error: (error) => console.log('Error loading students:', error)
+      error: (error) => {
+        console.log('Error loading students:', error);
+        this.notificationService.showError(
+          'Erro ao Carregar Alunos!', 
+          'Não foi possível carregar a lista de alunos. Tente novamente.'
+        );
+      }
     });
   }
 
@@ -71,13 +86,32 @@ export class UpdateGraduationComponent implements OnInit {
   }
 
   update() {
+    if (this.graduationForm.invalid) {
+      this.notificationService.showError(
+        'Formulário Inválido', 
+        'Por favor, preencha todos os campos obrigatórios.'
+      );
+      return;
+    }
+
     if (this.graduationForm.valid && this.graduation.id) {
       this.graduationService.apiGraduationIdPut(this.graduation.id, this.formToUpdateGraduation()).subscribe({
         next: result => {
           console.log(result);
+          this.notificationService.showSuccess(
+            'Graduação Atualizada!', 
+            'A graduação foi atualizada com sucesso.'
+          );
+          this.graduationUpdated.emit();
           this.close();
         },
-        error: error => console.log(error)
+        error: error => {
+          console.log(error);
+          this.notificationService.showError(
+            'Erro ao Atualizar Graduação!', 
+            'Não foi possível atualizar a graduação. Tente novamente.'
+          );
+        }
       });
     }
   }

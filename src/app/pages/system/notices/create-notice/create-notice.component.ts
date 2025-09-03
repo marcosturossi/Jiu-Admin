@@ -3,6 +3,7 @@ import { NoticesService } from '../../../../generated_services/api/notices.servi
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CreateNoticesDTO } from '../../../../generated_services/model/createNoticesDTO';
 import { CommonModule } from '@angular/common';
+import { NotificationService } from '../../../../services/notification.service';
 
 @Component({
   selector: 'app-create-notice',
@@ -18,6 +19,7 @@ export class CreateNoticeComponent {
   constructor(
     private noticesService: NoticesService,
     private formBuilder: FormBuilder,
+    private notificationService: NotificationService
   ) {
     this.noticeForm = this.formBuilder.group({
       description: ["", Validators.required],
@@ -30,15 +32,22 @@ export class CreateNoticeComponent {
   }
 
   create() {
-    if (this.noticeForm.valid) {
-      this.noticesService.apiNoticesPost(this.formToCreateNotice()).subscribe({
-        next: result => {
-          this.noticeCreated.emit();
-          this.close();
-        },
-        error: error => console.log(error)
-      });
+    if (this.noticeForm.invalid) {
+      this.notificationService.showError('Formulário Inválido', 'Por favor, preencha a descrição do aviso.');
+      return;
     }
+
+    this.noticesService.apiNoticesPost(this.formToCreateNotice()).subscribe({
+      next: result => {
+        this.notificationService.showSuccess('Aviso Criado!', 'O aviso foi criado com sucesso.');
+        this.noticeCreated.emit();
+        this.close();
+      },
+      error: error => {
+        console.log(error);
+        this.notificationService.showError('Erro ao Criar Aviso!', 'Não foi possível criar o aviso. Tente novamente.');
+      }
+    });
   }
 
   formToCreateNotice(): CreateNoticesDTO {

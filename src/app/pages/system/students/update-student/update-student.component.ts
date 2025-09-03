@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { StudentsService } from '../../../../generated_services/api/students.service';
 import { ShowStudentDTO, UpdateStudentDTO } from '../../../../generated_services';
+import { NotificationService } from '../../../../services/notification.service';
 
 @Component({
   selector: 'app-update-student',
@@ -18,6 +19,7 @@ export class UpdateStudentComponent implements OnInit {
   constructor(
     private studentService: StudentsService,
     private formBuilder: FormBuilder,
+    private notificationService: NotificationService
   ) {
     this.studentForm = this.formBuilder.group({
       userName: ["", Validators.required],
@@ -49,11 +51,30 @@ export class UpdateStudentComponent implements OnInit {
   }
 
   update() {
-    this.studentService.apiStudentsIdPut(this.student.id!, this.formToUpdateStudent()).subscribe(
-      {
-        next: result => this.studentUpdated.emit(),
-        error: error => console.log(error)
-      })
+    if (this.studentForm.invalid) {
+      this.notificationService.showError(
+        'Formulário Inválido', 
+        'Por favor, preencha todos os campos obrigatórios.'
+      );
+      return;
+    }
+
+    this.studentService.apiStudentsIdPut(this.student.id!, this.formToUpdateStudent()).subscribe({
+      next: result => {
+        this.notificationService.showSuccess(
+          'Aluno Atualizado!', 
+          `Os dados do aluno ${this.student.firstName} ${this.student.lastName} foram atualizados com sucesso.`
+        );
+        this.studentUpdated.emit();
+      },
+      error: error => {
+        console.log(error);
+        this.notificationService.showError(
+          'Erro ao Atualizar!', 
+          'Não foi possível atualizar os dados do aluno. Tente novamente.'
+        );
+      }
+    });
   }
 
 

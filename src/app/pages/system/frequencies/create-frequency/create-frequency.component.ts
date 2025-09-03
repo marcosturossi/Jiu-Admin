@@ -8,6 +8,7 @@ import { forkJoin, Observable } from 'rxjs';
 import { PersonsService } from '../../../../generated_services/api2/api/persons.service';
 import { RecognitionResponse } from '../../../../generated_services/api2/model/recognitionResponse';
 import { PersonListResponse } from '../../../../generated_services/api2/model/personListResponse';
+import { NotificationService } from '../../../../services/notification.service';
 
 @Component({
   selector: 'app-create-frequency',
@@ -37,7 +38,8 @@ export class CreateFrequencyComponent implements OnInit {
     private studentsService: StudentsService,
     private lessonService: LessonService,
     private formBuilder: FormBuilder,
-    private personsService: PersonsService // Inject api2 PersonsService
+    private personsService: PersonsService, // Inject api2 PersonsService
+    private notificationService: NotificationService
   ) {
     this.frequencyForm = this.formBuilder.group({
       lessonId: ["", Validators.required],
@@ -51,6 +53,13 @@ export class CreateFrequencyComponent implements OnInit {
         next: (result) => {
           this.students = result;
           this.initializeStudentFormArray();
+        },
+        error: (error) => {
+          console.log(error);
+          this.notificationService.showError(
+            'Erro ao Carregar Alunos!', 
+            'Não foi possível carregar a lista de alunos. Tente novamente.'
+          );
         }
       }
     )
@@ -59,12 +68,26 @@ export class CreateFrequencyComponent implements OnInit {
       next: (result) => {
         // Filter only active lessons
         this.lessons = result.filter(lesson => lesson.isActive === true);
+      },
+      error: (error) => {
+        console.log(error);
+        this.notificationService.showError(
+          'Erro ao Carregar Aulas!', 
+          'Não foi possível carregar a lista de aulas. Tente novamente.'
+        );
       }
     });
 
     // Load api2 persons for recognition mapping
     this.personsService.listPersonsApiV1PersonsGet().subscribe({
-      next: (result) => this.api2Persons = result
+      next: (result) => this.api2Persons = result,
+      error: (error) => {
+        console.log(error);
+        this.notificationService.showError(
+          'Erro ao Carregar Dados de Reconhecimento!', 
+          'Não foi possível carregar os dados para reconhecimento facial.'
+        );
+      }
     });
   }
 
@@ -116,14 +139,20 @@ export class CreateFrequencyComponent implements OnInit {
       
       // Validate file type
       if (!this.selectedFile.type.startsWith('image/')) {
-        alert('Por favor, selecione apenas arquivos de imagem.');
+        this.notificationService.showError(
+          'Tipo de Arquivo Inválido!', 
+          'Por favor, selecione apenas arquivos de imagem.'
+        );
         this.clearImage();
         return;
       }
 
       // Validate file size (5MB limit)
       if (this.selectedFile.size > 5 * 1024 * 1024) {
-        alert('O arquivo deve ter no máximo 5MB.');
+        this.notificationService.showError(
+          'Arquivo Muito Grande!', 
+          'O arquivo deve ter no máximo 5MB.'
+        );
         this.clearImage();
         return;
       }
@@ -157,7 +186,10 @@ export class CreateFrequencyComponent implements OnInit {
 
   async recognizeStudents(): Promise<void> {
     if (!this.selectedFile || !this.frequencyForm.get('lessonId')?.value) {
-      alert('Por favor, selecione uma aula e uma imagem primeiro.');
+      this.notificationService.showWarning(
+        'Dados Incompletos!', 
+        'Por favor, selecione uma aula e uma imagem primeiro.'
+      );
       return;
     }
 
@@ -194,7 +226,10 @@ export class CreateFrequencyComponent implements OnInit {
       this.isRecognizing = false;
     } catch (error) {
       console.error('Error recognizing students:', error);
-      alert('Erro ao reconhecer alunos. Tente novamente.');
+      this.notificationService.showError(
+        'Erro no Reconhecimento!', 
+        'Erro ao reconhecer alunos. Tente novamente.'
+      );
       this.isRecognizing = false;
     }
   }
@@ -225,9 +260,15 @@ export class CreateFrequencyComponent implements OnInit {
     });
 
     if (studentIds.length > 0) {
-      alert(`${studentIds.length} aluno(s) reconhecido(s) e selecionado(s) automaticamente!`);
+      this.notificationService.showSuccess(
+        'Reconhecimento Concluído!', 
+        `${studentIds.length} aluno(s) reconhecido(s) e selecionado(s) automaticamente!`
+      );
     } else {
-      alert('Nenhum aluno foi reconhecido na imagem.');
+      this.notificationService.showInfo(
+        'Nenhum Aluno Reconhecido', 
+        'Nenhum aluno foi reconhecido na imagem.'
+      );
     }
   }
 
@@ -240,7 +281,15 @@ export class CreateFrequencyComponent implements OnInit {
   }
 
   create() {
-    if (!this.isFormValid() || this.isCreating) return;
+    if (!this.isFormValid() || this.isCreating) {
+      if (!this.isFormValid()) {
+        this.notificationService.showError(
+          'Seleção Inválida!', 
+          'Por favor, selecione uma aula e pelo menos um aluno.'
+        );
+      }
+      return;
+    }
     
     this.isCreating = true;
     const selectedStudents = this.getSelectedStudents();
@@ -259,11 +308,19 @@ export class CreateFrequencyComponent implements OnInit {
     forkJoin(frequencyRequests).subscribe({
       next: (results) => {
         console.log(`Created ${results.length} frequencies successfully`);
+        this.notificationService.showSuccess(
+          'Frequências Registradas!', 
+          `${results.length} frequência(s) registrada(s) com sucesso.`
+        );
         this.frequencyCreated.emit();
         this.close();
       },
       error: (error) => {
         console.error('Error creating frequencies:', error);
+        this.notificationService.showError(
+          'Erro ao Registrar Frequências!', 
+          'Não foi possível registrar algumas frequências. Tente novamente.'
+        );
         this.isCreating = false;
       },
       complete: () => {

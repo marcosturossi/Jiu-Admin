@@ -5,6 +5,7 @@ import { CreateFrequencyComponent } from './create-frequency/create-frequency.co
 import { UpdateFrequencyComponent } from './update-frequency/update-frequency.component';
 import { DatePipe } from '@angular/common';
 import { SubnavService } from '../../../services/subnav.service';
+import { NotificationService } from '../../../services/notification.service';
 
 @Component({
   selector: 'app-frequencies',
@@ -20,7 +21,8 @@ export class FrequenciesComponent implements OnInit {
 
   constructor(
     private frequencyService: FrequencyService,
-    private subnavService: SubnavService
+    private subnavService: SubnavService,
+    private notificationService: NotificationService
   ) { }
 
   ngOnInit(): void {
@@ -31,7 +33,16 @@ export class FrequenciesComponent implements OnInit {
   loadFrequencies(): void {
     this.frequencyService.apiFrequencyGet().subscribe(
       {
-        next: (result) => this.frequencies = result
+        next: (result) => {
+          this.frequencies = result;
+        },
+        error: (error) => {
+          console.log(error);
+          this.notificationService.showError(
+            'Erro ao Carregar Frequências!', 
+            'Não foi possível carregar a lista de frequências. Tente novamente.'
+          );
+        }
       }
     )
   }
@@ -67,9 +78,19 @@ export class FrequenciesComponent implements OnInit {
     if (confirm('Tem certeza que deseja excluir esta frequência?')) {
       this.frequencyService.apiFrequencyIdDelete(frequency.id!).subscribe({
         next: () => {
+          this.notificationService.showSuccess(
+            'Frequência Excluída!', 
+            'A frequência foi excluída com sucesso.'
+          );
           this.loadFrequencies();
         },
-        error: (error) => console.log(error)
+        error: (error) => {
+          console.log(error);
+          this.notificationService.showError(
+            'Erro ao Excluir Frequência!', 
+            'Não foi possível excluir a frequência. Tente novamente.'
+          );
+        }
       });
     }
   }

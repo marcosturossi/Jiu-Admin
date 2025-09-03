@@ -6,6 +6,7 @@ import { CreateStudentComponent } from './create-student/create-student.componen
 import { UpdateStudentComponent } from './update-student/update-student.component';
 import { DatePipe } from '@angular/common';
 import { SubnavService } from '../../../services/subnav.service';
+import { NotificationService } from '../../../services/notification.service';
 
 @Component({
   selector: 'app-students',
@@ -21,7 +22,8 @@ export class StudentsComponent implements OnInit {
 
   constructor(
     private studentsService: StudentsService,
-    private subnavService: SubnavService
+    private subnavService: SubnavService,
+    private notificationService: NotificationService
   ) { }
 
   ngOnInit(): void {
@@ -30,11 +32,22 @@ export class StudentsComponent implements OnInit {
   }
 
   loadStudents(): void {
-    this.studentsService.apiStudentsGet().subscribe(
-      {
-        next: (result) => this.students = result
+    this.studentsService.apiStudentsGet().subscribe({
+      next: (result) => {
+        this.students = result;
+        this.notificationService.showInfo(
+          'Dados Atualizados', 
+          `${result.length} aluno(s) carregado(s).`
+        );
+      },
+      error: (error) => {
+        console.log(error);
+        this.notificationService.showError(
+          'Erro de Carregamento', 
+          'Não foi possível carregar a lista de alunos.'
+        );
       }
-    )
+    });
   }
 
   openCreateStudent() {
@@ -65,12 +78,29 @@ export class StudentsComponent implements OnInit {
   }
 
   deleteStudent(student: ShowStudentDTO) {
+    // Show warning toast for confirmation
+    this.notificationService.showWarning(
+      'Confirmação Necessária', 
+      'Use o botão de confirmação no navegador para excluir o aluno.',
+      6000
+    );
+
     if (confirm('Tem certeza que deseja excluir este aluno? Esta ação não pode ser desfeita.')) {
       this.studentsService.apiStudentsIdDelete(student.id!).subscribe({
         next: () => {
+          this.notificationService.showSuccess(
+            'Aluno Excluído', 
+            `O aluno ${student.firstName} ${student.lastName} foi excluído com sucesso.`
+          );
           this.loadStudents();
         },
-        error: (error) => console.log(error)
+        error: (error) => {
+          console.log(error);
+          this.notificationService.showError(
+            'Erro ao Excluir', 
+            'Não foi possível excluir o aluno. Tente novamente.'
+          );
+        }
       });
     }
   }

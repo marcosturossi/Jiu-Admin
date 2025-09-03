@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { FrequencyService, StudentsService, ShowStudentDTO } from '../../../../generated_services';
 import { ShowFrequencyDTO, UpdateFrequencyDTO } from '../../../../generated_services';
 import { CommonModule } from '@angular/common';
+import { NotificationService } from '../../../../services/notification.service';
 
 @Component({
   selector: 'app-update-frequency',
@@ -21,6 +22,7 @@ export class UpdateFrequencyComponent implements OnInit {
     private frequencyService: FrequencyService,
     private studentsService: StudentsService,
     private formBuilder: FormBuilder,
+    private notificationService: NotificationService
   ) {
     this.frequencyForm = this.formBuilder.group({
       studentId: ["", Validators.required],
@@ -30,7 +32,16 @@ export class UpdateFrequencyComponent implements OnInit {
   ngOnInit(): void {
     this.studentsService.apiStudentsGet().subscribe(
       {
-        next: (result) => this.students = result
+        next: (result) => {
+          this.students = result;
+        },
+        error: (error) => {
+          console.log(error);
+          this.notificationService.showError(
+            'Erro ao Carregar Alunos!', 
+            'Não foi possível carregar a lista de alunos. Tente novamente.'
+          );
+        }
       }
     );
     
@@ -44,13 +55,31 @@ export class UpdateFrequencyComponent implements OnInit {
   }
 
   update() {
+    if (this.frequencyForm.invalid) {
+      this.notificationService.showError(
+        'Formulário Inválido', 
+        'Por favor, selecione um aluno.'
+      );
+      return;
+    }
+
     this.frequencyService.apiFrequencyIdPut(this.frequency.id!, this.formToUpdateFrequency()).subscribe(
       {
         next: result => {
+          this.notificationService.showSuccess(
+            'Frequência Atualizada!', 
+            'A frequência foi atualizada com sucesso.'
+          );
           this.frequencyUpdated.emit();
           this.close();
         },
-        error: error => console.log(error)
+        error: error => {
+          console.log(error);
+          this.notificationService.showError(
+            'Erro ao Atualizar Frequência!', 
+            'Não foi possível atualizar a frequência. Tente novamente.'
+          );
+        }
       })
   }
 

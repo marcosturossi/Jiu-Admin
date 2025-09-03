@@ -5,6 +5,7 @@ import { CreateBeltComponent } from './create-belt/create-belt.component';
 import { UpdateBeltComponent } from './update-belt/update-belt.component';
 import { DatePipe } from '@angular/common';
 import { SubnavService } from '../../../services/subnav.service';
+import { NotificationService } from '../../../services/notification.service';
 
 @Component({
   selector: 'app-belts',
@@ -20,7 +21,8 @@ export class BeltsComponent implements OnInit {
 
   constructor(
     private beltService: BeltService,
-    private subnavService: SubnavService
+    private subnavService: SubnavService,
+    private notificationService: NotificationService
   ) { }
 
   ngOnInit(): void {
@@ -29,11 +31,22 @@ export class BeltsComponent implements OnInit {
   }
 
   loadBelts(): void {
-    this.beltService.apiBeltGet().subscribe(
-      {
-        next: (result) => this.belts = result
+    this.beltService.apiBeltGet().subscribe({
+      next: (result) => {
+        this.belts = result;
+        this.notificationService.showInfo(
+          'Dados Atualizados', 
+          `${result.length} faixa(s) carregada(s).`
+        );
+      },
+      error: (error) => {
+        console.log(error);
+        this.notificationService.showError(
+          'Erro de Carregamento', 
+          'Não foi possível carregar a lista de faixas.'
+        );
       }
-    )
+    });
   }
 
   openCreateBelt() {
@@ -64,12 +77,28 @@ export class BeltsComponent implements OnInit {
   }
 
   deleteBelt(belt: ShowBeltDTO) {
+    this.notificationService.showWarning(
+      'Confirmação Necessária', 
+      'Use o botão de confirmação no navegador para excluir a faixa.',
+      6000
+    );
+
     if (confirm('Tem certeza que deseja excluir esta faixa?')) {
       this.beltService.apiBeltIdDelete(belt.id!).subscribe({
         next: () => {
+          this.notificationService.showSuccess(
+            'Faixa Excluída!', 
+            `A faixa ${belt.color} foi excluída com sucesso.`
+          );
           this.loadBelts();
         },
-        error: (error) => console.log(error)
+        error: (error) => {
+          console.log(error);
+          this.notificationService.showError(
+            'Erro ao Excluir!', 
+            'Não foi possível excluir a faixa. Tente novamente.'
+          );
+        }
       });
     }
   }

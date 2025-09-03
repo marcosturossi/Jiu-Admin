@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { GraduationRequirementsService, BeltService, ShowBeltDTO } from '../../../../generated_services';
 import { ShowGraduationRequirementsDTO, UpdateGraduationRequirementsDTO } from '../../../../generated_services';
 import { CommonModule } from '@angular/common';
+import { NotificationService } from '../../../../services/notification.service';
 
 @Component({
   selector: 'app-update-graduation-requirement',
@@ -21,6 +22,7 @@ export class UpdateGraduationRequirementComponent implements OnInit {
     private graduationRequirementsService: GraduationRequirementsService,
     private beltService: BeltService,
     private formBuilder: FormBuilder,
+    private notificationService: NotificationService
   ) {
     this.graduationRequirementForm = this.formBuilder.group({
       beltId: ["", Validators.required],
@@ -32,7 +34,16 @@ export class UpdateGraduationRequirementComponent implements OnInit {
   ngOnInit(): void {
     this.beltService.apiBeltGet().subscribe(
       {
-        next: (result) => this.belts = result
+        next: (result) => {
+          this.belts = result;
+        },
+        error: (error) => {
+          console.log(error);
+          this.notificationService.showError(
+            'Erro ao Carregar Faixas!', 
+            'Não foi possível carregar a lista de faixas. Tente novamente.'
+          );
+        }
       }
     );
     
@@ -48,13 +59,31 @@ export class UpdateGraduationRequirementComponent implements OnInit {
   }
 
   update() {
+    if (this.graduationRequirementForm.invalid) {
+      this.notificationService.showError(
+        'Formulário Inválido', 
+        'Por favor, preencha todos os campos obrigatórios.'
+      );
+      return;
+    }
+
     this.graduationRequirementsService.apiGraduationRequirementsIdPut(this.graduationRequirement.id!, this.formToUpdateGraduationRequirement()).subscribe(
       {
         next: result => {
+          this.notificationService.showSuccess(
+            'Requisito Atualizado!', 
+            'O requisito de graduação foi atualizado com sucesso.'
+          );
           this.graduationRequirementUpdated.emit();
           this.close();
         },
-        error: error => console.log(error)
+        error: error => {
+          console.log(error);
+          this.notificationService.showError(
+            'Erro ao Atualizar Requisito!', 
+            'Não foi possível atualizar o requisito de graduação. Tente novamente.'
+          );
+        }
       })
   }
 

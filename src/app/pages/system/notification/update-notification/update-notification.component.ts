@@ -1,11 +1,12 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { NotificationService } from '../../../../generated_services/api/notification.service';
+import { NotificationService as ApiNotificationService } from '../../../../generated_services/api/notification.service';
 import { ShowNotificationDTO } from '../../../../generated_services/model/showNotificationDTO';
 import { UpdateNotificationDTO } from '../../../../generated_services/model/updateNotificationDTO';
 import { NotificationType } from '../../../../generated_services/model/notificationType';
 import { NotificationPriority } from '../../../../generated_services/model/notificationPriority';
 import { CommonModule } from '@angular/common';
+import { NotificationService } from '../../../../services/notification.service';
 
 @Component({
   selector: 'app-update-notification',
@@ -38,8 +39,9 @@ export class UpdateNotificationComponent implements OnInit {
   ];
 
   constructor(
-    private notificationService: NotificationService,
+    private apiNotificationService: ApiNotificationService,
     private formBuilder: FormBuilder,
+    private notificationService: NotificationService
   ) {
     this.notificationForm = this.formBuilder.group({
       title: ["", Validators.required],
@@ -77,10 +79,31 @@ export class UpdateNotificationComponent implements OnInit {
   }
 
   update() {
-    this.notificationService.apiNotificationIdPut(this.notification.id!, this.formToUpdateNotification()).subscribe(
+    if (this.notificationForm.invalid) {
+      this.notificationService.showError(
+        'Formulário Inválido', 
+        'Por favor, preencha todos os campos obrigatórios.'
+      );
+      return;
+    }
+
+    this.apiNotificationService.apiNotificationIdPut(this.notification.id!, this.formToUpdateNotification()).subscribe(
       {
-        next: result => this.notificationUpdated.emit(),
-        error: error => console.log(error)
+        next: result => {
+          this.notificationService.showSuccess(
+            'Notificação Atualizada!', 
+            `A notificação "${this.notificationForm.value.title}" foi atualizada com sucesso.`
+          );
+          this.notificationUpdated.emit();
+          this.close();
+        },
+        error: error => {
+          console.log(error);
+          this.notificationService.showError(
+            'Erro ao Atualizar Notificação!', 
+            'Não foi possível atualizar a notificação. Tente novamente.'
+          );
+        }
       })
   }
 

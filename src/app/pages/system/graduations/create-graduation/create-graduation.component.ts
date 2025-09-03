@@ -5,6 +5,7 @@ import { BeltService } from '../../../../generated_services/api/belt.service';
 import { StudentsService } from '../../../../generated_services/api/students.service';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CreateGraduationDTO, ShowBeltDTO, ShowStudentDTO } from '../../../../generated_services';
+import { NotificationService } from '../../../../services/notification.service';
 
 @Component({
   selector: 'app-create-graduation',
@@ -23,6 +24,7 @@ export class CreateGraduationComponent implements OnInit {
     private beltService: BeltService,
     private studentsService: StudentsService,
     private formBuilder: FormBuilder,
+    private notificationService: NotificationService
   ) {
     this.graduationForm = this.formBuilder.group({
       studentId: ["", Validators.required],
@@ -38,14 +40,26 @@ export class CreateGraduationComponent implements OnInit {
   loadBelts() {
     this.beltService.apiBeltGet().subscribe({
       next: (belts) => this.belts = belts,
-      error: (error) => console.log('Error loading belts:', error)
+      error: (error) => {
+        console.log('Error loading belts:', error);
+        this.notificationService.showError(
+          'Erro ao Carregar Faixas', 
+          'Não foi possível carregar as faixas disponíveis.'
+        );
+      }
     });
   }
 
   loadStudents() {
     this.studentsService.apiStudentsGet().subscribe({
       next: (students) => this.students = students,
-      error: (error) => console.log('Error loading students:', error)
+      error: (error) => {
+        console.log('Error loading students:', error);
+        this.notificationService.showError(
+          'Erro ao Carregar Alunos', 
+          'Não foi possível carregar a lista de alunos.'
+        );
+      }
     });
   }
 
@@ -54,15 +68,32 @@ export class CreateGraduationComponent implements OnInit {
   }
 
   create() {
-    if (this.graduationForm.valid) {
-      this.graduationService.apiGraduationPost(this.formToCreateGraduation()).subscribe({
-        next: result => {
-          console.log(result);
-          this.close();
-        },
-        error: error => console.log(error)
-      });
+    if (this.graduationForm.invalid) {
+      this.notificationService.showError(
+        'Formulário Inválido', 
+        'Por favor, selecione um aluno e uma faixa.'
+      );
+      return;
     }
+
+    this.graduationService.apiGraduationPost(this.formToCreateGraduation()).subscribe({
+      next: result => {
+        const selectedStudent = this.students.find(s => s.id === this.graduationForm.value.studentId);
+        const selectedBelt = this.belts.find(b => b.id === this.graduationForm.value.beltId);
+        this.notificationService.showSuccess(
+          'Graduação Criada!', 
+          `${selectedStudent?.firstName} ${selectedStudent?.lastName} foi graduado(a) para faixa ${selectedBelt?.color}.`
+        );
+        this.close();
+      },
+      error: error => {
+        console.log(error);
+        this.notificationService.showError(
+          'Erro ao Criar Graduação!', 
+          'Não foi possível criar a graduação. Tente novamente.'
+        );
+      }
+    });
   }
 
   formToCreateGraduation(): CreateGraduationDTO {

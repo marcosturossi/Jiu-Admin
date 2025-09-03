@@ -1,12 +1,25 @@
-<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
-  <div id="liveToast" class="toast show" [ngClass]="notification.success ? 'bg-success': 'bg-danger'"
-       role="alert" aria-live="assertive" aria-atomic="true">
-    <div class="toast-header">
-      <strong class="me-auto">{{notification.title}}</strong>
-      <button type="button" class="btn-close" data-bs-dismiss="toast" (click)="close()" aria-label="Close"></button>
-    </div>
-    <div class="toast-body fw-bolder text-white">
-      {{notification.message}}
-    </div>
+<div [@slideIn] [ngClass]="getToastClasses()" 
+     class="border-2 shadow-lg" 
+     role="alert" 
+     aria-live="assertive" 
+     aria-atomic="true" 
+     style="min-width: 300px; max-width: 400px;">
+  
+  <!-- Toast Header -->
+  <div class="toast-header" [ngClass]="getHeaderBgClass()">
+    <i [ngClass]="getIconClass()" class="me-2"></i>
+    <strong class="me-auto">{{ notification.title }}</strong>
+    <small class="text-muted">agora</small>
+    <button *ngIf="notification.closable" 
+            type="button" 
+            class="btn-close" 
+            (click)="close()" 
+            aria-label="Fechar">
+    </button>
+  </div>
+  
+  <!-- Toast Body -->
+  <div class="toast-body">
+    {{ notification.message }}
   </div>
 </div>
