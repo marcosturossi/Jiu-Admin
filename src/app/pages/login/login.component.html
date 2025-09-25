@@ -64,12 +64,12 @@
         class="btn btn-login w-100" 
         type="button"
         [disabled]="loginForm.invalid || isLoading">
-        <span *ngIf="!isLoading" class="d-flex align-items-center justify-content-center">
-          <i class="bi bi-box-arrow-in-right me-2"></i>
+        <span *ngIf="!isLoading" class="d-flex align-items-center justify-content-center text-white">
+          <i class="bi bi-box-arrow-in-right me-2 text-white"></i>
           Entrar
         </span>
         <span *ngIf="isLoading" class="d-flex align-items-center justify-content-center">
-          <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+          <span class="spinner-border spinner-border-sm me-2 text-white" role="status" aria-hidden="true"></span>
           Entrando...
         </span>
       </button>
