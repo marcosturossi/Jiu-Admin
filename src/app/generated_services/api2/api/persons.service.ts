@@ -38,6 +38,7 @@ import { Configuration }                                     from '../configurat
 import {
     PersonsServiceInterface
 } from './persons.serviceInterface';
+import { environment } from '../../../enviroments/environment';
 
 
 
@@ -46,7 +47,7 @@ import {
 })
 export class PersonsService implements PersonsServiceInterface {
 
-    protected basePath = 'https://vision.jiu.pixelvision.tec.br';
+    protected basePath = environment.face_api;
     public defaultHeaders = new HttpHeaders();
     public configuration = new Configuration();
     public encoder: HttpParameterCodec;
