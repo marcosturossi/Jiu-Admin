@@ -1,4 +1,5 @@
 export const environment = {
   production: false,
-  server: 'https://jiu.pixelvision.tec.br',
+  server: 'https://api.bjjclutch.com.br',
+  face_api: 'https://face-recognition.bjjclutch.com.br',
 };
