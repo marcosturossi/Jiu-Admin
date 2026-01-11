@@ -12,6 +12,6 @@ export const routes: Routes = [
   {path: 'authentication/logout', pathMatch: 'full', component: LogoutComponent },
   {path: 'authentication/login', pathMatch: 'full', component:LoginComponent},
   {path: '404', component: PageNotFoundComponent},
-  // {path: '**', redirectTo:'/404'},
+  {path: '**', redirectTo:'/404'},
 ];
 
