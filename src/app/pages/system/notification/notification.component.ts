@@ -17,6 +17,7 @@ import { NotificationService } from '../../../services/notification.service';
 })
 export class NotificationComponent implements OnInit {
   notifications: ShowNotificationDTO[] = [];
+  isLoading: boolean = false;
   openedCreateNotification: boolean = false;
   selectedNotification!: ShowNotificationDTO;
   openedUpdateNotification: boolean = false;
@@ -33,13 +34,16 @@ export class NotificationComponent implements OnInit {
   }
 
   loadNotifications(): void {
+    this.isLoading = true;
     this.apiNotificationService.apiNotificationGet().subscribe(
       {
         next: (result) => {
           this.notifications = result;
+          this.isLoading = false;
         },
         error: (error) => {
           console.log(error);
+          this.isLoading = false;
           this.notificationService.showError(
             'Erro ao Carregar Notificações!', 
             'Não foi possível carregar a lista de notificações. Tente novamente.'

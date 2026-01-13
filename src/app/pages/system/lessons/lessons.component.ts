@@ -16,6 +16,7 @@ import { NotificationService } from '../../../services/notification.service';
 })
 export class LessonsComponent implements OnInit {
   lessons: ShowLessonDTO[] = [];
+  isLoading: boolean = false;
   openedCreateLesson: boolean = false;
   selectedLesson!: ShowLessonDTO;
   openedUpdateLesson: boolean = false;
@@ -32,13 +33,16 @@ export class LessonsComponent implements OnInit {
   }
 
   loadLessons(): void {
+    this.isLoading = true;
     this.lessonService.apiLessonGet().subscribe(
       {
         next: (result) => {
           this.lessons = result;
+          this.isLoading = false;
         },
         error: (error) => {
           console.log(error);
+          this.isLoading = false;
           this.notificationService.showError(
             'Erro ao Carregar Aulas!', 
             'Não foi possível carregar a lista de aulas. Tente novamente.'

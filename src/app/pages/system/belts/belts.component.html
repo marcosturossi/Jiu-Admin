@@ -7,7 +7,17 @@
       </button>
     </div>
 
+    @if (isLoading) {
+      <div class="text-center my-5">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Carregando...</span>
+        </div>
+        <p class="mt-2 text-muted">Carregando...</p>
+      </div>
+    }
+
     <!-- Responsive table wrapper -->
+    @if (!isLoading) {
     <div class="table-responsive">
       <table class="table table-hover">
         <thead class="table-light">
@@ -75,6 +85,7 @@
         <h5 class="text-muted">Nenhuma faixa encontrada</h5>
         <p class="text-muted">Clique em "Nova Faixa" para cadastrar a primeira faixa.</p>
       </div>
+    }
     }
   </div>
 </section>

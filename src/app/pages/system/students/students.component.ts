@@ -16,6 +16,7 @@ import { NotificationService } from '../../../services/notification.service';
 })
 export class StudentsComponent implements OnInit {
   students: ShowStudentDTO[] = [];
+  isLoading: boolean = false;
   openedCreateStudent: boolean = false;
   selectedStudent!: ShowStudentDTO;
   openedUpdateStudent: boolean = false;
@@ -32,9 +33,11 @@ export class StudentsComponent implements OnInit {
   }
 
   loadStudents(): void {
+    this.isLoading = true;
     this.studentsService.apiStudentsGet().subscribe({
       next: (result) => {
         this.students = result;
+        this.isLoading = false;
         this.notificationService.showInfo(
           'Dados Atualizados', 
           `${result.length} aluno(s) carregado(s).`
@@ -42,6 +45,7 @@ export class StudentsComponent implements OnInit {
       },
       error: (error) => {
         console.log(error);
+        this.isLoading = false;
         this.notificationService.showError(
           'Erro de Carregamento', 
           'Não foi possível carregar a lista de alunos.'

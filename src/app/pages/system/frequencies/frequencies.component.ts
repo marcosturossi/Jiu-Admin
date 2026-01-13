@@ -15,6 +15,7 @@ import { NotificationService } from '../../../services/notification.service';
 })
 export class FrequenciesComponent implements OnInit {
   frequencies: ShowFrequencyDTO[] = [];
+  isLoading: boolean = false;
   openedCreateFrequency: boolean = false;
   selectedFrequency!: ShowFrequencyDTO;
   openedUpdateFrequency: boolean = false;
@@ -31,13 +32,16 @@ export class FrequenciesComponent implements OnInit {
   }
 
   loadFrequencies(): void {
+    this.isLoading = true;
     this.frequencyService.apiFrequencyGet().subscribe(
       {
         next: (result) => {
           this.frequencies = result;
+          this.isLoading = false;
         },
         error: (error) => {
           console.log(error);
+          this.isLoading = false;
           this.notificationService.showError(
             'Erro ao Carregar Frequências!', 
             'Não foi possível carregar a lista de frequências. Tente novamente.'

@@ -15,6 +15,7 @@ import { NotificationService } from '../../../services/notification.service';
 })
 export class GraduationsComponent implements OnInit {
   graduations: ShowGraduationDTO[] = []
+  isLoading: boolean = false;
 
   openedCreateGraduation: boolean = false
   openedUpdateGraduation: boolean = false
@@ -34,13 +35,16 @@ export class GraduationsComponent implements OnInit {
   }
 
   loadGraduations(): void {
+    this.isLoading = true;
     this.graduationService.apiGraduationGet().subscribe(
       {
         next: (result) => {
           this.graduations = result;
+          this.isLoading = false;
         },
         error: (error) => {
           console.log(error);
+          this.isLoading = false;
           this.notificationService.showError(
             'Erro ao Carregar Graduações!', 
             'Não foi possível carregar a lista de graduações. Tente novamente.'

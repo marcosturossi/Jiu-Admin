@@ -3,19 +3,19 @@ import { CommonModule } from '@angular/common';
 import { GraduationRequirementsService, ShowGraduationRequirementsDTO, BeltService, ShowBeltDTO } from '../../../generated_services';
 import { CreateGraduationRequirementComponent } from './create-graduation-requirement/create-graduation-requirement.component';
 import { UpdateGraduationRequirementComponent } from './update-graduation-requirement/update-graduation-requirement.component';
-import { DatePipe } from '@angular/common';
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
 
 @Component({
   selector: 'app-graduation-requirements',
-  imports: [CommonModule, CreateGraduationRequirementComponent, UpdateGraduationRequirementComponent, DatePipe],
+  imports: [CommonModule, CreateGraduationRequirementComponent, UpdateGraduationRequirementComponent],
   templateUrl: './graduation-requirements.component.html',
   styleUrl: './graduation-requirements.component.scss'
 })
 export class GraduationRequirementsComponent implements OnInit {
   graduationRequirements: ShowGraduationRequirementsDTO[] = [];
   belts: ShowBeltDTO[] = [];
+  isLoading: boolean = false;
   openedCreateGraduationRequirement: boolean = false;
   selectedGraduationRequirement!: ShowGraduationRequirementsDTO;
   openedUpdateGraduationRequirement: boolean = false;
@@ -34,13 +34,16 @@ export class GraduationRequirementsComponent implements OnInit {
   }
 
   loadGraduationRequirements(): void {
+    this.isLoading = true;
     this.graduationRequirementsService.apiGraduationRequirementsGet().subscribe(
       {
         next: (result) => {
           this.graduationRequirements = result;
+          this.isLoading = false;
         },
         error: (error) => {
           console.log(error);
+          this.isLoading = false;
           this.notificationService.showError(
             'Erro ao Carregar Requisitos!', 
             'Não foi possível carregar a lista de requisitos de graduação. Tente novamente.'

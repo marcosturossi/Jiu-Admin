@@ -3,18 +3,18 @@ import { CommonModule } from '@angular/common';
 import { BeltService, ShowBeltDTO } from '../../../generated_services';
 import { CreateBeltComponent } from './create-belt/create-belt.component';
 import { UpdateBeltComponent } from './update-belt/update-belt.component';
-import { DatePipe } from '@angular/common';
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
 
 @Component({
   selector: 'app-belts',
-  imports: [CommonModule, CreateBeltComponent, UpdateBeltComponent, DatePipe],
+  imports: [CommonModule, CreateBeltComponent, UpdateBeltComponent],
   templateUrl: './belts.component.html',
   styleUrl: './belts.component.scss'
 })
 export class BeltsComponent implements OnInit {
   belts: ShowBeltDTO[] = [];
+  isLoading: boolean = false;
   openedCreateBelt: boolean = false;
   selectedBelt!: ShowBeltDTO;
   openedUpdateBelt: boolean = false;
@@ -31,9 +31,11 @@ export class BeltsComponent implements OnInit {
   }
 
   loadBelts(): void {
+    this.isLoading = true;
     this.beltService.apiBeltGet().subscribe({
       next: (result) => {
         this.belts = result;
+        this.isLoading = false;
         this.notificationService.showInfo(
           'Dados Atualizados', 
           `${result.length} faixa(s) carregada(s).`
@@ -41,6 +43,7 @@ export class BeltsComponent implements OnInit {
       },
       error: (error) => {
         console.log(error);
+        this.isLoading = false;
         this.notificationService.showError(
           'Erro de Carregamento', 
           'Não foi possível carregar a lista de faixas.'

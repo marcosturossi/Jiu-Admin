@@ -7,7 +7,17 @@
       </button>
     </div>
 
+    @if (isLoading) {
+      <div class="text-center my-5">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Carregando...</span>
+        </div>
+        <p class="mt-2 text-muted">Carregando...</p>
+      </div>
+    }
+
     <!-- Responsive table wrapper -->
+    @if (!isLoading) {
     <div class="table-responsive">
       <table class="table table-hover">
         <thead class="table-light">
@@ -78,6 +88,7 @@
         <h5 class="text-muted">Nenhum aluno encontrado</h5>
         <p class="text-muted">Clique em "Novo Aluno" para cadastrar o primeiro aluno.</p>
       </div>
+    }
     }
   </div>
 </section>
