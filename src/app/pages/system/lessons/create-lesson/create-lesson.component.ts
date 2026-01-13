@@ -43,10 +43,13 @@ export class CreateLessonComponent {
     if (this.autoTitle) {
       const date = new Date(this.lessonForm.value.scheduledDate);
       const formattedDate = date.toLocaleString('pt-BR');
-      this.lessonForm.patchValue(
+      if (formattedDate !== 'Invalid Date') {
+        this.lessonForm.patchValue(
         { title: `Aula ${formattedDate}` },
         { emitEvent: false }
       );
+      }
+      
     }
   }
 
@@ -56,6 +59,7 @@ export class CreateLessonComponent {
       this.createAutoTitle();
     } else {
       this.lessonForm.get('title')?.enable();
+      this.lessonForm.get('title')?.setValue("");
     }
   }
 
