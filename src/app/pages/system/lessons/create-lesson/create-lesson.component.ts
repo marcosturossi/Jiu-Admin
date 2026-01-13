@@ -105,7 +105,7 @@ export class CreateLessonComponent {
     return {
       title: formValue.title,
       description: formValue.description,
-      scheduledDate: formValue.scheduledDate,
+      scheduledDate: new Date(formValue.scheduledDate).toUTCString(),
       duration: formValue.duration,
       isActive: formValue.isActive
     } as CreateLessonDTO
