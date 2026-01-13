@@ -38,7 +38,7 @@
                 <small class="text-muted d-block d-xl-none">{{lesson.description}}</small>
                 <div class="d-flex flex-wrap gap-1 mt-1">
                   <span class="badge bg-outline-info text-info border d-md-none">
-                    <i class="bi bi-calendar me-1"></i>{{lesson.scheduledDate | date:'dd/MM/yyyy HH:mm':undefined:'pt-BR'}}
+                    <i class="bi bi-calendar me-1"></i>{{lesson.scheduledDate | date:'dd/MM/yyyy HH:mm':'pt-BR'}}
                   </span>
                   <span class="badge bg-outline-secondary text-dark border d-lg-none">{{lesson.duration}}</span>
                   <span class="badge {{lesson.isActive ? 'bg-outline-success text-success' : 'bg-outline-danger text-danger'}} border d-md-none">
@@ -53,7 +53,7 @@
             </td>
             <td class="d-none d-md-table-cell">
               <small>
-                <i class="bi bi-calendar me-1"></i>{{lesson.scheduledDate | date:'dd/MM/yyyy HH:mm':undefined:'pt-BR'}}
+                <i class="bi bi-calendar me-1"></i>{{lesson.scheduledDate | date:'dd/MM/yyyy HH:mm':'pt-BR'}}
               </small>
             </td>
             <td class="d-none d-lg-table-cell">
