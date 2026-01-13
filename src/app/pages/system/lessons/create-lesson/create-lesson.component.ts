@@ -1,13 +1,13 @@
 import { Component, Output, EventEmitter } from '@angular/core';
 import { LessonService } from '../../../../generated_services/api/lesson.service';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CreateLessonDTO } from '../../../../generated_services/model/createLessonDTO';
 import { CommonModule } from '@angular/common';
 import { NotificationService } from '../../../../services/notification.service';
 
 @Component({
   selector: 'app-create-lesson',
-  imports: [ReactiveFormsModule, CommonModule],
+  imports: [ReactiveFormsModule, CommonModule, FormsModule],
   templateUrl: './create-lesson.component.html',
   styleUrl: './create-lesson.component.scss'
 })
@@ -15,6 +15,7 @@ export class CreateLessonComponent {
   @Output() closeEvent = new EventEmitter<void>();
   @Output() lessonCreated = new EventEmitter<void>();
   lessonForm!: FormGroup;
+  autoTitle = true
 
   constructor(
     private lessonService: LessonService,
@@ -24,10 +25,36 @@ export class CreateLessonComponent {
     this.lessonForm = this.formBuilder.group({
       title: ["", Validators.required],
       description: [""],
-      scheduledDate: ["", Validators.required],
-      duration: ["", Validators.required],
+      scheduledDate: [new Date().toISOString().slice(0,16), Validators.required],
+      duration: ["01:00", Validators.required],
       isActive: [true]
     })
+    this.disableTitleInput();
+
+    this.lessonForm.valueChanges.subscribe(() => {
+      if (this.lessonForm.valid){
+        this.createAutoTitle();
+      }
+    });
+  }
+
+  createAutoTitle() 
+  {
+    if (this.autoTitle) {
+      const date = new Date(this.lessonForm.value.scheduledDate);
+      const formattedDate = date.toLocaleString('pt-BR');
+      this.lessonForm.patchValue({
+        title: `Aula ${formattedDate}` 
+      });
+    }
+  }
+
+  disableTitleInput(){
+    if (this.autoTitle) {
+      this.lessonForm.get('title')?.disable();
+    } else {
+      this.lessonForm.get('title')?.enable();
+    }
   }
 
   close() {
