@@ -7,7 +7,7 @@
       </div>
       <div class="modal-body">
           <div class="mb-3">            
-            <input class="form-check-input" id="generate-title" type="checkbox" [(ngModel)]="autoTitle" [value]="true" (change)="disableTitleInput()">
+            <input class="form-check-input" id="generate-title" type="checkbox" [(ngModel)]="autoTitle" [ngModelOptions]="{standalone: true}" (change)="disableTitleInput()">
             <label class="ps-2 form-check-label" for="generate-title">Gerar Titulo</label>
           </div>
         <form [formGroup]="lessonForm">

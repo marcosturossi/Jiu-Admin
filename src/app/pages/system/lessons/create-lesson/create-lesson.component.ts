@@ -43,9 +43,10 @@ export class CreateLessonComponent {
     if (this.autoTitle) {
       const date = new Date(this.lessonForm.value.scheduledDate);
       const formattedDate = date.toLocaleString('pt-BR');
-      this.lessonForm.patchValue({
-        title: `Aula ${formattedDate}` 
-      });
+      this.lessonForm.patchValue(
+        { title: `Aula ${formattedDate}` },
+        { emitEvent: false }
+      );
     }
   }
 
@@ -71,11 +72,15 @@ export class CreateLessonComponent {
       return;
     }
 
+    // If title is auto-generated (and disabled), ensure it is up-to-date before submit.
+    this.createAutoTitle();
+
     this.lessonService.apiLessonPost(this.formToCreateLesson()).subscribe({
       next: result => {
+        const title = this.lessonForm.getRawValue().title;
         this.notificationService.showSuccess(
           'Aula Criada!', 
-          `A aula "${this.lessonForm.value.title}" foi criada com sucesso.`
+          `A aula "${title}" foi criada com sucesso.`
         );
         this.lessonCreated.emit();
         this.close();
@@ -91,7 +96,8 @@ export class CreateLessonComponent {
   }
 
   formToCreateLesson(): CreateLessonDTO {
-    const formValue = this.lessonForm.value;
+    // getRawValue() includes disabled controls (like title when autoTitle is true)
+    const formValue = this.lessonForm.getRawValue();
     return {
       title: formValue.title,
       description: formValue.description,
