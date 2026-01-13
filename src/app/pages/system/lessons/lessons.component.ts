@@ -36,6 +36,9 @@ export class LessonsComponent implements OnInit {
       {
         next: (result) => {
           this.lessons = result;
+          for (let lesson of this.lessons) {
+            lesson.scheduledDate = new Date(lesson.scheduledDate!).toLocaleString();
+          }
         },
         error: (error) => {
           console.log(error);
