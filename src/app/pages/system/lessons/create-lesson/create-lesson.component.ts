@@ -52,6 +52,7 @@ export class CreateLessonComponent {
   disableTitleInput(){
     if (this.autoTitle) {
       this.lessonForm.get('title')?.disable();
+      this.createAutoTitle();
     } else {
       this.lessonForm.get('title')?.enable();
     }
