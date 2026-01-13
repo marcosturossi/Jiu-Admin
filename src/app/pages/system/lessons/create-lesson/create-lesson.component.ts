@@ -25,7 +25,7 @@ export class CreateLessonComponent {
     this.lessonForm = this.formBuilder.group({
       title: ["", Validators.required],
       description: [""],
-      scheduledDate: [new Date().toLocaleString(), Validators.required],
+      scheduledDate: ["", Validators.required],
       duration: ["01:00", Validators.required],
       isActive: [true]
     })
