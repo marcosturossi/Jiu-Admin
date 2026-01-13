@@ -25,8 +25,9 @@
             <th scope="col" class="d-none d-lg-table-cell">Nome</th>
             <th scope="col" class="d-table-cell d-lg-none">Aluno</th>
             <th scope="col" class="d-none d-md-table-cell">Graduação</th>
-            <th scope="col" class="d-none d-lg-table-cell">Aulas nesta graduação</th>
-            <th scope="col" class="d-none d-xl-table-cell">Data última presença</th>
+            <th scope="col" class="d-none d-md-table-cell">Aulas nesta graduação</th>
+            <th scope="col" class="d-none d-md-table-cell">Aniversário</th>  
+            <th scope="col" class="d-none d-xl-table-cell">Data último login</th>
             <th scope="col" class="text-center">Ações</th>
           </tr>
         </thead>
@@ -57,8 +58,13 @@
             <td class="d-none d-md-table-cell">
               <span class="badge bg-outline-primary text-primary border">{{student.currentBelt}}</span>
             </td>
-            <td class="d-none d-lg-table-cell">
+            <td class="d-none d-md-table-cell">
               <span class="badge bg-outline-info text-info border">{{student.totalFrequencies}}</span>
+            </td>
+            <td class="d-none d-md-table-cell">
+              <small>
+                <i class="bi bi-gift me-1"></i>{{student.birthDay | date:'dd/MM/yyyy'}}
+              </small>
             </td>
             <td class="d-none d-xl-table-cell">
               <small>{{student.lastLoginAt | date:'dd/MM/yyyy HH:mm'}}</small>
