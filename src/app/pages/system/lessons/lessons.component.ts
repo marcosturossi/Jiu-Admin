@@ -35,10 +35,10 @@ export class LessonsComponent implements OnInit {
     this.lessonService.apiLessonGet().subscribe(
       {
         next: (result) => {
-          this.lessons = result.map(lesson => ({
-            ...lesson,
-            scheduledDate: lesson.scheduledDate ? new Date(lesson.scheduledDate + 'Z') : lesson.scheduledDate
-          })) as ShowLessonDTO[];
+          this.lessons = result;
+          for (let lesson of this.lessons) {
+            lesson.scheduledDate = new Date(lesson.scheduledDate!) as any;
+          }
         },
         error: (error) => {
           console.log(error);
