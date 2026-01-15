@@ -31,6 +31,7 @@ export class UpdateGraduationComponent implements OnInit {
     this.graduationForm = this.formBuilder.group({
       studentId: ["", Validators.required],
       beltId: ["", Validators.required],
+      graduationDate: [new Date().toISOString().split('T')[0], Validators.required],
     })
   }
 
@@ -77,6 +78,7 @@ export class UpdateGraduationComponent implements OnInit {
       this.graduationForm.patchValue({
         studentId: this.graduation.studentId,
         beltId: this.graduation.beltId,
+        graduationDate: this.graduation.graduationDate,
       });
     }
   }
@@ -121,6 +123,7 @@ export class UpdateGraduationComponent implements OnInit {
     return {
       studentId: formValue.studentId,
       beltId: formValue.beltId,
+      graduationDate: formValue.graduationDate,
     } as UpdateGraduationDTO
   }
 }

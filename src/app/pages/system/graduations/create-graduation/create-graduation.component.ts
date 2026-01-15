@@ -29,6 +29,7 @@ export class CreateGraduationComponent implements OnInit {
     this.graduationForm = this.formBuilder.group({
       studentId: ["", Validators.required],
       beltId: ["", Validators.required],
+      graduationDate: [new Date().toISOString().split('T')[0], Validators.required],
     })
   }
 
@@ -101,6 +102,7 @@ export class CreateGraduationComponent implements OnInit {
     return {
       studentId: formValue.studentId,
       beltId: formValue.beltId,
+      graduationDate: formValue.graduationDate
     } as CreateGraduationDTO
   }
 }

@@ -13,5 +13,6 @@
 export interface CreateGraduationDTO { 
     studentId: string;
     beltId: string;
+    graduationDate: string;
 }
 

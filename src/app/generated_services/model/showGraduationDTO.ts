@@ -20,5 +20,6 @@ export interface ShowGraduationDTO {
     belt?: ShowBeltDTO | null;
     studentId: string;
     beltId: string;
+    graduationDate: string;
 }
 

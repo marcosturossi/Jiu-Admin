@@ -24,7 +24,7 @@
           <tr>
             <th scope="col" class="d-none d-lg-table-cell">Aluno</th>
             <th scope="col" class="d-table-cell d-lg-none">Graduação</th>
-            <th scope="col" class="d-none d-md-table-cell">Email</th>
+            <th scope="col" class="d-none d-md-table-cell">Data Graduação</th>
             <th scope="col" class="d-none d-lg-table-cell">Graduação</th>
             <th scope="col" class="d-none d-xl-table-cell">Ordem da Faixa</th>
             <th scope="col" class="d-none d-xl-table-cell">Faixa para Crianças</th>
@@ -45,7 +45,7 @@
             <td class="d-table-cell d-lg-none">
               <div>
                 <strong class="text-primary d-block">{{graduation.student?.firstName}} {{graduation.student?.lastName}}</strong>
-                <small class="text-muted d-block d-md-none">{{graduation.student?.email}}</small>
+                <small class="text-muted d-block d-md-none">{{graduation.graduationDate | date:'dd/MM/yyyy HH:mm'}}</small>
                 <div class="d-flex flex-wrap gap-1 mt-1">
                   <span class="badge bg-outline-primary text-primary border">{{graduation.belt?.color}}</span>
                   <span class="badge bg-outline-secondary text-dark border d-xl-none">Ordem: {{graduation.belt?.orderIndex}}</span>
@@ -57,7 +57,7 @@
             </td>
             
             <td class="d-none d-md-table-cell">
-              <small class="text-muted">{{graduation.student?.email}}</small>
+              <small class="text-muted">{{graduation.graduationDate | date:'dd/MM/yyyy'}}</small>
             </td>
             <td class="d-none d-lg-table-cell">
               <span class="badge bg-outline-primary text-primary border">{{graduation.belt?.color}}</span>
