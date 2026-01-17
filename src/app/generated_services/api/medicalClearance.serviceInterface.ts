@@ -16,7 +16,7 @@ import { ApiAuthLoginPost401Response } from '../model/models';
 import { CreateMedicalClearanceDTO } from '../model/models';
 import { MedicalClearanceAttachmentResponseDTO } from '../model/models';
 import { MedicalClearanceStatsDTO } from '../model/models';
-import { ReviewMedicalClearanceDTO } from '../model/models';
+import { PaginationMedicalClearanceDTO } from '../model/models';
 import { ShowMedicalClearanceDTO } from '../model/models';
 import { UpdateMedicalClearanceDTO } from '../model/models';
 
@@ -45,8 +45,10 @@ export interface MedicalClearanceServiceInterface {
     /**
      * Get all medical clearances
      * 
+     * @param page 
+     * @param pageSize 
      */
-    apiMedicalClearanceGet(extraHttpRequestParams?: any): Observable<Array<ShowMedicalClearanceDTO>>;
+    apiMedicalClearanceGet(page?: number, pageSize?: number, extraHttpRequestParams?: any): Observable<PaginationMedicalClearanceDTO>;
 
     /**
      * Get attachment for medical clearance
@@ -92,14 +94,6 @@ export interface MedicalClearanceServiceInterface {
      * @param updateMedicalClearanceDTO The medical clearance data to update
      */
     apiMedicalClearanceIdPut(id: string, updateMedicalClearanceDTO?: UpdateMedicalClearanceDTO, extraHttpRequestParams?: any): Observable<ShowMedicalClearanceDTO>;
-
-    /**
-     * Review a medical clearance (approve/reject)
-     * 
-     * @param id The medical clearance ID
-     * @param reviewMedicalClearanceDTO The review data
-     */
-    apiMedicalClearanceIdReviewPost(id: string, reviewMedicalClearanceDTO?: ReviewMedicalClearanceDTO, extraHttpRequestParams?: any): Observable<ShowMedicalClearanceDTO>;
 
     /**
      * Get medical clearances pending review

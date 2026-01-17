@@ -74,7 +74,7 @@
         <a class="d-flex p-3 p-lg-4 sidebar-link" 
            [class.active]="isActiveRoute('/system/notices')"
            (click)="navigateTo('/system/notices', $event)">
-          <img class="pe-2 sidebar-icon" src="../../../assets/icons/sidebar/info-circle.svg" alt="Noticias">
+          <img class="pe-2 sidebar-icon" src="../../../assets/icons/sidebar/bell.svg" alt="Noticias">
           <p class="nav mb-0">Avisos</p>
         </a>
       </li>
@@ -82,7 +82,7 @@
         <a class="d-flex p-3 p-lg-4 sidebar-link" 
            [class.active]="isActiveRoute('/system/notification')"
            (click)="navigateTo('/system/notification', $event)">
-          <img class="pe-2 sidebar-icon" src="../../../assets/icons/sidebar/info-circle.svg" alt="Notificações">
+          <img class="pe-2 sidebar-icon" src="../../../assets/icons/sidebar/megaphone.svg" alt="Notificações">
           <p class="nav mb-0">Notificações</p>
         </a>
       </li>
@@ -92,6 +92,14 @@
            (click)="navigateTo('/system/face-recognition', $event)">
           <img class="pe-2 sidebar-icon" src="../../../assets/icons/sidebar/person-check.svg" alt="Reconhecimento">
           <p class="nav mb-0">Reconhecimento</p>
+        </a>
+      </li>
+      <li>
+        <a class="d-flex p-3 p-lg-4 sidebar-link" 
+           [class.active]="isActiveRoute('/system/medical-clearances')"
+           (click)="navigateTo('/system/medical-clearances', $event)">
+          <img class="pe-2 sidebar-icon" src="../../../assets/icons/sidebar/file-medical.svg" alt="Atestados Médicos">
+          <p class="nav mb-0">Atestados Médicos</p>
         </a>
       </li>
     </ul>

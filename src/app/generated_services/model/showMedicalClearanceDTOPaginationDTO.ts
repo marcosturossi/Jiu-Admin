@@ -8,13 +8,14 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { ShowMedicalClearanceDTO } from './showMedicalClearanceDTO';
 
 
-export interface CreateMedicalClearanceDTO { 
-    studentId: string;
-    file: Blob;
-    expiresAt: string;
-    isApproved?: boolean;
-    isActive?: boolean;
+export interface ShowMedicalClearanceDTOPaginationDTO { 
+    items?: Array<ShowMedicalClearanceDTO> | null;
+    totalCount?: number;
+    pageNumber?: number;
+    pageSize?: number;
+    readonly totalPages?: number;
 }
 

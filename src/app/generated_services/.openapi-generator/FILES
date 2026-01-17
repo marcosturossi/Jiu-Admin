@@ -66,12 +66,12 @@ model/paginationBeltDTO.ts
 model/paginationFrequencyDTO.ts
 model/paginationGraduationDTO.ts
 model/paginationLessonDTO.ts
+model/paginationMedicalClearanceDTO.ts
 model/paginationNotificationDTO.ts
 model/paginationStudentDTO.ts
 model/photoResponseDTO.ts
 model/problemDetails.ts
 model/refreshTokenRequest.ts
-model/reviewMedicalClearanceDTO.ts
 model/showBeltDTO.ts
 model/showBeltDTOPaginationDTO.ts
 model/showFrequencyDTO.ts
@@ -83,6 +83,7 @@ model/showGraduationRequirementsDTO.ts
 model/showLessonDTO.ts
 model/showLessonDTOPaginationDTO.ts
 model/showMedicalClearanceDTO.ts
+model/showMedicalClearanceDTOPaginationDTO.ts
 model/showNoticesDTO.ts
 model/showNotificationDTO.ts
 model/showNotificationDTOPaginationDTO.ts

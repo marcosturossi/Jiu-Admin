@@ -18,9 +18,6 @@ export interface ShowMedicalClearanceDTO {
     status?: MedicalClearanceStatus;
     createdAt?: string;
     updatedAt?: string | null;
-    reviewNotes?: string | null;
-    reviewedBy?: string | null;
-    reviewedAt?: string | null;
     attachmentFileName?: string | null;
     attachmentContentType?: string | null;
     attachmentSize?: number | null;
@@ -29,7 +26,6 @@ export interface ShowMedicalClearanceDTO {
     isExpiringSoon?: boolean;
     daysUntilExpiry?: number;
     student?: ShowStudentDTO | null;
-    reviewerName?: string | null;
     expiresAt: string;
     isApproved?: boolean;
     isActive?: boolean;

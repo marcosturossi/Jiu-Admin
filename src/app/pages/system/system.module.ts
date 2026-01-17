@@ -17,6 +17,7 @@ import { GraduationRequirementsComponent } from './graduation-requirements/gradu
 import { NoticesComponent } from './notices/notices.component';
 import { FaceRecognitionComponent } from './face-recognition/face-recognition.component';
 import { NotificationComponent } from './notification/notification.component';
+import { MedicalClearancesComponent } from './medical-clearances/medical-clearances.component';
 
 export const routes: Routes = [
   {
@@ -78,6 +79,11 @@ export const routes: Routes = [
         path: 'face-recognition',
         pathMatch: 'full',
         component: FaceRecognitionComponent,
+      },
+      {
+        path: 'medical-clearances',
+        pathMatch: 'full',
+        component: MedicalClearancesComponent,
       }
     ]
   }
