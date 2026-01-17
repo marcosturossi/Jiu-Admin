@@ -7,6 +7,7 @@ import { UpdateLessonComponent } from './update-lesson/update-lesson.component';
 import { DatePipe } from '@angular/common';
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
+import { PaginationLessonDTO } from '../../../generated_services';
 
 @Component({
   selector: 'app-lessons',
@@ -15,7 +16,7 @@ import { NotificationService } from '../../../services/notification.service';
   styleUrl: './lessons.component.scss'
 })
 export class LessonsComponent implements OnInit {
-  lessons: ShowLessonDTO[] = [];
+  lessons!: PaginationLessonDTO;
   isLoading: boolean = false;
   openedCreateLesson: boolean = false;
   selectedLesson!: ShowLessonDTO;

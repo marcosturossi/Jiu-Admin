@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FrequencyService, ShowFrequencyDTO } from '../../../generated_services';
+import { FrequencyService, PaginationFrequencyDTO, ShowFrequencyDTO } from '../../../generated_services';
 import { CreateFrequencyComponent } from './create-frequency/create-frequency.component';
 import { UpdateFrequencyComponent } from './update-frequency/update-frequency.component';
 import { DatePipe } from '@angular/common';
@@ -14,7 +14,7 @@ import { NotificationService } from '../../../services/notification.service';
   styleUrl: './frequencies.component.scss'
 })
 export class FrequenciesComponent implements OnInit {
-  frequencies: ShowFrequencyDTO[] = [];
+  frequencies!: PaginationFrequencyDTO;
   isLoading: boolean = false;
   openedCreateFrequency: boolean = false;
   selectedFrequency!: ShowFrequencyDTO;

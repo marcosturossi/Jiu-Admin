@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { GraduationService } from '../../../generated_services/api/graduation.service';
-import { ShowGraduationDTO } from '../../../generated_services';
+import { PaginationGraduationDTO, ShowGraduationDTO } from '../../../generated_services';
 import { UpdateGraduationComponent } from './update-graduation/update-graduation.component';
 import { CreateGraduationComponent } from './create-graduation/create-graduation.component';
 import { SubnavService } from '../../../services/subnav.service';
@@ -14,7 +14,7 @@ import { NotificationService } from '../../../services/notification.service';
   styleUrl: './graduations.component.scss'
 })
 export class GraduationsComponent implements OnInit {
-  graduations: ShowGraduationDTO[] = []
+  graduations!: PaginationGraduationDTO;
   isLoading: boolean = false;
 
   openedCreateGraduation: boolean = false

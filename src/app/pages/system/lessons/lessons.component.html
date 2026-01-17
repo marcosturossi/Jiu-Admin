@@ -32,7 +32,7 @@
           </tr>
         </thead>
         <tbody>
-          @for(lesson of lessons; track lesson.id){
+          @for(lesson of lessons.items; track lesson.id){
           <tr>
             <!-- Desktop view - full title -->
             <td class="d-none d-lg-table-cell">
@@ -91,7 +91,7 @@
     </div>
 
     <!-- Empty state -->
-    @if (lessons.length === 0) {
+    @if (lessons.items!.length === 0) {
       <div class="text-center py-5">
         <div class="mb-3">
           <i class="bi bi-calendar3 display-1 text-muted"></i>

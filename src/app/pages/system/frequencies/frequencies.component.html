@@ -30,7 +30,7 @@
           </tr>
         </thead>
         <tbody>
-          @for (frequency of frequencies; track frequency.id){
+          @for (frequency of frequencies.items!; track frequency.id){
           <tr>
             <!-- Desktop view - student name only -->
             <td class="d-none d-md-table-cell">
@@ -77,7 +77,7 @@
     </div>
 
     <!-- Empty state -->
-    @if (frequencies.length === 0) {
+    @if (frequencies.items!.length === 0) {
       <div class="text-center py-5">
         <div class="mb-3">
           <i class="bi bi-check2-square display-1 text-muted"></i>

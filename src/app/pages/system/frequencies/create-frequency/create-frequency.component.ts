@@ -67,7 +67,7 @@ export class CreateFrequencyComponent implements OnInit {
     this.lessonService.apiLessonGet().subscribe({
       next: (result) => {
         // Filter only active lessons
-        this.lessons = result.filter(lesson => lesson.isActive === true);
+        this.lessons = result.items!.filter(lesson => lesson.isActive === true);
       },
       error: (error) => {
         console.log(error);

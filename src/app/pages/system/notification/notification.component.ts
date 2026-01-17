@@ -8,6 +8,7 @@ import { NotificationType } from '../../../generated_services/model/notification
 import { NotificationPriority } from '../../../generated_services/model/notificationPriority';
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
+import { PaginationNotificationDTO } from '../../../generated_services';
 
 @Component({
   selector: 'app-notification',
@@ -16,7 +17,7 @@ import { NotificationService } from '../../../services/notification.service';
   styleUrl: './notification.component.scss'
 })
 export class NotificationComponent implements OnInit {
-  notifications: ShowNotificationDTO[] = [];
+  notifications!: PaginationNotificationDTO;;
   isLoading: boolean = false;
   openedCreateNotification: boolean = false;
   selectedNotification!: ShowNotificationDTO;
