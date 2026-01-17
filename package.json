@@ -27,11 +27,13 @@
     "bootstrap-icons": "^1.10.5",
     "datatables.net": "^2.0.3",
     "datatables.net-bs5": "^2.0.3",
+    "echarts": "^6.0.0",
     "highcharts": "^12.1.2",
     "jquery": "^3.6.0",
     "jwt-decode": "^4.0.0",
     "luxon": "^3.5.0",
     "ng-openapi-gen": "^0.52.0",
+    "ngx-echarts": "^19.0.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.15.0"
   },
