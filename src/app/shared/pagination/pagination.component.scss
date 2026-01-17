@@ -1,0 +1,36 @@
+// Use Bootstrap default styles with minimal overrides
+.pagination {
+  margin-bottom: 0;
+
+  .page-link {
+    cursor: pointer;
+    user-select: none;
+    
+    &:disabled {
+      cursor: not-allowed;
+    }
+  }
+
+  .page-item {
+    &.active .page-link {
+      z-index: 1;
+    }
+  }
+}
+
+// Mobile responsiveness - hide some page numbers on small screens
+@media (max-width: 576px) {
+  .pagination {
+    .page-item {
+      // Keep first, last, prev, next, and active page visible
+      &:not(.active):not(:first-child):not(:last-child):not(:nth-child(2)):not(:nth-last-child(2)) {
+        display: none;
+      }
+    }
+  }
+}
+
+// Page size selector styling
+.form-select-sm {
+  min-width: 70px;
+}

@@ -107,6 +107,18 @@
         <p class="text-muted">Clique em "Nova Notificação" para criar sua primeira notificação.</p>
       </div>
     }
+
+    <!-- Pagination -->
+    @if (notifications.items!.length > 0) {
+      <app-pagination
+        [currentPage]="currentPage"
+        [totalPages]="notifications.totalPages ?? 1"
+        [pageSize]="pageSize"
+        [totalItems]="notifications.totalCount ?? 0"
+        (pageChange)="onPageChange($event)"
+        (pageSizeChange)="onPageSizeChange($event)">
+      </app-pagination>
+    }
     }
   </div>
 </section>

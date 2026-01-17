@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { FrequencyService, StudentsService, ShowStudentDTO } from '../../../../generated_services';
+import { FrequencyService, StudentsService, ShowStudentDTO, PaginationStudentDTO } from '../../../../generated_services';
 import { ShowFrequencyDTO, UpdateFrequencyDTO } from '../../../../generated_services';
 import { CommonModule } from '@angular/common';
 import { NotificationService } from '../../../../services/notification.service';
@@ -16,7 +16,7 @@ export class UpdateFrequencyComponent implements OnInit {
   @Output() frequencyUpdated = new EventEmitter<void>();
   @Input() frequency!: ShowFrequencyDTO;
   frequencyForm!: FormGroup;
-  students: ShowStudentDTO[] = [];
+  students!: PaginationStudentDTO;
 
   constructor(
     private frequencyService: FrequencyService,

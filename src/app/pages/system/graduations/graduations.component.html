@@ -96,6 +96,18 @@
         <p class="text-muted">Clique em "Nova Graduação" para registrar a primeira graduação.</p>
       </div>
     }
+
+    <!-- Pagination -->
+    @if (graduations.items!.length > 0) {
+      <app-pagination
+        [currentPage]="currentPage"
+        [totalPages]="graduations.totalPages ?? 1"
+        [pageSize]="pageSize"
+        [totalItems]="graduations.totalCount ?? 0"
+        (pageChange)="onPageChange($event)"
+        (pageSizeChange)="onPageSizeChange($event)">
+      </app-pagination>
+    }
     }
   </div>
 </section>

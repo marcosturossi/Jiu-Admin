@@ -11,7 +11,7 @@
             <label for="studentSelect" class="form-label">Aluno *</label>
             <select class="form-select" id="studentSelect" formControlName="studentId">
               <option value="">Selecione um aluno</option>
-              <option *ngFor="let student of students" [value]="student.id">
+              <option *ngFor="let student of students.items" [value]="student.id">
                 {{student.firstName}} {{student.lastName}} ({{student.email}})
               </option>
             </select>
@@ -20,7 +20,7 @@
             <label for="beltSelect" class="form-label">Faixa *</label>
             <select class="form-select" id="beltSelect" formControlName="beltId">
               <option value="">Selecione uma faixa</option>
-              <option *ngFor="let belt of belts" [value]="belt.id">
+              <option *ngFor="let belt of belts.items" [value]="belt.id">
                 {{belt.color}} (Ordem: {{belt.orderIndex}}) {{belt.isForKids ? '- Para Crianças' : ''}}
               </option>
             </select>

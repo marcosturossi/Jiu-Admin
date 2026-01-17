@@ -22,6 +22,8 @@ import { ApiAuthLoginPost401Response } from '../model/apiAuthLoginPost401Respons
 // @ts-ignore
 import { CreateStudentDTO } from '../model/createStudentDTO';
 // @ts-ignore
+import { PaginationStudentDTO } from '../model/paginationStudentDTO';
+// @ts-ignore
 import { PhotoResponseDTO } from '../model/photoResponseDTO';
 // @ts-ignore
 import { ShowStudentDTO } from '../model/showStudentDTO';
@@ -183,14 +185,14 @@ export class StudentsService implements StudentsServiceInterface {
 
     /**
      * Get all students
-     * @param pageNumber 
-     * @param pageSize 
+     * @param pageNumber Page number (default: 1)
+     * @param pageSize Page size (default: 20, max: 100)
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiStudentsGet(pageNumber?: number, pageSize?: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Array<ShowStudentDTO>>;
-    public apiStudentsGet(pageNumber?: number, pageSize?: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<ShowStudentDTO>>>;
-    public apiStudentsGet(pageNumber?: number, pageSize?: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<ShowStudentDTO>>>;
+    public apiStudentsGet(pageNumber?: number, pageSize?: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<PaginationStudentDTO>;
+    public apiStudentsGet(pageNumber?: number, pageSize?: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<PaginationStudentDTO>>;
+    public apiStudentsGet(pageNumber?: number, pageSize?: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<PaginationStudentDTO>>;
     public apiStudentsGet(pageNumber?: number, pageSize?: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
 
         let localVarQueryParameters = new HttpParams({encoder: this.encoder});
@@ -240,7 +242,7 @@ export class StudentsService implements StudentsServiceInterface {
         }
 
         let localVarPath = `/api/Students`;
-        return this.httpClient.request<Array<ShowStudentDTO>>('get', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<PaginationStudentDTO>('get', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 params: localVarQueryParameters,

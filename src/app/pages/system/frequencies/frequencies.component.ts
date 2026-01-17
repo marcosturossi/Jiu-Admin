@@ -6,19 +6,22 @@ import { UpdateFrequencyComponent } from './update-frequency/update-frequency.co
 import { DatePipe } from '@angular/common';
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
+import { PaginationComponent } from '../../../shared/pagination/pagination.component';
 
 @Component({
   selector: 'app-frequencies',
-  imports: [CommonModule, CreateFrequencyComponent, UpdateFrequencyComponent, DatePipe],
+  imports: [CommonModule, CreateFrequencyComponent, UpdateFrequencyComponent, DatePipe, PaginationComponent],
   templateUrl: './frequencies.component.html',
   styleUrl: './frequencies.component.scss'
 })
 export class FrequenciesComponent implements OnInit {
-  frequencies!: PaginationFrequencyDTO;
+  frequencies: PaginationFrequencyDTO = { items: [], totalCount: 0, pageNumber: 1, pageSize: 10, totalPages: 0 };
   isLoading: boolean = false;
   openedCreateFrequency: boolean = false;
   selectedFrequency!: ShowFrequencyDTO;
   openedUpdateFrequency: boolean = false;
+  currentPage: number = 1;
+  pageSize: number = 10;
 
   constructor(
     private frequencyService: FrequencyService,
@@ -33,7 +36,7 @@ export class FrequenciesComponent implements OnInit {
 
   loadFrequencies(): void {
     this.isLoading = true;
-    this.frequencyService.apiFrequencyGet().subscribe(
+    this.frequencyService.apiFrequencyGet(this.currentPage, this.pageSize).subscribe(
       {
         next: (result) => {
           this.frequencies = result;
@@ -49,6 +52,17 @@ export class FrequenciesComponent implements OnInit {
         }
       }
     )
+  }
+
+  onPageChange(page: number): void {
+    this.currentPage = page;
+    this.loadFrequencies();
+  }
+
+  onPageSizeChange(size: number): void {
+    this.pageSize = size;
+    this.currentPage = 1;
+    this.loadFrequencies();
   }
 
   openCreateFrequency() {

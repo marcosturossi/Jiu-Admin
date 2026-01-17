@@ -8,19 +8,22 @@ import { DatePipe } from '@angular/common';
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
 import { PaginationLessonDTO } from '../../../generated_services';
+import { PaginationComponent } from '../../../shared/pagination/pagination.component';
 
 @Component({
   selector: 'app-lessons',
-  imports: [CommonModule, CreateLessonComponent, UpdateLessonComponent, DatePipe],
+  imports: [CommonModule, CreateLessonComponent, UpdateLessonComponent, DatePipe, PaginationComponent],
   templateUrl: './lessons.component.html',
   styleUrl: './lessons.component.scss'
 })
 export class LessonsComponent implements OnInit {
-  lessons!: PaginationLessonDTO;
+  lessons: PaginationLessonDTO = { items: [], totalCount: 0, pageNumber: 1, pageSize: 10, totalPages: 0 };
   isLoading: boolean = false;
   openedCreateLesson: boolean = false;
   selectedLesson!: ShowLessonDTO;
   openedUpdateLesson: boolean = false;
+  currentPage: number = 1;
+  pageSize: number = 10;
 
   constructor(
     private lessonService: LessonService,
@@ -35,7 +38,7 @@ export class LessonsComponent implements OnInit {
 
   loadLessons(): void {
     this.isLoading = true;
-    this.lessonService.apiLessonGet().subscribe(
+    this.lessonService.apiLessonGet(this.currentPage, this.pageSize).subscribe(
       {
         next: (result) => {
           this.lessons = result;
@@ -51,6 +54,17 @@ export class LessonsComponent implements OnInit {
         }
       }
     )
+  }
+
+  onPageChange(page: number): void {
+    this.currentPage = page;
+    this.loadLessons();
+  }
+
+  onPageSizeChange(size: number): void {
+    this.pageSize = size;
+    this.currentPage = 1;
+    this.loadLessons();
   }
 
   openCreateLesson() {

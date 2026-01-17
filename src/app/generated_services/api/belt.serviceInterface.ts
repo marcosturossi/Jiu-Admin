@@ -14,6 +14,7 @@ import { Observable }                                        from 'rxjs';
 
 import { ApiAuthLoginPost401Response } from '../model/models';
 import { CreateBeltDTO } from '../model/models';
+import { PaginationBeltDTO } from '../model/models';
 import { ShowBeltDTO } from '../model/models';
 import { UpdateBeltDTO } from '../model/models';
 import { ValidationProblemDetails } from '../model/models';
@@ -30,8 +31,10 @@ export interface BeltServiceInterface {
     /**
      * Get all belts
      * 
+     * @param pageNumber Page number (default: 1)
+     * @param pageSize Page size (default: 20, max: 100)
      */
-    apiBeltGet(extraHttpRequestParams?: any): Observable<Array<ShowBeltDTO>>;
+    apiBeltGet(pageNumber?: number, pageSize?: number, extraHttpRequestParams?: any): Observable<PaginationBeltDTO>;
 
     /**
      * Delete a belt

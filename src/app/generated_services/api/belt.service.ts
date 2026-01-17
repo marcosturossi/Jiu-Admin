@@ -22,6 +22,8 @@ import { ApiAuthLoginPost401Response } from '../model/apiAuthLoginPost401Respons
 // @ts-ignore
 import { CreateBeltDTO } from '../model/createBeltDTO';
 // @ts-ignore
+import { PaginationBeltDTO } from '../model/paginationBeltDTO';
+// @ts-ignore
 import { ShowBeltDTO } from '../model/showBeltDTO';
 // @ts-ignore
 import { UpdateBeltDTO } from '../model/updateBeltDTO';
@@ -104,13 +106,25 @@ export class BeltService implements BeltServiceInterface {
 
     /**
      * Get all belts
+     * @param pageNumber Page number (default: 1)
+     * @param pageSize Page size (default: 20, max: 100)
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiBeltGet(observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Array<ShowBeltDTO>>;
-    public apiBeltGet(observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<ShowBeltDTO>>>;
-    public apiBeltGet(observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<ShowBeltDTO>>>;
-    public apiBeltGet(observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public apiBeltGet(pageNumber?: number, pageSize?: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<PaginationBeltDTO>;
+    public apiBeltGet(pageNumber?: number, pageSize?: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<PaginationBeltDTO>>;
+    public apiBeltGet(pageNumber?: number, pageSize?: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<PaginationBeltDTO>>;
+    public apiBeltGet(pageNumber?: number, pageSize?: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+
+        let localVarQueryParameters = new HttpParams({encoder: this.encoder});
+        if (pageNumber !== undefined && pageNumber !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>pageNumber, 'pageNumber');
+        }
+        if (pageSize !== undefined && pageSize !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>pageSize, 'pageSize');
+        }
 
         let localVarHeaders = this.defaultHeaders;
 
@@ -149,9 +163,10 @@ export class BeltService implements BeltServiceInterface {
         }
 
         let localVarPath = `/api/Belt`;
-        return this.httpClient.request<Array<ShowBeltDTO>>('get', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<PaginationBeltDTO>('get', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
+                params: localVarQueryParameters,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,

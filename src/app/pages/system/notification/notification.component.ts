@@ -9,19 +9,22 @@ import { NotificationPriority } from '../../../generated_services/model/notifica
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
 import { PaginationNotificationDTO } from '../../../generated_services';
+import { PaginationComponent } from '../../../shared/pagination/pagination.component';
 
 @Component({
   selector: 'app-notification',
-  imports: [CommonModule, DatePipe, CreateNotificationComponent, UpdateNotificationComponent],
+  imports: [CommonModule, DatePipe, CreateNotificationComponent, UpdateNotificationComponent, PaginationComponent],
   templateUrl: './notification.component.html',
   styleUrl: './notification.component.scss'
 })
 export class NotificationComponent implements OnInit {
-  notifications!: PaginationNotificationDTO;;
+  notifications: PaginationNotificationDTO = { items: [], totalCount: 0, pageNumber: 1, pageSize: 10, totalPages: 0 };
   isLoading: boolean = false;
   openedCreateNotification: boolean = false;
   selectedNotification!: ShowNotificationDTO;
   openedUpdateNotification: boolean = false;
+  currentPage: number = 1;
+  pageSize: number = 10;
 
   constructor(
     private apiNotificationService: ApiNotificationService,
@@ -36,7 +39,7 @@ export class NotificationComponent implements OnInit {
 
   loadNotifications(): void {
     this.isLoading = true;
-    this.apiNotificationService.apiNotificationGet().subscribe(
+    this.apiNotificationService.apiNotificationGet(this.currentPage, this.pageSize).subscribe(
       {
         next: (result) => {
           this.notifications = result;
@@ -52,6 +55,17 @@ export class NotificationComponent implements OnInit {
         }
       }
     )
+  }
+
+  onPageChange(page: number): void {
+    this.currentPage = page;
+    this.loadNotifications();
+  }
+
+  onPageSizeChange(size: number): void {
+    this.pageSize = size;
+    this.currentPage = 1;
+    this.loadNotifications();
   }
 
   openCreateNotification() {
