@@ -16,7 +16,7 @@ export class PaginationComponent {
   @Output() pageChange = new EventEmitter<number>();
   @Output() pageSizeChange = new EventEmitter<number>();
 
-  pageSizeOptions = [5, 10, 20, 50, 100];
+  pageSizeOptions = [10, 25, 50, 100];
 
   get pages(): number[] {
     const pages: number[] = [];

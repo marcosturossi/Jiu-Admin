@@ -17,7 +17,7 @@ import { PaginationComponent } from '../../../shared/pagination/pagination.compo
   styleUrl: './students.component.scss'
 })
 export class StudentsComponent implements OnInit {
-  students: PaginationStudentDTO = { items: [], totalCount: 0, pageNumber: 1, pageSize: 10, totalPages: 0 };
+  students!: PaginationStudentDTO;
   isLoading: boolean = false;
   openedCreateStudent: boolean = false;
   selectedStudent!: ShowStudentDTO;
@@ -42,6 +42,7 @@ export class StudentsComponent implements OnInit {
       next: (result) => {
         this.students = result;
         this.isLoading = false;
+        console.log(this.students);
       },
       error: (error) => {
         console.log(error);
