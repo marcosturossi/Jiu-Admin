@@ -28,6 +28,24 @@
           <div class="mb-3">
             <label for="file" class="form-label">Arquivo (opcional)</label>
             <input id="file" class="form-control" type="file" (change)="onFileSelected($event)" />
+            @if (selectedFile) {
+              <div class="mt-2">
+                <div class="small text-muted">Arquivo selecionado: {{selectedFile.name}}</div>
+                <a class="btn btn-link p-0" [href]="filePreviewLink" target="_blank" rel="noopener">Abrir em nova aba</a>
+
+                @if (filePreviewType === 'image') {
+                  <img class="img-fluid mt-2" [src]="filePreviewUrl" alt="Pré-visualização do arquivo" />
+                }
+
+                @if (filePreviewType === 'pdf') {
+                  <iframe class="w-100 mt-2" style="height: 360px;" [src]="filePreviewUrl"></iframe>
+                }
+
+                @if (filePreviewType === 'other') {
+                  <div class="small text-muted mt-2">Pré-visualização indisponível para este tipo de arquivo.</div>
+                }
+              </div>
+            }
           </div>
           <div class="form-check mb-3">
             <input class="form-check-input" type="checkbox" formControlName="isApproved" id="isApprovedCheck">

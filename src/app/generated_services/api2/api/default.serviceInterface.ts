@@ -12,7 +12,6 @@ import { HttpHeaders }                                       from '@angular/comm
 
 import { Observable }                                        from 'rxjs';
 
-import { HTTPValidationError } from '../model/models';
 
 
 import { Configuration }                                     from '../configuration';
@@ -28,18 +27,6 @@ export interface DefaultServiceInterface {
      * Debug endpoint to check what headers are being received
      */
     debugHeadersDebugHeadersGet(extraHttpRequestParams?: any): Observable<any>;
-
-    /**
-     * Login
-     * Login endpoint for username/password authentication. This endpoint is used by Swagger UI for authentication.
-     * @param username 
-     * @param password 
-     * @param grantType 
-     * @param scope 
-     * @param clientId 
-     * @param clientSecret 
-     */
-    loginTokenPost(username: string, password: string, grantType?: string, scope?: string, clientId?: string, clientSecret?: string, extraHttpRequestParams?: any): Observable<any>;
 
     /**
      * Read Root

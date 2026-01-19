@@ -86,15 +86,6 @@ export class Configuration {
         else {
             this.credentials = {};
         }
-
-        // init default OAuth2PasswordBearer credential
-        if (!this.credentials['OAuth2PasswordBearer']) {
-            this.credentials['OAuth2PasswordBearer'] = () => {
-                return typeof this.accessToken === 'function'
-                    ? this.accessToken()
-                    : this.accessToken;
-            };
-        }
     }
 
     /**

@@ -39,7 +39,7 @@ export interface PersonsServiceInterface {
 
     /**
      * Delete Person
-     * Remove uma pessoa do sistema.  - **person_id**: ID da pessoa (UUID)  Executa um soft delete (marca como inativo).
+     * Remove uma pessoa do sistema.  - **person_id**: ID da pessoa (UUID)
      * @param personId 
      */
     deletePersonApiV1PersonsPersonIdDelete(personId: string, extraHttpRequestParams?: any): Observable<{ [key: string]: any; }>;
@@ -54,8 +54,10 @@ export interface PersonsServiceInterface {
     /**
      * List Persons
      * Lista todas as pessoas registradas no sistema.
+     * @param page Página atual
+     * @param pageSize Tamanho da página
      */
-    listPersonsApiV1PersonsGet(extraHttpRequestParams?: any): Observable<PersonListResponse>;
+    listPersonsApiV1PersonsGet(page?: number, pageSize?: number, extraHttpRequestParams?: any): Observable<PersonListResponse>;
 
     /**
      * Recognize Faces

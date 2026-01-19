@@ -1,4 +1,4 @@
-import { Component, Output, EventEmitter, OnInit } from '@angular/core';
+import { Component, Output, EventEmitter, OnInit, OnDestroy } from '@angular/core';
 import { MedicalClearanceService } from '../../../../generated_services/api/medicalClearance.service';
 import { StudentsService } from '../../../../generated_services/api/students.service';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -6,6 +6,7 @@ import { CreateMedicalClearanceDTO } from '../../../../generated_services/model/
 import { ShowStudentDTO } from '../../../../generated_services/model/showStudentDTO';
 import { NotificationService } from '../../../../services/notification.service';
 import { CommonModule } from '@angular/common';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-create-medical-clearance',
@@ -13,19 +14,23 @@ import { CommonModule } from '@angular/common';
   templateUrl: './create-medical-clearance.component.html',
   styleUrl: './create-medical-clearance.component.scss'
 })
-export class CreateMedicalClearanceComponent implements OnInit {
+export class CreateMedicalClearanceComponent implements OnInit, OnDestroy {
   @Output() closeEvent = new EventEmitter<void>();
   @Output() medicalClearanceCreated = new EventEmitter<void>();
   medicalClearanceForm!: FormGroup;
   students: ShowStudentDTO[] = [];
   isLoadingStudents: boolean = false;
   selectedFile: File | null = null;
+  filePreviewUrl: SafeResourceUrl | null = null;
+  filePreviewLink: string | null = null;
+  filePreviewType: 'image' | 'pdf' | 'other' | null = null;
 
   constructor(
     private medicalClearanceService: MedicalClearanceService,
     private studentsService: StudentsService,
     private formBuilder: FormBuilder,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private sanitizer: DomSanitizer
   ) {
     console.log('CreateMedicalClearanceComponent constructor called');
     this.medicalClearanceForm = this.formBuilder.group({
@@ -39,6 +44,10 @@ export class CreateMedicalClearanceComponent implements OnInit {
   ngOnInit(): void {
     console.log('CreateMedicalClearanceComponent ngOnInit called');
     this.loadStudents();
+  }
+
+  ngOnDestroy(): void {
+    this.clearFilePreview();
   }
 
   loadStudents(): void {
@@ -118,6 +127,42 @@ export class CreateMedicalClearanceComponent implements OnInit {
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
     this.selectedFile = input.files && input.files.length > 0 ? input.files[0] : null;
+    this.setFilePreview(this.selectedFile);
+  }
+
+  private setFilePreview(file: File | null): void {
+    this.clearFilePreview();
+
+    if (!file) {
+      return;
+    }
+
+    const previewUrl = URL.createObjectURL(file);
+    this.filePreviewLink = previewUrl;
+
+    if (file.type.startsWith('image/')) {
+      this.filePreviewType = 'image';
+      this.filePreviewUrl = this.sanitizer.bypassSecurityTrustResourceUrl(previewUrl);
+      return;
+    }
+
+    if (file.type === 'application/pdf') {
+      this.filePreviewType = 'pdf';
+      this.filePreviewUrl = this.sanitizer.bypassSecurityTrustResourceUrl(previewUrl);
+      return;
+    }
+
+    this.filePreviewType = 'other';
+  }
+
+  private clearFilePreview(): void {
+    if (this.filePreviewLink) {
+      URL.revokeObjectURL(this.filePreviewLink);
+    }
+
+    this.filePreviewLink = null;
+    this.filePreviewUrl = null;
+    this.filePreviewType = null;
   }
 
   finishCreate(): void {

@@ -38,7 +38,6 @@ import { Configuration }                                     from '../configurat
 import {
     PersonsServiceInterface
 } from './persons.serviceInterface';
-import { environment } from '../../../enviroments/environment';
 
 
 
@@ -47,7 +46,7 @@ import { environment } from '../../../enviroments/environment';
 })
 export class PersonsService implements PersonsServiceInterface {
 
-    protected basePath = environment.face_api;
+    protected basePath = 'http://localhost:8003';
     public defaultHeaders = new HttpHeaders();
     public configuration = new Configuration();
     public encoder: HttpParameterCodec;
@@ -141,13 +140,6 @@ export class PersonsService implements PersonsServiceInterface {
 
         let localVarHeaders = this.defaultHeaders;
 
-        let localVarCredential: string | undefined;
-        // authentication (OAuth2PasswordBearer) required
-        localVarCredential = this.configuration.lookupCredential('OAuth2PasswordBearer');
-        if (localVarCredential) {
-            localVarHeaders = localVarHeaders.set('Authorization', 'Bearer ' + localVarCredential);
-        }
-
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
@@ -227,7 +219,7 @@ export class PersonsService implements PersonsServiceInterface {
 
     /**
      * Delete Person
-     * Remove uma pessoa do sistema.  - **person_id**: ID da pessoa (UUID)  Executa um soft delete (marca como inativo).
+     * Remove uma pessoa do sistema.  - **person_id**: ID da pessoa (UUID)
      * @param personId 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
@@ -241,13 +233,6 @@ export class PersonsService implements PersonsServiceInterface {
         }
 
         let localVarHeaders = this.defaultHeaders;
-
-        let localVarCredential: string | undefined;
-        // authentication (OAuth2PasswordBearer) required
-        localVarCredential = this.configuration.lookupCredential('OAuth2PasswordBearer');
-        if (localVarCredential) {
-            localVarHeaders = localVarHeaders.set('Authorization', 'Bearer ' + localVarCredential);
-        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -314,13 +299,6 @@ export class PersonsService implements PersonsServiceInterface {
 
         let localVarHeaders = this.defaultHeaders;
 
-        let localVarCredential: string | undefined;
-        // authentication (OAuth2PasswordBearer) required
-        localVarCredential = this.configuration.lookupCredential('OAuth2PasswordBearer');
-        if (localVarCredential) {
-            localVarHeaders = localVarHeaders.set('Authorization', 'Bearer ' + localVarCredential);
-        }
-
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
@@ -372,22 +350,27 @@ export class PersonsService implements PersonsServiceInterface {
     /**
      * List Persons
      * Lista todas as pessoas registradas no sistema.
+     * @param page Página atual
+     * @param pageSize Tamanho da página
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public listPersonsApiV1PersonsGet(observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<PersonListResponse>;
-    public listPersonsApiV1PersonsGet(observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<PersonListResponse>>;
-    public listPersonsApiV1PersonsGet(observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<PersonListResponse>>;
-    public listPersonsApiV1PersonsGet(observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public listPersonsApiV1PersonsGet(page?: number, pageSize?: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<PersonListResponse>;
+    public listPersonsApiV1PersonsGet(page?: number, pageSize?: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<PersonListResponse>>;
+    public listPersonsApiV1PersonsGet(page?: number, pageSize?: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<PersonListResponse>>;
+    public listPersonsApiV1PersonsGet(page?: number, pageSize?: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+
+        let localVarQueryParameters = new HttpParams({encoder: this.encoder});
+        if (page !== undefined && page !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>page, 'page');
+        }
+        if (pageSize !== undefined && pageSize !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>pageSize, 'page_size');
+        }
 
         let localVarHeaders = this.defaultHeaders;
-
-        let localVarCredential: string | undefined;
-        // authentication (OAuth2PasswordBearer) required
-        localVarCredential = this.configuration.lookupCredential('OAuth2PasswordBearer');
-        if (localVarCredential) {
-            localVarHeaders = localVarHeaders.set('Authorization', 'Bearer ' + localVarCredential);
-        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -427,6 +410,7 @@ export class PersonsService implements PersonsServiceInterface {
         return this.httpClient.request<PersonListResponse>('get', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
+                params: localVarQueryParameters,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,
@@ -454,13 +438,6 @@ export class PersonsService implements PersonsServiceInterface {
         }
 
         let localVarHeaders = this.defaultHeaders;
-
-        let localVarCredential: string | undefined;
-        // authentication (OAuth2PasswordBearer) required
-        localVarCredential = this.configuration.lookupCredential('OAuth2PasswordBearer');
-        if (localVarCredential) {
-            localVarHeaders = localVarHeaders.set('Authorization', 'Bearer ' + localVarCredential);
-        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -557,13 +534,6 @@ export class PersonsService implements PersonsServiceInterface {
         }
 
         let localVarHeaders = this.defaultHeaders;
-
-        let localVarCredential: string | undefined;
-        // authentication (OAuth2PasswordBearer) required
-        localVarCredential = this.configuration.lookupCredential('OAuth2PasswordBearer');
-        if (localVarCredential) {
-            localVarHeaders = localVarHeaders.set('Authorization', 'Bearer ' + localVarCredential);
-        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -670,13 +640,6 @@ export class PersonsService implements PersonsServiceInterface {
 
         let localVarHeaders = this.defaultHeaders;
 
-        let localVarCredential: string | undefined;
-        // authentication (OAuth2PasswordBearer) required
-        localVarCredential = this.configuration.lookupCredential('OAuth2PasswordBearer');
-        if (localVarCredential) {
-            localVarHeaders = localVarHeaders.set('Authorization', 'Bearer ' + localVarCredential);
-        }
-
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
@@ -774,13 +737,6 @@ export class PersonsService implements PersonsServiceInterface {
         }
 
         let localVarHeaders = this.defaultHeaders;
-
-        let localVarCredential: string | undefined;
-        // authentication (OAuth2PasswordBearer) required
-        localVarCredential = this.configuration.lookupCredential('OAuth2PasswordBearer');
-        if (localVarCredential) {
-            localVarHeaders = localVarHeaders.set('Authorization', 'Bearer ' + localVarCredential);
-        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
