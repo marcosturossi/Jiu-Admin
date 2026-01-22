@@ -1,0 +1,21 @@
+<ng-container *ngIf="safeBlobUrl">
+  <img *ngIf="isImage" [src]="safeBlobUrl" alt="Image preview" style="max-width: 100%; max-height: 80vh;" />
+  <ng-container *ngIf="isPdf">
+    <ng-container *ngIf="safeResourceBlobUrl; else pdfFallback">
+      <object [data]="safeResourceBlobUrl" type="application/pdf" width="100%" height="600px">
+        <iframe [src]="safeResourceBlobUrl" width="100%" height="600px">
+          <p>Your browser does not support PDFs. <a [href]="safeBlobUrl" target="_blank">Download PDF</a>.</p>
+        </iframe>
+      </object>
+    </ng-container>
+    <ng-template #pdfFallback>
+      <p>Unable to display PDF preview. <a [href]="safeBlobUrl" target="_blank">Download PDF</a>.</p>
+    </ng-template>
+  </ng-container>
+  <ng-container *ngIf="!isImage && !isPdf">
+    <a [href]="safeBlobUrl" download>Download file</a>
+  </ng-container>
+</ng-container>
+<ng-container *ngIf="!safeBlobUrl">
+  <p>No file to display.</p>
+</ng-container>

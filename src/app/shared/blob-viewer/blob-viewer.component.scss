@@ -1,0 +1,12 @@
+/* Simple styles for blob viewer */
+:host {
+  display: block;
+  width: 100%;
+}
+img {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+object, iframe {
+  border: none;
+}

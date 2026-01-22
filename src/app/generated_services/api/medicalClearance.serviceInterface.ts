@@ -13,6 +13,7 @@ import { HttpHeaders }                                       from '@angular/comm
 import { Observable }                                        from 'rxjs';
 
 import { ApiAuthLoginPost401Response } from '../model/models';
+import { ApiMedicalClearanceIdAttachmentGet200Response } from '../model/models';
 import { CreateMedicalClearanceDTO } from '../model/models';
 import { MedicalClearanceAttachmentResponseDTO } from '../model/models';
 import { MedicalClearanceStatsDTO } from '../model/models';
@@ -55,7 +56,7 @@ export interface MedicalClearanceServiceInterface {
      * 
      * @param id The medical clearance ID
      */
-    apiMedicalClearanceIdAttachmentGet(id: string, extraHttpRequestParams?: any): Observable<any>;
+    apiMedicalClearanceIdAttachmentGet(id: string, extraHttpRequestParams?: any): Observable<ApiMedicalClearanceIdAttachmentGet200Response>;
 
     /**
      * Upload attachment for medical clearance

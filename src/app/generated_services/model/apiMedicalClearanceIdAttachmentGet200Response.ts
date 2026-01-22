@@ -10,10 +10,9 @@
  */
 
 
-export interface CreateMedicalClearanceDTO { 
-    studentId: string;
-    expiresAt: string;
-    isApproved?: boolean;
-    isActive?: boolean;
-}
+/**
+ * @type ApiMedicalClearanceIdAttachmentGet200Response
+ * @export
+ */
+export type ApiMedicalClearanceIdAttachmentGet200Response = Blob;
 

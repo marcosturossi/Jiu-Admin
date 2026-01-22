@@ -87,6 +87,9 @@
                 <button type="button" class="btn btn-sm btn-outline-danger" (click)="deleteMedicalClearance(clearance)" title="Excluir">
                   <img src="../../../../assets/icons/structural-icons/trash.svg" alt="Excluir" style="width: 16px; height: 16px;" />
                 </button>
+                <button *ngIf="clearance.hasAttachment" type="button" class="btn btn-sm btn-outline-secondary" (click)="openAttachment(clearance)" title="Visualizar Arquivo">
+                  <i class="bi bi-eye"></i>
+                </button>
               </div>
             </td>
           </tr>
@@ -130,3 +133,18 @@
 <app-update-medical-clearance [medicalClearance]="selectedMedicalClearance" (closeEvent)="closeUpdateMedicalClearance()" (medicalClearanceUpdated)="onMedicalClearanceUpdated()">
 </app-update-medical-clearance>
 }
+
+<!-- Modal for viewing attachment -->
+<div *ngIf="selectedAttachmentBlob" class="modal fade show d-block" tabindex="-1" style="background: rgba(0,0,0,0.5);">
+  <div class="modal-dialog modal-xl modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Visualizar Atestado</h5>
+        <button type="button" class="btn-close" (click)="closeAttachmentViewer()"></button>
+      </div>
+      <div class="modal-body">
+        <app-blob-viewer [blob]="selectedAttachmentBlob" [mimeType]="selectedAttachmentMimeType"></app-blob-viewer>
+      </div>
+    </div>
+  </div>
+</div>

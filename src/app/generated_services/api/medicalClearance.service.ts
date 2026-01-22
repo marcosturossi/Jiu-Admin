@@ -20,6 +20,8 @@ import { Observable }                                        from 'rxjs';
 // @ts-ignore
 import { ApiAuthLoginPost401Response } from '../model/apiAuthLoginPost401Response';
 // @ts-ignore
+import { ApiMedicalClearanceIdAttachmentGet200Response } from '../model/apiMedicalClearanceIdAttachmentGet200Response';
+// @ts-ignore
 import { CreateMedicalClearanceDTO } from '../model/createMedicalClearanceDTO';
 // @ts-ignore
 import { MedicalClearanceAttachmentResponseDTO } from '../model/medicalClearanceAttachmentResponseDTO';
@@ -326,10 +328,10 @@ export class MedicalClearanceService implements MedicalClearanceServiceInterface
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiMedicalClearanceIdAttachmentGet(id: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any>;
-    public apiMedicalClearanceIdAttachmentGet(id: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<any>>;
-    public apiMedicalClearanceIdAttachmentGet(id: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<any>>;
-    public apiMedicalClearanceIdAttachmentGet(id: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public apiMedicalClearanceIdAttachmentGet(id: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/octet-stream' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<ApiMedicalClearanceIdAttachmentGet200Response>;
+    public apiMedicalClearanceIdAttachmentGet(id: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/octet-stream' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<ApiMedicalClearanceIdAttachmentGet200Response>>;
+    public apiMedicalClearanceIdAttachmentGet(id: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/octet-stream' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<ApiMedicalClearanceIdAttachmentGet200Response>>;
+    public apiMedicalClearanceIdAttachmentGet(id: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/octet-stream' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         if (id === null || id === undefined) {
             throw new Error('Required parameter id was null or undefined when calling apiMedicalClearanceIdAttachmentGet.');
         }
@@ -340,6 +342,7 @@ export class MedicalClearanceService implements MedicalClearanceServiceInterface
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
+                'application/octet-stream',
                 'application/json'
             ];
             localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
@@ -371,7 +374,7 @@ export class MedicalClearanceService implements MedicalClearanceServiceInterface
         }
 
         let localVarPath = `/api/MedicalClearance/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: "uuid"})}/attachment`;
-        return this.httpClient.request<any>('get', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<ApiMedicalClearanceIdAttachmentGet200Response>('get', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 responseType: <any>responseType_,

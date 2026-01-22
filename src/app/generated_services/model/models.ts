@@ -1,4 +1,5 @@
 export * from './apiAuthLoginPost401Response';
+export * from './apiMedicalClearanceIdAttachmentGet200Response';
 export * from './baseBeltDTO';
 export * from './baseFrequencyDTO';
 export * from './baseGraduationDTO';

@@ -9,10 +9,12 @@ import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
 import { PaginationMedicalClearanceDTO } from '../../../generated_services';
 import { PaginationComponent } from '../../../shared/pagination/pagination.component';
+import { BlobViewerComponent } from '../../../shared/blob-viewer/blob-viewer.component';
 
 @Component({
   selector: 'app-medical-clearances',
-  imports: [CommonModule, CreateMedicalClearanceComponent, UpdateMedicalClearanceComponent, DatePipe, PaginationComponent],
+  imports: [CommonModule, CreateMedicalClearanceComponent, UpdateMedicalClearanceComponent, PaginationComponent, BlobViewerComponent],
+  providers: [DatePipe],
   templateUrl: './medical-clearances.component.html',
   styleUrl: './medical-clearances.component.scss'
 })
@@ -24,6 +26,8 @@ export class MedicalClearancesComponent implements OnInit {
   openedUpdateMedicalClearance: boolean = false;
   currentPage: number = 1;
   pageSize: number = 10;
+  selectedAttachmentBlob?: Blob;
+  selectedAttachmentMimeType?: string;
 
   constructor(
     private medicalClearanceService: MedicalClearanceService,
@@ -119,6 +123,35 @@ export class MedicalClearancesComponent implements OnInit {
     }
   }
 
+  openAttachment(clearance: ShowMedicalClearanceDTO) {
+    if (!clearance.id) return;
+    this.isLoading = true;
+    this.medicalClearanceService.apiMedicalClearanceIdAttachmentGet(
+      clearance.id,
+      'body',
+      false,
+      { httpHeaderAccept: 'application/octet-stream' }
+    ).subscribe({
+      next: (blob: Blob) => {
+        const mime = clearance.attachmentContentType || 'application/pdf';
+        // Ensure the blob has the correct MIME type so the browser can render it instead of forcing download
+        this.selectedAttachmentBlob = blob.type === mime ? blob : new Blob([blob], { type: mime });
+        this.selectedAttachmentMimeType = mime;
+        this.isLoading = false;
+      },
+      error: (error) => {
+        this.isLoading = false;
+        console.log(error);
+        this.notificationService.showError('Erro ao carregar arquivo', 'Não foi possível carregar o arquivo do atestado.');
+      }
+    });
+  }
+
+  closeAttachmentViewer() {
+    this.selectedAttachmentBlob = undefined;
+    this.selectedAttachmentMimeType = undefined;
+  }
+
   getStatusBadgeClass(status?: number): string {
     switch (status) {
       case 0: // Pending
@@ -134,6 +167,10 @@ export class MedicalClearancesComponent implements OnInit {
       default:
         return 'bg-outline-secondary text-secondary';
     }
+  }
+
+  getClearanceId(clearance: ShowMedicalClearanceDTO): string {
+    return clearance.id ? clearance.id : '';
   }
 
   getStatusLabel(status?: number): string {

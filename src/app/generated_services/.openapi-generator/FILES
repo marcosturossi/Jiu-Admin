@@ -29,6 +29,7 @@ encoder.ts
 git_push.sh
 index.ts
 model/apiAuthLoginPost401Response.ts
+model/apiMedicalClearanceIdAttachmentGet200Response.ts
 model/baseBeltDTO.ts
 model/baseFrequencyDTO.ts
 model/baseGraduationDTO.ts
