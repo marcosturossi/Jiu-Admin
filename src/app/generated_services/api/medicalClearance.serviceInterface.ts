@@ -16,7 +16,6 @@ import { ApiAuthLoginPost401Response } from '../model/models';
 import { ApiMedicalClearanceIdAttachmentGet200Response } from '../model/models';
 import { CreateMedicalClearanceDTO } from '../model/models';
 import { MedicalClearanceAttachmentResponseDTO } from '../model/models';
-import { MedicalClearanceStatsDTO } from '../model/models';
 import { PaginationMedicalClearanceDTO } from '../model/models';
 import { ShowMedicalClearanceDTO } from '../model/models';
 import { UpdateMedicalClearanceDTO } from '../model/models';
@@ -108,12 +107,6 @@ export interface MedicalClearanceServiceInterface {
      * @param createMedicalClearanceDTO The medical clearance to create
      */
     apiMedicalClearancePost(createMedicalClearanceDTO?: CreateMedicalClearanceDTO, extraHttpRequestParams?: any): Observable<ShowMedicalClearanceDTO>;
-
-    /**
-     * Get medical clearance statistics
-     * 
-     */
-    apiMedicalClearanceStatsGet(extraHttpRequestParams?: any): Observable<MedicalClearanceStatsDTO>;
 
     /**
      * Get current valid medical clearance for a student

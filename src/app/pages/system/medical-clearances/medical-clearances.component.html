@@ -45,7 +45,6 @@
               <div>
                 <strong class="text-primary d-block">{{clearance.student?.firstName}} {{clearance.student?.lastName}}</strong>
                 <div class="d-flex flex-wrap gap-1 mt-1">
-                  <span class="badge {{getStatusBadgeClass(clearance.status)}} border">{{getStatusLabel(clearance.status)}}</span>
                   @if (clearance.isExpired) {
                     <span class="badge bg-outline-danger text-danger border">Expirado</span>
                   }
@@ -60,7 +59,6 @@
             </td>
             
             <td class="d-none d-md-table-cell">
-              <span class="badge {{getStatusBadgeClass(clearance.status)}} border">{{getStatusLabel(clearance.status)}}</span>
               @if (clearance.isExpired) {
                 <span class="badge bg-outline-danger text-danger border ms-1">Expirado</span>
               }

@@ -23,9 +23,10 @@
         <thead class="table-light">
           <tr>
             <th scope="col" class="d-none d-md-table-cell">Aluno</th>
+            <th scope="col" class="d-none d-lg-table-cell">Aula</th>
             <th scope="col" class="d-table-cell d-md-none">Frequência</th>
             <th scope="col" class="d-none d-lg-table-cell">Data de Criação</th>
-            <th scope="col" class="d-none d-lg-table-cell">Aula</th>
+            
             <th scope="col" class="text-center">Ações</th>
           </tr>
         </thead>
@@ -52,13 +53,14 @@
               </div>
             </td>
             
+           
             <td class="d-none d-lg-table-cell">
+              <span class="badge bg-outline-primary text-primary border">{{frequency.lessonTitle}}</span>
+            </td>
+             <td class="d-none d-lg-table-cell">
               <small>
                 <i class="bi bi-calendar me-1"></i>{{frequency.createdAt | date:'dd/MM/yyyy HH:mm'}}
               </small>
-            </td>
-            <td class="d-none d-lg-table-cell">
-              <span class="badge bg-outline-primary text-primary border">{{frequency.lessonTitle}}</span>
             </td>
             <td class="text-center">
               <div class="btn-group" role="group">

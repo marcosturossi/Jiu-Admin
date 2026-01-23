@@ -9,13 +9,11 @@
  * Do not edit the class manually.
  */
 import { ShowStudentDTO } from './showStudentDTO';
-import { MedicalClearanceStatus } from './medicalClearanceStatus';
 
 
 export interface ShowMedicalClearanceDTO { 
     id?: string;
     studentId?: string;
-    status?: MedicalClearanceStatus;
     createdAt?: string;
     updatedAt?: string | null;
     attachmentFileName?: string | null;
@@ -30,7 +28,4 @@ export interface ShowMedicalClearanceDTO {
     isApproved?: boolean;
     isActive?: boolean;
 }
-export namespace ShowMedicalClearanceDTO {
-}
-
 

@@ -56,9 +56,6 @@ model/loginRequest.ts
 model/logoutRequest.ts
 model/markAsReadDTO.ts
 model/medicalClearanceAttachmentResponseDTO.ts
-model/medicalClearanceStatsDTO.ts
-model/medicalClearanceStatsDTOClearancesByStatus.ts
-model/medicalClearanceStatus.ts
 model/models.ts
 model/notificationStatsDTO.ts
 model/notificationStatsDTONotificationsByType.ts
