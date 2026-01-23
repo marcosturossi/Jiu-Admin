@@ -79,9 +79,6 @@
             </td>
             <td class="text-center">
               <div class="btn-group" role="group">
-                <button type="button" class="btn btn-sm btn-outline-primary" (click)="openUpdateMedicalClearance(clearance)" title="Editar">
-                  <img src="../../../../assets/icons/structural-icons/pencil-square.svg" alt="Editar" style="width: 16px; height: 16px;" />
-                </button>
                 <button type="button" class="btn btn-sm btn-outline-danger" (click)="deleteMedicalClearance(clearance)" title="Excluir">
                   <img src="../../../../assets/icons/structural-icons/trash.svg" alt="Excluir" style="width: 16px; height: 16px;" />
                 </button>
@@ -127,10 +124,6 @@
 </app-create-medical-clearance>
 }
 
-@if(openedUpdateMedicalClearance){
-<app-update-medical-clearance [medicalClearance]="selectedMedicalClearance" (closeEvent)="closeUpdateMedicalClearance()" (medicalClearanceUpdated)="onMedicalClearanceUpdated()">
-</app-update-medical-clearance>
-}
 
 <!-- Modal for viewing attachment -->
 <div *ngIf="selectedAttachmentBlob" class="modal fade show d-block" tabindex="-1" style="background: rgba(0,0,0,0.5);">

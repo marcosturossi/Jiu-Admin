@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { MedicalClearanceService } from '../../../generated_services/api/medicalClearance.service';
 import { ShowMedicalClearanceDTO } from '../../../generated_services/model/showMedicalClearanceDTO';
 import { CreateMedicalClearanceComponent } from './create-medical-clearance/create-medical-clearance.component';
-import { UpdateMedicalClearanceComponent } from './update-medical-clearance/update-medical-clearance.component';
 import { DatePipe } from '@angular/common';
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
@@ -13,7 +12,7 @@ import { BlobViewerComponent } from '../../../shared/blob-viewer/blob-viewer.com
 
 @Component({
   selector: 'app-medical-clearances',
-  imports: [CommonModule, CreateMedicalClearanceComponent, UpdateMedicalClearanceComponent, PaginationComponent, BlobViewerComponent],
+  imports: [CommonModule, CreateMedicalClearanceComponent, PaginationComponent, BlobViewerComponent],
   providers: [DatePipe],
   templateUrl: './medical-clearances.component.html',
   styleUrl: './medical-clearances.component.scss'
@@ -23,7 +22,6 @@ export class MedicalClearancesComponent implements OnInit {
   isLoading: boolean = false;
   openedCreateMedicalClearance: boolean = false;
   selectedMedicalClearance!: ShowMedicalClearanceDTO;
-  openedUpdateMedicalClearance: boolean = false;
   currentPage: number = 1;
   pageSize: number = 10;
   selectedAttachmentBlob?: Blob;
@@ -77,24 +75,12 @@ export class MedicalClearancesComponent implements OnInit {
     this.openedCreateMedicalClearance = false
   }
 
-  openUpdateMedicalClearance(medicalClearance: ShowMedicalClearanceDTO) {
-    this.selectedMedicalClearance = medicalClearance
-    this.openedUpdateMedicalClearance = true
-  }
-
-  closeUpdateMedicalClearance() {
-    this.openedUpdateMedicalClearance = false
-  }
 
   onMedicalClearanceCreated() {
     this.loadMedicalClearances();
     this.closeCreateMedicalClearance();
   }
 
-  onMedicalClearanceUpdated() {
-    this.loadMedicalClearances();
-    this.closeUpdateMedicalClearance();
-  }
 
   deleteMedicalClearance(medicalClearance: ShowMedicalClearanceDTO) {
     this.notificationService.showWarning(
