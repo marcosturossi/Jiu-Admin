@@ -38,7 +38,7 @@ import { Configuration }                                     from '../configurat
 import {
     AuthServiceInterface
 } from './auth.serviceInterface';
-
+import { environment } from '../../enviroments/environment';
 
 
 @Injectable({
@@ -46,7 +46,7 @@ import {
 })
 export class AuthService implements AuthServiceInterface {
 
-    protected basePath = 'http://localhost:8080';
+    protected basePath = environment.server;
     public defaultHeaders = new HttpHeaders();
     public configuration = new Configuration();
     public encoder: HttpParameterCodec;

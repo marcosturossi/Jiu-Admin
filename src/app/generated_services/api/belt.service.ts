@@ -36,6 +36,7 @@ import { Configuration }                                     from '../configurat
 import {
     BeltServiceInterface
 } from './belt.serviceInterface';
+import { environment } from '../../enviroments/environment';
 
 
 
@@ -44,7 +45,7 @@ import {
 })
 export class BeltService implements BeltServiceInterface {
 
-    protected basePath = 'http://localhost:8080';
+    protected basePath = environment.server;
     public defaultHeaders = new HttpHeaders();
     public configuration = new Configuration();
     public encoder: HttpParameterCodec;
