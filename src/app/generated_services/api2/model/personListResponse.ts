@@ -16,5 +16,8 @@ import { PersonDetailResponse } from './personDetailResponse';
  */
 export interface PersonListResponse { 
     persons: Array<PersonDetailResponse>;
+    total: number;
+    page: number;
+    page_size: number;
 }
 

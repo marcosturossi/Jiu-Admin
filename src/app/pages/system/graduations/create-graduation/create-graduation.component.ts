@@ -4,7 +4,7 @@ import { GraduationService } from '../../../../generated_services/api/graduation
 import { BeltService } from '../../../../generated_services/api/belt.service';
 import { StudentsService } from '../../../../generated_services/api/students.service';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { CreateGraduationDTO, ShowBeltDTO, ShowStudentDTO } from '../../../../generated_services';
+import { CreateGraduationDTO, PaginationBeltDTO, PaginationStudentDTO, ShowBeltDTO, ShowStudentDTO } from '../../../../generated_services';
 import { NotificationService } from '../../../../services/notification.service';
 
 @Component({
@@ -16,8 +16,8 @@ import { NotificationService } from '../../../../services/notification.service';
 export class CreateGraduationComponent implements OnInit {
   @Output() closeEvent = new EventEmitter<void>();
   graduationForm!: FormGroup;
-  belts: ShowBeltDTO[] = [];
-  students: ShowStudentDTO[] = [];
+  belts!: PaginationBeltDTO;
+  students!: PaginationStudentDTO;
 
   constructor(
     private graduationService: GraduationService,
@@ -79,8 +79,8 @@ export class CreateGraduationComponent implements OnInit {
 
     this.graduationService.apiGraduationPost(this.formToCreateGraduation()).subscribe({
       next: result => {
-        const selectedStudent = this.students.find(s => s.id === this.graduationForm.value.studentId);
-        const selectedBelt = this.belts.find(b => b.id === this.graduationForm.value.beltId);
+        const selectedStudent = this.students.items!.find(s => s.id === this.graduationForm.value.studentId);
+        const selectedBelt = this.belts.items!.find(b => b.id === this.graduationForm.value.beltId);
         this.notificationService.showSuccess(
           'Graduação Criada!', 
           `${selectedStudent?.firstName} ${selectedStudent?.lastName} foi graduado(a) para faixa ${selectedBelt?.color}.`

@@ -34,7 +34,7 @@
           </tr>
         </thead>
         <tbody>
-          @for (notification of notifications; track notification.id){
+          @for (notification of notifications.items; track notification.id){
           <tr>
             <!-- Desktop view - full title and message -->
             <td class="d-none d-lg-table-cell">
@@ -52,7 +52,6 @@
                 <small class="text-muted d-block mb-1">{{notification.message}}</small>
                 <div class="d-flex flex-wrap gap-1">
                   <span class="badge bg-outline-secondary text-dark border">{{getNotificationTypeText(notification.type)}}</span>
-                  <span [class]="getPriorityClass(notification.priority)">{{getNotificationPriorityText(notification.priority)}}</span>
                   <span [class]="getStatusClass(notification.isActive)" class="d-md-none">{{getStatusText(notification.isActive)}}</span>
                 </div>
                 <small class="text-muted d-block mt-1">
@@ -67,11 +66,7 @@
             <td class="d-none d-md-table-cell">
               <span class="badge bg-outline-primary text-primary border">{{getNotificationTypeText(notification.type)}}</span>
             </td>
-            <td class="d-none d-md-table-cell">
-              <span [class]="getPriorityClass(notification.priority)">
-                {{getNotificationPriorityText(notification.priority)}}
-              </span>
-            </td>
+    
             <td class="d-none d-lg-table-cell">
               <span [class]="getStatusClass(notification.isActive)">
                 {{getStatusText(notification.isActive)}}
@@ -103,7 +98,7 @@
     </div>
 
     <!-- Empty state -->
-    @if (notifications.length === 0) {
+    @if (notifications.items!.length === 0) {
       <div class="text-center py-5">
         <div class="mb-3">
           <i class="bi bi-bell-slash display-1 text-muted"></i>
@@ -111,6 +106,18 @@
         <h5 class="text-muted">Nenhuma notificação encontrada</h5>
         <p class="text-muted">Clique em "Nova Notificação" para criar sua primeira notificação.</p>
       </div>
+    }
+
+    <!-- Pagination -->
+    @if (notifications.items!.length > 0) {
+      <app-pagination
+        [currentPage]="currentPage"
+        [totalPages]="notifications.totalPages ?? 1"
+        [pageSize]="pageSize"
+        [totalItems]="notifications.totalCount ?? 0"
+        (pageChange)="onPageChange($event)"
+        (pageSizeChange)="onPageSizeChange($event)">
+      </app-pagination>
     }
     }
   </div>

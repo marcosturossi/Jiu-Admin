@@ -32,7 +32,7 @@
           </tr>
         </thead>
         <tbody>
-          @for (student of students; track student.id){
+          @for (student of students.items!; track student.id){
           <tr>
             <!-- Desktop view - full name -->
             <td class="d-none d-lg-table-cell">
@@ -86,7 +86,7 @@
     </div>
 
     <!-- Empty state -->
-    @if (students.length === 0) {
+    @if (students.items!.length === 0) {
       <div class="text-center py-5">
         <div class="mb-3">
           <i class="bi bi-people display-1 text-muted"></i>
@@ -94,6 +94,18 @@
         <h5 class="text-muted">Nenhum aluno encontrado</h5>
         <p class="text-muted">Clique em "Novo Aluno" para cadastrar o primeiro aluno.</p>
       </div>
+    }
+
+    <!-- Pagination -->
+    @if (students.items!.length > 0) {
+      <app-pagination
+        [currentPage]="currentPage"
+        [totalPages]="students.totalPages ?? 1"
+        [pageSize]="pageSize"
+        [totalItems]="students.totalCount ?? 0"
+        (pageChange)="onPageChange($event)"
+        (pageSizeChange)="onPageSizeChange($event)">
+      </app-pagination>
     }
     }
   </div>

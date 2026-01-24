@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { GraduationRequirementsService, ShowGraduationRequirementsDTO, BeltService, ShowBeltDTO } from '../../../generated_services';
+import { GraduationRequirementsService, ShowGraduationRequirementsDTO, BeltService, ShowBeltDTO, PaginationBeltDTO } from '../../../generated_services';
 import { CreateGraduationRequirementComponent } from './create-graduation-requirement/create-graduation-requirement.component';
 import { UpdateGraduationRequirementComponent } from './update-graduation-requirement/update-graduation-requirement.component';
 import { SubnavService } from '../../../services/subnav.service';
@@ -14,7 +14,7 @@ import { NotificationService } from '../../../services/notification.service';
 })
 export class GraduationRequirementsComponent implements OnInit {
   graduationRequirements: ShowGraduationRequirementsDTO[] = [];
-  belts: ShowBeltDTO[] = [];
+  belts!: PaginationBeltDTO;
   isLoading: boolean = false;
   openedCreateGraduationRequirement: boolean = false;
   selectedGraduationRequirement!: ShowGraduationRequirementsDTO;
@@ -98,7 +98,7 @@ export class GraduationRequirementsComponent implements OnInit {
   }
 
   getBeltColor(beltId: string): string {
-    const belt = this.belts.find(b => b.id === beltId);
+    const belt = this.belts.items!.find(b => b.id === beltId);
     return belt ? belt.color : 'N/A';
   }
 

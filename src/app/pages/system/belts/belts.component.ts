@@ -1,23 +1,26 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { BeltService, ShowBeltDTO } from '../../../generated_services';
+import { BeltService, ShowBeltDTO, PaginationBeltDTO } from '../../../generated_services';
 import { CreateBeltComponent } from './create-belt/create-belt.component';
 import { UpdateBeltComponent } from './update-belt/update-belt.component';
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
+import { PaginationComponent } from '../../../shared/pagination/pagination.component';
 
 @Component({
   selector: 'app-belts',
-  imports: [CommonModule, CreateBeltComponent, UpdateBeltComponent],
+  imports: [CommonModule, CreateBeltComponent, UpdateBeltComponent, PaginationComponent],
   templateUrl: './belts.component.html',
   styleUrl: './belts.component.scss'
 })
 export class BeltsComponent implements OnInit {
-  belts: ShowBeltDTO[] = [];
+  belts: PaginationBeltDTO = { items: [], totalCount: 0, pageNumber: 1, pageSize: 10, totalPages: 0 };
   isLoading: boolean = false;
   openedCreateBelt: boolean = false;
   selectedBelt!: ShowBeltDTO;
   openedUpdateBelt: boolean = false;
+  currentPage: number = 1;
+  pageSize: number = 10;
 
   constructor(
     private beltService: BeltService,
@@ -32,14 +35,10 @@ export class BeltsComponent implements OnInit {
 
   loadBelts(): void {
     this.isLoading = true;
-    this.beltService.apiBeltGet().subscribe({
+    this.beltService.apiBeltGet(this.currentPage, this.pageSize).subscribe({
       next: (result) => {
         this.belts = result;
         this.isLoading = false;
-        this.notificationService.showInfo(
-          'Dados Atualizados', 
-          `${result.length} faixa(s) carregada(s).`
-        );
       },
       error: (error) => {
         console.log(error);
@@ -50,6 +49,17 @@ export class BeltsComponent implements OnInit {
         );
       }
     });
+  }
+
+  onPageChange(page: number): void {
+    this.currentPage = page;
+    this.loadBelts();
+  }
+
+  onPageSizeChange(size: number): void {
+    this.pageSize = size;
+    this.currentPage = 1;
+    this.loadBelts();
   }
 
   openCreateBelt() {

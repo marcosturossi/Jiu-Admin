@@ -65,8 +65,6 @@ export class UpdateNotificationComponent implements OnInit {
       title: this.notification.title,
       message: this.notification.message,
       type: this.notification.type,
-      priority: this.notification.priority,
-      userId: this.notification.userId,
       isActive: this.notification.isActive,
       expiresAt: expiresAt,
       actionUrl: this.notification.actionUrl,

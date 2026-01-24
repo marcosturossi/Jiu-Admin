@@ -1,21 +1,24 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { GraduationService } from '../../../generated_services/api/graduation.service';
-import { ShowGraduationDTO } from '../../../generated_services';
+import { PaginationGraduationDTO, ShowGraduationDTO } from '../../../generated_services';
 import { UpdateGraduationComponent } from './update-graduation/update-graduation.component';
 import { CreateGraduationComponent } from './create-graduation/create-graduation.component';
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
+import { PaginationComponent } from '../../../shared/pagination/pagination.component';
 
 @Component({
   selector: 'app-graduations',
-  imports: [CommonModule, UpdateGraduationComponent, CreateGraduationComponent],
+  imports: [CommonModule, UpdateGraduationComponent, CreateGraduationComponent, PaginationComponent],
   templateUrl: './graduations.component.html',
   styleUrl: './graduations.component.scss'
 })
 export class GraduationsComponent implements OnInit {
-  graduations: ShowGraduationDTO[] = []
+  graduations: PaginationGraduationDTO = { items: [], totalCount: 0, pageNumber: 1, pageSize: 10, totalPages: 0 };
   isLoading: boolean = false;
+  currentPage: number = 1;
+  pageSize: number = 10;
 
   openedCreateGraduation: boolean = false
   openedUpdateGraduation: boolean = false
@@ -36,7 +39,7 @@ export class GraduationsComponent implements OnInit {
 
   loadGraduations(): void {
     this.isLoading = true;
-    this.graduationService.apiGraduationGet().subscribe(
+    this.graduationService.apiGraduationGet(this.currentPage, this.pageSize).subscribe(
       {
         next: (result) => {
           this.graduations = result;
@@ -52,6 +55,17 @@ export class GraduationsComponent implements OnInit {
         }
       }
     )
+  }
+
+  onPageChange(page: number): void {
+    this.currentPage = page;
+    this.loadGraduations();
+  }
+
+  onPageSizeChange(size: number): void {
+    this.pageSize = size;
+    this.currentPage = 1;
+    this.loadGraduations();
   }
 
   openCreateGraduation() {

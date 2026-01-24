@@ -5,13 +5,14 @@ import { PersonListResponse } from '../../../generated_services/api2/model/perso
 import { CreatePersonsComponent } from './create-persons/create-persons.component';
 import { UpdatePersonsComponent } from './update-persons/update-persons.component';
 import { SubnavService } from '../../../services/subnav.service';
+import { PaginationComponent } from '../../../shared/pagination/pagination.component';
 
 @Component({
   selector: 'app-face-recognition',
   templateUrl: './face-recognition.component.html',
   styleUrl: './face-recognition.component.scss',
   standalone: true,
-  imports: [CreatePersonsComponent, UpdatePersonsComponent]
+  imports: [CreatePersonsComponent, UpdatePersonsComponent, PaginationComponent]
 })
 export class FaceRecognitionComponent implements OnInit {
   persons: PersonDetailResponse[] = [];
@@ -20,6 +21,10 @@ export class FaceRecognitionComponent implements OnInit {
   showCreateModal = false;
   showUpdateModal = false;
   selectedPerson: PersonDetailResponse | null = null;
+  currentPage = 1;
+  pageSize = 10;
+  totalPages = 1;
+  totalItems = 0;
 
   constructor(
     private personsService: PersonsService,
@@ -33,9 +38,13 @@ export class FaceRecognitionComponent implements OnInit {
 
   loadPersons(): void {
     this.isLoading = true;
-    this.personsService.listPersonsApiV1PersonsGet().subscribe({
+    this.personsService.listPersonsApiV1PersonsGet(this.currentPage, this.pageSize).subscribe({
       next: (result: PersonListResponse) => {
-        this.persons = result.persons;
+        this.persons = result.persons || [];
+        this.totalItems = result.total ?? this.persons.length;
+        this.pageSize = result.page_size ?? this.pageSize;
+        this.currentPage = result.page ?? this.currentPage;
+        this.totalPages = Math.max(1, Math.ceil(this.totalItems / this.pageSize));
         this.isLoading = false;
       },
       error: (err: any) => {
@@ -43,6 +52,17 @@ export class FaceRecognitionComponent implements OnInit {
         this.isLoading = false;
       }
     });
+  }
+
+  onPageChange(page: number): void {
+    this.currentPage = page;
+    this.loadPersons();
+  }
+
+  onPageSizeChange(size: number): void {
+    this.pageSize = size;
+    this.currentPage = 1;
+    this.loadPersons();
   }
 
   openCreatePersonModal(): void {

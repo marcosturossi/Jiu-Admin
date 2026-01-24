@@ -2,24 +2,28 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { StudentsService } from '../../../generated_services/api/students.service';
 import { ShowStudentDTO } from '../../../generated_services/model/showStudentDTO';
+import { PaginationStudentDTO } from '../../../generated_services/model/paginationStudentDTO';
 import { CreateStudentComponent } from './create-student/create-student.component';
 import { UpdateStudentComponent } from './update-student/update-student.component';
 import { DatePipe } from '@angular/common';
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
+import { PaginationComponent } from '../../../shared/pagination/pagination.component';
 
 @Component({
   selector: 'app-students',
-  imports: [CommonModule, CreateStudentComponent, UpdateStudentComponent, DatePipe],
+  imports: [CommonModule, CreateStudentComponent, UpdateStudentComponent, DatePipe, PaginationComponent],
   templateUrl: './students.component.html',
   styleUrl: './students.component.scss'
 })
 export class StudentsComponent implements OnInit {
-  students: ShowStudentDTO[] = [];
+  students!: PaginationStudentDTO;
   isLoading: boolean = false;
   openedCreateStudent: boolean = false;
   selectedStudent!: ShowStudentDTO;
   openedUpdateStudent: boolean = false;
+  currentPage: number = 1;
+  pageSize: number = 10;
 
   constructor(
     private studentsService: StudentsService,
@@ -34,14 +38,11 @@ export class StudentsComponent implements OnInit {
 
   loadStudents(): void {
     this.isLoading = true;
-    this.studentsService.apiStudentsGet().subscribe({
+    this.studentsService.apiStudentsGet(this.currentPage, this.pageSize).subscribe({
       next: (result) => {
         this.students = result;
         this.isLoading = false;
-        this.notificationService.showInfo(
-          'Dados Atualizados', 
-          `${result.length} aluno(s) carregado(s).`
-        );
+        console.log(this.students);
       },
       error: (error) => {
         console.log(error);
@@ -52,6 +53,17 @@ export class StudentsComponent implements OnInit {
         );
       }
     });
+  }
+
+  onPageChange(page: number): void {
+    this.currentPage = page;
+    this.loadStudents();
+  }
+
+  onPageSizeChange(size: number): void {
+    this.pageSize = size;
+    this.currentPage = 1;
+    this.loadStudents();
   }
 
   openCreateStudent() {

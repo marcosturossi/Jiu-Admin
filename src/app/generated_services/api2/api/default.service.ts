@@ -17,8 +17,6 @@ import { HttpClient, HttpHeaders, HttpParams,
 import { CustomHttpParameterCodec }                          from '../encoder';
 import { Observable }                                        from 'rxjs';
 
-// @ts-ignore
-import { HTTPValidationError } from '../model/hTTPValidationError';
 
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
@@ -27,9 +25,6 @@ import {
     DefaultServiceInterface
 } from './default.serviceInterface';
 
-import { environment } from '../../../enviroments/environment';
-
-
 
 
 @Injectable({
@@ -37,7 +32,7 @@ import { environment } from '../../../enviroments/environment';
 })
 export class DefaultService implements DefaultServiceInterface {
 
-    protected basePath = environment.face_api;
+    protected basePath = 'http://localhost:8003';
     public defaultHeaders = new HttpHeaders();
     public configuration = new Configuration();
     public encoder: HttpParameterCodec;
@@ -60,19 +55,6 @@ export class DefaultService implements DefaultServiceInterface {
         this.encoder = this.configuration.encoder || new CustomHttpParameterCodec();
     }
 
-    /**
-     * @param consumes string[] mime-types
-     * @return true: consumes contains 'multipart/form-data', false: otherwise
-     */
-    private canConsumeForm(consumes: string[]): boolean {
-        const form = 'multipart/form-data';
-        for (const consume of consumes) {
-            if (form === consume) {
-                return true;
-            }
-        }
-        return false;
-    }
 
     // @ts-ignore
     private addToHttpParams(httpParams: HttpParams, value: any, key?: string): HttpParams {
@@ -161,114 +143,6 @@ export class DefaultService implements DefaultServiceInterface {
         return this.httpClient.request<any>('get', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
-                responseType: <any>responseType_,
-                withCredentials: this.configuration.withCredentials,
-                headers: localVarHeaders,
-                observe: observe,
-                transferCache: localVarTransferCache,
-                reportProgress: reportProgress
-            }
-        );
-    }
-
-    /**
-     * Login
-     * Login endpoint for username/password authentication. This endpoint is used by Swagger UI for authentication.
-     * @param username 
-     * @param password 
-     * @param grantType 
-     * @param scope 
-     * @param clientId 
-     * @param clientSecret 
-     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
-     * @param reportProgress flag to report request and response progress.
-     */
-    public loginTokenPost(username: string, password: string, grantType?: string, scope?: string, clientId?: string, clientSecret?: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any>;
-    public loginTokenPost(username: string, password: string, grantType?: string, scope?: string, clientId?: string, clientSecret?: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<any>>;
-    public loginTokenPost(username: string, password: string, grantType?: string, scope?: string, clientId?: string, clientSecret?: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<any>>;
-    public loginTokenPost(username: string, password: string, grantType?: string, scope?: string, clientId?: string, clientSecret?: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
-        if (username === null || username === undefined) {
-            throw new Error('Required parameter username was null or undefined when calling loginTokenPost.');
-        }
-        if (password === null || password === undefined) {
-            throw new Error('Required parameter password was null or undefined when calling loginTokenPost.');
-        }
-
-        let localVarHeaders = this.defaultHeaders;
-
-        let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
-        if (localVarHttpHeaderAcceptSelected === undefined) {
-            // to determine the Accept header
-            const httpHeaderAccepts: string[] = [
-                'application/json'
-            ];
-            localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
-        }
-        if (localVarHttpHeaderAcceptSelected !== undefined) {
-            localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
-        }
-
-        let localVarHttpContext: HttpContext | undefined = options && options.context;
-        if (localVarHttpContext === undefined) {
-            localVarHttpContext = new HttpContext();
-        }
-
-        let localVarTransferCache: boolean | undefined = options && options.transferCache;
-        if (localVarTransferCache === undefined) {
-            localVarTransferCache = true;
-        }
-
-        // to determine the Content-Type header
-        const consumes: string[] = [
-            'application/x-www-form-urlencoded'
-        ];
-
-        const canConsumeForm = this.canConsumeForm(consumes);
-
-        let localVarFormParams: { append(param: string, value: any): any; };
-        let localVarUseForm = false;
-        let localVarConvertFormParamsToString = false;
-        if (localVarUseForm) {
-            localVarFormParams = new FormData();
-        } else {
-            localVarFormParams = new HttpParams({encoder: this.encoder});
-        }
-
-        if (grantType !== undefined) {
-            localVarFormParams = localVarFormParams.append('grant_type', <any>grantType) as any || localVarFormParams;
-        }
-        if (username !== undefined) {
-            localVarFormParams = localVarFormParams.append('username', <any>username) as any || localVarFormParams;
-        }
-        if (password !== undefined) {
-            localVarFormParams = localVarFormParams.append('password', <any>password) as any || localVarFormParams;
-        }
-        if (scope !== undefined) {
-            localVarFormParams = localVarFormParams.append('scope', <any>scope) as any || localVarFormParams;
-        }
-        if (clientId !== undefined) {
-            localVarFormParams = localVarFormParams.append('client_id', <any>clientId) as any || localVarFormParams;
-        }
-        if (clientSecret !== undefined) {
-            localVarFormParams = localVarFormParams.append('client_secret', <any>clientSecret) as any || localVarFormParams;
-        }
-
-        let responseType_: 'text' | 'json' | 'blob' = 'json';
-        if (localVarHttpHeaderAcceptSelected) {
-            if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
-                responseType_ = 'text';
-            } else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
-                responseType_ = 'json';
-            } else {
-                responseType_ = 'blob';
-            }
-        }
-
-        let localVarPath = `/token`;
-        return this.httpClient.request<any>('post', `${this.configuration.basePath}${localVarPath}`,
-            {
-                context: localVarHttpContext,
-                body: localVarConvertFormParamsToString ? localVarFormParams.toString() : localVarFormParams,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,

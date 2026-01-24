@@ -4,7 +4,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { GraduationService } from '../../../../generated_services/api/graduation.service';
 import { BeltService } from '../../../../generated_services/api/belt.service';
 import { StudentsService } from '../../../../generated_services/api/students.service';
-import { ShowGraduationDTO, UpdateGraduationDTO, ShowBeltDTO, ShowStudentDTO } from '../../../../generated_services';
+import { ShowGraduationDTO, UpdateGraduationDTO, ShowBeltDTO, ShowStudentDTO, PaginationBeltDTO, PaginationStudentDTO } from '../../../../generated_services';
 import { NotificationService } from '../../../../services/notification.service';
 
 @Component({
@@ -18,8 +18,8 @@ export class UpdateGraduationComponent implements OnInit {
   @Output() graduationUpdated = new EventEmitter<void>();
   @Input() graduation!: ShowGraduationDTO;
   graduationForm!: FormGroup;
-  belts: ShowBeltDTO[] = [];
-  students: ShowStudentDTO[] = [];
+  belts!: PaginationBeltDTO;
+  students!: PaginationStudentDTO;
 
   constructor(
     private graduationService: GraduationService,

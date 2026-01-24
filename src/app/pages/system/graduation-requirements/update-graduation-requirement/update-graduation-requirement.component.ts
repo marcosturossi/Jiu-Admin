@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { GraduationRequirementsService, BeltService, ShowBeltDTO } from '../../../../generated_services';
+import { GraduationRequirementsService, BeltService, ShowBeltDTO, PaginationBeltDTO } from '../../../../generated_services';
 import { ShowGraduationRequirementsDTO, UpdateGraduationRequirementsDTO } from '../../../../generated_services';
 import { CommonModule } from '@angular/common';
 import { NotificationService } from '../../../../services/notification.service';
@@ -16,7 +16,7 @@ export class UpdateGraduationRequirementComponent implements OnInit {
   @Output() graduationRequirementUpdated = new EventEmitter<void>();
   @Input() graduationRequirement!: ShowGraduationRequirementsDTO;
   graduationRequirementForm!: FormGroup;
-  belts: ShowBeltDTO[] = [];
+  belts!: PaginationBeltDTO;
 
   constructor(
     private graduationRequirementsService: GraduationRequirementsService,

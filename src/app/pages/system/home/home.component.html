@@ -1,5 +1,27 @@
-<div class="center-container">
-  <div>
+<div class="dashboard-container">
+  <div class="logo-section">
     <img id="main-logo" src="../../../../assets/company/carlson_logo.png" alt="">
+  </div>
+  
+  <div class="dashboard-grid">
+    <!-- Bar Chart -->
+    <div class="chart-card">
+      <div echarts [options]="barChartOptions" class="chart"></div>
+    </div>
+
+    <!-- Pie Chart -->
+    <div class="chart-card">
+      <div echarts [options]="pieChartOptions" class="chart"></div>
+    </div>
+
+    <!-- Line Chart -->
+    <div class="chart-card">
+      <div echarts [options]="lineChartOptions" class="chart"></div>
+    </div>
+
+    <!-- Gauge Chart -->
+    <div class="chart-card">
+      <div echarts [options]="gaugeChartOptions" class="chart"></div>
+    </div>
   </div>
 </div>

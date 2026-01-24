@@ -32,7 +32,7 @@
           </tr>
         </thead>
         <tbody>
-          @for (graduation of graduations; track graduation.id){
+          @for (graduation of graduations.items!; track graduation.id){
           <tr>
             <!-- Desktop view - full student name -->
             <td class="d-none d-lg-table-cell">
@@ -87,7 +87,7 @@
     </div>
 
     <!-- Empty state -->
-    @if (graduations.length === 0) {
+    @if (graduations.items!.length === 0) {
       <div class="text-center py-5">
         <div class="mb-3">
           <i class="bi bi-award display-1 text-muted"></i>
@@ -95,6 +95,18 @@
         <h5 class="text-muted">Nenhuma graduação encontrada</h5>
         <p class="text-muted">Clique em "Nova Graduação" para registrar a primeira graduação.</p>
       </div>
+    }
+
+    <!-- Pagination -->
+    @if (graduations.items!.length > 0) {
+      <app-pagination
+        [currentPage]="currentPage"
+        [totalPages]="graduations.totalPages ?? 1"
+        [pageSize]="pageSize"
+        [totalItems]="graduations.totalCount ?? 0"
+        (pageChange)="onPageChange($event)"
+        (pageSizeChange)="onPageSizeChange($event)">
+      </app-pagination>
     }
     }
   </div>

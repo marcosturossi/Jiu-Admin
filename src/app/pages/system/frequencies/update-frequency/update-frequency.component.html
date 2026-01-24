@@ -11,7 +11,7 @@
             <label for="studentSelect" class="form-label">Selecione o Aluno *</label>
             <select class="form-select" formControlName="studentId" id="studentSelect">
               <option value="">Selecione um aluno...</option>
-              @for (student of students; track student.id) {
+              @for (student of students.items; track student.id) {
                 <option [value]="student.id">{{student.firstName}} {{student.lastName}}</option>
               }
             </select>

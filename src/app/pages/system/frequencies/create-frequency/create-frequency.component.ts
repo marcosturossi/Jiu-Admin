@@ -1,5 +1,5 @@
 import { Component, Output, EventEmitter, OnInit } from '@angular/core';
-import { FrequencyService, StudentsService, ShowStudentDTO, ShowLessonDTO, LessonService } from '../../../../generated_services';
+import { FrequencyService, StudentsService, ShowStudentDTO, ShowLessonDTO, LessonService, PaginationStudentDTO, PaginationLessonDTO } from '../../../../generated_services';
 import { FormBuilder, FormGroup, FormArray, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CreateFrequencyDTO } from '../../../../generated_services/model/createFrequencyDTO';
 import { CommonModule } from '@angular/common';
@@ -20,8 +20,8 @@ export class CreateFrequencyComponent implements OnInit {
   @Output() closeEvent = new EventEmitter<void>();
   @Output() frequencyCreated = new EventEmitter<void>();
   frequencyForm!: FormGroup;
-  students: ShowStudentDTO[] = [];
-  lessons: ShowLessonDTO[] = [];
+  students!: PaginationStudentDTO;
+  lessons!: PaginationLessonDTO;
   isCreating = false;
   
   // Image recognition properties
@@ -67,7 +67,10 @@ export class CreateFrequencyComponent implements OnInit {
     this.lessonService.apiLessonGet().subscribe({
       next: (result) => {
         // Filter only active lessons
-        this.lessons = result.filter(lesson => lesson.isActive === true);
+        this.lessons = {
+          ...result,
+          items: result?.items?.filter(lesson => lesson.isActive === true) || []
+        };
       },
       error: (error) => {
         console.log(error);
@@ -97,16 +100,16 @@ export class CreateFrequencyComponent implements OnInit {
 
   private initializeStudentFormArray(): void {
     const studentsArray = this.formBuilder.array([]);
-    this.students.forEach(() => {
+    this.students.items?.forEach(() => {
       studentsArray.push(new FormControl(false));
     });
     this.frequencyForm.setControl('students', studentsArray);
   }
 
   getSelectedStudents(): ShowStudentDTO[] {
-    return this.students.filter((student, index) => 
+    return this.students.items?.filter((student, index) => 
       this.studentsFormArray.at(index).value === true
-    );
+    ) || [];
   }
 
   getSelectedStudentsCount(): number {
@@ -206,14 +209,14 @@ export class CreateFrequencyComponent implements OnInit {
         for (const face of recognitionResult.faces) {
           if (face.person_id) {
             // Try to find a student with the same id as person_id
-            const student = this.students.find(s => s.id === face.person_id);
+            const student = this.students.items?.find(s => s.id === face.person_id);
             if (student) {
               recognizedIds.push(student.id!);
             } else {
               // Try to match by name if id is not found
               const person = this.api2Persons.persons.find(p => p.id === face.person_id);
               if (person) {
-                const matchByName = this.students.find(s => `${s.firstName} ${s.lastName}`.trim().toLowerCase() === person.name.trim().toLowerCase());
+                const matchByName = this.students.items?.find(s => `${s.firstName} ${s.lastName}`.trim().toLowerCase() === person.name.trim().toLowerCase());
                 if (matchByName) {
                   recognizedIds.push(matchByName.id!);
                 }
@@ -253,7 +256,7 @@ export class CreateFrequencyComponent implements OnInit {
     
     // Auto-select recognized students
     studentIds.forEach(studentId => {
-      const index = this.students.findIndex(student => student.id === studentId);
+      const index = this.students.items?.findIndex(student => student.id === studentId) ?? -1 ;
       if (index >= 0) {
         this.studentsFormArray.at(index).setValue(true);
       }

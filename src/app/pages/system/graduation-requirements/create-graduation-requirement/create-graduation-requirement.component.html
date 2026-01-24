@@ -11,7 +11,7 @@
             <label for="beltSelect" class="form-label">Selecione a Faixa *</label>
             <select class="form-select" formControlName="beltId" id="beltSelect">
               <option value="">Selecione uma faixa...</option>
-              @for (belt of belts; track belt.id) {
+              @for (belt of belts.items; track belt.id) {
                 <option [value]="belt.id">{{belt.color}}</option>
               }
             </select>
