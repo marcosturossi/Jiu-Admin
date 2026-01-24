@@ -24,6 +24,7 @@ import { Configuration }                                     from '../configurat
 import {
     DefaultServiceInterface
 } from './default.serviceInterface';
+import { environment } from '../../../enviroments/environment';
 
 
 
@@ -32,7 +33,7 @@ import {
 })
 export class DefaultService implements DefaultServiceInterface {
 
-    protected basePath = 'http://localhost:8003';
+    protected basePath = environment.face_api;;
     public defaultHeaders = new HttpHeaders();
     public configuration = new Configuration();
     public encoder: HttpParameterCodec;

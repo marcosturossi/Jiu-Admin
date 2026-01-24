@@ -34,6 +34,8 @@ import { Configuration }                                     from '../configurat
 import {
     NoticesServiceInterface
 } from './notices.serviceInterface';
+import { env } from 'echarts';
+import { environment } from '../../enviroments/environment';
 
 
 
@@ -42,7 +44,7 @@ import {
 })
 export class NoticesService implements NoticesServiceInterface {
 
-    protected basePath = 'http://localhost:8080';
+    protected basePath = environment.server;
     public defaultHeaders = new HttpHeaders();
     public configuration = new Configuration();
     public encoder: HttpParameterCodec;

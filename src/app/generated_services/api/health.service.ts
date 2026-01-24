@@ -24,6 +24,7 @@ import { Configuration }                                     from '../configurat
 import {
     HealthServiceInterface
 } from './health.serviceInterface';
+import { environment } from '../../enviroments/environment';
 
 
 
@@ -32,7 +33,7 @@ import {
 })
 export class HealthService implements HealthServiceInterface {
 
-    protected basePath = 'http://localhost:8080';
+    protected basePath = environment.server;
     public defaultHeaders = new HttpHeaders();
     public configuration = new Configuration();
     public encoder: HttpParameterCodec;
