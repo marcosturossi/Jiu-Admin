@@ -6,6 +6,8 @@ api/auth.service.ts
 api/auth.serviceInterface.ts
 api/belt.service.ts
 api/belt.serviceInterface.ts
+api/dashboard.service.ts
+api/dashboard.serviceInterface.ts
 api/frequency.service.ts
 api/frequency.serviceInterface.ts
 api/graduation.service.ts

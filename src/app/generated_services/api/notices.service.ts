@@ -34,7 +34,6 @@ import { Configuration }                                     from '../configurat
 import {
     NoticesServiceInterface
 } from './notices.serviceInterface';
-import { env } from 'echarts';
 import { environment } from '../../enviroments/environment';
 
 
