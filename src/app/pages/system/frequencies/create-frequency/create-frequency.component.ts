@@ -21,7 +21,7 @@ export class CreateFrequencyComponent implements OnInit {
   @Output() frequencyCreated = new EventEmitter<void>();
   frequencyForm!: FormGroup;
   students!: PaginationStudentDTO;
-  lessons!: PaginationLessonDTO;
+  lessons!: ShowLessonDTO[];
   isCreating = false;
   
   // Image recognition properties
@@ -64,13 +64,9 @@ export class CreateFrequencyComponent implements OnInit {
       }
     )
 
-    this.lessonService.apiLessonGet().subscribe({
+    this.lessonService.apiLessonActiveGet().subscribe({
       next: (result) => {
-        // Filter only active lessons
-        this.lessons = {
-          ...result,
-          items: result?.items?.filter(lesson => lesson.isActive === true) || []
-        };
+        this.lessons = result;
       },
       error: (error) => {
         console.log(error);

@@ -11,7 +11,7 @@
             <label for="lessonSelect" class="form-label">Selecione a Aula *</label>
             <select class="form-select" formControlName="lessonId" id="lessonSelect">
               <option value="">Selecione uma aula...</option>
-              @for (lesson of lessons.items; track lesson.id) {
+              @for (lesson of lessons; track lesson.id) {
               <option [value]="lesson.id">{{lesson.title}}</option>
               }
             </select>

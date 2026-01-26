@@ -29,6 +29,12 @@ export interface LessonServiceInterface {
     configuration: Configuration;
 
     /**
+     * 
+     * 
+     */
+    apiLessonActiveGet(extraHttpRequestParams?: any): Observable<Array<ShowLessonDTO>>;
+
+    /**
      * Get all lessons
      * 
      * @param pageNumber 
