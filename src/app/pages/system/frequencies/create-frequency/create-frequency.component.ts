@@ -20,7 +20,7 @@ export class CreateFrequencyComponent implements OnInit {
   @Output() closeEvent = new EventEmitter<void>();
   @Output() frequencyCreated = new EventEmitter<void>();
   frequencyForm!: FormGroup;
-  students!: PaginationStudentDTO;
+  students!: ShowStudentDTO[];
   lessons!: ShowLessonDTO[];
   isCreating = false;
   
@@ -48,7 +48,7 @@ export class CreateFrequencyComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.studentsService.apiStudentsGet().subscribe(
+    this.studentsService.apiStudentsActiveGet().subscribe(
       {
         next: (result) => {
           this.students = result;
@@ -96,14 +96,14 @@ export class CreateFrequencyComponent implements OnInit {
 
   private initializeStudentFormArray(): void {
     const studentsArray = this.formBuilder.array([]);
-    this.students.items?.forEach(() => {
+    this.students?.forEach(() => {
       studentsArray.push(new FormControl(false));
     });
     this.frequencyForm.setControl('students', studentsArray);
   }
 
   getSelectedStudents(): ShowStudentDTO[] {
-    return this.students.items?.filter((student, index) => 
+    return this.students?.filter((student, index) => 
       this.studentsFormArray.at(index).value === true
     ) || [];
   }
@@ -205,14 +205,14 @@ export class CreateFrequencyComponent implements OnInit {
         for (const face of recognitionResult.faces) {
           if (face.person_id) {
             // Try to find a student with the same id as person_id
-            const student = this.students.items?.find(s => s.id === face.person_id);
+            const student = this.students?.find(s => s.id === face.person_id);
             if (student) {
               recognizedIds.push(student.id!);
             } else {
               // Try to match by name if id is not found
               const person = this.api2Persons.persons.find(p => p.id === face.person_id);
               if (person) {
-                const matchByName = this.students.items?.find(s => `${s.firstName} ${s.lastName}`.trim().toLowerCase() === person.name.trim().toLowerCase());
+                const matchByName = this.students?.find(s => `${s.firstName} ${s.lastName}`.trim().toLowerCase() === person.name.trim().toLowerCase());
                 if (matchByName) {
                   recognizedIds.push(matchByName.id!);
                 }
@@ -252,7 +252,7 @@ export class CreateFrequencyComponent implements OnInit {
     
     // Auto-select recognized students
     studentIds.forEach(studentId => {
-      const index = this.students.items?.findIndex(student => student.id === studentId) ?? -1 ;
+      const index = this.students?.findIndex(student => student.id === studentId) ?? -1 ;
       if (index >= 0) {
         this.studentsFormArray.at(index).setValue(true);
       }
