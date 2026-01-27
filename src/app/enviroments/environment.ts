@@ -4,5 +4,9 @@ export const environment = {
   face_api: 'https://face-recognition.bjjclutch.com.br',
 };
 
-  // server: 'http://localhost:8080',
-  // face_api: 'http://localhost:8003/api/v1',
+// export const environment = {
+//   production: false,
+//   server: 'http://localhost:8080',
+//   face_api: 'http://localhost:8003/api/v1',
+// }
+
