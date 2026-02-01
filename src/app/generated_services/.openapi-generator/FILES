@@ -59,6 +59,7 @@ model/logoutRequest.ts
 model/markAsReadDTO.ts
 model/medicalClearanceAttachmentResponseDTO.ts
 model/models.ts
+model/monthlyNewStudentsDTO.ts
 model/notificationStatsDTO.ts
 model/notificationStatsDTONotificationsByType.ts
 model/notificationType.ts
@@ -91,6 +92,8 @@ model/showNotificationStudentDTO.ts
 model/showStudentDTO.ts
 model/showStudentDTOPaginationDTO.ts
 model/studentSearchDTO.ts
+model/studentsBirthDay.ts
+model/topStudentDTO.ts
 model/updateBeltDTO.ts
 model/updateFrequencyDTO.ts
 model/updateGraduationDTO.ts

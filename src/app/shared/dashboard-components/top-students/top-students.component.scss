@@ -1,0 +1,63 @@
+.student-rank {
+	font-weight: 600;
+}
+
+.student-name {
+	color: #333;
+}
+
+.student-count {
+	font-weight: 700;
+}
+
+.card-body { padding: 0.75rem; }
+
+/* Card wrapper used by dashboard widgets */
+.dashboard-card {
+	--accent: #2563eb; /* indigo-600 */
+	--accent-2: #06b6d4; /* cyan-500 */
+	--muted: #6b7280;
+	background: linear-gradient(180deg, #ffffff, #fbfdff);
+	border-radius: 10px;
+	box-shadow: 0 6px 18px rgba(16,24,40,0.06);
+	border: 1px solid rgba(37,99,235,0.08);
+	overflow: hidden;
+	transition: transform .18s ease, box-shadow .18s ease;
+	display: flex;
+	flex-direction: column;
+}
+
+.dashboard-card .card-header {
+	padding: 0.5rem 0.6rem;
+	font-weight: 700;
+	background: linear-gradient(90deg, var(--accent), var(--accent-2));
+	color: #fff;
+	border-bottom: none;
+}
+
+.dashboard-card .card-body { padding: 0.5rem 0.6rem; flex: 1 1 auto; }
+
+.dashboard-card:hover { transform: translateY(-6px); box-shadow: 0 14px 40px rgba(16,24,40,0.12); }
+
+.student-rank {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 34px;
+	height: 34px;
+	border-radius: 999px;
+	background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0));
+	color: var(--accent);
+	border: 2px solid rgba(37,99,235,0.12);
+	font-weight: 700;
+	font-size: 0.95rem;
+}
+
+.student-name { color: rgba(17,24,39,0.95); font-weight: 600; }
+
+.student-count { color: rgba(2,6,23,0.8); font-weight:700; }
+
+/* Top list styles */
+.top-list { padding: 0; margin: 0; }
+.student-item { padding: 0.5rem 0.4rem; border-bottom: 1px solid rgba(0,0,0,0.04); }
+.student-item:last-child { border-bottom: none; }
