@@ -1,0 +1,27 @@
+/* Simple styling for birthdays list */
+.card-body { padding: 0.75rem; }
+.fw-semibold { font-weight: 600; }
+.border-bottom { border-bottom: 1px solid rgba(0,0,0,0.05); }
+
+/* Card wrapper */
+.dashboard-card {
+	--accent: #0ea5a4; /* teal */
+	--muted: #6b7280;
+	background: linear-gradient(180deg,#ffffff,#fbfffe);
+	border-radius: 10px;
+	box-shadow: 0 6px 16px rgba(16,24,40,0.06);
+	border: 1px solid rgba(14,165,164,0.08);
+	overflow: hidden;
+	transition: transform .16s ease, box-shadow .16s ease;
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+}
+
+.dashboard-card .card-header { padding: 0.5rem 0.6rem; font-weight: 700; background: linear-gradient(90deg,var(--accent), #06b6d4); color:#fff; }
+.dashboard-card .card-body { padding: 0.5rem 0.6rem; flex: 1 1 auto; }
+
+.dashboard-card:hover { transform: translateY(-4px); box-shadow: 0 12px 30px rgba(16,24,40,0.10); }
+
+.breed-day { color: var(--muted); }
+.birth-date { color: rgba(17,24,39,0.7); }

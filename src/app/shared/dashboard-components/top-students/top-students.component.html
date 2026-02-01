@@ -1,0 +1,19 @@
+<div class="dashboard-card">
+    <div class="card-header text-center">Top 10 frequências</div>
+    <div class="card-body">
+    <div *ngIf="loading" class="text-center py-3">Loading...</div>
+    <div *ngIf="error" class="text-danger text-center py-2">{{ error }}</div>
+
+        <ul *ngIf="!loading && !error && topStudents.length > 0" class="list-unstyled mb-0 top-list">
+            <li *ngFor="let item of topStudents | slice:0:10; index as i" class="student-item d-flex align-items-center justify-content-between">
+                <div class="d-flex align-items-center">
+                    <div class="student-rank me-2">{{ i + 1 }}</div>
+                    <div class="student-name">{{ item.studentName || '-' }}</div>
+                </div>
+                <div class="student-count">{{ item.attendanceCount ?? 0 }}</div>
+            </li>
+        </ul>
+
+    <div *ngIf="!loading && !error && topStudents.length === 0" class="text-center text-muted py-3">Sem frequências</div>
+    </div>
+</div>

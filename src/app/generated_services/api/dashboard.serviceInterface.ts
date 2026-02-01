@@ -12,6 +12,9 @@ import { HttpHeaders }                                       from '@angular/comm
 
 import { Observable }                                        from 'rxjs';
 
+import { MonthlyNewStudentsDTO } from '../model/models';
+import { StudentsBirthDay } from '../model/models';
+import { TopStudentDTO } from '../model/models';
 
 
 import { Configuration }                                     from '../configuration';
@@ -36,24 +39,24 @@ export interface DashboardServiceInterface {
     apiDashboardBeltsGet(extraHttpRequestParams?: any): Observable<{}>;
 
     /**
-     * 
+     * Get Students Birthdays in the next \&#39;days\&#39; days
      * 
      * @param days 
      */
-    apiDashboardBirthdaysGet(days?: number, extraHttpRequestParams?: any): Observable<{}>;
+    apiDashboardBirthdaysGet(days?: number, extraHttpRequestParams?: any): Observable<Array<StudentsBirthDay>>;
 
     /**
-     * 
+     * Get Monthly New Students for the past \&#39;months\&#39; months
      * 
      * @param months 
      */
-    apiDashboardNewStudentsGet(months?: number, extraHttpRequestParams?: any): Observable<{}>;
+    apiDashboardNewStudentsGet(months?: number, extraHttpRequestParams?: any): Observable<MonthlyNewStudentsDTO>;
 
     /**
-     * 
+     * Get Top Students by attendance in the last \&#39;days\&#39; days
      * 
      * @param days 
      */
-    apiDashboardTopStudentsGet(days?: number, extraHttpRequestParams?: any): Observable<{}>;
+    apiDashboardTopStudentsGet(days?: number, extraHttpRequestParams?: any): Observable<Array<TopStudentDTO>>;
 
 }
