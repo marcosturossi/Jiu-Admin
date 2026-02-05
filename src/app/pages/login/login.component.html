@@ -5,7 +5,7 @@
       <p class="login-subtitle">Faça login para acessar o sistema</p>
     </div>
     
-    <form [formGroup]="loginForm" class="login-form">
+    <form [formGroup]="loginForm" (ngSubmit)="sendLoginRequest()" (keydown.enter)="sendLoginRequest()" class="login-form">
       <div class="form-group">
         <label for="username" class="form-label">
           <i class="bi bi-person-fill me-2"></i>Usuário
@@ -60,9 +60,8 @@
       </div>
       
       <button 
-        (click)="sendLoginRequest()" 
         class="btn btn-login w-100" 
-        type="button"
+        type="submit"
         [disabled]="loginForm.invalid || isLoading">
         <span *ngIf="!isLoading" class="d-flex align-items-center justify-content-center text-white">
           <i class="bi bi-box-arrow-in-right me-2 text-white"></i>
