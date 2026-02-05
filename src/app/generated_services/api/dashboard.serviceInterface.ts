@@ -33,17 +33,18 @@ export interface DashboardServiceInterface {
     apiDashboardAttendanceGet(days?: number, extraHttpRequestParams?: any): Observable<{}>;
 
     /**
-     * 
-     * 
-     */
-    apiDashboardBeltsGet(extraHttpRequestParams?: any): Observable<{}>;
-
-    /**
      * Get Students Birthdays in the next \&#39;days\&#39; days
      * 
      * @param days 
      */
     apiDashboardBirthdaysGet(days?: number, extraHttpRequestParams?: any): Observable<Array<StudentsBirthDay>>;
+
+    /**
+     * 
+     * 
+     * @param days 
+     */
+    apiDashboardFrequencyBeltsDistributionGet(days?: number, extraHttpRequestParams?: any): Observable<{}>;
 
     /**
      * Get Monthly New Students for the past \&#39;months\&#39; months
