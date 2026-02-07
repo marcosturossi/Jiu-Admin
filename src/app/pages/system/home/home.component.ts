@@ -11,6 +11,7 @@ import { AvgStudentsByBeltComponent } from '../../../shared/dashboard-components
 import { BirthdayThisMonthComponent } from '../../../shared/dashboard-components/birthday-this-month/birthday-this-month.component';
 import { NewStudentsThisMonthComponent } from "../../../shared/dashboard-components/new-students-this-month/new-students-this-month.component";
 import { FrequenciesBeltDistributionComponent } from '../../../shared/dashboard-components/frequencies-belt-distribution/frequencies-belt-distribution.component';
+import { AvgStudentsByClassComponent } from '../../../shared/dashboard-components/avg-students-by-class/avg-students-by-class.component';
 
 @Component({
     selector: 'app-home',
@@ -21,7 +22,8 @@ import { FrequenciesBeltDistributionComponent } from '../../../shared/dashboard-
       TopStudentsComponent, 
       BirthdayThisMonthComponent, 
       NewStudentsThisMonthComponent, 
-      FrequenciesBeltDistributionComponent
+      FrequenciesBeltDistributionComponent,
+      AvgStudentsByClassComponent
     ],
     providers: [provideEchartsCore({ echarts })],
     styleUrls: ['./home.component.scss']
