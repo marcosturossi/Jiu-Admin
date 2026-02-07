@@ -5,8 +5,12 @@
 		<div *ngIf="error" class="text-danger py-2">{{ error }}</div>
 
 		<div *ngIf="!loading && !error">
-			<div class="big-number">{{ newStudentsThisMonth ?? '-' }}</div>
-			<div class="muted">Sem novos alunos</div>
+			@if (newStudentsThisMonth! > 0) {
+				<div class="big-number">{{ newStudentsThisMonth ?? '-' }}</div>
+			}@else{
+				<div class="muted">Sem novos alunos</div>
+			}
+					
 		</div>
 	</div>
 </div>
