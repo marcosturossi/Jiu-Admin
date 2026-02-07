@@ -5,3 +5,32 @@
 	min-height: 160px;
 }
 
+/* dashboard-card styling copied to match other widgets */
+.dashboard-card {
+	--accent: #2563eb;
+	--accent-2: #06b6d4;
+	--muted: #6b7280;
+	background: linear-gradient(180deg, #ffffff, #fbfdff);
+	border-radius: 10px;
+	box-shadow: 0 6px 18px rgba(16,24,40,0.06);
+	border: 1px solid rgba(37,99,235,0.08);
+	overflow: hidden;
+	transition: transform .18s ease, box-shadow .18s ease;
+	display: flex;
+	flex-direction: column;
+}
+
+.dashboard-card .card-header {
+	padding: 0.5rem 0.6rem;
+	font-weight: 700;
+	background: linear-gradient(90deg, var(--accent), var(--accent-2));
+	color: #fff;
+	border-bottom: none;
+	text-align: center;
+}
+
+.dashboard-card .card-body { padding: 0.5rem 0.6rem; flex: 1 1 auto; }
+
+.dashboard-card:hover { transform: translateY(-6px); box-shadow: 0 14px 40px rgba(16,24,40,0.12); }
+
+

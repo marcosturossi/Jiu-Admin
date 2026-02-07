@@ -12,6 +12,7 @@ export class AvgStudentsByClassComponent implements AfterViewInit, OnDestroy {
   private resizeObserver?: ResizeObserver;
   private data: Array<{ name: string; value: number }> = [];
 
+  private palette = ['#2f80ed', '#34c38f', '#f6c343', '#f66d9b'];
   constructor(private dashboardService: DashboardService) {
   }
 
@@ -32,14 +33,9 @@ export class AvgStudentsByClassComponent implements AfterViewInit, OnDestroy {
             this.chart.dispose();
           }
           this.chart = echarts.init(this.chartEl.nativeElement);
-          const option = {
-            title: { text: 'Média Alunos por Aula', left: 'center' },
-            tooltip: { trigger: 'axis' },
-            legend: { data: [] , bottom: 10},
-            xAxis: { type: 'category', data: this.data.map(d => d.name) },
-            yAxis: { type: 'value' },
-            series: [{ type: 'bar', data: this.data.map(d => d.value), label: { show: true, position: 'top' } }]
-          };
+          const option = this.getBaseOptions('Média Alunos por Aula');
+          option.xAxis.data = this.data.map(d => d.name);
+          option.series = [{ type: 'bar', data: this.data.map(d => d.value) , label: { show: true, position: 'top' }, itemStyle: { borderRadius: [6,6,0,0] }}];
           this.chart.setOption(option);
           window.addEventListener('resize', this.resize);
           this.fetchDataAndUpdate();
@@ -89,10 +85,9 @@ export class AvgStudentsByClassComponent implements AfterViewInit, OnDestroy {
         if (Array.isArray(data)) {
           this.data = data.map((d: any) => ({ name: d.name, value: d.value }));
           if (this.chart) {
-            const option = {
-              xAxis: { data: this.data.map(d => d.name) },
-              series: [{ data: this.data.map(d => d.value), label: { show: true, position: 'top' } }]
-            };
+            const option = this.getBaseOptions('Média Alunos por Aula');
+            option.xAxis.data = this.data.map(d => d.name);
+            option.series = [{ type: 'bar', data: this.data.map(d => d.value), label: { show: true, position: 'top' }, itemStyle: { borderRadius: [6,6,0,0] }}];
             this.chart.setOption(option);
           }
           return;
@@ -109,10 +104,9 @@ export class AvgStudentsByClassComponent implements AfterViewInit, OnDestroy {
             label: { show: true, position: 'top' }
           }));
           const option: any = {
+            ...this.getBaseOptions('Média Alunos por Aula'),
             legend: { data: data.legends || series.map((s: any) => s.name) },
-            tooltip: { trigger: 'axis' },
             xAxis: { type: 'category', data: data.categories },
-            yAxis: { type: 'value' },
             series
           };
           this.chart && this.chart.setOption(option);
@@ -124,10 +118,9 @@ export class AvgStudentsByClassComponent implements AfterViewInit, OnDestroy {
           const mapped = (data || []).map((d: any) => ({ name: d.name, value: d.value }));
           this.data = mapped;
           if (this.chart) {
-            const option = {
-              xAxis: { data: this.data.map(d => d.name) },
-              series: [{ data: this.data.map(d => d.value), label: { show: true, position: 'top' } }]
-            };
+            const option = this.getBaseOptions('Média Alunos por Aula');
+            option.xAxis.data = this.data.map(d => d.name);
+            option.series = [{ type: 'bar', data: this.data.map(d => d.value), label: { show: true, position: 'top' }, itemStyle: { borderRadius: [6,6,0,0] }}];
             this.chart.setOption(option);
           }
         } catch (e) {
@@ -144,9 +137,23 @@ export class AvgStudentsByClassComponent implements AfterViewInit, OnDestroy {
     if (this.chart) this.chart.resize();
   };
 
+  private getBaseOptions(_: string) {
+    return {
+      color: this.palette,
+      tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
+      legend: { bottom: 10 },
+      grid: { left: 12, right: 12, top: 28, bottom: 48 },
+      xAxis: { type: 'category', axisLine: { lineStyle: { color: '#e6e9ef' } }, axisLabel: { color: '#6b7280' } },
+      yAxis: { type: 'value', axisLine: { show: false }, splitLine: { lineStyle: { color: '#f1f5f9' } }, axisLabel: { color: '#6b7280' } },
+      series: []
+    } as any;
+  }
+
   ngOnDestroy(): void {
     window.removeEventListener('resize', this.resize);
     if (this.resizeObserver) this.resizeObserver.disconnect();
     if (this.chart) this.chart.dispose();
   }
 }
+
+

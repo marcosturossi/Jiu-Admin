@@ -3,15 +3,16 @@ import { DashboardService } from '../../../generated_services';
 
 @Component({
   selector: 'app-frequencies-belt-distribution',
-  imports: [],
   templateUrl: './frequencies-belt-distribution.component.html',
-  styleUrl: './frequencies-belt-distribution.component.scss'
+  styleUrls: ['./frequencies-belt-distribution.component.scss']
 })
 export class FrequenciesBeltDistributionComponent implements AfterViewInit, OnDestroy {
   @ViewChild('chart', { static: true }) chartEl!: ElementRef;
   private chart: any;
   private resizeObserver?: ResizeObserver;
   private data: Array<{ name: string; value: number }> = [];
+
+  private palette = ['#2f80ed', '#34c38f', '#f6c343', '#f66d9b'];
 
   constructor(private dashboardService: DashboardService) {}
 
@@ -32,13 +33,9 @@ export class FrequenciesBeltDistributionComponent implements AfterViewInit, OnDe
             this.chart.dispose();
           }
           this.chart = echarts.init(this.chartEl.nativeElement);
-          const option = {
-            title: { text: 'Faixas mais presentes', left: 'center' },
-            tooltip: {},
-            xAxis: { type: 'category', data: this.data.map(d => d.name) },
-            yAxis: { type: 'value' },
-            series: [{ type: 'bar', data: this.data.map(d => d.value), }]
-          };
+          const option = this.getBaseOptions('Faixas mais presentes');
+          option.xAxis.data = this.data.map(d => d.name);
+          option.series = [{ type: 'bar', data: this.data.map(d => d.value), label: { show: true, position: 'top' }, itemStyle: { borderRadius: [6,6,0,0] } }];
           this.chart.setOption(option);
           window.addEventListener('resize', this.resize);
           this.fetchDataAndUpdate();
@@ -87,10 +84,9 @@ export class FrequenciesBeltDistributionComponent implements AfterViewInit, OnDe
         if (Array.isArray(data)) {
           this.data = data.map((d: any) => ({ name: d.name, value: d.value }));
           if (this.chart) {
-            const option = {
-              xAxis: { data: this.data.map(d => d.name) },
-              series: [{ data: this.data.map(d => d.value), label: { show: true, position: 'top' } }]
-            };
+            const option = this.getBaseOptions('Faixas mais presentes');
+            option.xAxis.data = this.data.map(d => d.name);
+            option.series = [{ type: 'bar', data: this.data.map(d => d.value), label: { show: true, position: 'top' }, itemStyle: { borderRadius: [6,6,0,0] } }];
             this.chart.setOption(option);
           }
           return;
@@ -107,10 +103,9 @@ export class FrequenciesBeltDistributionComponent implements AfterViewInit, OnDe
             label: { show: true, position: 'top' }
           }));
           const option: any = {
+            ...this.getBaseOptions('Faixas mais presentes'),
             legend: { data: data.legends || series.map((s: any) => s.name) },
-            tooltip: { trigger: 'axis' },
             xAxis: { type: 'category', data: data.categories },
-            yAxis: { type: 'value' },
             series
           };
           this.chart && this.chart.setOption(option);
@@ -122,10 +117,9 @@ export class FrequenciesBeltDistributionComponent implements AfterViewInit, OnDe
           const mapped = (data || []).map((d: any) => ({ name: d.name, value: d.value }));
           this.data = mapped;
           if (this.chart) {
-            const option = {
-              xAxis: { data: this.data.map(d => d.name) },
-              series: [{ data: this.data.map(d => d.value), label: { show: true, position: 'top' } }]
-            };
+            const option = this.getBaseOptions('Faixas mais presentes');
+            option.xAxis.data = this.data.map(d => d.name);
+            option.series = [{ type: 'bar', data: this.data.map(d => d.value), label: { show: true, position: 'top' }, itemStyle: { borderRadius: [6,6,0,0] } }];
             this.chart.setOption(option);
           }
         } catch (e) {
@@ -141,6 +135,18 @@ export class FrequenciesBeltDistributionComponent implements AfterViewInit, OnDe
   resize = () => {
     if (this.chart) this.chart.resize();
   };
+
+  private getBaseOptions(title: string) {
+    return {
+      color: this.palette,
+      tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
+      legend: { bottom: 10 },
+      grid: { left: 12, right: 12, top: 28, bottom: 48 },
+      xAxis: { type: 'category', axisLine: { lineStyle: { color: '#e6e9ef' } }, axisLabel: { color: '#6b7280' } },
+      yAxis: { type: 'value', axisLine: { show: false }, splitLine: { lineStyle: { color: '#f1f5f9' } }, axisLabel: { color: '#6b7280' } },
+      series: []
+    } as any;
+  }
 
   ngOnDestroy(): void {
     window.removeEventListener('resize', this.resize);
