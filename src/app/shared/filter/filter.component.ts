@@ -1,35 +1,44 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-import {FilterInterface, OperationEnum} from '../interface/filter.interface';
-import {CommonModule} from "@angular/common";
-import {FormsModule, ReactiveFormsModule} from "@angular/forms";
+import { ChangeDetectionStrategy, Component, input, output, signal } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { ButtonModule } from 'primeng/button';
+import { InputTextModule } from 'primeng/inputtext';
+import { SelectModule } from 'primeng/select';
+import { FilterInterface, OperationEnum } from '../interface/filter.interface';
 
 @Component({
-    selector: 'app-filter',
-    templateUrl: './filter.component.html',
-    imports: [CommonModule, FormsModule, ReactiveFormsModule],
-    styleUrls: ['./filter.component.scss']
+  selector: 'app-filter',
+  standalone: true,
+  imports: [FormsModule, ButtonModule, InputTextModule, SelectModule],
+  templateUrl: './filter.component.html',
+  styleUrl: './filter.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FilterComponent {
-  @Input() filterKeys!: string[]
-  @Output() setFilterEvent: EventEmitter<FilterInterface> = new EventEmitter()
-  @Output() closeFilterEvent:  EventEmitter<void> = new EventEmitter()
+  readonly filterKeys = input.required<string[]>();
+  readonly setFilterEvent = output<FilterInterface>();
+  readonly closeFilterEvent = output<void>();
 
-  value:string = ""
-  selectedFilterKey: string = ""
-  operations = Object.values(OperationEnum);
-  selectedOperation = OperationEnum.eq
+  protected readonly value = signal('');
+  protected readonly selectedFilterKey = signal('');
+  protected readonly selectedOperation = signal<OperationEnum>(OperationEnum.eq);
 
+  protected readonly operations = Object.values(OperationEnum);
 
-  close(){
-    this.closeFilterEvent.emit()
+  protected readonly keyOptions = () => this.filterKeys().map(k => ({ label: k, value: k }));
+  protected readonly operationOptions = this.operations.map(op => ({ label: op, value: op }));
+
+  close(): void {
+    this.closeFilterEvent.emit();
   }
 
-
-  save(){
-    if (this.selectedFilterKey != ""){
-      this.setFilterEvent.emit({key:this.selectedFilterKey, operation:this.selectedOperation, value:this.value})
-      this.closeFilterEvent.emit()
+  save(): void {
+    if (this.selectedFilterKey()) {
+      this.setFilterEvent.emit({
+        key: this.selectedFilterKey(),
+        operation: this.selectedOperation(),
+        value: this.value(),
+      });
+      this.closeFilterEvent.emit();
     }
   }
-
 }

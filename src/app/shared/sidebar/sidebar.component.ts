@@ -1,62 +1,50 @@
-import { Component, OnInit } from '@angular/core';
-import { RouterModule, Router } from '@angular/router';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { Router, RouterModule } from '@angular/router';
+
+interface NavItem {
+  route: string;
+  label: string;
+  icon: string;
+}
 
 @Component({
   selector: 'app-sidebar',
-  templateUrl: './sidebar.component.html',
   standalone: true,
   imports: [RouterModule],
-  styleUrls: ['./sidebar.component.scss']
+  templateUrl: './sidebar.component.html',
+  styleUrl: './sidebar.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SidebarComponent implements OnInit {
+export class SidebarComponent {
+  private readonly router = inject(Router);
 
-  constructor(private router: Router) { }
+  protected readonly navItems: NavItem[] = [
+    { route: '/system/home', label: 'Home', icon: 'pi pi-home' },
+    { route: '/system/students', label: 'Alunos', icon: 'pi pi-users' },
+    { route: '/system/lessons', label: 'Aulas', icon: 'pi pi-calendar' },
+    { route: '/system/graduations', label: 'Graduações', icon: 'pi pi-star' },
+    { route: '/system/frequencies', label: 'Frequências', icon: 'pi pi-check-square' },
+    { route: '/system/belts', label: 'Faixas', icon: 'pi pi-bookmark' },
+    { route: '/system/graduation-requirements', label: 'Requisitos de Faixas', icon: 'pi pi-list-check' },
+    { route: '/system/notices', label: 'Avisos', icon: 'pi pi-bell' },
+    { route: '/system/notification', label: 'Notificações', icon: 'pi pi-megaphone' },
+    { route: '/system/face-recognition', label: 'Reconhecimento', icon: 'pi pi-id-card' },
+    { route: '/system/medical-clearances', label: 'Atestados Médicos', icon: 'pi pi-file' },
+  ];
 
-  ngOnInit(): void {
+  isActive(route: string): boolean {
+    return this.router.url.startsWith(route);
   }
 
-  closeSidebar() {
-    console.log('closeSidebar called');
-    document.body.classList.remove('sidebar-open');
-    
-    // Also emit an event or use a service to sync with navbar
-    // For now, we'll just ensure the body class is removed
-    console.log('Sidebar closed from sidebar component');
-  }
-
-  closeSidebarOnMobile() {
-    // Only close sidebar on mobile/tablet devices
-    if (window.innerWidth < 992) {
-      this.closeSidebar();
-    }
-  }
-
-  navigateTo(route: string, event?: Event) {
-    // Prevent event propagation to avoid closing sidebar before navigation
-    if (event) {
-      event.preventDefault();
-      event.stopPropagation();
-    }
-    
-    console.log('Navigating to:', route);
-    console.log('Current URL:', this.router.url);
-    
-    // Navigate first, then close sidebar after a small delay to ensure navigation completes
-    this.router.navigate([route]).then(success => {
-      console.log('Navigation success:', success);
-      if (success) {
-        // Add a small delay to ensure the route change is processed
-        setTimeout(() => {
-          this.closeSidebarOnMobile();
-        }, 100);
+  navigate(route: string): void {
+    this.router.navigate([route]).then(() => {
+      if (window.innerWidth < 992) {
+        document.body.classList.remove('sidebar-open');
       }
-    }).catch(error => {
-      console.error('Navigation error:', error);
     });
   }
 
-  isActiveRoute(route: string): boolean {
-    return this.router.url === route;
+  close(): void {
+    document.body.classList.remove('sidebar-open');
   }
-
 }

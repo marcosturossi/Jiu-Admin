@@ -1,16 +1,16 @@
-import {CanActivateFn} from "@angular/router";
-import {inject} from "@angular/core";
-import { AuthServiceService } from "../services/auth-service.service";
+import { inject } from '@angular/core';
+import { ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
+import { createAuthGuard, AuthGuardData } from 'keycloak-angular';
 
-
-export const AuthGuard: CanActivateFn = (): boolean => {
-  const authenticationService = inject(AuthServiceService);
-  if (
-    authenticationService.isLoggedIn() &&
-    authenticationService.hasRole("manage-realm") &&
-    authenticationService.hasRole("manage-users")) {
-    return true;
-  }
-  authenticationService.redirectToLogin();
-  return false;
+const isAccessAllowed = async (
+  _route: ActivatedRouteSnapshot,
+  _state: RouterStateSnapshot,
+  { authenticated, grantedRoles }: AuthGuardData,
+): Promise<boolean> => {
+  if (!authenticated) return false;
+  const realm = grantedRoles.realmRoles;
+  return realm.includes('manage-realm') && realm.includes('manage-users');
 };
+
+export const AuthGuard = createAuthGuard(isAccessAllowed);
+

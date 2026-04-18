@@ -1,81 +1,39 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
+import { PaginatorModule, PaginatorState } from 'primeng/paginator';
 
 @Component({
   selector: 'app-pagination',
   standalone: true,
-  imports: [CommonModule],
-  templateUrl: './pagination.component.html',
-  styleUrl: './pagination.component.scss'
+  imports: [PaginatorModule],
+  template: `
+    <p-paginator
+      [first]="(currentPage() - 1) * pageSize()"
+      [rows]="pageSize()"
+      [totalRecords]="totalItems()"
+      [rowsPerPageOptions]="[10, 25, 50, 100]"
+      (onPageChange)="onPaginatorChange($event)"
+    />
+  `,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PaginationComponent {
-  @Input() currentPage: number = 1;
-  @Input() totalPages: number = 1;
-  @Input() pageSize: number = 10;
-  @Input() totalItems: number = 0;
-  @Output() pageChange = new EventEmitter<number>();
-  @Output() pageSizeChange = new EventEmitter<number>();
+  readonly currentPage = input<number>(1);
+  readonly totalPages = input<number>(1);
+  readonly pageSize = input<number>(10);
+  readonly totalItems = input<number>(0);
+  readonly pageChange = output<number>();
+  readonly pageSizeChange = output<number>();
 
-  pageSizeOptions = [10, 25, 50, 100];
+  protected onPaginatorChange(state: PaginatorState): void {
+    const newRows = state.rows ?? this.pageSize();
+    const newPage = Math.floor((state.first ?? 0) / newRows) + 1;
 
-  get pages(): number[] {
-    const pages: number[] = [];
-    const maxVisiblePages = 5;
-    let startPage = Math.max(1, this.currentPage - Math.floor(maxVisiblePages / 2));
-    let endPage = Math.min(this.totalPages, startPage + maxVisiblePages - 1);
-
-    if (endPage - startPage + 1 < maxVisiblePages) {
-      startPage = Math.max(1, endPage - maxVisiblePages + 1);
+    if (newRows !== this.pageSize()) {
+      // Page-size change: emit only pageSizeChange; parent handles reset to page 1
+      this.pageSizeChange.emit(newRows);
+    } else if (newPage !== this.currentPage()) {
+      // Page navigation: emit only pageChange
+      this.pageChange.emit(newPage);
     }
-
-    for (let i = startPage; i <= endPage; i++) {
-      pages.push(i);
-    }
-
-    return pages;
-  }
-
-  get showFirstPage(): boolean {
-    return this.pages[0] > 1;
-  }
-
-  get showLastPage(): boolean {
-    return this.pages[this.pages.length - 1] < this.totalPages;
-  }
-
-  get startItem(): number {
-    return (this.currentPage - 1) * this.pageSize + 1;
-  }
-
-  get endItem(): number {
-    return Math.min(this.currentPage * this.pageSize, this.totalItems);
-  }
-
-  onPageChange(page: number): void {
-    if (page >= 1 && page <= this.totalPages && page !== this.currentPage) {
-      this.pageChange.emit(page);
-    }
-  }
-
-  onPageSizeChange(event: Event): void {
-    const select = event.target as HTMLSelectElement;
-    const newSize = parseInt(select.value, 10);
-    this.pageSizeChange.emit(newSize);
-  }
-
-  goToFirstPage(): void {
-    this.onPageChange(1);
-  }
-
-  goToLastPage(): void {
-    this.onPageChange(this.totalPages);
-  }
-
-  goToPreviousPage(): void {
-    this.onPageChange(this.currentPage - 1);
-  }
-
-  goToNextPage(): void {
-    this.onPageChange(this.currentPage + 1);
   }
 }
