@@ -1,4 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideHttpClient } from '@angular/common/http';
+import { MessageService } from 'primeng/api';
 
 import { FaceRecognitionComponent } from './face-recognition.component';
 
@@ -8,7 +10,8 @@ describe('FaceRecognitionComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [FaceRecognitionComponent]
+      imports: [FaceRecognitionComponent],
+      providers: [provideHttpClient(), MessageService]
     })
     .compileComponents();
 

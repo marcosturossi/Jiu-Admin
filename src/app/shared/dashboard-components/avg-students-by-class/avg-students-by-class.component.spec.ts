@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideHttpClient } from '@angular/common/http';
 
 import { AvgStudentsByClassComponent } from './avg-students-by-class.component';
 
@@ -8,7 +9,8 @@ describe('AvgStudentsByClassComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [AvgStudentsByClassComponent]
+      imports: [AvgStudentsByClassComponent],
+      providers: [provideHttpClient()]
     })
     .compileComponents();
 

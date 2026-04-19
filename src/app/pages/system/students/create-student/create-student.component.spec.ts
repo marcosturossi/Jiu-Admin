@@ -1,4 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideHttpClient } from '@angular/common/http';
+import { MessageService } from 'primeng/api';
 
 import { CreateStudentComponent } from './create-student.component';
 
@@ -8,7 +10,8 @@ describe('CreateStudentComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [CreateStudentComponent]
+      imports: [CreateStudentComponent],
+      providers: [provideHttpClient(), MessageService]
     })
     .compileComponents();
 

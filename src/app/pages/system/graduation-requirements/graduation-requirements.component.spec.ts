@@ -1,4 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideHttpClient } from '@angular/common/http';
+import { MessageService } from 'primeng/api';
 
 import { GraduationRequirementsComponent } from './graduation-requirements.component';
 
@@ -8,7 +10,8 @@ describe('GraduationRequirementsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [GraduationRequirementsComponent]
+      imports: [GraduationRequirementsComponent],
+      providers: [provideHttpClient(), MessageService]
     })
     .compileComponents();
 

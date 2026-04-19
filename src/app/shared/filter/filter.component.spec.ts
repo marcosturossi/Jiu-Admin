@@ -6,12 +6,13 @@ describe('FilterComponent', () => {
   let component: FilterComponent;
   let fixture: ComponentFixture<FilterComponent>;
 
-  beforeEach(() => {
-    TestBed.configureTestingModule({
-      declarations: [FilterComponent]
-    });
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [FilterComponent]
+    }).compileComponents();
     fixture = TestBed.createComponent(FilterComponent);
     component = fixture.componentInstance;
+    fixture.componentRef.setInput('filterKeys', []);
     fixture.detectChanges();
   });
 

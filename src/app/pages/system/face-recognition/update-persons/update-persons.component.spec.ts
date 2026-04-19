@@ -1,4 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideHttpClient } from '@angular/common/http';
+import { MessageService } from 'primeng/api';
 
 import { UpdatePersonsComponent } from './update-persons.component';
 
@@ -8,12 +10,14 @@ describe('UpdatePersonsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [UpdatePersonsComponent]
+      imports: [UpdatePersonsComponent],
+      providers: [provideHttpClient(), MessageService]
     })
     .compileComponents();
 
     fixture = TestBed.createComponent(UpdatePersonsComponent);
     component = fixture.componentInstance;
+    fixture.componentRef.setInput('person', {});
     fixture.detectChanges();
   });
 

@@ -1,4 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideHttpClient } from '@angular/common/http';
+import { MessageService } from 'primeng/api';
 
 import { CreateNoticeComponent } from './create-notice.component';
 
@@ -8,7 +10,8 @@ describe('CreateNoticeComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [CreateNoticeComponent]
+      imports: [CreateNoticeComponent],
+      providers: [provideHttpClient(), MessageService]
     })
     .compileComponents();
 
