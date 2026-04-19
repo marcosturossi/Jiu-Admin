@@ -1,50 +1,38 @@
-<div class="modal fade show" tabindex="-1" role="dialog" style="display:block">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Editar Aluno</h5>
-        <button type="button" (click)="close()" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <form [formGroup]="studentForm">
-          <div class="mb-3">
-            <label for="userName" class="form-label">Usuário *</label>
-            <input id="userName" class="form-control" placeholder="Digite o nome de usuário" formControlName="userName" />
-          </div>
-          <div class="mb-3">
-            <label for="email" class="form-label">E-mail *</label>
-            <input id="email" class="form-control" placeholder="Digite o e-mail" type="email" formControlName="email" />
-          </div>
-          <div class="mb-3">
-            <label for="phoneNumber" class="form-label">Telefone</label>
-            <input id="phoneNumber" class="form-control" placeholder="Digite o telefone" formControlName="phoneNumber" />
-          </div>
-          <div class="mb-3">
-            <label for="firstName" class="form-label">Nome</label>
-            <input id="firstName" class="form-control" placeholder="Digite o primeiro nome" formControlName="firstName" />
-          </div>
-          <div class="mb-3">
-            <label for="lastName" class="form-label">Sobrenome</label>
-            <input id="lastName" class="form-control" placeholder="Digite o sobrenome" formControlName="lastName" />
-          </div>
-          <div class="mb-3">
-            <label for="birthDay" class="form-label">Data de Nascimento</label>
-            <input id="birthDay" class="form-control" type="date" formControlName="birthDay" />
-          </div>
-          <div class="form-check mb-3">
-            <input class="form-check-input" type="checkbox" formControlName="isActive" id="isActiveCheck">
-            <label class="form-check-label" for="isActiveCheck">Ativo</label>
-          </div>
-          <div class="mb-3">
-            <label for="preferredUsername" class="form-label">Usuário Preferido</label>
-            <input id="preferredUsername" class="form-control" placeholder="Digite o usuário preferido" formControlName="preferredUsername" />
-          </div>
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-primary" (click)="update()" [disabled]="!studentForm.valid">Salvar</button>
-        <button type="button" (click)="close()" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
-      </div>
-    </div>
+<form [formGroup]="form" class="dialog-form">
+  <div class="field">
+    <label for="userName">Usuário *</label>
+    <input pInputText id="userName" formControlName="userName" placeholder="Digite o nome de usuário" class="w-full" />
   </div>
-</div>
+  <div class="field">
+    <label for="email">E-mail *</label>
+    <input pInputText id="email" formControlName="email" placeholder="Digite o e-mail" type="email" class="w-full" />
+  </div>
+  <div class="field">
+    <label for="phoneNumber">Telefone</label>
+    <input pInputText id="phoneNumber" formControlName="phoneNumber" placeholder="Digite o telefone" class="w-full" />
+  </div>
+  <div class="field">
+    <label for="firstName">Nome</label>
+    <input pInputText id="firstName" formControlName="firstName" placeholder="Digite o primeiro nome" class="w-full" />
+  </div>
+  <div class="field">
+    <label for="lastName">Sobrenome</label>
+    <input pInputText id="lastName" formControlName="lastName" placeholder="Digite o sobrenome" class="w-full" />
+  </div>
+  <div class="field">
+    <label for="birthDay">Data de Nascimento</label>
+    <p-datepicker formControlName="birthDay" dateFormat="yy-mm-dd" [showIcon]="true" class="w-full" inputId="birthDay" />
+  </div>
+  <div class="field flex-row gap-2 align-items-center">
+    <p-checkbox formControlName="isActive" [binary]="true" inputId="isActive" />
+    <label for="isActive">Ativo</label>
+  </div>
+  <div class="field">
+    <label for="preferredUsername">Usuário Preferido</label>
+    <input pInputText id="preferredUsername" formControlName="preferredUsername" placeholder="Digite o usuário preferido" class="w-full" />
+  </div>
+  <div class="dialog-actions">
+    <p-button label="Cancelar" severity="secondary" [outlined]="true" (onClick)="close()" />
+    <p-button label="Salvar" icon="pi pi-check" (onClick)="save()" [disabled]="form.invalid" />
+  </div>
+</form>

@@ -1,92 +1,69 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { FrequencyService, StudentsService, ShowStudentDTO, PaginationStudentDTO } from '../../../../generated_services';
+import { ChangeDetectionStrategy, Component, inject, input, output, effect } from '@angular/core';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FrequencyService, StudentsService, PaginationStudentDTO } from '../../../../generated_services';
 import { ShowFrequencyDTO, UpdateFrequencyDTO } from '../../../../generated_services';
-import { CommonModule } from '@angular/common';
 import { NotificationService } from '../../../../services/notification.service';
+import { SelectModule } from 'primeng/select';
+import { ButtonModule } from 'primeng/button';
+import { signal } from '@angular/core';
 
 @Component({
   selector: 'app-update-frequency',
-  imports: [ReactiveFormsModule, CommonModule],
+  imports: [ReactiveFormsModule, SelectModule, ButtonModule],
   templateUrl: './update-frequency.component.html',
-  styleUrl: './update-frequency.component.scss'
+  styleUrl: './update-frequency.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class UpdateFrequencyComponent implements OnInit {
-  @Output() closeEvent = new EventEmitter<void>();
-  @Output() frequencyUpdated = new EventEmitter<void>();
-  @Input() frequency!: ShowFrequencyDTO;
-  frequencyForm!: FormGroup;
-  students!: PaginationStudentDTO;
+export class UpdateFrequencyComponent {
+  readonly closeEvent = output<void>();
+  readonly frequencyUpdated = output<void>();
+  readonly frequency = input.required<ShowFrequencyDTO>();
 
-  constructor(
-    private frequencyService: FrequencyService,
-    private studentsService: StudentsService,
-    private formBuilder: FormBuilder,
-    private notificationService: NotificationService
-  ) {
-    this.frequencyForm = this.formBuilder.group({
-      studentId: ["", Validators.required],
-    })
-  }
+  private readonly frequencyService = inject(FrequencyService);
+  private readonly studentsService = inject(StudentsService);
+  private readonly fb = inject(FormBuilder);
+  private readonly ns = inject(NotificationService);
 
-  ngOnInit(): void {
-    this.studentsService.apiStudentsGet().subscribe(
-      {
-        next: (result) => {
-          this.students = result;
-        },
-        error: (error) => {
-          console.log(error);
-          this.notificationService.showError(
-            'Erro ao Carregar Alunos!', 
-            'Não foi possível carregar a lista de alunos. Tente novamente.'
-          );
-        }
+  protected readonly studentOptions = signal<{ label: string; value: string }[]>([]);
+
+  protected readonly frequencyForm = this.fb.group({
+    studentId: ['', Validators.required]
+  });
+
+  constructor() {
+    effect(() => {
+      const freq = this.frequency();
+      if (freq) {
+        this.frequencyForm.patchValue({ studentId: freq.studentId });
       }
-    );
-    
-    this.frequencyForm.patchValue({
-      studentId: this.frequency.studentId,
+    });
+
+    this.studentsService.apiStudentsGet().subscribe({
+      next: (result: PaginationStudentDTO) => {
+        this.studentOptions.set(
+          (result.items ?? []).map(s => ({ label: `${s.firstName} ${s.lastName}`, value: s.id ?? '' }))
+        );
+      },
+      error: () => this.ns.showError('Erro ao Carregar Alunos!', 'Não foi possível carregar a lista de alunos. Tente novamente.')
     });
   }
 
-  close() {
-    this.closeEvent.emit();
-  }
+  protected close(): void { this.closeEvent.emit(); }
 
-  update() {
+  protected update(): void {
     if (this.frequencyForm.invalid) {
-      this.notificationService.showError(
-        'Formulário Inválido', 
-        'Por favor, selecione um aluno.'
-      );
+      this.ns.showError('Formulário Inválido', 'Por favor, selecione um aluno.');
       return;
     }
-
-    this.frequencyService.apiFrequencyIdPut(this.frequency.id!, this.formToUpdateFrequency()).subscribe(
-      {
-        next: result => {
-          this.notificationService.showSuccess(
-            'Frequência Atualizada!', 
-            'A frequência foi atualizada com sucesso.'
-          );
-          this.frequencyUpdated.emit();
-          this.close();
-        },
-        error: error => {
-          console.log(error);
-          this.notificationService.showError(
-            'Erro ao Atualizar Frequência!', 
-            'Não foi possível atualizar a frequência. Tente novamente.'
-          );
-        }
-      })
-  }
-
-  formToUpdateFrequency(): UpdateFrequencyDTO {
-    const formValue = this.frequencyForm.value;
-    return {
-      studentId: formValue.studentId,
-    } as UpdateFrequencyDTO
+    this.frequencyService.apiFrequencyIdPut(this.frequency().id!, {
+      studentId: this.frequencyForm.value.studentId
+    } as UpdateFrequencyDTO).subscribe({
+      next: () => {
+        this.ns.showSuccess('Frequência Atualizada!', 'A frequência foi atualizada com sucesso.');
+        this.frequencyUpdated.emit();
+        this.close();
+      },
+      error: () => this.ns.showError('Erro ao Atualizar Frequência!', 'Não foi possível atualizar a frequência. Tente novamente.')
+    });
   }
 }

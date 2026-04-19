@@ -1,122 +1,110 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ChangeDetectionStrategy, Component, inject, input, output, effect } from '@angular/core';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NotificationService as ApiNotificationService } from '../../../../generated_services/api/notification.service';
 import { ShowNotificationDTO } from '../../../../generated_services/model/showNotificationDTO';
 import { UpdateNotificationDTO } from '../../../../generated_services/model/updateNotificationDTO';
 import { NotificationType } from '../../../../generated_services/model/notificationType';
 import { NotificationPriority } from '../../../../generated_services/model/notificationPriority';
-import { CommonModule } from '@angular/common';
 import { NotificationService } from '../../../../services/notification.service';
+import { ButtonModule } from 'primeng/button';
+import { InputTextModule } from 'primeng/inputtext';
+import { SelectModule } from 'primeng/select';
+import { TextareaModule } from 'primeng/textarea';
+import { CheckboxModule } from 'primeng/checkbox';
+import { DatePickerModule } from 'primeng/datepicker';
 
 @Component({
   selector: 'app-update-notification',
-  imports: [ReactiveFormsModule, CommonModule],
+  imports: [ReactiveFormsModule, ButtonModule, InputTextModule, SelectModule, TextareaModule, CheckboxModule, DatePickerModule],
   templateUrl: './update-notification.component.html',
-  styleUrl: './update-notification.component.scss'
+  styleUrl: './update-notification.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class UpdateNotificationComponent implements OnInit {
-  @Output() closeEvent = new EventEmitter<void>();
-  @Output() notificationUpdated = new EventEmitter<void>();
-  @Input() notification!: ShowNotificationDTO;
-  notificationForm!: FormGroup;
+export class UpdateNotificationComponent {
+  readonly closeEvent = output<void>();
+  readonly notificationUpdated = output<void>();
+  readonly notification = input.required<ShowNotificationDTO>();
 
-  notificationTypes = [
-    { value: NotificationType.NUMBER_0, label: 'Informação' },
-    { value: NotificationType.NUMBER_1, label: 'Aviso' },
-    { value: NotificationType.NUMBER_2, label: 'Erro' },
-    { value: NotificationType.NUMBER_3, label: 'Sucesso' },
-    { value: NotificationType.NUMBER_4, label: 'Sistema' },
-    { value: NotificationType.NUMBER_5, label: 'Graduação' },
-    { value: NotificationType.NUMBER_6, label: 'Frequência' },
-    { value: NotificationType.NUMBER_7, label: 'Geral' }
+  private readonly apiNotificationService = inject(ApiNotificationService);
+  private readonly fb = inject(FormBuilder);
+  private readonly ns = inject(NotificationService);
+
+  protected readonly notificationTypes = [
+    { label: 'Informação', value: NotificationType.NUMBER_0 },
+    { label: 'Aviso', value: NotificationType.NUMBER_1 },
+    { label: 'Erro', value: NotificationType.NUMBER_2 },
+    { label: 'Sucesso', value: NotificationType.NUMBER_3 },
+    { label: 'Sistema', value: NotificationType.NUMBER_4 },
+    { label: 'Graduação', value: NotificationType.NUMBER_5 },
+    { label: 'Frequência', value: NotificationType.NUMBER_6 },
+    { label: 'Geral', value: NotificationType.NUMBER_7 }
   ];
 
-  notificationPriorities = [
-    { value: NotificationPriority.NUMBER_0, label: 'Baixa' },
-    { value: NotificationPriority.NUMBER_1, label: 'Normal' },
-    { value: NotificationPriority.NUMBER_2, label: 'Alta' },
-    { value: NotificationPriority.NUMBER_3, label: 'Crítica' }
+  protected readonly notificationPriorities = [
+    { label: 'Baixa', value: NotificationPriority.NUMBER_0 },
+    { label: 'Normal', value: NotificationPriority.NUMBER_1 },
+    { label: 'Alta', value: NotificationPriority.NUMBER_2 },
+    { label: 'Crítica', value: NotificationPriority.NUMBER_3 }
   ];
 
-  constructor(
-    private apiNotificationService: ApiNotificationService,
-    private formBuilder: FormBuilder,
-    private notificationService: NotificationService
-  ) {
-    this.notificationForm = this.formBuilder.group({
-      title: ["", Validators.required],
-      message: ["", Validators.required],
-      type: [NotificationType.NUMBER_0, Validators.required],
-      priority: [NotificationPriority.NUMBER_1],
-      userId: [""],
-      isActive: [true],
-      expiresAt: [""],
-      actionUrl: [""],
-      metadata: [""]
-    })
-  }
+  protected readonly form = this.fb.group({
+    title: ['', Validators.required],
+    message: ['', Validators.required],
+    type: [NotificationType.NUMBER_0 as NotificationType, Validators.required],
+    priority: [NotificationPriority.NUMBER_1 as NotificationPriority],
+    userId: [''],
+    isActive: [true],
+    expiresAt: [null as Date | null],
+    actionUrl: [''],
+    metadata: ['']
+  });
 
-  ngOnInit(): void {
-    // Convert dates for datetime-local input
-    const expiresAt = this.notification.expiresAt ? 
-      new Date(this.notification.expiresAt).toISOString().slice(0, 16) : '';
-
-    this.notificationForm.patchValue({
-      title: this.notification.title,
-      message: this.notification.message,
-      type: this.notification.type,
-      isActive: this.notification.isActive,
-      expiresAt: expiresAt,
-      actionUrl: this.notification.actionUrl,
-      metadata: this.notification.metadata
+  constructor() {
+    effect(() => {
+      const n = this.notification();
+      if (n) {
+        this.form.patchValue({
+          title: n.title,
+          message: n.message,
+          type: n.type,
+          isActive: n.isActive,
+          expiresAt: n.expiresAt ? new Date(n.expiresAt) : null,
+          actionUrl: n.actionUrl ?? '',
+          metadata: n.metadata ?? ''
+        });
+      }
     });
   }
 
-  close() {
-    this.closeEvent.emit();
-  }
+  protected close(): void { this.closeEvent.emit(); }
 
-  update() {
-    if (this.notificationForm.invalid) {
-      this.notificationService.showError(
-        'Formulário Inválido', 
-        'Por favor, preencha todos os campos obrigatórios.'
-      );
+  protected update(): void {
+    if (this.form.invalid) {
+      this.ns.showError('Formulário Inválido', 'Por favor, preencha todos os campos obrigatórios.');
       return;
     }
-
-    this.apiNotificationService.apiNotificationIdPut(this.notification.id!, this.formToUpdateNotification()).subscribe(
-      {
-        next: result => {
-          this.notificationService.showSuccess(
-            'Notificação Atualizada!', 
-            `A notificação "${this.notificationForm.value.title}" foi atualizada com sucesso.`
-          );
-          this.notificationUpdated.emit();
-          this.close();
-        },
-        error: error => {
-          console.log(error);
-          this.notificationService.showError(
-            'Erro ao Atualizar Notificação!', 
-            'Não foi possível atualizar a notificação. Tente novamente.'
-          );
-        }
-      })
+    this.apiNotificationService.apiNotificationIdPut(this.notification().id!, this.toDTO()).subscribe({
+      next: () => {
+        this.ns.showSuccess('Notificação Atualizada!', `A notificação "${this.form.value.title}" foi atualizada com sucesso.`);
+        this.notificationUpdated.emit();
+        this.close();
+      },
+      error: () => this.ns.showError('Erro ao Atualizar Notificação!', 'Não foi possível atualizar a notificação. Tente novamente.')
+    });
   }
 
-  formToUpdateNotification(): UpdateNotificationDTO {
-    const formValue = this.notificationForm.value;
+  private toDTO(): UpdateNotificationDTO {
+    const v = this.form.value;
     return {
-      title: formValue.title,
-      message: formValue.message,
-      type: formValue.type,
-      priority: formValue.priority,
-      userId: formValue.userId || null,
-      isActive: formValue.isActive,
-      expiresAt: formValue.expiresAt || null,
-      actionUrl: formValue.actionUrl || null,
-      metadata: formValue.metadata || null
-    } as UpdateNotificationDTO
+      title: v.title,
+      message: v.message,
+      type: v.type,
+      priority: v.priority,
+      userId: v.userId || null,
+      isActive: v.isActive,
+      expiresAt: v.expiresAt ? (v.expiresAt as Date).toISOString() : null,
+      actionUrl: v.actionUrl || null,
+      metadata: v.metadata || null
+    } as UpdateNotificationDTO;
   }
 }

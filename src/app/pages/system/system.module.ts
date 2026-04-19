@@ -5,9 +5,9 @@ import { RouterModule, RouterOutlet, Routes } from "@angular/router";
 import { SidebarComponent } from "../../shared/sidebar/sidebar.component";
 import { FilterComponent } from "../../shared/filter/filter.component";
 import { AuthGuard } from "../../guard/auth.guard";
-import {NavbarComponent} from "../../shared/navbar/navbar.component";
-import {HomeComponent} from "./home/home.component";
-import {SubnavComponent} from "../../shared/subnav/subnav.component";
+import { NavbarComponent } from "../../shared/navbar/navbar.component";
+import { HomeComponent } from "./home/home.component";
+import { SubnavComponent } from "../../shared/subnav/subnav.component";
 import { StudentsComponent } from './students/students.component';
 import { LessonsComponent } from './lessons/lessons.component';
 import { GraduationsComponent } from './graduations/graduations.component';
@@ -18,6 +18,7 @@ import { NoticesComponent } from './notices/notices.component';
 import { FaceRecognitionComponent } from './face-recognition/face-recognition.component';
 import { NotificationComponent } from './notification/notification.component';
 import { MedicalClearancesComponent } from './medical-clearances/medical-clearances.component';
+import { ToastModule } from 'primeng/toast';
 
 export const routes: Routes = [
   {
@@ -96,11 +97,12 @@ export const routes: Routes = [
   imports: [
     CommonModule,
     RouterOutlet,
-    RouterModule.forChild(routes), // Child routes setup
+    RouterModule.forChild(routes),
     SidebarComponent,
     NavbarComponent,
     FilterComponent,
     SubnavComponent,
+    ToastModule,
   ],
   exports: [
     SystemComponent,

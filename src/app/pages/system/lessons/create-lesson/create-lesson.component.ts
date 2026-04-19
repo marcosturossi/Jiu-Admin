@@ -1,113 +1,101 @@
-import { Component, Output, EventEmitter } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, output, signal } from '@angular/core';
+import { ReactiveFormsModule, FormsModule, FormBuilder, Validators } from '@angular/forms';
+import { InputTextModule } from 'primeng/inputtext';
+import { ButtonModule } from 'primeng/button';
+import { CheckboxModule } from 'primeng/checkbox';
+import { TextareaModule } from 'primeng/textarea';
 import { LessonService } from '../../../../generated_services/api/lesson.service';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CreateLessonDTO } from '../../../../generated_services/model/createLessonDTO';
-import { CommonModule } from '@angular/common';
 import { NotificationService } from '../../../../services/notification.service';
 
 @Component({
   selector: 'app-create-lesson',
-  imports: [ReactiveFormsModule, CommonModule, FormsModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [ReactiveFormsModule, FormsModule, InputTextModule, ButtonModule, CheckboxModule, TextareaModule],
   templateUrl: './create-lesson.component.html',
-  styleUrl: './create-lesson.component.scss'
+  styleUrl: './create-lesson.component.scss',
 })
 export class CreateLessonComponent {
-  @Output() closeEvent = new EventEmitter<void>();
-  @Output() lessonCreated = new EventEmitter<void>();
-  lessonForm!: FormGroup;
-  autoTitle = true
+  readonly closeEvent = output<void>();
+  readonly lessonCreated = output<void>();
 
-  constructor(
-    private lessonService: LessonService,
-    private formBuilder: FormBuilder,
-    private notificationService: NotificationService
-  ) {
-    this.lessonForm = this.formBuilder.group({
-      title: ["", Validators.required],
-      description: [""],
-      scheduledDate: ["", Validators.required],
-      duration: ["01:00", Validators.required],
-      isActive: [true]
-    })
+  private readonly lessonService = inject(LessonService);
+  private readonly ns = inject(NotificationService);
+  private readonly fb = inject(FormBuilder);
+
+  protected autoTitle = signal(true);
+
+  protected readonly form = this.fb.group({
+    title: ['', Validators.required],
+    description: [''],
+    scheduledDate: ['', Validators.required],
+    duration: ['01:00', Validators.required],
+    isActive: [true],
+  });
+
+  constructor() {
     this.disableTitleInput();
-
-    this.lessonForm.valueChanges.subscribe(() => {
-      if (this.lessonForm.valid){
+    this.form.valueChanges.subscribe(() => {
+      if (this.form.valid) {
         this.createAutoTitle();
       }
     });
   }
 
-  createAutoTitle() 
-  {
-    if (this.autoTitle) {
-      const date = new Date(this.lessonForm.value.scheduledDate);
-      const formattedDate = date.toLocaleString('pt-BR');
-      if (formattedDate !== 'Invalid Date') {
-        this.lessonForm.patchValue(
-        { title: `Aula ${formattedDate}` },
-        { emitEvent: false }
-      );
+  protected createAutoTitle(): void {
+    if (this.autoTitle()) {
+      const date = new Date(this.form.value.scheduledDate!);
+      const formatted = date.toLocaleString('pt-BR');
+      if (formatted !== 'Invalid Date') {
+        this.form.patchValue({ title: `Aula ${formatted}` }, { emitEvent: false });
       }
-      
     }
   }
 
-  disableTitleInput(){
-    if (this.autoTitle) {
-      this.lessonForm.get('title')?.disable();
+  protected disableTitleInput(): void {
+    if (this.autoTitle()) {
+      this.form.get('title')?.disable();
       this.createAutoTitle();
     } else {
-      this.lessonForm.get('title')?.enable();
-      this.lessonForm.get('title')?.setValue("");
+      this.form.get('title')?.enable();
+      this.form.get('title')?.setValue('');
     }
   }
 
-  close() {
-    this.closeEvent.emit();
+  protected onAutoTitleChange(val: boolean): void {
+    this.autoTitle.set(val);
+    this.disableTitleInput();
   }
 
-  create() {
-    if (this.lessonForm.invalid) {
-      this.notificationService.showError(
-        'Formulário Inválido', 
-        'Por favor, preencha todos os campos obrigatórios.'
-      );
+  protected close(): void { this.closeEvent.emit(); }
+
+  protected save(): void {
+    if (this.form.invalid) {
+      this.ns.showError('Formulário Inválido', 'Por favor, preencha todos os campos obrigatórios.');
       return;
     }
-
-    // If title is auto-generated (and disabled), ensure it is up-to-date before submit.
     this.createAutoTitle();
-
-    this.lessonService.apiLessonPost(this.formToCreateLesson()).subscribe({
-      next: result => {
-        const title = this.lessonForm.getRawValue().title;
-        this.notificationService.showSuccess(
-          'Aula Criada!', 
-          `A aula "${title}" foi criada com sucesso.`
-        );
+    this.lessonService.apiLessonPost(this.toDTO()).subscribe({
+      next: () => {
+        const title = this.form.getRawValue().title;
+        this.ns.showSuccess('Aula Criada!', `A aula "${title}" foi criada com sucesso.`);
         this.lessonCreated.emit();
         this.close();
       },
-      error: error => {
-        console.log(error);
-        this.notificationService.showError(
-          'Erro ao Criar Aula!', 
-          'Não foi possível criar a aula. Tente novamente.'
-        );
-      }
+      error: () => {
+        this.ns.showError('Erro ao Criar Aula!', 'Não foi possível criar a aula. Tente novamente.');
+      },
     });
   }
 
-  formToCreateLesson(): CreateLessonDTO {
-    // getRawValue() includes disabled controls (like title when autoTitle is true)
-    const formValue = this.lessonForm.getRawValue();
+  private toDTO(): CreateLessonDTO {
+    const v = this.form.getRawValue();
     return {
-      title: formValue.title,
-      description: formValue.description,
-      scheduledDate: new Date(formValue.scheduledDate).toISOString(),
-      duration: formValue.duration,
-      isActive: formValue.isActive
-    } as CreateLessonDTO
+      title: v.title,
+      description: v.description,
+      scheduledDate: new Date(v.scheduledDate!).toISOString(),
+      duration: v.duration,
+      isActive: v.isActive,
+    } as CreateLessonDTO;
   }
 }

@@ -1,118 +1,74 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { DatePipe } from '@angular/common';
+import { TableModule } from 'primeng/table';
+import { ButtonModule } from 'primeng/button';
+import { TagModule } from 'primeng/tag';
+import { DialogModule } from 'primeng/dialog';
 import { LessonService } from '../../../generated_services/api/lesson.service';
 import { ShowLessonDTO } from '../../../generated_services/model/showLessonDTO';
+import { PaginationLessonDTO } from '../../../generated_services';
 import { CreateLessonComponent } from './create-lesson/create-lesson.component';
 import { UpdateLessonComponent } from './update-lesson/update-lesson.component';
-import { DatePipe } from '@angular/common';
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
-import { PaginationLessonDTO } from '../../../generated_services';
 import { PaginationComponent } from '../../../shared/pagination/pagination.component';
 
 @Component({
   selector: 'app-lessons',
-  imports: [CommonModule, CreateLessonComponent, UpdateLessonComponent, DatePipe, PaginationComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    TableModule, ButtonModule, TagModule, DialogModule,
+    PaginationComponent, CreateLessonComponent, UpdateLessonComponent, DatePipe,
+  ],
   templateUrl: './lessons.component.html',
-  styleUrl: './lessons.component.scss'
+  styleUrl: './lessons.component.scss',
 })
-export class LessonsComponent implements OnInit {
-  lessons: PaginationLessonDTO = { items: [], totalCount: 0, pageNumber: 1, pageSize: 10, totalPages: 0 };
-  isLoading: boolean = false;
-  openedCreateLesson: boolean = false;
-  selectedLesson!: ShowLessonDTO;
-  openedUpdateLesson: boolean = false;
-  currentPage: number = 1;
-  pageSize: number = 10;
+export class LessonsComponent {
+  private readonly lessonService = inject(LessonService);
+  private readonly subnavService = inject(SubnavService);
+  private readonly notificationService = inject(NotificationService);
 
-  constructor(
-    private lessonService: LessonService,
-    private subnavService: SubnavService,
-    private notificationService: NotificationService
-  ) { }
+  protected readonly isLoading = signal(false);
+  protected readonly items = signal<PaginationLessonDTO | null>(null);
+  protected readonly openedCreate = signal(false);
+  protected readonly openedUpdate = signal(false);
+  protected readonly selected = signal<ShowLessonDTO | null>(null);
+  protected readonly currentPage = signal(1);
+  protected readonly pageSize = signal(10);
 
-  ngOnInit(): void {
-    this.subnavService.setTitle("Aulas");
-    this.loadLessons();
+  constructor() {
+    this.subnavService.setTitle('Aulas');
+    this.load();
   }
 
-  loadLessons(): void {
-    this.isLoading = true;
-    this.lessonService.apiLessonGet(this.currentPage, this.pageSize).subscribe(
-      {
-        next: (result) => {
-          this.lessons = result;
-          this.isLoading = false;
-        },
-        error: (error) => {
-          console.log(error);
-          this.isLoading = false;
-          this.notificationService.showError(
-            'Erro ao Carregar Aulas!', 
-            'Não foi possível carregar a lista de aulas. Tente novamente.'
-          );
-        }
-      }
-    )
+  protected load(): void {
+    this.isLoading.set(true);
+    this.lessonService.apiLessonGet(this.currentPage(), this.pageSize()).subscribe({
+      next: r => { this.items.set(r); this.isLoading.set(false); },
+      error: () => {
+        this.isLoading.set(false);
+        this.notificationService.showError('Erro ao Carregar Aulas!', 'Não foi possível carregar a lista de aulas. Tente novamente.');
+      },
+    });
   }
 
-  onPageChange(page: number): void {
-    this.currentPage = page;
-    this.loadLessons();
-  }
+  protected onPageChange(p: number): void { this.currentPage.set(p); this.load(); }
+  protected onPageSizeChange(s: number): void { this.pageSize.set(s); this.currentPage.set(1); this.load(); }
+  protected openCreate(): void { this.openedCreate.set(true); }
+  protected openEdit(item: ShowLessonDTO): void { this.selected.set(item); this.openedUpdate.set(true); }
+  protected onCreated(): void { this.openedCreate.set(false); this.load(); }
+  protected onUpdated(): void { this.openedUpdate.set(false); this.load(); }
 
-  onPageSizeChange(size: number): void {
-    this.pageSize = size;
-    this.currentPage = 1;
-    this.loadLessons();
-  }
-
-  openCreateLesson() {
-    this.openedCreateLesson = true
-  }
-
-  closeCreateLesson() {
-    this.openedCreateLesson = false
-  }
-
-  openUpdateLesson(lesson: ShowLessonDTO) {
-    this.selectedLesson = lesson
-    this.openedUpdateLesson = true
-  }
-
-  closeUpdateLesson() {
-    this.openedUpdateLesson = false
-  }
-
-  onLessonCreated() {
-    this.loadLessons();
-    this.closeCreateLesson();
-  }
-
-  onLessonUpdated() {
-    this.loadLessons();
-    this.closeUpdateLesson();
-  }
-
-  deleteLesson(lesson: ShowLessonDTO) {
-    // You can implement a proper confirmation dialog here if needed
-    if (confirm(`Tem certeza que deseja excluir a aula "${lesson.title}"?`)) {
-      this.lessonService.apiLessonIdDelete(lesson.id!).subscribe({
-        next: () => {
-          this.notificationService.showSuccess(
-            'Aula Excluída!', 
-            `A aula "${lesson.title}" foi excluída com sucesso.`
-          );
-          this.loadLessons();
-        },
-        error: (error) => {
-          console.log(error);
-          this.notificationService.showError(
-            'Erro ao Excluir Aula!', 
-            'Não foi possível excluir a aula. Tente novamente.'
-          );
-        }
-      });
-    }
+  protected delete(item: ShowLessonDTO): void {
+    if (!confirm(`Tem certeza que deseja excluir a aula "${item.title}"?`)) return;
+    this.lessonService.apiLessonIdDelete(item.id!).subscribe({
+      next: () => {
+        this.notificationService.showSuccess('Aula Excluída!', `A aula "${item.title}" foi excluída com sucesso.`);
+        this.load();
+      },
+      error: () => {
+        this.notificationService.showError('Erro ao Excluir Aula!', 'Não foi possível excluir a aula. Tente novamente.');
+      },
+    });
   }
 }

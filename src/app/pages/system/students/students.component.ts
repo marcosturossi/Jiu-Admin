@@ -1,123 +1,72 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { DatePipe } from '@angular/common';
+import { TableModule } from 'primeng/table';
+import { ButtonModule } from 'primeng/button';
+import { TagModule } from 'primeng/tag';
+import { DialogModule } from 'primeng/dialog';
 import { StudentsService } from '../../../generated_services/api/students.service';
 import { ShowStudentDTO } from '../../../generated_services/model/showStudentDTO';
 import { PaginationStudentDTO } from '../../../generated_services/model/paginationStudentDTO';
-import { CreateStudentComponent } from './create-student/create-student.component';
-import { UpdateStudentComponent } from './update-student/update-student.component';
-import { DatePipe } from '@angular/common';
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
 import { PaginationComponent } from '../../../shared/pagination/pagination.component';
+import { CreateStudentComponent } from './create-student/create-student.component';
+import { UpdateStudentComponent } from './update-student/update-student.component';
 
 @Component({
   selector: 'app-students',
-  imports: [CommonModule, CreateStudentComponent, UpdateStudentComponent, DatePipe, PaginationComponent],
+  imports: [
+    TableModule,
+    ButtonModule,
+    TagModule,
+    DialogModule,
+    DatePipe,
+    PaginationComponent,
+    CreateStudentComponent,
+    UpdateStudentComponent,
+  ],
   templateUrl: './students.component.html',
-  styleUrl: './students.component.scss'
+  styleUrl: './students.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class StudentsComponent implements OnInit {
-  students!: PaginationStudentDTO;
-  isLoading: boolean = false;
-  openedCreateStudent: boolean = false;
-  selectedStudent!: ShowStudentDTO;
-  openedUpdateStudent: boolean = false;
-  currentPage: number = 1;
-  pageSize: number = 10;
+export class StudentsComponent {
+  private readonly studentsService = inject(StudentsService);
+  private readonly subnavService = inject(SubnavService);
+  private readonly notificationService = inject(NotificationService);
 
-  constructor(
-    private studentsService: StudentsService,
-    private subnavService: SubnavService,
-    private notificationService: NotificationService
-  ) { }
+  protected readonly isLoading = signal(false);
+  protected readonly items = signal<PaginationStudentDTO | null>(null);
+  protected readonly openedCreate = signal(false);
+  protected readonly openedUpdate = signal(false);
+  protected readonly selected = signal<ShowStudentDTO | null>(null);
+  protected readonly currentPage = signal(1);
+  protected readonly pageSize = signal(10);
 
-  ngOnInit(): void {
-    this.subnavService.setTitle("Estudantes");
-    this.loadStudents();
+  constructor() {
+    this.subnavService.setTitle('Estudantes');
+    this.load();
   }
 
-  loadStudents(): void {
-    this.isLoading = true;
-    this.studentsService.apiStudentsGet(this.currentPage, this.pageSize).subscribe({
-      next: (result) => {
-        this.students = result;
-        this.isLoading = false;
-        console.log(this.students);
-      },
-      error: (error) => {
-        console.log(error);
-        this.isLoading = false;
-        this.notificationService.showError(
-          'Erro de Carregamento', 
-          'Não foi possível carregar a lista de alunos.'
-        );
-      }
+  protected load(): void {
+    this.isLoading.set(true);
+    this.studentsService.apiStudentsGet(this.currentPage(), this.pageSize()).subscribe({
+      next: result => { this.items.set(result); this.isLoading.set(false); },
+      error: () => { this.isLoading.set(false); this.notificationService.showError('Erro de Carregamento', 'Não foi possível carregar a lista de alunos.'); }
     });
   }
 
-  onPageChange(page: number): void {
-    this.currentPage = page;
-    this.loadStudents();
-  }
+  protected onPageChange(page: number): void { this.currentPage.set(page); this.load(); }
+  protected onPageSizeChange(size: number): void { this.pageSize.set(size); this.currentPage.set(1); this.load(); }
+  protected openCreate(): void { this.openedCreate.set(true); }
+  protected openEdit(item: ShowStudentDTO): void { this.selected.set(item); this.openedUpdate.set(true); }
+  protected onCreated(): void { this.openedCreate.set(false); this.load(); }
+  protected onUpdated(): void { this.openedUpdate.set(false); this.load(); }
 
-  onPageSizeChange(size: number): void {
-    this.pageSize = size;
-    this.currentPage = 1;
-    this.loadStudents();
-  }
-
-  openCreateStudent() {
-    this.openedCreateStudent = true
-  }
-
-  closeCreateStudent() {
-    this.openedCreateStudent = false
-  }
-
-  openUpdateStudent(student: ShowStudentDTO) {
-    this.selectedStudent = student
-    this.openedUpdateStudent = true
-  }
-
-  closeUpdateStudent() {
-    this.openedUpdateStudent = false
-  }
-
-  onStudentCreated() {
-    this.loadStudents();
-    this.closeCreateStudent();
-  }
-
-  onStudentUpdated() {
-    this.loadStudents();
-    this.closeUpdateStudent();
-  }
-
-  deleteStudent(student: ShowStudentDTO) {
-    // Show warning toast for confirmation
-    this.notificationService.showWarning(
-      'Confirmação Necessária', 
-      'Use o botão de confirmação no navegador para excluir o aluno.',
-      6000
-    );
-
-    if (confirm('Tem certeza que deseja excluir este aluno? Esta ação não pode ser desfeita.')) {
-      this.studentsService.apiStudentsIdDelete(student.id!).subscribe({
-        next: () => {
-          this.notificationService.showSuccess(
-            'Aluno Excluído', 
-            `O aluno ${student.firstName} ${student.lastName} foi excluído com sucesso.`
-          );
-          this.loadStudents();
-        },
-        error: (error) => {
-          console.log(error);
-          this.notificationService.showError(
-            'Erro ao Excluir', 
-            'Não foi possível excluir o aluno. Tente novamente.'
-          );
-        }
-      });
-    }
+  protected delete(item: ShowStudentDTO): void {
+    if (!confirm('Tem certeza que deseja excluir este aluno? Esta ação não pode ser desfeita.')) return;
+    this.studentsService.apiStudentsIdDelete(item.id!).subscribe({
+      next: () => { this.notificationService.showSuccess('Aluno Excluído', `O aluno ${item.firstName} ${item.lastName} foi excluído com sucesso.`); this.load(); },
+      error: () => { this.notificationService.showError('Erro ao Excluir', 'Não foi possível excluir o aluno. Tente novamente.'); }
+    });
   }
 }

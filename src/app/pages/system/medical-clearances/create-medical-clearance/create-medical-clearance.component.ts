@@ -1,182 +1,127 @@
-import { Component, Output, EventEmitter, OnInit, OnDestroy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, output, signal, OnDestroy } from '@angular/core';
 import { MedicalClearanceService } from '../../../../generated_services/api/medicalClearance.service';
 import { StudentsService } from '../../../../generated_services/api/students.service';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CreateMedicalClearanceDTO } from '../../../../generated_services/model/createMedicalClearanceDTO';
 import { ShowStudentDTO } from '../../../../generated_services/model/showStudentDTO';
 import { NotificationService } from '../../../../services/notification.service';
-import { CommonModule } from '@angular/common';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { ButtonModule } from 'primeng/button';
+import { InputTextModule } from 'primeng/inputtext';
+import { SelectModule } from 'primeng/select';
+import { CheckboxModule } from 'primeng/checkbox';
+import { DatePickerModule } from 'primeng/datepicker';
 
 @Component({
   selector: 'app-create-medical-clearance',
-  imports: [ReactiveFormsModule, CommonModule],
+  imports: [ReactiveFormsModule, ButtonModule, InputTextModule, SelectModule, CheckboxModule, DatePickerModule],
   templateUrl: './create-medical-clearance.component.html',
-  styleUrl: './create-medical-clearance.component.scss'
+  styleUrl: './create-medical-clearance.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class CreateMedicalClearanceComponent implements OnInit, OnDestroy {
-  @Output() closeEvent = new EventEmitter<void>();
-  @Output() medicalClearanceCreated = new EventEmitter<void>();
-  medicalClearanceForm!: FormGroup;
-  students: ShowStudentDTO[] = [];
-  isLoadingStudents: boolean = false;
-  selectedFile: File | null = null;
-  filePreviewUrl: SafeResourceUrl | null = null;
-  filePreviewLink: string | null = null;
-  filePreviewType: 'image' | 'pdf' | 'other' | null = null;
+export class CreateMedicalClearanceComponent implements OnDestroy {
+  readonly closeEvent = output<void>();
+  readonly medicalClearanceCreated = output<void>();
 
-  constructor(
-    private medicalClearanceService: MedicalClearanceService,
-    private studentsService: StudentsService,
-    private formBuilder: FormBuilder,
-    private notificationService: NotificationService,
-    private sanitizer: DomSanitizer
-  ) {
-    console.log('CreateMedicalClearanceComponent constructor called');
-    this.medicalClearanceForm = this.formBuilder.group({
-      studentId: ["", Validators.required],
-      expiresAt: ["", Validators.required],
-      isApproved: [false],
-      isActive: [true],
-    })
-  }
+  private readonly medicalClearanceService = inject(MedicalClearanceService);
+  private readonly studentsService = inject(StudentsService);
+  private readonly fb = inject(FormBuilder);
+  private readonly ns = inject(NotificationService);
+  private readonly sanitizer = inject(DomSanitizer);
 
-  ngOnInit(): void {
-    console.log('CreateMedicalClearanceComponent ngOnInit called');
-    this.loadStudents();
-  }
+  protected readonly students = signal<ShowStudentDTO[]>([]);
+  protected readonly studentOptions = signal<{ label: string; value: string }[]>([]);
+  protected readonly isLoadingStudents = signal(false);
+  protected readonly selectedFile = signal<File | null>(null);
+  protected readonly filePreviewUrl = signal<SafeResourceUrl | null>(null);
+  protected readonly filePreviewLink = signal<string | null>(null);
+  protected readonly filePreviewType = signal<'image' | 'pdf' | 'other' | null>(null);
 
-  ngOnDestroy(): void {
-    this.clearFilePreview();
-  }
+  protected readonly form = this.fb.group({
+    studentId: ['', Validators.required],
+    expiresAt: [null as Date | null, Validators.required],
+    isApproved: [false],
+    isActive: [true]
+  });
 
-  loadStudents(): void {
-    this.isLoadingStudents = true;
-    console.log('Loading students...');
+  constructor() {
+    this.isLoadingStudents.set(true);
     this.studentsService.apiStudentsGet(1, 100).subscribe({
-      next: (result) => {
-        console.log('Students loaded:', result);
-        console.log('Students items:', result.items);
-        this.students = result.items || [];
-        console.log('Students array:', this.students);
-        this.isLoadingStudents = false;
+      next: result => {
+        const list = result.items ?? [];
+        this.students.set(list);
+        this.studentOptions.set(list.map(s => ({ label: `${s.firstName} ${s.lastName}`, value: s.id ?? '' })));
+        this.isLoadingStudents.set(false);
       },
-      error: (error) => {
-        console.error('Error loading students:', error);
-        this.isLoadingStudents = false;
-        this.notificationService.showError(
-          'Erro ao Carregar Alunos', 
-          'Não foi possível carregar a lista de alunos.'
-        );
-      }
+      error: () => { this.isLoadingStudents.set(false); this.ns.showError('Erro ao Carregar Alunos', 'Não foi possível carregar a lista de alunos.'); }
     });
   }
 
-  close() {
-    this.closeEvent.emit();
-  }
+  ngOnDestroy(): void { this.clearFilePreview(); }
 
-  create() {
-    if (this.medicalClearanceForm.invalid) {
-      this.notificationService.showError(
-        'Formulário Inválido', 
-        'Por favor, preencha todos os campos obrigatórios.'
-      );
+  protected close(): void { this.closeEvent.emit(); }
+
+  protected create(): void {
+    if (this.form.invalid) {
+      this.ns.showError('Formulário Inválido', 'Por favor, preencha todos os campos obrigatórios.');
       return;
     }
-
-    this.medicalClearanceService.apiMedicalClearancePost(this.formToCreateMedicalClearance()).subscribe({
+    this.medicalClearanceService.apiMedicalClearancePost(this.toDTO()).subscribe({
       next: result => {
-        this.notificationService.showSuccess(
-          'Atestado Criado!', 
-          'O atestado médico foi criado com sucesso.'
-        );
-        if (this.selectedFile && result?.id) {
-          this.medicalClearanceService.apiMedicalClearanceIdAttachmentPost(result.id, this.selectedFile).subscribe({
-            next: () => {
-              this.notificationService.showSuccess(
-                'Arquivo Enviado!',
-                'O arquivo foi anexado ao atestado médico.'
-              );
-              this.finishCreate();
-            },
-            error: (error) => {
-              console.log(error);
-              this.notificationService.showError(
-                'Erro ao Enviar Arquivo!',
-                'O atestado foi criado, mas não foi possível anexar o arquivo.'
-              );
-              this.finishCreate();
-            }
+        this.ns.showSuccess('Atestado Criado!', 'O atestado médico foi criado com sucesso.');
+        if (this.selectedFile() && result?.id) {
+          this.medicalClearanceService.apiMedicalClearanceIdAttachmentPost(result.id, this.selectedFile()!).subscribe({
+            next: () => { this.ns.showSuccess('Arquivo Enviado!', 'O arquivo foi anexado ao atestado médico.'); this.finishCreate(); },
+            error: () => { this.ns.showError('Erro ao Enviar Arquivo!', 'O atestado foi criado, mas não foi possível anexar o arquivo.'); this.finishCreate(); }
           });
           return;
         }
-
         this.finishCreate();
       },
-      error: error => {
-        console.log(error);
-        this.notificationService.showError(
-          'Erro ao Criar Atestado!', 
-          'Não foi possível criar o atestado médico. Tente novamente.'
-        );
-      }
+      error: () => this.ns.showError('Erro ao Criar Atestado!', 'Não foi possível criar o atestado médico. Tente novamente.')
     });
   }
 
-  onFileSelected(event: Event): void {
+  protected onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
-    this.selectedFile = input.files && input.files.length > 0 ? input.files[0] : null;
-    this.setFilePreview(this.selectedFile);
+    const file = input.files?.[0] ?? null;
+    this.selectedFile.set(file);
+    this.setFilePreview(file);
   }
 
   private setFilePreview(file: File | null): void {
     this.clearFilePreview();
-
-    if (!file) {
-      return;
-    }
-
-    const previewUrl = URL.createObjectURL(file);
-    this.filePreviewLink = previewUrl;
-
+    if (!file) return;
+    const url = URL.createObjectURL(file);
+    this.filePreviewLink.set(url);
     if (file.type.startsWith('image/')) {
-      this.filePreviewType = 'image';
-      this.filePreviewUrl = this.sanitizer.bypassSecurityTrustResourceUrl(previewUrl);
-      return;
+      this.filePreviewType.set('image');
+      this.filePreviewUrl.set(this.sanitizer.bypassSecurityTrustResourceUrl(url));
+    } else if (file.type === 'application/pdf') {
+      this.filePreviewType.set('pdf');
+      this.filePreviewUrl.set(this.sanitizer.bypassSecurityTrustResourceUrl(url));
+    } else {
+      this.filePreviewType.set('other');
     }
-
-    if (file.type === 'application/pdf') {
-      this.filePreviewType = 'pdf';
-      this.filePreviewUrl = this.sanitizer.bypassSecurityTrustResourceUrl(previewUrl);
-      return;
-    }
-
-    this.filePreviewType = 'other';
   }
 
   private clearFilePreview(): void {
-    if (this.filePreviewLink) {
-      URL.revokeObjectURL(this.filePreviewLink);
-    }
-
-    this.filePreviewLink = null;
-    this.filePreviewUrl = null;
-    this.filePreviewType = null;
+    const link = this.filePreviewLink();
+    if (link) URL.revokeObjectURL(link);
+    this.filePreviewLink.set(null);
+    this.filePreviewUrl.set(null);
+    this.filePreviewType.set(null);
   }
 
-  finishCreate(): void {
-    this.medicalClearanceCreated.emit();
-    this.close();
-  }
+  protected finishCreate(): void { this.medicalClearanceCreated.emit(); this.close(); }
 
-  formToCreateMedicalClearance(): CreateMedicalClearanceDTO {
-    const formValue = this.medicalClearanceForm.value;
+  private toDTO(): CreateMedicalClearanceDTO {
+    const v = this.form.value;
     return {
-      studentId: formValue.studentId,
-      expiresAt: formValue.expiresAt,
-      isApproved: formValue.isApproved,
-      isActive: formValue.isActive,
-    } as CreateMedicalClearanceDTO
+      studentId: v.studentId,
+      expiresAt: v.expiresAt ? (v.expiresAt as Date).toISOString() : null,
+      isApproved: v.isApproved,
+      isActive: v.isActive
+    } as CreateMedicalClearanceDTO;
   }
 }

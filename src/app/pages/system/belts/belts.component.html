@@ -1,113 +1,69 @@
-<section class="mt-3 mt-md-5 p-2 p-md-3">
-  <div class="container-fluid">
-    <!-- Header with responsive button -->
-    <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center mb-3 mb-md-4">
-      <button class="btn btn-custom-primary btn-desktop-compact" (click)="openCreateBelt()">
-        <i class="bi bi-bookmark-star me-2"></i>Nova Faixa
-      </button>
-    </div>
-
-    @if (isLoading) {
-      <div class="text-center my-5">
-        <div class="spinner-border text-primary" role="status">
-          <span class="visually-hidden">Carregando...</span>
-        </div>
-        <p class="mt-2 text-muted">Carregando...</p>
-      </div>
-    }
-
-    <!-- Responsive table wrapper -->
-    @if (!isLoading) {
-    <div class="table-responsive">
-      <table class="table table-hover">
-        <thead class="table-light">
-          <tr>
-            <th scope="col" class="d-none d-md-table-cell">Cor</th>
-            <th scope="col" class="d-table-cell d-md-none">Faixa</th>
-            <th scope="col" class="d-none d-lg-table-cell">Ordem</th>
-            <th scope="col" class="d-none d-lg-table-cell">Para Crianças</th>
-            <th scope="col" class="text-center">Ações</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (belt of belts.items!; track belt.id){
-          <tr>
-            <!-- Desktop view - color only -->
-            <td class="d-none d-md-table-cell">
-              <div>
-                <strong class="text-primary">{{belt.color}}</strong>
-              </div>
-            </td>
-            
-            <!-- Mobile view - condensed info -->
-            <td class="d-table-cell d-md-none">
-              <div>
-                <strong class="text-primary d-block">{{belt.color}}</strong>
-                <div class="d-flex flex-wrap gap-1 mt-1">
-                  <span class="badge bg-outline-secondary text-dark border">Ordem: {{belt.orderIndex}}</span>
-                  <span class="badge {{belt.isForKids ? 'bg-outline-success text-success' : 'bg-outline-warning text-warning'}} border">
-                    {{belt.isForKids ? 'Crianças' : 'Adultos'}}
-                  </span>
-                </div>
-              </div>
-            </td>
-            
-            <td class="d-none d-lg-table-cell">
-              <span class="badge bg-outline-info text-info border">{{belt.orderIndex}}</span>
-            </td>
-            <td class="d-none d-lg-table-cell">
-              <span class="badge {{belt.isForKids ? 'bg-outline-success text-success' : 'bg-outline-warning text-warning'}} border">
-                {{belt.isForKids ? 'Sim' : 'Não'}}
-              </span>
-            </td>
-            <td class="text-center">
-              <div class="btn-group" role="group">
-                <button type="button" class="btn btn-sm btn-outline-primary" (click)="openUpdateBelt(belt)" title="Editar">
-                  <img src="../../../../assets/icons/structural-icons/pencil-square.svg" alt="Editar" style="width: 16px; height: 16px;" />
-                </button>
-                <button type="button" class="btn btn-sm btn-outline-danger" (click)="deleteBelt(belt)" title="Excluir">
-                  <img src="../../../../assets/icons/structural-icons/trash.svg" alt="Excluir" style="width: 16px; height: 16px;" />
-                </button>
-              </div>
-            </td>
-          </tr>
-          }
-        </tbody>
-      </table>
-    </div>
-
-    <!-- Empty state -->
-    @if (belts.items!.length === 0) {
-      <div class="text-center py-5">
-        <div class="mb-3">
-          <i class="bi bi-bookmark-star display-1 text-muted"></i>
-        </div>
-        <h5 class="text-muted">Nenhuma faixa encontrada</h5>
-        <p class="text-muted">Clique em "Nova Faixa" para cadastrar a primeira faixa.</p>
-      </div>
-    }
-
-    <!-- Pagination -->
-    @if (belts.items!.length > 0) {
-      <app-pagination
-        [currentPage]="currentPage"
-        [totalPages]="belts.totalPages ?? 1"
-        [pageSize]="pageSize"
-        [totalItems]="belts.totalCount ?? 0"
-        (pageChange)="onPageChange($event)"
-        (pageSizeChange)="onPageSizeChange($event)">
-      </app-pagination>
-    }
-    }
+<section class="page-section">
+  <div class="page-toolbar">
+    <p-button label="Nova Faixa" icon="pi pi-plus" (onClick)="openCreate()" />
   </div>
+
+  <p-table
+    [value]="items()?.items ?? []"
+    [loading]="isLoading()"
+    styleClass="p-datatable-sm p-datatable-striped"
+    [tableStyle]="{ 'min-width': '40rem' }"
+  >
+    <ng-template pTemplate="header">
+      <tr>
+        <th>Cor</th>
+        <th>Ordem</th>
+        <th>Para Crianças</th>
+        <th class="text-center" style="width: 8rem">Ações</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-belt>
+      <tr>
+        <td>{{ belt.color }}</td>
+        <td><p-tag [value]="belt.orderIndex?.toString()" severity="info" /></td>
+        <td><p-tag [value]="belt.isForKids ? 'Sim' : 'Não'" [severity]="belt.isForKids ? 'success' : 'warn'" /></td>
+        <td class="text-center">
+          <p-button icon="pi pi-pencil" [text]="true" severity="info" size="small" (onClick)="openEdit(belt)" />
+          <p-button icon="pi pi-trash" [text]="true" severity="danger" size="small" (onClick)="delete(belt)" />
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <tr><td [colSpan]="4" class="text-center py-5 text-muted">Nenhum registro encontrado.</td></tr>
+    </ng-template>
+  </p-table>
+
+  <app-pagination
+    [currentPage]="currentPage()"
+    [totalPages]="items()?.totalPages ?? 1"
+    [pageSize]="pageSize()"
+    [totalItems]="items()?.totalCount ?? 0"
+    (pageChange)="onPageChange($event)"
+    (pageSizeChange)="onPageSizeChange($event)" />
+
+  <p-dialog
+    [visible]="openedCreate()"
+    (visibleChange)="openedCreate.set($event)"
+    header="Nova Faixa"
+    [modal]="true"
+    [draggable]="false"
+    [resizable]="false"
+    styleClass="w-full md:w-30rem"
+  >
+    <app-create-belt (closeEvent)="openedCreate.set(false)" (beltCreated)="onCreated()" />
+  </p-dialog>
+
+  <p-dialog
+    [visible]="openedUpdate()"
+    (visibleChange)="openedUpdate.set($event)"
+    header="Editar Faixa"
+    [modal]="true"
+    [draggable]="false"
+    [resizable]="false"
+    styleClass="w-full md:w-30rem"
+  >
+    @if (selected()) {
+      <app-update-belt [belt]="selected()!" (closeEvent)="openedUpdate.set(false)" (beltUpdated)="onUpdated()" />
+    }
+  </p-dialog>
 </section>
-
-@if(openedCreateBelt){
-<app-create-belt (closeEvent)="closeCreateBelt()" (beltCreated)="onBeltCreated()">
-</app-create-belt>
-}
-
-@if(openedUpdateBelt){
-<app-update-belt [belt]="selectedBelt" (closeEvent)="closeUpdateBelt()" (beltUpdated)="onBeltUpdated()">
-</app-update-belt>
-}

@@ -1,71 +1,52 @@
-import { Component, Output, EventEmitter } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, output } from '@angular/core';
+import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
+import { InputTextModule } from 'primeng/inputtext';
+import { ButtonModule } from 'primeng/button';
+import { CheckboxModule } from 'primeng/checkbox';
 import { BeltService } from '../../../../generated_services';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CreateBeltDTO } from '../../../../generated_services/model/createBeltDTO';
-import { CommonModule } from '@angular/common';
 import { NotificationService } from '../../../../services/notification.service';
 
 @Component({
   selector: 'app-create-belt',
-  imports: [ReactiveFormsModule, CommonModule],
+  imports: [ReactiveFormsModule, InputTextModule, ButtonModule, CheckboxModule],
   templateUrl: './create-belt.component.html',
-  styleUrl: './create-belt.component.scss'
+  styleUrl: './create-belt.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CreateBeltComponent {
-  @Output() closeEvent = new EventEmitter<void>();
-  @Output() beltCreated = new EventEmitter<void>();
-  beltForm!: FormGroup;
+  readonly closeEvent = output<void>();
+  readonly beltCreated = output<void>();
 
-  constructor(
-    private beltService: BeltService,
-    private formBuilder: FormBuilder,
-    private notificationService: NotificationService
-  ) {
-    this.beltForm = this.formBuilder.group({
-      color: ["", Validators.required],
-      orderIndex: [0, [Validators.required, Validators.min(0)]],
-      isForKids: [false],
-    })
-  }
+  private readonly fb = inject(FormBuilder);
+  private readonly beltService = inject(BeltService);
+  private readonly notificationService = inject(NotificationService);
 
-  close() {
-    this.closeEvent.emit();
-  }
+  protected readonly form = this.fb.group({
+    color: ['', Validators.required],
+    orderIndex: [0, [Validators.required, Validators.min(0)]],
+    isForKids: [false],
+  });
 
-  create() {
-    if (this.beltForm.invalid) {
-      this.notificationService.showError(
-        'Formulário Inválido', 
-        'Por favor, preencha todos os campos obrigatórios.'
-      );
+  protected close(): void { this.closeEvent.emit(); }
+
+  protected save(): void {
+    if (this.form.invalid) {
+      this.notificationService.showError('Formulário Inválido', 'Por favor, preencha todos os campos obrigatórios.');
       return;
     }
-
-    this.beltService.apiBeltPost(this.formToCreateBelt()).subscribe({
-      next: result => {
-        this.notificationService.showSuccess(
-          'Faixa Criada!', 
-          'A nova faixa foi criada com sucesso.'
-        );
-        this.beltCreated.emit();
-        this.close();
-      },
-      error: error => {
-        console.log(error);
-        this.notificationService.showError(
-          'Erro ao Criar Faixa!', 
-          'Não foi possível criar a faixa. Tente novamente.'
-        );
-      }
+    this.beltService.apiBeltPost(this.toDTO()).subscribe({
+      next: () => { this.notificationService.showSuccess('Faixa Criada!', 'A nova faixa foi criada com sucesso.'); this.beltCreated.emit(); },
+      error: () => { this.notificationService.showError('Erro ao Criar Faixa!', 'Não foi possível criar a faixa. Tente novamente.'); }
     });
   }
 
-  formToCreateBelt(): CreateBeltDTO {
-    const formValue = this.beltForm.value;
+  private toDTO(): CreateBeltDTO {
+    const v = this.form.value;
     return {
-      color: formValue.color,
-      orderIndex: formValue.orderIndex,
-      isForKids: formValue.isForKids,
-    } as CreateBeltDTO
+      color: v.color!,
+      orderIndex: v.orderIndex ?? 0,
+      isForKids: v.isForKids ?? false,
+    } as CreateBeltDTO;
   }
 }

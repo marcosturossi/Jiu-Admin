@@ -1,80 +1,64 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { BeltService } from '../../../../generated_services';
-import { ShowBeltDTO, UpdateBeltDTO } from '../../../../generated_services';
-import { CommonModule } from '@angular/common';
+import { ChangeDetectionStrategy, Component, effect, inject, input, output } from '@angular/core';
+import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
+import { InputTextModule } from 'primeng/inputtext';
+import { ButtonModule } from 'primeng/button';
+import { CheckboxModule } from 'primeng/checkbox';
+import { BeltService, ShowBeltDTO, UpdateBeltDTO } from '../../../../generated_services';
 import { NotificationService } from '../../../../services/notification.service';
 
 @Component({
   selector: 'app-update-belt',
-  imports: [ReactiveFormsModule, CommonModule],
+  imports: [ReactiveFormsModule, InputTextModule, ButtonModule, CheckboxModule],
   templateUrl: './update-belt.component.html',
-  styleUrl: './update-belt.component.scss'
+  styleUrl: './update-belt.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class UpdateBeltComponent implements OnInit {
-  @Output() closeEvent = new EventEmitter<void>();
-  @Output() beltUpdated = new EventEmitter<void>();
-  @Input() belt!: ShowBeltDTO;
-  beltForm!: FormGroup;
+export class UpdateBeltComponent {
+  readonly closeEvent = output<void>();
+  readonly beltUpdated = output<void>();
+  readonly belt = input.required<ShowBeltDTO>();
 
-  constructor(
-    private beltService: BeltService,
-    private formBuilder: FormBuilder,
-    private notificationService: NotificationService
-  ) {
-    this.beltForm = this.formBuilder.group({
-      color: ["", Validators.required],
-      orderIndex: [0, [Validators.required, Validators.min(0)]],
-      isForKids: [false],
-    })
-  }
+  private readonly fb = inject(FormBuilder);
+  private readonly beltService = inject(BeltService);
+  private readonly notificationService = inject(NotificationService);
 
-  ngOnInit(): void {
-    this.beltForm.patchValue({
-      color: this.belt.color,
-      orderIndex: this.belt.orderIndex,
-      isForKids: this.belt.isForKids,
+  protected readonly form = this.fb.group({
+    color: ['', Validators.required],
+    orderIndex: [0, [Validators.required, Validators.min(0)]],
+    isForKids: [false],
+  });
+
+  constructor() {
+    effect(() => {
+      const b = this.belt();
+      this.form.patchValue({
+        color: b.color,
+        orderIndex: b.orderIndex ?? 0,
+        isForKids: b.isForKids ?? false,
+      });
     });
   }
 
-  close() {
-    this.closeEvent.emit();
-  }
+  protected close(): void { this.closeEvent.emit(); }
 
-  update() {
-    if (this.beltForm.invalid) {
-      this.notificationService.showError(
-        'Formulário Inválido', 
-        'Por favor, preencha todos os campos obrigatórios.'
-      );
+  protected save(): void {
+    if (this.form.invalid) {
+      this.notificationService.showError('Formulário Inválido', 'Por favor, preencha todos os campos obrigatórios.');
       return;
     }
-
-    this.beltService.apiBeltIdPut(this.belt.id!, this.formToUpdateBelt()).subscribe({
-      next: result => {
-        this.notificationService.showSuccess(
-          'Faixa Atualizada!', 
-          `A faixa ${this.belt.color} foi atualizada com sucesso.`
-        );
-        this.beltUpdated.emit();
-        this.close();
-      },
-      error: error => {
-        console.log(error);
-        this.notificationService.showError(
-          'Erro ao Atualizar Faixa!', 
-          'Não foi possível atualizar a faixa. Tente novamente.'
-        );
-      }
+    const b = this.belt();
+    this.beltService.apiBeltIdPut(b.id!, this.toDTO()).subscribe({
+      next: () => { this.notificationService.showSuccess('Faixa Atualizada!', `A faixa ${b.color} foi atualizada com sucesso.`); this.beltUpdated.emit(); },
+      error: () => { this.notificationService.showError('Erro ao Atualizar Faixa!', 'Não foi possível atualizar a faixa. Tente novamente.'); }
     });
   }
 
-  formToUpdateBelt(): UpdateBeltDTO {
-    const formValue = this.beltForm.value;
+  private toDTO(): UpdateBeltDTO {
+    const v = this.form.value;
     return {
-      color: formValue.color,
-      orderIndex: formValue.orderIndex,
-      isForKids: formValue.isForKids,
-    } as UpdateBeltDTO
+      color: v.color!,
+      orderIndex: v.orderIndex ?? 0,
+      isForKids: v.isForKids ?? false,
+    } as UpdateBeltDTO;
   }
 }

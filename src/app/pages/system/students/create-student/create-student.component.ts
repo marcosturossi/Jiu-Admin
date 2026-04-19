@@ -1,82 +1,63 @@
-import { Component, Output, EventEmitter } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, output } from '@angular/core';
+import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
+import { InputTextModule } from 'primeng/inputtext';
+import { ButtonModule } from 'primeng/button';
+import { CheckboxModule } from 'primeng/checkbox';
+import { DatePickerModule } from 'primeng/datepicker';
 import { StudentsService } from '../../../../generated_services/api/students.service';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { CreateStudentDTO} from '../../../../generated_services/model/createStudentDTO'
+import { CreateStudentDTO } from '../../../../generated_services/model/createStudentDTO';
 import { NotificationService } from '../../../../services/notification.service';
 
 @Component({
   selector: 'app-create-student',
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, InputTextModule, ButtonModule, CheckboxModule, DatePickerModule],
   templateUrl: './create-student.component.html',
-  styleUrl: './create-student.component.scss'
+  styleUrl: './create-student.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CreateStudentComponent {
-  @Output() closeEvent = new EventEmitter<void>();
-  @Output() studentCreated = new EventEmitter<void>();
-  studentForm!:FormGroup
+  readonly closeEvent = output<void>();
+  readonly studentCreated = output<void>();
 
-  constructor(
-    private studentService: StudentsService,
-    private formBuilder: FormBuilder,
-    private notificationService: NotificationService
-  ) {
-    this.studentForm = this.formBuilder.group({
-      userName: ["", Validators.required],
-      email: ["", Validators.required],
-      phoneNumber: [""],
-      firstName: [""],
-      lastName: [""],
-      birthDay: [""],
-      isActive: [true],
-      preferredUsername: [""],
-    })
-  }
+  private readonly fb = inject(FormBuilder);
+  private readonly studentsService = inject(StudentsService);
+  private readonly notificationService = inject(NotificationService);
 
-  close() {
-    this.closeEvent.emit();
-  }
+  protected readonly form = this.fb.group({
+    userName: ['', Validators.required],
+    email: ['', [Validators.required, Validators.email]],
+    phoneNumber: [''],
+    firstName: [''],
+    lastName: [''],
+    birthDay: [null as Date | null],
+    isActive: [true],
+    preferredUsername: [''],
+  });
 
-  create() {
-    if (this.studentForm.invalid) {
-      this.notificationService.showError(
-        'Formulário Inválido', 
-        'Por favor, preencha todos os campos obrigatórios.'
-      );
+  protected close(): void { this.closeEvent.emit(); }
+
+  protected save(): void {
+    if (this.form.invalid) {
+      this.notificationService.showError('Formulário Inválido', 'Por favor, preencha todos os campos obrigatórios.');
       return;
     }
-
-    this.studentService.apiStudentsPost(this.formToCreateStudent()).subscribe({
-      next: result => {
-        this.notificationService.showSuccess(
-          'Sucesso!', 
-          'Aluno criado com sucesso.'
-        );
-        this.studentCreated.emit();
-      },
-      error: error => {
-        console.log(error);
-        this.notificationService.showError(
-          'Erro!', 
-          'Erro ao criar aluno. Tente novamente.'
-        );
-      }
+    this.studentsService.apiStudentsPost(this.toDTO()).subscribe({
+      next: () => { this.notificationService.showSuccess('Sucesso!', 'Aluno criado com sucesso.'); this.studentCreated.emit(); },
+      error: () => { this.notificationService.showError('Erro!', 'Erro ao criar aluno. Tente novamente.'); }
     });
   }
 
-
-  formToCreateStudent(): CreateStudentDTO
-  {
-    const formValue = this.studentForm.value;
+  private toDTO(): CreateStudentDTO {
+    const v = this.form.value;
     return {
-      userName: formValue.userName,
-      email: formValue.email,
-      phoneNumber: formValue.phoneNumber,
-      firstName: formValue.firstName,
-      lastName: formValue.lastName,
-      birthDay: formValue.birthDay,
-      isActive: formValue.isActive,
-      preferredUsername: formValue.preferredUsername,
-    } as CreateStudentDTO
+      userName: v.userName!,
+      email: v.email!,
+      phoneNumber: v.phoneNumber || null,
+      firstName: v.firstName || null,
+      lastName: v.lastName || null,
+      birthDay: v.birthDay instanceof Date ? v.birthDay.toISOString().split('T')[0] : (v.birthDay ?? null),
+      isActive: v.isActive ?? true,
+      preferredUsername: v.preferredUsername || null,
+    } as CreateStudentDTO;
   }
 }
-

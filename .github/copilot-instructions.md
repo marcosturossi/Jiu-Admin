@@ -34,33 +34,64 @@ To run a single test, use `fdescribe` / `fit` in the spec file (Jasmine focused 
 
 - Root bootstrap uses standalone `AppConfig` (`src/app/app.config.ts`) with `provideHttpClient` and functional interceptors.
 - `system/` section uses `SystemModule` (NgModule) with lazy-loaded child routes.
-- Most page components are **standalone** (using `imports: [...]` in `@Component`).
+- All page and shared components are **standalone** (using `imports: [...]` in `@Component`).
 
 ### Authentication
 
-- JWT tokens from **Keycloak** stored in `sessionStorage` (keys: `auth_token`, `refresh_token`).
-- `AuthGuard` requires roles `manage-realm` AND `manage-users`.
-- `AuthInterceptor` attaches `Bearer` token to all requests, auto-refreshes expired tokens, and redirects to `/authentication/login` on 401/403. Requests to `/login` or `/refresh` paths bypass the interceptor.
+- **Keycloak Authorization Code + PKCE** flow via `keycloak-angular@19`.
+- Bearer token attachment and auto-refresh are handled by `keycloak-angular` — no manual token management.
+- `AuthGuard` uses `createAuthGuard()` from `keycloak-angular` and requires roles `manage-realm` AND `manage-users`.
+- Unauthenticated users are redirected to Keycloak automatically (no custom login page).
 
 ### Environment
 
-Config in `src/app/enviroments/environment.ts` (note the typo in the directory name):
+Config in `src/app/enviroments/environment.ts` (note the typo in the directory name — do not rename):
 
 ```ts
 export const environment = {
   production: false,
   server: 'http://localhost:8080',
   face_api: 'http://localhost:8003/api/v1',
+  keycloak: {
+    url: 'http://localhost:8180',
+    realm: 'bjjclutch',
+    clientId: 'jiu-admin',
+  },
 };
 ```
 
-Production URLs: `https://api.bjjclutch.com.br` and `https://face-recognition.bjjclutch.com.br`.
+## Angular 19 Conventions
+
+- **`inject()` only** — never inject via constructor parameters
+- **Signals for all state** — `signal()`, `computed()`, `effect()`
+- **`input()` / `output()`** — never `@Input()` / `@Output()` decorators
+- **`@if` / `@for`** — never `*ngIf` / `*ngFor`
+- **`changeDetection: ChangeDetectionStrategy.OnPush`** on every component
+- **Standalone components** always — never add components to NgModule declarations
+
+## UI — PrimeNG 19 LTS
+
+All UI components come from **PrimeNG 19 LTS** (no Bootstrap):
+
+| Old (Bootstrap) | New (PrimeNG) |
+|---|---|
+| `<table class="table">` | `<p-table>` |
+| `<div class="modal">` | `<p-dialog>` |
+| `<button class="btn">` | `<p-button>` |
+| `<span class="badge">` | `<p-tag>` |
+| `<select class="form-select">` | `<p-select>` |
+| `<input class="form-control">` | `<p-inputtext>` |
+| `<div class="spinner-border">` | `<p-progressSpinner>` |
+
+Theme is `Aura` from `@primeuix/themes` (NOT `primeng/themes/aura`).
+
+Icons: **PrimeIcons** (`pi pi-*`). No Bootstrap Icons.
 
 ## Key Conventions
 
 ### Notifications
 
-Use `NotificationService` (never `alert()`/`console` for user feedback):
+Use `NotificationService` — never call `MessageService` directly:
 
 ```ts
 this.notificationService.showSuccess('Título', 'Mensagem.');
@@ -73,18 +104,32 @@ this.notificationService.showInfo('Título', 'Mensagem.');
 
 Call `this.subnavService.setTitle("Nome da Página")` in `ngOnInit` of every page component.
 
-### Create/Update modal pattern
+### Create/Update dialog pattern
 
-Pages follow a consistent pattern:
-
-- Parent holds `openedCreate*` / `openedUpdate*` booleans and a `selected*` object.
-- Child modal emits `closeEvent` (void) and `*Created` / `*Updated` (void) events.
-- Parent reloads the list on `*Created`/`*Updated` and closes the modal.
+- **Parent** controls `openedCreate = signal(false)` and `selected = signal<Item | null>(null)`.
+- **Child** dialog provides only form content (no `<p-dialog>` wrapper) and emits `itemCreated` / `closeEvent` outputs.
+- **Parent template** wraps child in `<p-dialog [visible]="openedCreate()" (visibleChange)="openedCreate.set($event)">`.
 
 ### Pagination
 
-Use the shared `PaginationComponent` with `@Input` `currentPage`, `totalPages`, `pageSize`, `totalItems` and `@Output` `pageChange` / `pageSizeChange` emitters.
+Use the shared `PaginationComponent`:
 
-### UI
+```html
+<app-pagination
+  [currentPage]="currentPage()"
+  [totalPages]="items()?.totalPages ?? 0"
+  [pageSize]="pageSize()"
+  [totalItems]="items()?.totalItems ?? 0"
+  (pageChange)="onPageChange($event)"
+  (pageSizeChange)="onPageSizeChange($event)" />
+```
 
-Bootstrap 5 + Bootstrap Icons. SCSS per-component (`.component.scss`).
+### Layout
+
+- CSS Grid for layouts — no Bootstrap `row`/`col-*`
+- CSS custom properties for brand colors (see `styles.scss`)
+- All user-facing text in **Brazilian Portuguese**
+
+## Full Guidelines
+
+See `.github/skills.md` for detailed component patterns, examples, and do/don't rules.

@@ -1,146 +1,110 @@
-import { Component, EventEmitter, Output, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common';
+import { ChangeDetectionStrategy, Component, inject, output, signal } from '@angular/core';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { PersonsService } from '../../../../generated_services/api2/api/persons.service';
 import { RegisterMultipleResponse } from '../../../../generated_services/api2/model/registerMultipleResponse';
 import { StudentsService } from '../../../../generated_services/api/students.service';
 import { ShowStudentDTO } from '../../../../generated_services/model/showStudentDTO';
 import { NotificationService } from '../../../../services/notification.service';
+import { ButtonModule } from 'primeng/button';
+import { SelectModule } from 'primeng/select';
 
 @Component({
   selector: 'app-create-persons',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule],
+  imports: [ReactiveFormsModule, ButtonModule, SelectModule],
   templateUrl: './create-persons.component.html',
-  styleUrl: './create-persons.component.scss'
+  styleUrl: './create-persons.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class CreatePersonsComponent implements OnInit {
-  @Output() closeEvent = new EventEmitter<void>();
-  @Output() personCreated = new EventEmitter<RegisterMultipleResponse>();
+export class CreatePersonsComponent {
+  readonly closeEvent = output<void>();
+  readonly personCreated = output<RegisterMultipleResponse>();
 
-  personForm: FormGroup;
-  isCreating = false;
-  selectedFiles: File[] = [];
-  previewUrls: string[] = [];
-  students: ShowStudentDTO[] = [];
+  private readonly fb = inject(FormBuilder);
+  private readonly personsService = inject(PersonsService);
+  private readonly studentsService = inject(StudentsService);
+  private readonly ns = inject(NotificationService);
 
-  constructor(
-    private formBuilder: FormBuilder,
-    private personsService: PersonsService,
-    private studentsService: StudentsService,
-    private notificationService: NotificationService
-  ) {
-    this.personForm = this.formBuilder.group({
-      studentId: ['', Validators.required],
-      images: [null, Validators.required]
-    });
-  }
+  protected readonly students = signal<ShowStudentDTO[]>([]);
+  protected readonly studentOptions = signal<{ label: string; value: string }[]>([]);
+  protected readonly isCreating = signal(false);
+  protected readonly selectedFiles = signal<File[]>([]);
+  protected readonly previewUrls = signal<string[]>([]);
 
-  ngOnInit(): void {
+  protected readonly personForm = this.fb.group({
+    studentId: ['', Validators.required],
+    images: [null as File[] | null, Validators.required]
+  });
+
+  constructor() {
     this.studentsService.apiStudentsActiveGet().subscribe({
-      next: (students) => {
-        this.students = students;
+      next: students => {
+        this.students.set(students);
+        this.studentOptions.set(students.map(s => ({
+          label: `${s.firstName} ${s.lastName}${s.preferredUsername || s.userName ? ' (' + (s.preferredUsername || s.userName) + ')' : ''}`,
+          value: s.id ?? ''
+        })));
       },
-      error: () => {
-        this.notificationService.showError(
-          'Erro ao Carregar Alunos', 
-          'Não foi possível carregar a lista de alunos ativos.'
-        );
-      }
+      error: () => this.ns.showError('Erro ao Carregar Alunos', 'Não foi possível carregar a lista de alunos ativos.')
     });
   }
 
-  onFilesSelected(event: Event): void {
+  protected onFilesSelected(event: Event): void {
     const target = event.target as HTMLInputElement;
-    if (target.files && target.files.length > 0) {
-      this.selectedFiles = Array.from(target.files);
-      this.previewUrls = [];
-      for (const file of this.selectedFiles) {
-        if (!file.type.startsWith('image/')) {
-          this.notificationService.showError(
-            'Arquivo Inválido', 
-            'Por favor, selecione apenas arquivos de imagem.'
-          );
-          this.clearImages();
-          return;
-        }
-        if (file.size > 5 * 1024 * 1024) {
-          this.notificationService.showError(
-            'Arquivo Muito Grande', 
-            'O arquivo deve ter no máximo 5MB.'
-          );
-          this.clearImages();
-          return;
-        }
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          this.previewUrls.push(e.target?.result as string);
-        };
-        reader.readAsDataURL(file);
+    if (!target.files?.length) return;
+    const files = Array.from(target.files);
+    for (const file of files) {
+      if (!file.type.startsWith('image/')) {
+        this.ns.showError('Arquivo Inválido', 'Por favor, selecione apenas arquivos de imagem.');
+        this.clearImages(); return;
       }
-      this.personForm.get('images')?.setValue(this.selectedFiles);
+      if (file.size > 5 * 1024 * 1024) {
+        this.ns.showError('Arquivo Muito Grande', 'O arquivo deve ter no máximo 5MB.');
+        this.clearImages(); return;
+      }
     }
+    this.selectedFiles.set(files);
+    const urls: string[] = [];
+    files.forEach(file => {
+      const reader = new FileReader();
+      reader.onload = e => { urls.push(e.target?.result as string); this.previewUrls.set([...urls]); };
+      reader.readAsDataURL(file);
+    });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    this.personForm.get('images')?.setValue(files as any);
   }
 
-  clearImages(): void {
-    this.selectedFiles = [];
-    this.previewUrls = [];
+  protected clearImages(): void {
+    this.selectedFiles.set([]);
+    this.previewUrls.set([]);
     this.personForm.get('images')?.setValue(null);
-    const fileInput = document.getElementById('imagesInput') as HTMLInputElement;
-    if (fileInput) fileInput.value = '';
+    const input = document.getElementById('imagesInput') as HTMLInputElement;
+    if (input) input.value = '';
   }
 
-  create(): void {
-    if (this.personForm.invalid || this.isCreating) {
-      if (this.personForm.invalid) {
-        this.notificationService.showError(
-          'Formulário Inválido', 
-          'Preencha todos os campos obrigatórios e selecione pelo menos uma imagem.'
-        );
-      }
+  protected create(): void {
+    if (this.personForm.invalid || this.isCreating()) {
+      if (this.personForm.invalid) this.ns.showError('Formulário Inválido', 'Preencha todos os campos obrigatórios e selecione pelo menos uma imagem.');
       return;
     }
-    
-    this.isCreating = true;
-    const studentId = this.personForm.get('studentId')?.value;
-    const images = this.selectedFiles;
-    
-    if (!studentId || !images || images.length === 0) {
-      this.notificationService.showError(
-        'Campos Obrigatórios', 
-        'Preencha todos os campos obrigatórios.'
-      );
-      this.isCreating = false;
-      return;
+    const studentId = this.personForm.get('studentId')?.value!;
+    const images = this.selectedFiles();
+    if (!studentId || !images.length) {
+      this.ns.showError('Campos Obrigatórios', 'Preencha todos os campos obrigatórios.'); return;
     }
-    
-    const student = this.students.find(s => s.id === studentId);
+    const student = this.students().find(s => s.id === studentId);
     const name = student ? `${student.firstName || ''} ${student.lastName || ''}`.trim() : '';
-    
+    this.isCreating.set(true);
     this.personsService.registerMultiplePhotosApiV1RegisterMultiplePost(name, images, studentId).subscribe({
-      next: (result: RegisterMultipleResponse) => {
-        this.notificationService.showSuccess(
-          'Pessoa Criada!', 
-          `A pessoa ${name} foi registrada com sucesso no sistema de reconhecimento facial.`
-        );
+      next: result => {
+        this.ns.showSuccess('Pessoa Criada!', `A pessoa ${name} foi registrada com sucesso no sistema de reconhecimento facial.`);
         this.personCreated.emit(result);
         this.close();
       },
-      error: (err) => {
-        console.log(err);
-        this.notificationService.showError(
-          'Erro ao Criar Pessoa', 
-          'Não foi possível registrar a pessoa. Verifique as imagens e tente novamente.'
-        );
-        this.isCreating = false;
-      },
-      complete: () => {
-        this.isCreating = false;
-      }
+      error: () => { this.ns.showError('Erro ao Criar Pessoa', 'Não foi possível registrar a pessoa. Verifique as imagens e tente novamente.'); this.isCreating.set(false); },
+      complete: () => this.isCreating.set(false)
     });
   }
 
-  close() {
-    this.closeEvent.emit();
-  }
+  protected close(): void { this.closeEvent.emit(); }
 }

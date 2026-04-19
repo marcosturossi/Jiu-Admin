@@ -1,101 +1,89 @@
-import { Component, Output, EventEmitter } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, output } from '@angular/core';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NotificationService as ApiNotificationService } from '../../../../generated_services/api/notification.service';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CreateNotificationDTO } from '../../../../generated_services/model/createNotificationDTO';
 import { NotificationType } from '../../../../generated_services/model/notificationType';
 import { NotificationPriority } from '../../../../generated_services/model/notificationPriority';
-import { CommonModule } from '@angular/common';
 import { NotificationService } from '../../../../services/notification.service';
+import { ButtonModule } from 'primeng/button';
+import { InputTextModule } from 'primeng/inputtext';
+import { SelectModule } from 'primeng/select';
+import { TextareaModule } from 'primeng/textarea';
+import { CheckboxModule } from 'primeng/checkbox';
+import { DatePickerModule } from 'primeng/datepicker';
 
 @Component({
   selector: 'app-create-notification',
-  imports: [ReactiveFormsModule, CommonModule],
+  imports: [ReactiveFormsModule, ButtonModule, InputTextModule, SelectModule, TextareaModule, CheckboxModule, DatePickerModule],
   templateUrl: './create-notification.component.html',
-  styleUrl: './create-notification.component.scss'
+  styleUrl: './create-notification.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CreateNotificationComponent {
-  @Output() closeEvent = new EventEmitter<void>();
-  @Output() notificationCreated = new EventEmitter<void>();
-  notificationForm!: FormGroup;
-  
-  notificationTypes = [
-    { value: NotificationType.NUMBER_0, label: 'Informação' },
-    { value: NotificationType.NUMBER_1, label: 'Aviso' },
-    { value: NotificationType.NUMBER_2, label: 'Erro' },
-    { value: NotificationType.NUMBER_3, label: 'Sucesso' },
-    { value: NotificationType.NUMBER_4, label: 'Sistema' },
-    { value: NotificationType.NUMBER_5, label: 'Graduação' },
-    { value: NotificationType.NUMBER_6, label: 'Frequência' },
-    { value: NotificationType.NUMBER_7, label: 'Geral' }
+  readonly closeEvent = output<void>();
+  readonly notificationCreated = output<void>();
+
+  private readonly apiNotificationService = inject(ApiNotificationService);
+  private readonly fb = inject(FormBuilder);
+  private readonly ns = inject(NotificationService);
+
+  protected readonly notificationTypes = [
+    { label: 'Informação', value: NotificationType.NUMBER_0 },
+    { label: 'Aviso', value: NotificationType.NUMBER_1 },
+    { label: 'Erro', value: NotificationType.NUMBER_2 },
+    { label: 'Sucesso', value: NotificationType.NUMBER_3 },
+    { label: 'Sistema', value: NotificationType.NUMBER_4 },
+    { label: 'Graduação', value: NotificationType.NUMBER_5 },
+    { label: 'Frequência', value: NotificationType.NUMBER_6 },
+    { label: 'Geral', value: NotificationType.NUMBER_7 }
   ];
 
-  notificationPriorities = [
-    { value: NotificationPriority.NUMBER_0, label: 'Baixa' },
-    { value: NotificationPriority.NUMBER_1, label: 'Normal' },
-    { value: NotificationPriority.NUMBER_2, label: 'Alta' },
-    { value: NotificationPriority.NUMBER_3, label: 'Crítica' }
+  protected readonly notificationPriorities = [
+    { label: 'Baixa', value: NotificationPriority.NUMBER_0 },
+    { label: 'Normal', value: NotificationPriority.NUMBER_1 },
+    { label: 'Alta', value: NotificationPriority.NUMBER_2 },
+    { label: 'Crítica', value: NotificationPriority.NUMBER_3 }
   ];
 
-  constructor(
-    private apiNotificationService: ApiNotificationService,
-    private formBuilder: FormBuilder,
-    private notificationService: NotificationService
-  ) {
-    this.notificationForm = this.formBuilder.group({
-      title: ["", Validators.required],
-      message: ["", Validators.required],
-      type: [NotificationType.NUMBER_0, Validators.required],
-      priority: [NotificationPriority.NUMBER_1],
-      userId: [""],
-      isActive: [true],
-      expiresAt: [""],
-      actionUrl: [""],
-      metadata: [""]
-    })
-  }
+  protected readonly form = this.fb.group({
+    title: ['', Validators.required],
+    message: ['', Validators.required],
+    type: [NotificationType.NUMBER_0, Validators.required],
+    priority: [NotificationPriority.NUMBER_1],
+    userId: [''],
+    isActive: [true],
+    expiresAt: [null as Date | null],
+    actionUrl: [''],
+    metadata: ['']
+  });
 
-  close() {
-    this.closeEvent.emit();
-  }
+  protected close(): void { this.closeEvent.emit(); }
 
-  create() {
-    if (this.notificationForm.invalid) {
-      this.notificationService.showError(
-        'Formulário Inválido', 
-        'Por favor, preencha todos os campos obrigatórios.'
-      );
+  protected create(): void {
+    if (this.form.invalid) {
+      this.ns.showError('Formulário Inválido', 'Por favor, preencha todos os campos obrigatórios.');
       return;
     }
-
-    this.apiNotificationService.apiNotificationPost(this.formToCreateNotification()).subscribe({
-      next: result => {
-        this.notificationService.showSuccess(
-          'Notificação Criada!', 
-          `A notificação "${this.notificationForm.value.title}" foi criada com sucesso.`
-        );
+    this.apiNotificationService.apiNotificationPost(this.toDTO()).subscribe({
+      next: () => {
+        this.ns.showSuccess('Notificação Criada!', `A notificação "${this.form.value.title}" foi criada com sucesso.`);
         this.notificationCreated.emit();
       },
-      error: error => {
-        console.log(error);
-        this.notificationService.showError(
-          'Erro ao Criar Notificação!', 
-          'Não foi possível criar a notificação. Tente novamente.'
-        );
-      }
+      error: () => this.ns.showError('Erro ao Criar Notificação!', 'Não foi possível criar a notificação. Tente novamente.')
     });
   }
 
-  formToCreateNotification(): CreateNotificationDTO {
-    const formValue = this.notificationForm.value;
+  private toDTO(): CreateNotificationDTO {
+    const v = this.form.value;
     return {
-      title: formValue.title,
-      message: formValue.message,
-      type: formValue.type,
-      studentIds: formValue.userId ? [formValue.userId] : [],
-      isActive: formValue.isActive,
-      expiresAt: formValue.expiresAt || null,
-      actionUrl: formValue.actionUrl || null,
-      metadata: formValue.metadata || null
-    } as CreateNotificationDTO
+      title: v.title,
+      message: v.message,
+      type: v.type,
+      studentIds: v.userId ? [v.userId] : [],
+      isActive: v.isActive,
+      expiresAt: v.expiresAt ? (v.expiresAt as Date).toISOString() : null,
+      actionUrl: v.actionUrl || null,
+      metadata: v.metadata || null
+    } as CreateNotificationDTO;
   }
 }

@@ -1,42 +1,38 @@
-<div class="modal fade show" tabindex="-1" role="dialog" style="display:block">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Nova Aula</h5>
-        <button type="button" (click)="close()" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-          <div class="mb-3">            
-            <input class="form-check-input" id="generate-title" type="checkbox" [(ngModel)]="autoTitle" [ngModelOptions]="{standalone: true}" (change)="disableTitleInput()">
-            <label class="ps-2 form-check-label" for="generate-title">Gerar Titulo</label>
-          </div>
-        <form [formGroup]="lessonForm">
-          <div class="mb-3">
-            <label for="title" class="form-label">Título *</label>
-            <input id="title" class="form-control" placeholder="Digite o título da aula" formControlName="title" />
-          </div>
-          <div class="mb-3">
-            <label for="description" class="form-label">Descrição</label>
-            <textarea id="description" class="form-control" placeholder="Digite a descrição da aula" formControlName="description" rows="3"></textarea>
-          </div>
-          <div class="mb-3">
-            <label for="scheduledDate" class="form-label">Data e Hora *</label>
-            <input id="scheduledDate" class="form-control" type="datetime-local" formControlName="scheduledDate" />
-          </div>
-          <div class="mb-3">
-            <label for="duration" class="form-label">Duração *</label>
-            <input id="duration" class="form-control" placeholder="00:00" type="time" formControlName="duration" />
-          </div>
-          <div class="form-check mb-3">
-            <input class="form-check-input" type="checkbox" formControlName="isActive" id="isActiveCheck">
-            <label class="form-check-label" for="isActiveCheck">Ativo</label>
-          </div>
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-primary" (click)="create()" [disabled]="!lessonForm.valid">Salvar</button>
-        <button type="button" (click)="close()" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
-      </div>
+<form [formGroup]="form" class="dialog-form">
+  <div class="field">
+    <div class="flex align-items-center gap-2">
+      <p-checkbox inputId="generate-title" [binary]="true"
+        [ngModel]="autoTitle()" [ngModelOptions]="{standalone: true}"
+        (ngModelChange)="onAutoTitleChange($event)" />
+      <label for="generate-title">Gerar Título Automático</label>
     </div>
   </div>
-</div>
+  <div class="field">
+    <label for="title">Título *</label>
+    <input pInputText id="title" formControlName="title" placeholder="Título da aula" class="w-full" />
+  </div>
+  <div class="field">
+    <label for="description">Descrição</label>
+    <textarea pTextarea id="description" formControlName="description"
+      placeholder="Descrição da aula" rows="3" class="w-full"></textarea>
+  </div>
+  <div class="field">
+    <label for="scheduledDate">Data e Hora *</label>
+    <input pInputText type="datetime-local" id="scheduledDate" formControlName="scheduledDate" class="w-full" />
+  </div>
+  <div class="field">
+    <label for="duration">Duração *</label>
+    <input pInputText type="time" id="duration" formControlName="duration" placeholder="00:00" class="w-full" />
+  </div>
+  <div class="field">
+    <div class="flex align-items-center gap-2">
+      <p-checkbox inputId="isActive" formControlName="isActive" [binary]="true" />
+      <label for="isActive">Ativo</label>
+    </div>
+  </div>
+  <div class="dialog-actions">
+    <p-button label="Cancelar" severity="secondary" [outlined]="true" (onClick)="close()" />
+    <p-button label="Salvar" icon="pi pi-check" (onClick)="save()" [disabled]="form.invalid" />
+  </div>
+</form>
+

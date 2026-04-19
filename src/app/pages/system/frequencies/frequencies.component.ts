@@ -1,116 +1,64 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { DatePipe } from '@angular/common';
 import { FrequencyService, PaginationFrequencyDTO, ShowFrequencyDTO } from '../../../generated_services';
 import { CreateFrequencyComponent } from './create-frequency/create-frequency.component';
 import { UpdateFrequencyComponent } from './update-frequency/update-frequency.component';
-import { DatePipe } from '@angular/common';
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
 import { PaginationComponent } from '../../../shared/pagination/pagination.component';
+import { TableModule } from 'primeng/table';
+import { ButtonModule } from 'primeng/button';
+import { DialogModule } from 'primeng/dialog';
 
 @Component({
   selector: 'app-frequencies',
-  imports: [CommonModule, CreateFrequencyComponent, UpdateFrequencyComponent, DatePipe, PaginationComponent],
+  imports: [CreateFrequencyComponent, UpdateFrequencyComponent, DatePipe, PaginationComponent, TableModule, ButtonModule, DialogModule],
   templateUrl: './frequencies.component.html',
-  styleUrl: './frequencies.component.scss'
+  styleUrl: './frequencies.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class FrequenciesComponent implements OnInit {
-  frequencies: PaginationFrequencyDTO = { items: [], totalCount: 0, pageNumber: 1, pageSize: 10, totalPages: 0 };
-  isLoading: boolean = false;
-  openedCreateFrequency: boolean = false;
-  selectedFrequency!: ShowFrequencyDTO;
-  openedUpdateFrequency: boolean = false;
-  currentPage: number = 1;
-  pageSize: number = 10;
+export class FrequenciesComponent {
+  private readonly frequencyService = inject(FrequencyService);
+  private readonly subnavService = inject(SubnavService);
+  private readonly ns = inject(NotificationService);
 
-  constructor(
-    private frequencyService: FrequencyService,
-    private subnavService: SubnavService,
-    private notificationService: NotificationService
-  ) { }
+  protected readonly isLoading = signal(false);
+  protected readonly items = signal<PaginationFrequencyDTO | null>(null);
+  protected readonly openedCreate = signal(false);
+  protected readonly openedUpdate = signal(false);
+  protected readonly selected = signal<ShowFrequencyDTO | null>(null);
+  protected readonly currentPage = signal(1);
+  protected readonly pageSize = signal(10);
 
-  ngOnInit(): void {
-    this.subnavService.setTitle("Frequências");
-    this.loadFrequencies();
+  constructor() {
+    this.subnavService.setTitle('Frequências');
+    this.load();
   }
 
-  loadFrequencies(): void {
-    this.isLoading = true;
-    this.frequencyService.apiFrequencyGet(this.currentPage, this.pageSize).subscribe(
-      {
-        next: (result) => {
-          this.frequencies = result;
-          this.isLoading = false;
-        },
-        error: (error) => {
-          console.log(error);
-          this.isLoading = false;
-          this.notificationService.showError(
-            'Erro ao Carregar Frequências!', 
-            'Não foi possível carregar a lista de frequências. Tente novamente.'
-          );
-        }
+  protected load(): void {
+    this.isLoading.set(true);
+    this.frequencyService.apiFrequencyGet(this.currentPage(), this.pageSize()).subscribe({
+      next: r => { this.items.set(r); this.isLoading.set(false); },
+      error: () => {
+        this.isLoading.set(false);
+        this.ns.showError('Erro ao Carregar Frequências!', 'Não foi possível carregar a lista de frequências. Tente novamente.');
       }
-    )
+    });
   }
 
-  onPageChange(page: number): void {
-    this.currentPage = page;
-    this.loadFrequencies();
-  }
+  protected onPageChange(p: number): void { this.currentPage.set(p); this.load(); }
+  protected onPageSizeChange(s: number): void { this.pageSize.set(s); this.currentPage.set(1); this.load(); }
+  protected openCreate(): void { this.openedCreate.set(true); }
+  protected openEdit(item: ShowFrequencyDTO): void { this.selected.set(item); this.openedUpdate.set(true); }
+  protected onCreated(): void { this.openedCreate.set(false); this.load(); }
+  protected onUpdated(): void { this.openedUpdate.set(false); this.load(); }
 
-  onPageSizeChange(size: number): void {
-    this.pageSize = size;
-    this.currentPage = 1;
-    this.loadFrequencies();
-  }
-
-  openCreateFrequency() {
-    this.openedCreateFrequency = true
-  }
-
-  closeCreateFrequency() {
-    this.openedCreateFrequency = false
-  }
-
-  openUpdateFrequency(frequency: ShowFrequencyDTO) {
-    this.selectedFrequency = frequency
-    this.openedUpdateFrequency = true
-  }
-
-  closeUpdateFrequency() {
-    this.openedUpdateFrequency = false
-  }
-
-  onFrequencyCreated() {
-    this.loadFrequencies();
-    this.closeCreateFrequency();
-  }
-
-  onFrequencyUpdated() {
-    this.loadFrequencies();
-    this.closeUpdateFrequency();
-  }
-
-  deleteFrequency(frequency: ShowFrequencyDTO) {
-    if (confirm('Tem certeza que deseja excluir esta frequência?')) {
-      this.frequencyService.apiFrequencyIdDelete(frequency.id!).subscribe({
-        next: () => {
-          this.notificationService.showSuccess(
-            'Frequência Excluída!', 
-            'A frequência foi excluída com sucesso.'
-          );
-          this.loadFrequencies();
-        },
-        error: (error) => {
-          console.log(error);
-          this.notificationService.showError(
-            'Erro ao Excluir Frequência!', 
-            'Não foi possível excluir a frequência. Tente novamente.'
-          );
-        }
-      });
-    }
+  protected deleteFrequency(frequency: ShowFrequencyDTO): void {
+    if (!confirm('Tem certeza que deseja excluir esta frequência?')) return;
+    this.frequencyService.apiFrequencyIdDelete(frequency.id!).subscribe({
+      next: () => { this.ns.showSuccess('Frequência Excluída!', 'A frequência foi excluída com sucesso.'); this.load(); },
+      error: () => { this.ns.showError('Erro ao Excluir Frequência!', 'Não foi possível excluir a frequência. Tente novamente.'); }
+    });
   }
 }
 

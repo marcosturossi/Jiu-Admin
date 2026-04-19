@@ -1,0 +1,8 @@
+.page-section { padding: 1.5rem; }
+.page-toolbar { display: flex; justify-content: flex-end; margin-bottom: 1rem; }
+.summary-bar { display: flex; flex-wrap: wrap; gap: .5rem; justify-content: flex-end; margin-bottom: 1rem; font-size: .875rem; color: var(--p-text-muted-color); .separator { color: var(--p-surface-400); } }
+.images-row { display: flex; align-items: center; gap: .375rem; flex-wrap: wrap; justify-content: center; }
+.thumb-wrap { position: relative; flex: 0 0 auto; }
+.thumb { width: 48px; height: 48px; object-fit: cover; border-radius: var(--p-border-radius); border: 1px solid var(--p-surface-200); }
+.primary-badge { position: absolute; top: -4px; left: -4px; background: var(--p-green-500); color: white; border-radius: 50%; width: 16px; height: 16px; display: flex; align-items: center; justify-content: center; font-size: .5rem; }
+.thumb-more { width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; border: 1px solid var(--p-surface-200); border-radius: var(--p-border-radius); background: var(--p-surface-100); font-size: .8rem; font-weight: 600; color: var(--p-text-muted-color); }

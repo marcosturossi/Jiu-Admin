@@ -1,16 +1,16 @@
 <div class="dashboard-card text-center">
-	<div class="card-header">Novos alunos este mês</div>
-	<div class="card-body">
-		<div *ngIf="loading" class="py-3">Loading...</div>
-		<div *ngIf="error" class="text-danger py-2">{{ error }}</div>
-
-		<div *ngIf="!loading && !error">
-			@if (newStudentsThisMonth! > 0) {
-				<div class="big-number">{{ newStudentsThisMonth ?? '-' }}</div>
-			}@else{
-				<div class="muted">Sem novos alunos</div>
-			}
-					
-		</div>
-	</div>
+  <div class="card-header">Novos alunos este mês</div>
+  <div class="card-body">
+    @if (loading()) {
+      <div class="py-3 text-muted">Carregando...</div>
+    } @else if (error()) {
+      <div class="text-danger py-2">{{ error() }}</div>
+    } @else {
+      @if ((count() ?? 0) > 0) {
+        <div class="big-number">{{ count() }}</div>
+      } @else {
+        <div class="muted">Sem novos alunos</div>
+      }
+    }
+  </div>
 </div>

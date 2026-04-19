@@ -1,94 +1,81 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ChangeDetectionStrategy, Component, effect, inject, input, output } from '@angular/core';
+import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
+import { InputTextModule } from 'primeng/inputtext';
+import { ButtonModule } from 'primeng/button';
+import { CheckboxModule } from 'primeng/checkbox';
+import { DatePickerModule } from 'primeng/datepicker';
 import { StudentsService } from '../../../../generated_services/api/students.service';
 import { ShowStudentDTO, UpdateStudentDTO } from '../../../../generated_services';
 import { NotificationService } from '../../../../services/notification.service';
 
 @Component({
   selector: 'app-update-student',
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, InputTextModule, ButtonModule, CheckboxModule, DatePickerModule],
   templateUrl: './update-student.component.html',
-  styleUrl: './update-student.component.scss'
+  styleUrl: './update-student.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class UpdateStudentComponent implements OnInit {
-  @Output() closeEvent = new EventEmitter<void>();
-  @Output() studentUpdated = new EventEmitter<void>();
-  @Input() student!: ShowStudentDTO;
-  studentForm!: FormGroup
+export class UpdateStudentComponent {
+  readonly closeEvent = output<void>();
+  readonly studentUpdated = output<void>();
+  readonly student = input.required<ShowStudentDTO>();
 
-  constructor(
-    private studentService: StudentsService,
-    private formBuilder: FormBuilder,
-    private notificationService: NotificationService
-  ) {
-    this.studentForm = this.formBuilder.group({
-      userName: ["", Validators.required],
-      email: ["", Validators.required],
-      phoneNumber: [""],
-      firstName: [""],
-      lastName: [""],
-      birthDay: [""],
-      isActive: [true],
-      preferredUsername: [""],
-    })
-  }
-    ngOnInit(): void {
-      this.studentForm.patchValue(
-      {
-          userName: this.student.userName,
-          email: this.student.email,
-          phoneNumber: this.student.phoneNumber,
-          firstName: this.student.firstName,
-          lastName: this.student.lastName,
-          birthDay: this.student.birthDay,
-          isActive: this.student.isActive,
-          preferredUsername: this.student.preferredUsername,
+  private readonly fb = inject(FormBuilder);
+  private readonly studentsService = inject(StudentsService);
+  private readonly notificationService = inject(NotificationService);
+
+  protected readonly form = this.fb.group({
+    userName: ['', Validators.required],
+    email: ['', [Validators.required, Validators.email]],
+    phoneNumber: [''],
+    firstName: [''],
+    lastName: [''],
+    birthDay: [null as Date | null],
+    isActive: [true],
+    preferredUsername: [''],
+  });
+
+  constructor() {
+    effect(() => {
+      const s = this.student();
+      this.form.patchValue({
+        userName: s.userName,
+        email: s.email,
+        phoneNumber: s.phoneNumber ?? '',
+        firstName: s.firstName ?? '',
+        lastName: s.lastName ?? '',
+        birthDay: s.birthDay ? new Date(s.birthDay) : null,
+        isActive: s.isActive,
+        preferredUsername: s.preferredUsername ?? '',
       });
-    }
-
-  close() {
-    this.closeEvent.emit();
-  }
-
-  update() {
-    if (this.studentForm.invalid) {
-      this.notificationService.showError(
-        'Formulário Inválido', 
-        'Por favor, preencha todos os campos obrigatórios.'
-      );
-      return;
-    }
-
-    this.studentService.apiStudentsIdPut(this.student.id!, this.formToUpdateStudent()).subscribe({
-      next: result => {
-        this.notificationService.showSuccess(
-          'Aluno Atualizado!', 
-          `Os dados do aluno ${this.student.firstName} ${this.student.lastName} foram atualizados com sucesso.`
-        );
-        this.studentUpdated.emit();
-      },
-      error: error => {
-        console.log(error);
-        this.notificationService.showError(
-          'Erro ao Atualizar!', 
-          'Não foi possível atualizar os dados do aluno. Tente novamente.'
-        );
-      }
     });
   }
 
+  protected close(): void { this.closeEvent.emit(); }
 
-  formToUpdateStudent(): UpdateStudentDTO {
-    const formValue = this.studentForm.value;
+  protected save(): void {
+    if (this.form.invalid) {
+      this.notificationService.showError('Formulário Inválido', 'Por favor, preencha todos os campos obrigatórios.');
+      return;
+    }
+    const s = this.student();
+    this.studentsService.apiStudentsIdPut(s.id!, this.toDTO()).subscribe({
+      next: () => { this.notificationService.showSuccess('Aluno Atualizado!', `Os dados do aluno ${s.firstName} ${s.lastName} foram atualizados com sucesso.`); this.studentUpdated.emit(); },
+      error: () => { this.notificationService.showError('Erro ao Atualizar!', 'Não foi possível atualizar os dados do aluno. Tente novamente.'); }
+    });
+  }
+
+  private toDTO(): UpdateStudentDTO {
+    const v = this.form.value;
     return {
-      userName: formValue.userName,
-      email: formValue.email,
-      phoneNumber: formValue.phoneNumber,
-      firstName: formValue.firstName,
-      lastName: formValue.lastName,
-      birthDay: formValue.birthDay,
-      isActive: formValue.isActive,
-      preferredUsername: formValue.preferredUsername,
-    } as UpdateStudentDTO
+      userName: v.userName!,
+      email: v.email!,
+      phoneNumber: v.phoneNumber || null,
+      firstName: v.firstName || null,
+      lastName: v.lastName || null,
+      birthDay: v.birthDay instanceof Date ? v.birthDay.toISOString().split('T')[0] : (v.birthDay ?? null),
+      isActive: v.isActive ?? true,
+      preferredUsername: v.preferredUsername || null,
+    } as UpdateStudentDTO;
   }
 }

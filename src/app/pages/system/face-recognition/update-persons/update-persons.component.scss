@@ -1,0 +1,14 @@
+.dialog-form { display: flex; flex-direction: column; gap: 1rem; }
+.field { display: flex; flex-direction: column; gap: .375rem; label { font-size: .875rem; font-weight: 500; } }
+.dialog-actions { display: flex; justify-content: flex-end; gap: .5rem; margin-top: .5rem; padding-top: 1rem; border-top: 1px solid var(--p-surface-200); }
+.file-input { padding: .375rem; border: 1px solid var(--p-surface-300); border-radius: var(--p-border-radius); width: 100%; }
+.hint { color: var(--p-text-muted-color); font-size: .8rem; }
+.existing-images { display: flex; flex-wrap: wrap; gap: .5rem; }
+.existing-item { position: relative; border: 1px solid var(--p-surface-200); border-radius: var(--p-border-radius); padding: .375rem; display: flex; flex-direction: column; align-items: center; gap: .25rem; }
+.existing-thumb { max-height: 80px; max-width: 80px; border-radius: var(--p-border-radius); display: block; }
+.primary-label { font-size: .7rem; color: var(--p-green-600); font-weight: 500; }
+.remove-btn { position: absolute; top: -6px; right: -6px; }
+.preview-section { display: flex; flex-direction: column; gap: .5rem; label { font-size: .875rem; font-weight: 500; } }
+.preview-grid { display: flex; flex-wrap: wrap; gap: .5rem; justify-content: center; }
+.preview-item { border: 1px solid var(--p-surface-200); border-radius: var(--p-border-radius); padding: .375rem; }
+.preview-img { max-height: 120px; max-width: 100px; border-radius: var(--p-border-radius); display: block; }

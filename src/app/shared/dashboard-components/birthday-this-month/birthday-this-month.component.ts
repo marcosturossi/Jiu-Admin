@@ -1,33 +1,31 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { DashboardService } from '../../../generated_services';
-import { StudentsBirthDay } from '../../../generated_services';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { DatePipe } from '@angular/common';
+import { DashboardService, StudentsBirthDay } from '../../../generated_services';
 
 @Component({
   selector: 'app-birthday-this-month',
-  imports: [CommonModule],
+  imports: [DatePipe],
   templateUrl: './birthday-this-month.component.html',
-  styleUrl: './birthday-this-month.component.scss'
+  styleUrl: './birthday-this-month.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class BirthdayThisMonthComponent implements OnInit {
-  birthdays: StudentsBirthDay[] = [];
-  loading = true;
-  error = '';
+export class BirthdayThisMonthComponent {
+  private readonly dashboardService = inject(DashboardService);
 
-  constructor(private dashboardService: DashboardService){ }
+  protected readonly birthdays = signal<StudentsBirthDay[]>([]);
+  protected readonly loading = signal(true);
+  protected readonly error = signal('');
 
-  ngOnInit(): void {
+  constructor() {
     this.dashboardService.apiDashboardBirthdaysGet().subscribe({
       next: (data) => {
-        this.birthdays = data || [];
-        this.loading = false;
+        this.birthdays.set(data ?? []);
+        this.loading.set(false);
       },
-      error: (err) => {
-        this.error = 'Failed to load birthdays';
-        this.loading = false;
-        console.error(err);
-      }
+      error: () => {
+        this.error.set('Falha ao carregar aniversários');
+        this.loading.set(false);
+      },
     });
   }
-
 }
