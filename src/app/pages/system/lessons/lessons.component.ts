@@ -43,7 +43,7 @@ export class LessonsComponent {
 
   protected load(): void {
     this.isLoading.set(true);
-    this.lessonService.apiLessonGet(this.currentPage(), this.pageSize()).subscribe({
+    this.lessonService.apiLessonGet(undefined, undefined, undefined, undefined, undefined, undefined, this.currentPage(), this.pageSize()).subscribe({
       next: r => { this.items.set(r); this.isLoading.set(false); },
       error: () => {
         this.isLoading.set(false);

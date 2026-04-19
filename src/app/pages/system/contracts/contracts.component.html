@@ -1,0 +1,72 @@
+<section class="page-section">
+  <div class="page-toolbar">
+    <p-select
+      [options]="statusOptions"
+      [ngModel]="filterStatus()"
+      (ngModelChange)="filterStatus.set($event)"
+      optionLabel="label"
+      optionValue="value"
+      placeholder="Filtrar por status"
+      (onChange)="onFilterChange()"
+      styleClass="w-12rem" />
+    <p-button label="Novo Contrato" icon="pi pi-plus" (onClick)="openCreate()" />
+  </div>
+
+  <p-table [value]="items()?.items ?? []" [loading]="isLoading()" styleClass="p-datatable-sm p-datatable-striped">
+    <ng-template pTemplate="header">
+      <tr>
+        <th>Aluno</th>
+        <th>Plano</th>
+        <th>Início</th>
+        <th>Término</th>
+        <th>Mensalidade</th>
+        <th>Status</th>
+        <th>Mensalidades</th>
+        <th class="text-center" style="width: 8rem">Ações</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-contract>
+      <tr>
+        <td>{{ getStudentName(contract.studentId) }}</td>
+        <td>{{ contract.feePlanName }}</td>
+        <td>{{ contract.startDate | date:'dd/MM/yyyy' }}</td>
+        <td>{{ contract.endDate | date:'dd/MM/yyyy' }}</td>
+        <td>{{ contract.monthlyAmount | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}</td>
+        <td><p-tag [value]="getStatusLabel(contract.status)" [severity]="getStatusSeverity(contract.status)" /></td>
+        <td>
+          <span class="fee-progress">
+            <span class="paid">{{ contract.paidFees }}</span>/{{ contract.totalFees }}
+            @if (contract.overdueFees) {
+              <p-tag [value]="contract.overdueFees + ' vencidas'" severity="danger" styleClass="ml-1 text-xs" />
+            }
+          </span>
+        </td>
+        <td class="text-center">
+          <p-button icon="pi pi-pencil" [text]="true" severity="info" size="small" (onClick)="openEdit(contract)" />
+          <p-button icon="pi pi-trash" [text]="true" severity="danger" size="small" (onClick)="delete(contract)" />
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <tr><td [colSpan]="8" class="text-center py-5 text-muted">Nenhum contrato encontrado.</td></tr>
+    </ng-template>
+  </p-table>
+
+  <app-pagination
+    [currentPage]="currentPage()"
+    [totalPages]="items()?.totalPages ?? 1"
+    [pageSize]="pageSize()"
+    [totalItems]="items()?.totalCount ?? 0"
+    (pageChange)="onPageChange($event)"
+    (pageSizeChange)="onPageSizeChange($event)" />
+
+  <p-dialog [visible]="openedCreate()" (visibleChange)="openedCreate.set($event)" header="Novo Contrato" [modal]="true" [draggable]="false" styleClass="w-full md:w-35rem">
+    <app-create-contract (closeEvent)="openedCreate.set(false)" (contractCreated)="onCreated()" />
+  </p-dialog>
+
+  <p-dialog [visible]="openedUpdate()" (visibleChange)="openedUpdate.set($event)" header="Atualizar Contrato" [modal]="true" [draggable]="false" styleClass="w-full md:w-30rem">
+    @if (selected()) {
+      <app-update-contract [contract]="selected()!" (closeEvent)="openedUpdate.set(false)" (contractUpdated)="onUpdated()" />
+    }
+  </p-dialog>
+</section>

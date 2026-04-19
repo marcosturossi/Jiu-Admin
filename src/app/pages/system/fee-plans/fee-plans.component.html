@@ -1,0 +1,78 @@
+<section class="page-section">
+  <div class="page-toolbar">
+    <p-button label="Novo Plano" icon="pi pi-plus" (onClick)="openCreate()" />
+  </div>
+
+  <p-table
+    [value]="items()?.items ?? []"
+    [loading]="isLoading()"
+    styleClass="p-datatable-sm p-datatable-striped"
+    [tableStyle]="{ 'min-width': '50rem' }"
+  >
+    <ng-template pTemplate="header">
+      <tr>
+        <th>Nome</th>
+        <th>Descrição</th>
+        <th>Duração</th>
+        <th>Preço</th>
+        <th>Status</th>
+        <th class="text-center" style="width: 8rem">Ações</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-item>
+      <tr>
+        <td>{{ item.name }}</td>
+        <td>{{ item.description }}</td>
+        <td>{{ item.monthDuration }} meses</td>
+        <td>{{ item.price | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}</td>
+        <td>
+          <p-tag
+            [value]="item.isActive ? 'Ativo' : 'Inativo'"
+            [severity]="item.isActive ? 'success' : 'secondary'"
+          />
+        </td>
+        <td class="text-center">
+          <p-button icon="pi pi-pencil" [text]="true" severity="info" size="small" (onClick)="openEdit(item)" />
+          <p-button icon="pi pi-trash" [text]="true" severity="danger" size="small" (onClick)="delete(item)" />
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <tr><td [colSpan]="6" class="text-center py-5 text-muted">Nenhum registro encontrado.</td></tr>
+    </ng-template>
+  </p-table>
+
+  <app-pagination
+    [currentPage]="currentPage()"
+    [totalPages]="items()?.totalPages ?? 1"
+    [pageSize]="pageSize()"
+    [totalItems]="items()?.totalCount ?? 0"
+    (pageChange)="onPageChange($event)"
+    (pageSizeChange)="onPageSizeChange($event)" />
+
+  <p-dialog
+    [visible]="openedCreate()"
+    (visibleChange)="openedCreate.set($event)"
+    header="Novo Plano"
+    [modal]="true"
+    [draggable]="false"
+    [resizable]="false"
+    styleClass="w-full md:w-30rem"
+  >
+    <app-create-fee-plan (closeEvent)="openedCreate.set(false)" (feePlanCreated)="onCreated()" />
+  </p-dialog>
+
+  <p-dialog
+    [visible]="openedUpdate()"
+    (visibleChange)="openedUpdate.set($event)"
+    header="Editar Plano"
+    [modal]="true"
+    [draggable]="false"
+    [resizable]="false"
+    styleClass="w-full md:w-30rem"
+  >
+    @if (selected()) {
+      <app-update-fee-plan [feePlan]="selected()!" (closeEvent)="openedUpdate.set(false)" (feePlanUpdated)="onUpdated()" />
+    }
+  </p-dialog>
+</section>

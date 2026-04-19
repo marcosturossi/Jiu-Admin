@@ -12,7 +12,7 @@ import { HttpHeaders }                                       from '@angular/comm
 
 import { Observable }                                        from 'rxjs';
 
-import { ApiAuthLoginPost401Response } from '../model/models';
+import { ApiAdminAcademiesIdGet404Response } from '../model/models';
 import { CreateLessonDTO } from '../model/models';
 import { PaginationLessonDTO } from '../model/models';
 import { ShowLessonDTO } from '../model/models';
@@ -31,43 +31,57 @@ export interface LessonServiceInterface {
     /**
      * 
      * 
-     */
-    apiLessonActiveGet(extraHttpRequestParams?: any): Observable<Array<ShowLessonDTO>>;
-
-    /**
-     * Get all lessons
-     * 
+     * @param searchTerm 
+     * @param isActive 
+     * @param scheduledFrom 
+     * @param scheduledTo 
+     * @param createdFrom 
+     * @param createdTo 
      * @param pageNumber 
      * @param pageSize 
      */
-    apiLessonGet(pageNumber?: number, pageSize?: number, extraHttpRequestParams?: any): Observable<PaginationLessonDTO>;
+    apiLessonActiveGet(searchTerm?: string, isActive?: boolean, scheduledFrom?: string, scheduledTo?: string, createdFrom?: string, createdTo?: string, pageNumber?: number, pageSize?: number, extraHttpRequestParams?: any): Observable<Array<ShowLessonDTO>>;
 
     /**
-     * Delete a lesson
      * 
-     * @param id The lesson ID to delete
+     * 
+     * @param searchTerm 
+     * @param isActive 
+     * @param scheduledFrom 
+     * @param scheduledTo 
+     * @param createdFrom 
+     * @param createdTo 
+     * @param pageNumber 
+     * @param pageSize 
+     */
+    apiLessonGet(searchTerm?: string, isActive?: boolean, scheduledFrom?: string, scheduledTo?: string, createdFrom?: string, createdTo?: string, pageNumber?: number, pageSize?: number, extraHttpRequestParams?: any): Observable<PaginationLessonDTO>;
+
+    /**
+     * 
+     * 
+     * @param id 
      */
     apiLessonIdDelete(id: string, extraHttpRequestParams?: any): Observable<{}>;
 
     /**
-     * Get a specific lesson by ID
      * 
-     * @param id The lesson ID
+     * 
+     * @param id 
      */
     apiLessonIdGet(id: string, extraHttpRequestParams?: any): Observable<ShowLessonDTO>;
 
     /**
-     * Update an existing lesson
      * 
-     * @param id The belessonlt ID to update
-     * @param updateLessonDTO The updated lesson data
+     * 
+     * @param id 
+     * @param updateLessonDTO 
      */
     apiLessonIdPut(id: string, updateLessonDTO?: UpdateLessonDTO, extraHttpRequestParams?: any): Observable<ShowLessonDTO>;
 
     /**
-     * Create a new lesson
      * 
-     * @param createLessonDTO The lesson data to create
+     * 
+     * @param createLessonDTO 
      */
     apiLessonPost(createLessonDTO?: CreateLessonDTO, extraHttpRequestParams?: any): Observable<ShowLessonDTO>;
 

@@ -1,0 +1,22 @@
+<form [formGroup]="form" (ngSubmit)="save()" class="dialog-form">
+  <div class="field">
+    <label>Aluno *</label>
+    <p-select formControlName="studentId" [options]="studentOptions()" optionLabel="label" optionValue="value" placeholder="Selecione o aluno" class="w-full" />
+  </div>
+  <div class="field">
+    <label>Plano de Pagamento *</label>
+    <p-select formControlName="feePlanId" [options]="feePlanOptions()" optionLabel="label" optionValue="value" placeholder="Selecione o plano" class="w-full" />
+  </div>
+  <div class="field">
+    <label>Data de Início *</label>
+    <p-datepicker formControlName="startDate" dateFormat="dd/mm/yy" [showIcon]="true" class="w-full" />
+  </div>
+  <div class="field">
+    <label>Observações</label>
+    <textarea pTextarea formControlName="notes" rows="3" class="w-full" placeholder="Observações opcionais"></textarea>
+  </div>
+  <div class="dialog-actions">
+    <p-button label="Cancelar" severity="secondary" [text]="true" (onClick)="close()" />
+    <p-button label="Criar Contrato" icon="pi pi-check" type="submit" [loading]="isSaving()" />
+  </div>
+</form>

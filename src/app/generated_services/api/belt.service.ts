@@ -18,7 +18,7 @@ import { CustomHttpParameterCodec }                          from '../encoder';
 import { Observable }                                        from 'rxjs';
 
 // @ts-ignore
-import { ApiAuthLoginPost401Response } from '../model/apiAuthLoginPost401Response';
+import { ApiAdminAcademiesIdGet404Response } from '../model/apiAdminAcademiesIdGet404Response';
 // @ts-ignore
 import { CreateBeltDTO } from '../model/createBeltDTO';
 // @ts-ignore
@@ -36,7 +36,6 @@ import { Configuration }                                     from '../configurat
 import {
     BeltServiceInterface
 } from './belt.serviceInterface';
-import { environment } from '../../enviroments/environment';
 
 
 
@@ -45,7 +44,7 @@ import { environment } from '../../enviroments/environment';
 })
 export class BeltService implements BeltServiceInterface {
 
-    protected basePath = environment.server;
+    protected basePath = 'http://localhost:8080';
     public defaultHeaders = new HttpHeaders();
     public configuration = new Configuration();
     public encoder: HttpParameterCodec;
@@ -106,28 +105,54 @@ export class BeltService implements BeltServiceInterface {
     }
 
     /**
-     * Get all belts
-     * @param pageNumber Page number (default: 1)
-     * @param pageSize Page size (default: 20, max: 100)
+     * @param color 
+     * @param isForKids 
+     * @param orderIndexFrom 
+     * @param orderIndexTo 
+     * @param pageNumber 
+     * @param pageSize 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiBeltGet(pageNumber?: number, pageSize?: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<PaginationBeltDTO>;
-    public apiBeltGet(pageNumber?: number, pageSize?: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<PaginationBeltDTO>>;
-    public apiBeltGet(pageNumber?: number, pageSize?: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<PaginationBeltDTO>>;
-    public apiBeltGet(pageNumber?: number, pageSize?: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public apiBeltGet(color?: string, isForKids?: boolean, orderIndexFrom?: number, orderIndexTo?: number, pageNumber?: number, pageSize?: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<PaginationBeltDTO>;
+    public apiBeltGet(color?: string, isForKids?: boolean, orderIndexFrom?: number, orderIndexTo?: number, pageNumber?: number, pageSize?: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<PaginationBeltDTO>>;
+    public apiBeltGet(color?: string, isForKids?: boolean, orderIndexFrom?: number, orderIndexTo?: number, pageNumber?: number, pageSize?: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<PaginationBeltDTO>>;
+    public apiBeltGet(color?: string, isForKids?: boolean, orderIndexFrom?: number, orderIndexTo?: number, pageNumber?: number, pageSize?: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
 
         let localVarQueryParameters = new HttpParams({encoder: this.encoder});
+        if (color !== undefined && color !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>color, 'Color');
+        }
+        if (isForKids !== undefined && isForKids !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>isForKids, 'IsForKids');
+        }
+        if (orderIndexFrom !== undefined && orderIndexFrom !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>orderIndexFrom, 'OrderIndexFrom');
+        }
+        if (orderIndexTo !== undefined && orderIndexTo !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>orderIndexTo, 'OrderIndexTo');
+        }
         if (pageNumber !== undefined && pageNumber !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>pageNumber, 'pageNumber');
+            <any>pageNumber, 'PageNumber');
         }
         if (pageSize !== undefined && pageSize !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>pageSize, 'pageSize');
+            <any>pageSize, 'PageSize');
         }
 
         let localVarHeaders = this.defaultHeaders;
+
+        let localVarCredential: string | undefined;
+        // authentication (TenantToken) required
+        localVarCredential = this.configuration.lookupCredential('TenantToken');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('X-Tenant-Token', localVarCredential);
+        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -179,8 +204,7 @@ export class BeltService implements BeltServiceInterface {
     }
 
     /**
-     * Delete a belt
-     * @param id The belt ID to delete
+     * @param id 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
@@ -193,6 +217,13 @@ export class BeltService implements BeltServiceInterface {
         }
 
         let localVarHeaders = this.defaultHeaders;
+
+        let localVarCredential: string | undefined;
+        // authentication (TenantToken) required
+        localVarCredential = this.configuration.lookupCredential('TenantToken');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('X-Tenant-Token', localVarCredential);
+        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -243,8 +274,7 @@ export class BeltService implements BeltServiceInterface {
     }
 
     /**
-     * Get a specific belt by ID
-     * @param id The belt ID
+     * @param id 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
@@ -257,6 +287,13 @@ export class BeltService implements BeltServiceInterface {
         }
 
         let localVarHeaders = this.defaultHeaders;
+
+        let localVarCredential: string | undefined;
+        // authentication (TenantToken) required
+        localVarCredential = this.configuration.lookupCredential('TenantToken');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('X-Tenant-Token', localVarCredential);
+        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -307,9 +344,8 @@ export class BeltService implements BeltServiceInterface {
     }
 
     /**
-     * Update an existing belt
-     * @param id The belt ID to update
-     * @param updateBeltDTO The updated belt data
+     * @param id 
+     * @param updateBeltDTO 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
@@ -322,6 +358,13 @@ export class BeltService implements BeltServiceInterface {
         }
 
         let localVarHeaders = this.defaultHeaders;
+
+        let localVarCredential: string | undefined;
+        // authentication (TenantToken) required
+        localVarCredential = this.configuration.lookupCredential('TenantToken');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('X-Tenant-Token', localVarCredential);
+        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -384,8 +427,7 @@ export class BeltService implements BeltServiceInterface {
     }
 
     /**
-     * Create a new belt
-     * @param createBeltDTO The belt data to create
+     * @param createBeltDTO 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
@@ -395,6 +437,13 @@ export class BeltService implements BeltServiceInterface {
     public apiBeltPost(createBeltDTO?: CreateBeltDTO, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
 
         let localVarHeaders = this.defaultHeaders;
+
+        let localVarCredential: string | undefined;
+        // authentication (TenantToken) required
+        localVarCredential = this.configuration.lookupCredential('TenantToken');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('X-Tenant-Token', localVarCredential);
+        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {

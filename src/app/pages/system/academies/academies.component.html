@@ -1,0 +1,148 @@
+<section class="page-section">
+  <div class="page-toolbar">
+    <div class="search-wrapper">
+      <span class="p-input-icon-left">
+        <i class="pi pi-search"></i>
+        <input
+          pInputText
+          type="text"
+          placeholder="Buscar por nome..."
+          [value]="searchName()"
+          (input)="searchName.set($any($event.target).value)"
+          (keydown.enter)="onSearch()"
+          class="search-input"
+        />
+      </span>
+      <p-button
+        label="Buscar"
+        icon="pi pi-search"
+        severity="secondary"
+        [outlined]="true"
+        (onClick)="onSearch()"
+      />
+    </div>
+    <p-button label="Nova Academia" icon="pi pi-plus" (onClick)="openCreate()" />
+  </div>
+
+  <p-table
+    [value]="items()?.items ?? []"
+    [loading]="isLoading()"
+    styleClass="p-datatable-sm p-datatable-striped"
+    [tableStyle]="{ 'min-width': '56rem' }"
+  >
+    <ng-template pTemplate="header">
+      <tr>
+        <th>Nome</th>
+        <th>Slug</th>
+        <th>Token de Tenant</th>
+        <th class="text-center">Status</th>
+        <th>Criado em</th>
+        <th class="text-center" style="width: 8rem">Ações</th>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="body" let-academy>
+      <tr>
+        <td class="font-medium">{{ academy.name }}</td>
+        <td>
+          <code class="slug-code">{{ academy.slug }}</code>
+        </td>
+        <td>
+          <div class="token-cell">
+            <span class="token-preview">{{ academy.tenantToken ? (academy.tenantToken | slice:0:16) + '...' : '—' }}</span>
+            @if (academy.tenantToken) {
+              <p-button
+                [icon]="copiedId() === academy.id ? 'pi pi-check' : 'pi pi-copy'"
+                [text]="true"
+                [rounded]="true"
+                size="small"
+                [severity]="copiedId() === academy.id ? 'success' : 'secondary'"
+                pTooltip="Copiar token"
+                tooltipPosition="top"
+                (onClick)="copyTenantToken(academy)"
+              />
+            }
+          </div>
+        </td>
+        <td class="text-center">
+          <p-tag
+            [value]="academy.isActive ? 'Ativa' : 'Inativa'"
+            [severity]="academy.isActive ? 'success' : 'danger'"
+          />
+        </td>
+        <td>{{ academy.createdAt | date:'dd/MM/yyyy' }}</td>
+        <td class="text-center">
+          <p-button
+            icon="pi pi-pencil"
+            [text]="true"
+            severity="info"
+            size="small"
+            pTooltip="Editar"
+            tooltipPosition="top"
+            (onClick)="openEdit(academy)"
+          />
+          <p-button
+            icon="pi pi-trash"
+            [text]="true"
+            severity="danger"
+            size="small"
+            pTooltip="Excluir"
+            tooltipPosition="top"
+            (onClick)="delete(academy)"
+          />
+        </td>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td [colSpan]="6" class="empty-state">
+          <i class="pi pi-building empty-icon"></i>
+          <p class="empty-text">Nenhuma academia encontrada.</p>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+
+  <app-pagination
+    [currentPage]="currentPage()"
+    [totalPages]="items()?.totalPages ?? 1"
+    [pageSize]="pageSize()"
+    [totalItems]="items()?.totalCount ?? 0"
+    (pageChange)="onPageChange($event)"
+    (pageSizeChange)="onPageSizeChange($event)"
+  />
+</section>
+
+<p-dialog
+  [visible]="openedCreate()"
+  (visibleChange)="openedCreate.set($event)"
+  header="Nova Academia"
+  [modal]="true"
+  [draggable]="false"
+  [resizable]="false"
+  styleClass="w-full md:w-30rem"
+>
+  <app-create-academy
+    (closeEvent)="openedCreate.set(false)"
+    (academyCreated)="onCreated()"
+  />
+</p-dialog>
+
+<p-dialog
+  [visible]="openedUpdate()"
+  (visibleChange)="openedUpdate.set($event)"
+  header="Editar Academia"
+  [modal]="true"
+  [draggable]="false"
+  [resizable]="false"
+  styleClass="w-full md:w-30rem"
+>
+  @if (selected()) {
+    <app-update-academy
+      [academy]="selected()!"
+      (closeEvent)="openedUpdate.set(false)"
+      (academyUpdated)="onUpdated()"
+    />
+  }
+</p-dialog>

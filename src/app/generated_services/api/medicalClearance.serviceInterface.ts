@@ -12,7 +12,7 @@ import { HttpHeaders }                                       from '@angular/comm
 
 import { Observable }                                        from 'rxjs';
 
-import { ApiAuthLoginPost401Response } from '../model/models';
+import { ApiAdminAcademiesIdGet404Response } from '../model/models';
 import { ApiMedicalClearanceIdAttachmentGet200Response } from '../model/models';
 import { CreateMedicalClearanceDTO } from '../model/models';
 import { MedicalClearanceAttachmentResponseDTO } from '../model/models';
@@ -30,96 +30,120 @@ export interface MedicalClearanceServiceInterface {
     configuration: Configuration;
 
     /**
-     * Get expired medical clearances
+     * 
      * 
      */
     apiMedicalClearanceExpiredGet(extraHttpRequestParams?: any): Observable<Array<ShowMedicalClearanceDTO>>;
 
     /**
-     * Get medical clearances expiring soon
      * 
-     * @param daysThreshold Days threshold for expiring soon (default: 30)
+     * 
+     * @param daysThreshold 
      */
     apiMedicalClearanceExpiringSoonGet(daysThreshold?: number, extraHttpRequestParams?: any): Observable<Array<ShowMedicalClearanceDTO>>;
 
     /**
-     * Get all medical clearances
      * 
-     * @param page 
+     * 
+     * @param studentId 
+     * @param studentName 
+     * @param isApproved 
+     * @param isActive 
+     * @param hasAttachment 
+     * @param isExpired 
+     * @param isExpiringSoon 
+     * @param expiringSoonDaysThreshold 
+     * @param expiresFrom 
+     * @param expiresTo 
+     * @param pageNumber 
      * @param pageSize 
+     * @param page 
+     * @param pageSize2 
      */
-    apiMedicalClearanceGet(page?: number, pageSize?: number, extraHttpRequestParams?: any): Observable<PaginationMedicalClearanceDTO>;
+    apiMedicalClearanceGet(studentId?: string, studentName?: string, isApproved?: boolean, isActive?: boolean, hasAttachment?: boolean, isExpired?: boolean, isExpiringSoon?: boolean, expiringSoonDaysThreshold?: number, expiresFrom?: string, expiresTo?: string, pageNumber?: number, pageSize?: number, page?: number, pageSize2?: number, extraHttpRequestParams?: any): Observable<PaginationMedicalClearanceDTO>;
 
     /**
-     * Get attachment for medical clearance
      * 
-     * @param id The medical clearance ID
+     * 
+     * @param id 
      */
     apiMedicalClearanceIdAttachmentGet(id: string, extraHttpRequestParams?: any): Observable<ApiMedicalClearanceIdAttachmentGet200Response>;
 
     /**
-     * Upload attachment for medical clearance
      * 
-     * @param id The medical clearance ID
-     * @param file The file to upload
+     * 
+     * @param id 
+     * @param file 
      */
     apiMedicalClearanceIdAttachmentPost(id: string, file?: Blob, extraHttpRequestParams?: any): Observable<MedicalClearanceAttachmentResponseDTO>;
 
     /**
-     * Get attachment URL for medical clearance
      * 
-     * @param id The medical clearance ID
-     * @param expiryHours URL expiry time in hours (default: 1 hour)
+     * 
+     * @param id 
+     * @param expiryHours 
      */
     apiMedicalClearanceIdAttachmentUrlGet(id: string, expiryHours?: number, extraHttpRequestParams?: any): Observable<any>;
 
     /**
-     * Delete a medical clearance
      * 
-     * @param id The medical clearance ID
+     * 
+     * @param id 
      */
     apiMedicalClearanceIdDelete(id: string, extraHttpRequestParams?: any): Observable<{}>;
 
     /**
-     * Get medical clearance by ID
      * 
-     * @param id The medical clearance ID
+     * 
+     * @param id 
      */
     apiMedicalClearanceIdGet(id: string, extraHttpRequestParams?: any): Observable<ShowMedicalClearanceDTO>;
 
     /**
-     * Update a medical clearance
      * 
-     * @param id The medical clearance ID
-     * @param updateMedicalClearanceDTO The medical clearance data to update
+     * 
+     * @param id 
+     * @param updateMedicalClearanceDTO 
      */
     apiMedicalClearanceIdPut(id: string, updateMedicalClearanceDTO?: UpdateMedicalClearanceDTO, extraHttpRequestParams?: any): Observable<ShowMedicalClearanceDTO>;
 
     /**
-     * Get medical clearances pending review
+     * 
      * 
      */
     apiMedicalClearancePendingReviewGet(extraHttpRequestParams?: any): Observable<Array<ShowMedicalClearanceDTO>>;
 
     /**
-     * Create a new medical clearance
      * 
-     * @param createMedicalClearanceDTO The medical clearance to create
+     * 
+     * @param createMedicalClearanceDTO 
      */
     apiMedicalClearancePost(createMedicalClearanceDTO?: CreateMedicalClearanceDTO, extraHttpRequestParams?: any): Observable<ShowMedicalClearanceDTO>;
 
     /**
-     * Get current valid medical clearance for a student
      * 
-     * @param studentId The student ID
+     * 
+     * @param studentId 
      */
     apiMedicalClearanceStudentStudentIdCurrentGet(studentId: string, extraHttpRequestParams?: any): Observable<ShowMedicalClearanceDTO>;
 
     /**
-     * Get medical clearances by student ID
      * 
-     * @param studentId The student ID
+     * 
+     * @param studentId 
+     * @param studentId2 
+     * @param studentName 
+     * @param isApproved 
+     * @param isActive 
+     * @param hasAttachment 
+     * @param isExpired 
+     * @param isExpiringSoon 
+     * @param expiringSoonDaysThreshold 
+     * @param expiresFrom 
+     * @param expiresTo 
+     * @param pageNumber 
+     * @param pageSize 
      */
-    apiMedicalClearanceStudentStudentIdGet(studentId: string, extraHttpRequestParams?: any): Observable<Array<ShowMedicalClearanceDTO>>;
+    apiMedicalClearanceStudentStudentIdGet(studentId: string, studentId2?: string, studentName?: string, isApproved?: boolean, isActive?: boolean, hasAttachment?: boolean, isExpired?: boolean, isExpiringSoon?: boolean, expiringSoonDaysThreshold?: number, expiresFrom?: string, expiresTo?: string, pageNumber?: number, pageSize?: number, extraHttpRequestParams?: any): Observable<Array<ShowMedicalClearanceDTO>>;
 
 }

@@ -12,7 +12,7 @@ import { HttpHeaders }                                       from '@angular/comm
 
 import { Observable }                                        from 'rxjs';
 
-import { ApiAuthLoginPost401Response } from '../model/models';
+import { ApiAdminAcademiesIdGet404Response } from '../model/models';
 import { CreateNoticesDTO } from '../model/models';
 import { ShowNoticesDTO } from '../model/models';
 import { UpdateNoticesDTO } from '../model/models';
@@ -28,43 +28,51 @@ export interface NoticesServiceInterface {
     configuration: Configuration;
 
     /**
-     * Get all active notices
      * 
+     * 
+     * @param description 
+     * @param isActive 
+     * @param createdFrom 
+     * @param createdTo 
      */
-    apiNoticesActiveGet(extraHttpRequestParams?: any): Observable<Array<ShowNoticesDTO>>;
+    apiNoticesActiveGet(description?: string, isActive?: boolean, createdFrom?: string, createdTo?: string, extraHttpRequestParams?: any): Observable<Array<ShowNoticesDTO>>;
 
     /**
-     * Get all notices
      * 
+     * 
+     * @param description 
+     * @param isActive 
+     * @param createdFrom 
+     * @param createdTo 
      */
-    apiNoticesGet(extraHttpRequestParams?: any): Observable<Array<ShowNoticesDTO>>;
+    apiNoticesGet(description?: string, isActive?: boolean, createdFrom?: string, createdTo?: string, extraHttpRequestParams?: any): Observable<Array<ShowNoticesDTO>>;
 
     /**
-     * Delete a notice
      * 
-     * @param id The notice ID to delete
+     * 
+     * @param id 
      */
     apiNoticesIdDelete(id: string, extraHttpRequestParams?: any): Observable<{}>;
 
     /**
-     * Get a specific notice by ID
      * 
-     * @param id The notice ID
+     * 
+     * @param id 
      */
     apiNoticesIdGet(id: string, extraHttpRequestParams?: any): Observable<ShowNoticesDTO>;
 
     /**
-     * Update an existing notice
      * 
-     * @param id The notice ID to update
-     * @param updateNoticesDTO The updated notice data
+     * 
+     * @param id 
+     * @param updateNoticesDTO 
      */
     apiNoticesIdPut(id: string, updateNoticesDTO?: UpdateNoticesDTO, extraHttpRequestParams?: any): Observable<ShowNoticesDTO>;
 
     /**
-     * Create a new notice
      * 
-     * @param createNoticesDTO The notice data to create
+     * 
+     * @param createNoticesDTO 
      */
     apiNoticesPost(createNoticesDTO?: CreateNoticesDTO, extraHttpRequestParams?: any): Observable<ShowNoticesDTO>;
 

@@ -41,7 +41,7 @@ export class MedicalClearancesComponent {
 
   protected load(): void {
     this.isLoading.set(true);
-    this.medicalClearanceService.apiMedicalClearanceGet(this.currentPage(), this.pageSize()).subscribe({
+    this.medicalClearanceService.apiMedicalClearanceGet(undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, this.currentPage(), this.pageSize()).subscribe({
       next: r => { this.items.set(r); this.isLoading.set(false); },
       error: () => { this.isLoading.set(false); this.ns.showError('Erro de Carregamento', 'Não foi possível carregar a lista de atestados médicos.'); }
     });

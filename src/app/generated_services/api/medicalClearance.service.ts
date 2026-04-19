@@ -18,7 +18,7 @@ import { CustomHttpParameterCodec }                          from '../encoder';
 import { Observable }                                        from 'rxjs';
 
 // @ts-ignore
-import { ApiAuthLoginPost401Response } from '../model/apiAuthLoginPost401Response';
+import { ApiAdminAcademiesIdGet404Response } from '../model/apiAdminAcademiesIdGet404Response';
 // @ts-ignore
 import { ApiMedicalClearanceIdAttachmentGet200Response } from '../model/apiMedicalClearanceIdAttachmentGet200Response';
 // @ts-ignore
@@ -38,7 +38,6 @@ import { Configuration }                                     from '../configurat
 import {
     MedicalClearanceServiceInterface
 } from './medicalClearance.serviceInterface';
-import { environment } from '../../enviroments/environment';
 
 
 
@@ -47,7 +46,7 @@ import { environment } from '../../enviroments/environment';
 })
 export class MedicalClearanceService implements MedicalClearanceServiceInterface {
 
-    protected basePath = environment.server;
+    protected basePath = 'http://localhost:8080';
     public defaultHeaders = new HttpHeaders();
     public configuration = new Configuration();
     public encoder: HttpParameterCodec;
@@ -121,7 +120,6 @@ export class MedicalClearanceService implements MedicalClearanceServiceInterface
     }
 
     /**
-     * Get expired medical clearances
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
@@ -131,6 +129,13 @@ export class MedicalClearanceService implements MedicalClearanceServiceInterface
     public apiMedicalClearanceExpiredGet(observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
 
         let localVarHeaders = this.defaultHeaders;
+
+        let localVarCredential: string | undefined;
+        // authentication (TenantToken) required
+        localVarCredential = this.configuration.lookupCredential('TenantToken');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('X-Tenant-Token', localVarCredential);
+        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -181,8 +186,7 @@ export class MedicalClearanceService implements MedicalClearanceServiceInterface
     }
 
     /**
-     * Get medical clearances expiring soon
-     * @param daysThreshold Days threshold for expiring soon (default: 30)
+     * @param daysThreshold 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
@@ -198,6 +202,13 @@ export class MedicalClearanceService implements MedicalClearanceServiceInterface
         }
 
         let localVarHeaders = this.defaultHeaders;
+
+        let localVarCredential: string | undefined;
+        // authentication (TenantToken) required
+        localVarCredential = this.configuration.lookupCredential('TenantToken');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('X-Tenant-Token', localVarCredential);
+        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -249,28 +260,94 @@ export class MedicalClearanceService implements MedicalClearanceServiceInterface
     }
 
     /**
-     * Get all medical clearances
-     * @param page 
+     * @param studentId 
+     * @param studentName 
+     * @param isApproved 
+     * @param isActive 
+     * @param hasAttachment 
+     * @param isExpired 
+     * @param isExpiringSoon 
+     * @param expiringSoonDaysThreshold 
+     * @param expiresFrom 
+     * @param expiresTo 
+     * @param pageNumber 
      * @param pageSize 
+     * @param page 
+     * @param pageSize2 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiMedicalClearanceGet(page?: number, pageSize?: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<PaginationMedicalClearanceDTO>;
-    public apiMedicalClearanceGet(page?: number, pageSize?: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<PaginationMedicalClearanceDTO>>;
-    public apiMedicalClearanceGet(page?: number, pageSize?: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<PaginationMedicalClearanceDTO>>;
-    public apiMedicalClearanceGet(page?: number, pageSize?: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public apiMedicalClearanceGet(studentId?: string, studentName?: string, isApproved?: boolean, isActive?: boolean, hasAttachment?: boolean, isExpired?: boolean, isExpiringSoon?: boolean, expiringSoonDaysThreshold?: number, expiresFrom?: string, expiresTo?: string, pageNumber?: number, pageSize?: number, page?: number, pageSize2?: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<PaginationMedicalClearanceDTO>;
+    public apiMedicalClearanceGet(studentId?: string, studentName?: string, isApproved?: boolean, isActive?: boolean, hasAttachment?: boolean, isExpired?: boolean, isExpiringSoon?: boolean, expiringSoonDaysThreshold?: number, expiresFrom?: string, expiresTo?: string, pageNumber?: number, pageSize?: number, page?: number, pageSize2?: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<PaginationMedicalClearanceDTO>>;
+    public apiMedicalClearanceGet(studentId?: string, studentName?: string, isApproved?: boolean, isActive?: boolean, hasAttachment?: boolean, isExpired?: boolean, isExpiringSoon?: boolean, expiringSoonDaysThreshold?: number, expiresFrom?: string, expiresTo?: string, pageNumber?: number, pageSize?: number, page?: number, pageSize2?: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<PaginationMedicalClearanceDTO>>;
+    public apiMedicalClearanceGet(studentId?: string, studentName?: string, isApproved?: boolean, isActive?: boolean, hasAttachment?: boolean, isExpired?: boolean, isExpiringSoon?: boolean, expiringSoonDaysThreshold?: number, expiresFrom?: string, expiresTo?: string, pageNumber?: number, pageSize?: number, page?: number, pageSize2?: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
 
         let localVarQueryParameters = new HttpParams({encoder: this.encoder});
+        if (studentId !== undefined && studentId !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>studentId, 'StudentId');
+        }
+        if (studentName !== undefined && studentName !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>studentName, 'StudentName');
+        }
+        if (isApproved !== undefined && isApproved !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>isApproved, 'IsApproved');
+        }
+        if (isActive !== undefined && isActive !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>isActive, 'IsActive');
+        }
+        if (hasAttachment !== undefined && hasAttachment !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>hasAttachment, 'HasAttachment');
+        }
+        if (isExpired !== undefined && isExpired !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>isExpired, 'IsExpired');
+        }
+        if (isExpiringSoon !== undefined && isExpiringSoon !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>isExpiringSoon, 'IsExpiringSoon');
+        }
+        if (expiringSoonDaysThreshold !== undefined && expiringSoonDaysThreshold !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>expiringSoonDaysThreshold, 'ExpiringSoonDaysThreshold');
+        }
+        if (expiresFrom !== undefined && expiresFrom !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>expiresFrom, 'ExpiresFrom');
+        }
+        if (expiresTo !== undefined && expiresTo !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>expiresTo, 'ExpiresTo');
+        }
+        if (pageNumber !== undefined && pageNumber !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>pageNumber, 'PageNumber');
+        }
+        if (pageSize !== undefined && pageSize !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>pageSize, 'PageSize');
+        }
         if (page !== undefined && page !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
             <any>page, 'page');
         }
-        if (pageSize !== undefined && pageSize !== null) {
+        if (pageSize2 !== undefined && pageSize2 !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>pageSize, 'pageSize');
+            <any>pageSize2, 'pageSize');
         }
 
         let localVarHeaders = this.defaultHeaders;
+
+        let localVarCredential: string | undefined;
+        // authentication (TenantToken) required
+        localVarCredential = this.configuration.lookupCredential('TenantToken');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('X-Tenant-Token', localVarCredential);
+        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -322,8 +399,7 @@ export class MedicalClearanceService implements MedicalClearanceServiceInterface
     }
 
     /**
-     * Get attachment for medical clearance
-     * @param id The medical clearance ID
+     * @param id 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
@@ -336,6 +412,13 @@ export class MedicalClearanceService implements MedicalClearanceServiceInterface
         }
 
         let localVarHeaders = this.defaultHeaders;
+
+        let localVarCredential: string | undefined;
+        // authentication (TenantToken) required
+        localVarCredential = this.configuration.lookupCredential('TenantToken');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('X-Tenant-Token', localVarCredential);
+        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -387,9 +470,8 @@ export class MedicalClearanceService implements MedicalClearanceServiceInterface
     }
 
     /**
-     * Upload attachment for medical clearance
-     * @param id The medical clearance ID
-     * @param file The file to upload
+     * @param id 
+     * @param file 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
@@ -402,6 +484,13 @@ export class MedicalClearanceService implements MedicalClearanceServiceInterface
         }
 
         let localVarHeaders = this.defaultHeaders;
+
+        let localVarCredential: string | undefined;
+        // authentication (TenantToken) required
+        localVarCredential = this.configuration.lookupCredential('TenantToken');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('X-Tenant-Token', localVarCredential);
+        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -475,9 +564,8 @@ export class MedicalClearanceService implements MedicalClearanceServiceInterface
     }
 
     /**
-     * Get attachment URL for medical clearance
-     * @param id The medical clearance ID
-     * @param expiryHours URL expiry time in hours (default: 1 hour)
+     * @param id 
+     * @param expiryHours 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
@@ -496,6 +584,13 @@ export class MedicalClearanceService implements MedicalClearanceServiceInterface
         }
 
         let localVarHeaders = this.defaultHeaders;
+
+        let localVarCredential: string | undefined;
+        // authentication (TenantToken) required
+        localVarCredential = this.configuration.lookupCredential('TenantToken');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('X-Tenant-Token', localVarCredential);
+        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -547,8 +642,7 @@ export class MedicalClearanceService implements MedicalClearanceServiceInterface
     }
 
     /**
-     * Delete a medical clearance
-     * @param id The medical clearance ID
+     * @param id 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
@@ -561,6 +655,13 @@ export class MedicalClearanceService implements MedicalClearanceServiceInterface
         }
 
         let localVarHeaders = this.defaultHeaders;
+
+        let localVarCredential: string | undefined;
+        // authentication (TenantToken) required
+        localVarCredential = this.configuration.lookupCredential('TenantToken');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('X-Tenant-Token', localVarCredential);
+        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -611,8 +712,7 @@ export class MedicalClearanceService implements MedicalClearanceServiceInterface
     }
 
     /**
-     * Get medical clearance by ID
-     * @param id The medical clearance ID
+     * @param id 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
@@ -625,6 +725,13 @@ export class MedicalClearanceService implements MedicalClearanceServiceInterface
         }
 
         let localVarHeaders = this.defaultHeaders;
+
+        let localVarCredential: string | undefined;
+        // authentication (TenantToken) required
+        localVarCredential = this.configuration.lookupCredential('TenantToken');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('X-Tenant-Token', localVarCredential);
+        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -675,9 +782,8 @@ export class MedicalClearanceService implements MedicalClearanceServiceInterface
     }
 
     /**
-     * Update a medical clearance
-     * @param id The medical clearance ID
-     * @param updateMedicalClearanceDTO The medical clearance data to update
+     * @param id 
+     * @param updateMedicalClearanceDTO 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
@@ -690,6 +796,13 @@ export class MedicalClearanceService implements MedicalClearanceServiceInterface
         }
 
         let localVarHeaders = this.defaultHeaders;
+
+        let localVarCredential: string | undefined;
+        // authentication (TenantToken) required
+        localVarCredential = this.configuration.lookupCredential('TenantToken');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('X-Tenant-Token', localVarCredential);
+        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -752,7 +865,6 @@ export class MedicalClearanceService implements MedicalClearanceServiceInterface
     }
 
     /**
-     * Get medical clearances pending review
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
@@ -762,6 +874,13 @@ export class MedicalClearanceService implements MedicalClearanceServiceInterface
     public apiMedicalClearancePendingReviewGet(observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
 
         let localVarHeaders = this.defaultHeaders;
+
+        let localVarCredential: string | undefined;
+        // authentication (TenantToken) required
+        localVarCredential = this.configuration.lookupCredential('TenantToken');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('X-Tenant-Token', localVarCredential);
+        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -812,8 +931,7 @@ export class MedicalClearanceService implements MedicalClearanceServiceInterface
     }
 
     /**
-     * Create a new medical clearance
-     * @param createMedicalClearanceDTO The medical clearance to create
+     * @param createMedicalClearanceDTO 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
@@ -823,6 +941,13 @@ export class MedicalClearanceService implements MedicalClearanceServiceInterface
     public apiMedicalClearancePost(createMedicalClearanceDTO?: CreateMedicalClearanceDTO, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
 
         let localVarHeaders = this.defaultHeaders;
+
+        let localVarCredential: string | undefined;
+        // authentication (TenantToken) required
+        localVarCredential = this.configuration.lookupCredential('TenantToken');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('X-Tenant-Token', localVarCredential);
+        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -885,8 +1010,7 @@ export class MedicalClearanceService implements MedicalClearanceServiceInterface
     }
 
     /**
-     * Get current valid medical clearance for a student
-     * @param studentId The student ID
+     * @param studentId 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
@@ -899,6 +1023,13 @@ export class MedicalClearanceService implements MedicalClearanceServiceInterface
         }
 
         let localVarHeaders = this.defaultHeaders;
+
+        let localVarCredential: string | undefined;
+        // authentication (TenantToken) required
+        localVarCredential = this.configuration.lookupCredential('TenantToken');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('X-Tenant-Token', localVarCredential);
+        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -949,20 +1080,88 @@ export class MedicalClearanceService implements MedicalClearanceServiceInterface
     }
 
     /**
-     * Get medical clearances by student ID
-     * @param studentId The student ID
+     * @param studentId 
+     * @param studentId2 
+     * @param studentName 
+     * @param isApproved 
+     * @param isActive 
+     * @param hasAttachment 
+     * @param isExpired 
+     * @param isExpiringSoon 
+     * @param expiringSoonDaysThreshold 
+     * @param expiresFrom 
+     * @param expiresTo 
+     * @param pageNumber 
+     * @param pageSize 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiMedicalClearanceStudentStudentIdGet(studentId: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Array<ShowMedicalClearanceDTO>>;
-    public apiMedicalClearanceStudentStudentIdGet(studentId: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<ShowMedicalClearanceDTO>>>;
-    public apiMedicalClearanceStudentStudentIdGet(studentId: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<ShowMedicalClearanceDTO>>>;
-    public apiMedicalClearanceStudentStudentIdGet(studentId: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public apiMedicalClearanceStudentStudentIdGet(studentId: string, studentId2?: string, studentName?: string, isApproved?: boolean, isActive?: boolean, hasAttachment?: boolean, isExpired?: boolean, isExpiringSoon?: boolean, expiringSoonDaysThreshold?: number, expiresFrom?: string, expiresTo?: string, pageNumber?: number, pageSize?: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Array<ShowMedicalClearanceDTO>>;
+    public apiMedicalClearanceStudentStudentIdGet(studentId: string, studentId2?: string, studentName?: string, isApproved?: boolean, isActive?: boolean, hasAttachment?: boolean, isExpired?: boolean, isExpiringSoon?: boolean, expiringSoonDaysThreshold?: number, expiresFrom?: string, expiresTo?: string, pageNumber?: number, pageSize?: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<ShowMedicalClearanceDTO>>>;
+    public apiMedicalClearanceStudentStudentIdGet(studentId: string, studentId2?: string, studentName?: string, isApproved?: boolean, isActive?: boolean, hasAttachment?: boolean, isExpired?: boolean, isExpiringSoon?: boolean, expiringSoonDaysThreshold?: number, expiresFrom?: string, expiresTo?: string, pageNumber?: number, pageSize?: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<ShowMedicalClearanceDTO>>>;
+    public apiMedicalClearanceStudentStudentIdGet(studentId: string, studentId2?: string, studentName?: string, isApproved?: boolean, isActive?: boolean, hasAttachment?: boolean, isExpired?: boolean, isExpiringSoon?: boolean, expiringSoonDaysThreshold?: number, expiresFrom?: string, expiresTo?: string, pageNumber?: number, pageSize?: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         if (studentId === null || studentId === undefined) {
             throw new Error('Required parameter studentId was null or undefined when calling apiMedicalClearanceStudentStudentIdGet.');
         }
 
+        let localVarQueryParameters = new HttpParams({encoder: this.encoder});
+        if (studentId2 !== undefined && studentId2 !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>studentId2, 'StudentId');
+        }
+        if (studentName !== undefined && studentName !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>studentName, 'StudentName');
+        }
+        if (isApproved !== undefined && isApproved !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>isApproved, 'IsApproved');
+        }
+        if (isActive !== undefined && isActive !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>isActive, 'IsActive');
+        }
+        if (hasAttachment !== undefined && hasAttachment !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>hasAttachment, 'HasAttachment');
+        }
+        if (isExpired !== undefined && isExpired !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>isExpired, 'IsExpired');
+        }
+        if (isExpiringSoon !== undefined && isExpiringSoon !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>isExpiringSoon, 'IsExpiringSoon');
+        }
+        if (expiringSoonDaysThreshold !== undefined && expiringSoonDaysThreshold !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>expiringSoonDaysThreshold, 'ExpiringSoonDaysThreshold');
+        }
+        if (expiresFrom !== undefined && expiresFrom !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>expiresFrom, 'ExpiresFrom');
+        }
+        if (expiresTo !== undefined && expiresTo !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>expiresTo, 'ExpiresTo');
+        }
+        if (pageNumber !== undefined && pageNumber !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>pageNumber, 'PageNumber');
+        }
+        if (pageSize !== undefined && pageSize !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>pageSize, 'PageSize');
+        }
+
         let localVarHeaders = this.defaultHeaders;
+
+        let localVarCredential: string | undefined;
+        // authentication (TenantToken) required
+        localVarCredential = this.configuration.lookupCredential('TenantToken');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('X-Tenant-Token', localVarCredential);
+        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -1002,6 +1201,7 @@ export class MedicalClearanceService implements MedicalClearanceServiceInterface
         return this.httpClient.request<Array<ShowMedicalClearanceDTO>>('get', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
+                params: localVarQueryParameters,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,

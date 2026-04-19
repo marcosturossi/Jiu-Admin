@@ -18,6 +18,8 @@ import { CustomHttpParameterCodec }                          from '../encoder';
 import { Observable }                                        from 'rxjs';
 
 // @ts-ignore
+import { BarChartDataDTO } from '../model/barChartDataDTO';
+// @ts-ignore
 import { MonthlyNewStudentsDTO } from '../model/monthlyNewStudentsDTO';
 // @ts-ignore
 import { StudentsBirthDay } from '../model/studentsBirthDay';
@@ -30,7 +32,6 @@ import { Configuration }                                     from '../configurat
 import {
     DashboardServiceInterface
 } from './dashboard.serviceInterface';
-import { environment } from '../../enviroments/environment';
 
 
 
@@ -39,7 +40,7 @@ import { environment } from '../../enviroments/environment';
 })
 export class DashboardService implements DashboardServiceInterface {
 
-    protected basePath = environment.server;
+    protected basePath = 'http://localhost:8080';
     public defaultHeaders = new HttpHeaders();
     public configuration = new Configuration();
     public encoder: HttpParameterCodec;
@@ -117,6 +118,13 @@ export class DashboardService implements DashboardServiceInterface {
 
         let localVarHeaders = this.defaultHeaders;
 
+        let localVarCredential: string | undefined;
+        // authentication (TenantToken) required
+        localVarCredential = this.configuration.lookupCredential('TenantToken');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('X-Tenant-Token', localVarCredential);
+        }
+
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
@@ -166,7 +174,6 @@ export class DashboardService implements DashboardServiceInterface {
     }
 
     /**
-     * Get Students Birthdays in the next \&#39;days\&#39; days
      * @param days 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
@@ -183,6 +190,13 @@ export class DashboardService implements DashboardServiceInterface {
         }
 
         let localVarHeaders = this.defaultHeaders;
+
+        let localVarCredential: string | undefined;
+        // authentication (TenantToken) required
+        localVarCredential = this.configuration.lookupCredential('TenantToken');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('X-Tenant-Token', localVarCredential);
+        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -238,10 +252,10 @@ export class DashboardService implements DashboardServiceInterface {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiDashboardFrequencyBeltsDistributionGet(days?: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any>;
-    public apiDashboardFrequencyBeltsDistributionGet(days?: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<any>>;
-    public apiDashboardFrequencyBeltsDistributionGet(days?: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<any>>;
-    public apiDashboardFrequencyBeltsDistributionGet(days?: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public apiDashboardFrequencyBeltsDistributionGet(days?: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<BarChartDataDTO>;
+    public apiDashboardFrequencyBeltsDistributionGet(days?: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<BarChartDataDTO>>;
+    public apiDashboardFrequencyBeltsDistributionGet(days?: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<BarChartDataDTO>>;
+    public apiDashboardFrequencyBeltsDistributionGet(days?: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
 
         let localVarQueryParameters = new HttpParams({encoder: this.encoder});
         if (days !== undefined && days !== null) {
@@ -251,10 +265,18 @@ export class DashboardService implements DashboardServiceInterface {
 
         let localVarHeaders = this.defaultHeaders;
 
+        let localVarCredential: string | undefined;
+        // authentication (TenantToken) required
+        localVarCredential = this.configuration.lookupCredential('TenantToken');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('X-Tenant-Token', localVarCredential);
+        }
+
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
+                'application/json'
             ];
             localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         }
@@ -285,7 +307,7 @@ export class DashboardService implements DashboardServiceInterface {
         }
 
         let localVarPath = `/api/Dashboard/frequency-belts-distribution`;
-        return this.httpClient.request<any>('get', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<BarChartDataDTO>('get', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 params: localVarQueryParameters,
@@ -300,7 +322,6 @@ export class DashboardService implements DashboardServiceInterface {
     }
 
     /**
-     * Get Monthly New Students for the past \&#39;months\&#39; months
      * @param months 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
@@ -317,6 +338,13 @@ export class DashboardService implements DashboardServiceInterface {
         }
 
         let localVarHeaders = this.defaultHeaders;
+
+        let localVarCredential: string | undefined;
+        // authentication (TenantToken) required
+        localVarCredential = this.configuration.lookupCredential('TenantToken');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('X-Tenant-Token', localVarCredential);
+        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -368,7 +396,6 @@ export class DashboardService implements DashboardServiceInterface {
     }
 
     /**
-     * Get Top Students by attendance in the last \&#39;days\&#39; days
      * @param days 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
@@ -385,6 +412,13 @@ export class DashboardService implements DashboardServiceInterface {
         }
 
         let localVarHeaders = this.defaultHeaders;
+
+        let localVarCredential: string | undefined;
+        // authentication (TenantToken) required
+        localVarCredential = this.configuration.lookupCredential('TenantToken');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('X-Tenant-Token', localVarCredential);
+        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {

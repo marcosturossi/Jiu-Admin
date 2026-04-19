@@ -18,74 +18,43 @@ import { NoticesComponent } from './notices/notices.component';
 import { FaceRecognitionComponent } from './face-recognition/face-recognition.component';
 import { NotificationComponent } from './notification/notification.component';
 import { MedicalClearancesComponent } from './medical-clearances/medical-clearances.component';
+import { FeePlansComponent } from './fee-plans/fee-plans.component';
+import { ContractsComponent } from './contracts/contracts.component';
+import { MonthlyFeesComponent } from './monthly-fees/monthly-fees.component';
+import { TransactionsComponent } from './transactions/transactions.component';
+import { TransactionCategoriesComponent } from './transaction-categories/transaction-categories.component';
+import { AcademiesComponent } from './academies/academies.component';
 import { ToastModule } from 'primeng/toast';
 
 export const routes: Routes = [
   {
     path: '',
-    component: SystemComponent,  // Main layout component with <router-outlet>
+    component: SystemComponent,
     canActivate: [AuthGuard],
     children: [
-      {
-        path: 'home',
-        component: HomeComponent,
-        canActivate: [AuthGuard]
-      },
-      {
-        path: '',
-        redirectTo: 'home',  // Default redirect to HomeComponent
-        pathMatch: 'full'
-      },
-      {
-        path: 'students',
-        pathMatch: 'full',
-        component:StudentsComponent
-      },
-      {
-        path: 'lessons',
-        pathMatch: 'full',
-        component: LessonsComponent
-      },
-      {
-        path: 'graduations',
-        pathMatch: 'full',
-        component: GraduationsComponent
-      },
-      {
-        path: 'frequencies',
-        pathMatch: 'full',
-        component: FrequenciesComponent
-      },
-      {
-        path: 'belts',
-        pathMatch: 'full',
-        component: BeltsComponent
-      },
-      {
-        path: 'graduation-requirements',
-        pathMatch: 'full',
-        component: GraduationRequirementsComponent
-      },
-      {
-        path: 'notices',
-        pathMatch: 'full',
-        component: NoticesComponent,
-      },
-      {
-        path: 'notification',
-        pathMatch: 'full',
-        component: NotificationComponent,
-      },
-      {
-        path: 'face-recognition',
-        pathMatch: 'full',
-        component: FaceRecognitionComponent,
-      },
-      {
-        path: 'medical-clearances',
-        pathMatch: 'full',
-        component: MedicalClearancesComponent,
-      }
+      { path: '', redirectTo: 'home', pathMatch: 'full' },
+      { path: 'home', component: HomeComponent },
+      // Acadêmico
+      { path: 'students', component: StudentsComponent },
+      { path: 'lessons', component: LessonsComponent },
+      { path: 'graduations', component: GraduationsComponent },
+      { path: 'frequencies', component: FrequenciesComponent },
+      { path: 'belts', component: BeltsComponent },
+      { path: 'graduation-requirements', component: GraduationRequirementsComponent },
+      // Comunicação
+      { path: 'notices', component: NoticesComponent },
+      { path: 'notification', component: NotificationComponent },
+      // Financeiro
+      { path: 'fee-plans', component: FeePlansComponent },
+      { path: 'contracts', component: ContractsComponent },
+      { path: 'monthly-fees', component: MonthlyFeesComponent },
+      { path: 'transactions', component: TransactionsComponent },
+      { path: 'transaction-categories', component: TransactionCategoriesComponent },
+      // Saúde e Segurança
+      { path: 'medical-clearances', component: MedicalClearancesComponent },
+      { path: 'face-recognition', component: FaceRecognitionComponent },
+      // Configurações
+      { path: 'academies', component: AcademiesComponent },
     ]
   }
 ];

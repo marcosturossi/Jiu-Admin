@@ -12,7 +12,7 @@ import { HttpHeaders }                                       from '@angular/comm
 
 import { Observable }                                        from 'rxjs';
 
-import { ApiAuthLoginPost401Response } from '../model/models';
+import { ApiAdminAcademiesIdGet404Response } from '../model/models';
 import { CreateStudentDTO } from '../model/models';
 import { PaginationStudentDTO } from '../model/models';
 import { PhotoResponseDTO } from '../model/models';
@@ -32,97 +32,109 @@ export interface StudentsServiceInterface {
     configuration: Configuration;
 
     /**
-     * Get all active students
      * 
+     * 
+     * @param name 
+     * @param email 
+     * @param isActive 
+     * @param birthDateFrom 
+     * @param birthDateTo 
+     * @param pageNumber 
+     * @param pageSize 
      */
-    apiStudentsActiveGet(extraHttpRequestParams?: any): Observable<Array<ShowStudentDTO>>;
+    apiStudentsActiveGet(name?: string, email?: string, isActive?: boolean, birthDateFrom?: string, birthDateTo?: string, pageNumber?: number, pageSize?: number, extraHttpRequestParams?: any): Observable<Array<ShowStudentDTO>>;
 
     /**
-     * Get all students
      * 
-     * @param pageNumber Page number (default: 1)
-     * @param pageSize Page size (default: 20, max: 100)
+     * 
+     * @param name 
+     * @param email 
+     * @param isActive 
+     * @param birthDateFrom 
+     * @param birthDateTo 
+     * @param pageNumber 
+     * @param pageSize 
      */
-    apiStudentsGet(pageNumber?: number, pageSize?: number, extraHttpRequestParams?: any): Observable<PaginationStudentDTO>;
+    apiStudentsGet(name?: string, email?: string, isActive?: boolean, birthDateFrom?: string, birthDateTo?: string, pageNumber?: number, pageSize?: number, extraHttpRequestParams?: any): Observable<PaginationStudentDTO>;
 
     /**
-     * Delete a student
      * 
-     * @param id The student ID to delete
+     * 
+     * @param id 
      */
     apiStudentsIdDelete(id: string, extraHttpRequestParams?: any): Observable<{}>;
 
     /**
-     * Get a specific student by ID
      * 
-     * @param id The student ID
+     * 
+     * @param id 
      */
     apiStudentsIdGet(id: string, extraHttpRequestParams?: any): Observable<ShowStudentDTO>;
 
     /**
-     * Upload student photo from base64 string
      * 
-     * @param id The student ID
-     * @param uploadPhotoBase64DTO The photo data containing base64 string and content type
+     * 
+     * @param id 
+     * @param uploadPhotoBase64DTO 
      */
     apiStudentsIdPhotoBase64Post(id: string, uploadPhotoBase64DTO?: UploadPhotoBase64DTO, extraHttpRequestParams?: any): Observable<ShowStudentDTO>;
 
     /**
-     * Delete student photo
      * 
-     * @param id The student ID
+     * 
+     * @param id 
      */
     apiStudentsIdPhotoDelete(id: string, extraHttpRequestParams?: any): Observable<ShowStudentDTO>;
 
     /**
-     * Get student photo
      * 
-     * @param id The student ID
+     * 
+     * @param id 
      */
     apiStudentsIdPhotoGet(id: string, extraHttpRequestParams?: any): Observable<PhotoResponseDTO>;
 
     /**
-     * Upload student photo
      * 
-     * @param id The student ID
-     * @param photo The photo file to upload
+     * 
+     * @param id 
+     * @param photo 
      */
     apiStudentsIdPhotoPost(id: string, photo?: Blob, extraHttpRequestParams?: any): Observable<ShowStudentDTO>;
 
     /**
-     * Get student photo URL
      * 
-     * @param id The student ID
-     * @param expiryHours URL expiry time in hours (default: 1 hour)
+     * 
+     * @param id 
+     * @param expiryHours 
      */
     apiStudentsIdPhotoUrlGet(id: string, expiryHours?: number, extraHttpRequestParams?: any): Observable<any>;
 
     /**
-     * Update an existing student
      * 
-     * @param id The student ID to update
-     * @param updateStudentDTO The updated student data
+     * 
+     * @param id 
+     * @param updateStudentDTO 
      */
     apiStudentsIdPut(id: string, updateStudentDTO?: UpdateStudentDTO, extraHttpRequestParams?: any): Observable<ShowStudentDTO>;
 
     /**
-     * Get student by Keycloak user ID
      * 
-     * @param keycloakUserId The Keycloak user ID
+     * 
+     * @param keycloakUserId 
      */
     apiStudentsKeycloakKeycloakUserIdGet(keycloakUserId: string, extraHttpRequestParams?: any): Observable<ShowStudentDTO>;
 
     /**
-     * Create a new student
      * 
-     * @param createStudentDTO The student data to create
+     * 
+     * @param createStudentDTO 
      */
     apiStudentsPost(createStudentDTO?: CreateStudentDTO, extraHttpRequestParams?: any): Observable<ShowStudentDTO>;
 
     /**
-     * Search students with filters
      * 
-     * @param studentSearchDTO Search criteria
+     * 
+     * @param studentSearchDTO 
      */
     apiStudentsSearchPost(studentSearchDTO?: StudentSearchDTO, extraHttpRequestParams?: any): Observable<Array<ShowStudentDTO>>;
 

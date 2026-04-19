@@ -95,7 +95,7 @@ export class CreatePersonsComponent {
     const student = this.students().find(s => s.id === studentId);
     const name = student ? `${student.firstName || ''} ${student.lastName || ''}`.trim() : '';
     this.isCreating.set(true);
-    this.personsService.registerMultiplePhotosApiV1RegisterMultiplePost(name, images, studentId).subscribe({
+    this.personsService.registerMultiplePhotosApiV1RegisterMultiplePost(name, this.previewUrls(), studentId).subscribe({
       next: result => {
         this.ns.showSuccess('Pessoa Criada!', `A pessoa ${name} foi registrada com sucesso no sistema de reconhecimento facial.`);
         this.personCreated.emit(result);

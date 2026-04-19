@@ -1,0 +1,48 @@
+<form [formGroup]="form" class="dialog-form">
+  <div class="field">
+    <label for="name">Nome da Academia *</label>
+    <input
+      pInputText
+      id="name"
+      formControlName="name"
+      placeholder="Ex: Carlson Gracie São Paulo"
+      class="w-full"
+    />
+    @if (form.get('name')?.invalid && form.get('name')?.touched) {
+      <small class="text-danger">Nome é obrigatório.</small>
+    }
+  </div>
+
+  <div class="field">
+    <label for="slug">Slug *</label>
+    <input
+      pInputText
+      id="slug"
+      formControlName="slug"
+      placeholder="Ex: carlson-gracie-sp"
+      class="w-full"
+    />
+    @if (form.get('slug')?.errors?.['required'] && form.get('slug')?.touched) {
+      <small class="text-danger">Slug é obrigatório.</small>
+    }
+    @if (form.get('slug')?.errors?.['pattern'] && form.get('slug')?.touched) {
+      <small class="text-danger">Slug deve conter apenas letras minúsculas, números e hífens.</small>
+    }
+  </div>
+
+  <div class="field">
+    <label for="keycloakRealm">Realm Keycloak</label>
+    <input
+      pInputText
+      id="keycloakRealm"
+      formControlName="keycloakRealm"
+      placeholder="Ex: carlson-sp"
+      class="w-full"
+    />
+  </div>
+
+  <div class="dialog-actions">
+    <p-button label="Cancelar" severity="secondary" [outlined]="true" (onClick)="close()" />
+    <p-button label="Salvar" icon="pi pi-check" (onClick)="save()" [disabled]="form.invalid" />
+  </div>
+</form>

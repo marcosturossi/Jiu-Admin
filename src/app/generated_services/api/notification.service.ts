@@ -18,7 +18,7 @@ import { CustomHttpParameterCodec }                          from '../encoder';
 import { Observable }                                        from 'rxjs';
 
 // @ts-ignore
-import { ApiAuthLoginPost401Response } from '../model/apiAuthLoginPost401Response';
+import { ApiAdminAcademiesIdGet404Response } from '../model/apiAdminAcademiesIdGet404Response';
 // @ts-ignore
 import { CreateNotificationDTO } from '../model/createNotificationDTO';
 // @ts-ignore
@@ -42,7 +42,6 @@ import { Configuration }                                     from '../configurat
 import {
     NotificationServiceInterface
 } from './notification.serviceInterface';
-import { environment } from '../../enviroments/environment';
 
 
 
@@ -51,7 +50,7 @@ import { environment } from '../../enviroments/environment';
 })
 export class NotificationService implements NotificationServiceInterface {
 
-    protected basePath = environment.server;
+    protected basePath = 'http://localhost:8080';
     public defaultHeaders = new HttpHeaders();
     public configuration = new Configuration();
     public encoder: HttpParameterCodec;
@@ -112,7 +111,72 @@ export class NotificationService implements NotificationServiceInterface {
     }
 
     /**
-     * Cleanup expired notifications (Admin only)
+     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.
+     */
+    public apiNotificationActiveGet(observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Array<ShowNotificationDTO>>;
+    public apiNotificationActiveGet(observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<ShowNotificationDTO>>>;
+    public apiNotificationActiveGet(observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<ShowNotificationDTO>>>;
+    public apiNotificationActiveGet(observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+
+        let localVarHeaders = this.defaultHeaders;
+
+        let localVarCredential: string | undefined;
+        // authentication (TenantToken) required
+        localVarCredential = this.configuration.lookupCredential('TenantToken');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('X-Tenant-Token', localVarCredential);
+        }
+
+        let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+        if (localVarHttpHeaderAcceptSelected === undefined) {
+            // to determine the Accept header
+            const httpHeaderAccepts: string[] = [
+                'application/json'
+            ];
+            localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+        }
+        if (localVarHttpHeaderAcceptSelected !== undefined) {
+            localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+        }
+
+        let localVarHttpContext: HttpContext | undefined = options && options.context;
+        if (localVarHttpContext === undefined) {
+            localVarHttpContext = new HttpContext();
+        }
+
+        let localVarTransferCache: boolean | undefined = options && options.transferCache;
+        if (localVarTransferCache === undefined) {
+            localVarTransferCache = true;
+        }
+
+
+        let responseType_: 'text' | 'json' | 'blob' = 'json';
+        if (localVarHttpHeaderAcceptSelected) {
+            if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
+                responseType_ = 'text';
+            } else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
+                responseType_ = 'json';
+            } else {
+                responseType_ = 'blob';
+            }
+        }
+
+        let localVarPath = `/api/Notification/active`;
+        return this.httpClient.request<Array<ShowNotificationDTO>>('get', `${this.configuration.basePath}${localVarPath}`,
+            {
+                context: localVarHttpContext,
+                responseType: <any>responseType_,
+                withCredentials: this.configuration.withCredentials,
+                headers: localVarHeaders,
+                observe: observe,
+                transferCache: localVarTransferCache,
+                reportProgress: reportProgress
+            }
+        );
+    }
+
+    /**
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
@@ -122,6 +186,13 @@ export class NotificationService implements NotificationServiceInterface {
     public apiNotificationCleanupExpiredPost(observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any> {
 
         let localVarHeaders = this.defaultHeaders;
+
+        let localVarCredential: string | undefined;
+        // authentication (TenantToken) required
+        localVarCredential = this.configuration.lookupCredential('TenantToken');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('X-Tenant-Token', localVarCredential);
+        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -171,28 +242,79 @@ export class NotificationService implements NotificationServiceInterface {
     }
 
     /**
-     * Get all notifications (Admin only)
+     * @param searchTerm 
+     * @param type 
+     * @param isActive 
+     * @param studentId 
+     * @param isExpired 
+     * @param createdFrom 
+     * @param createdTo 
+     * @param expiresFrom 
+     * @param expiresTo 
      * @param pageNumber 
      * @param pageSize 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiNotificationGet(pageNumber?: number, pageSize?: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<PaginationNotificationDTO>;
-    public apiNotificationGet(pageNumber?: number, pageSize?: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<PaginationNotificationDTO>>;
-    public apiNotificationGet(pageNumber?: number, pageSize?: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<PaginationNotificationDTO>>;
-    public apiNotificationGet(pageNumber?: number, pageSize?: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public apiNotificationGet(searchTerm?: string, type?: NotificationType, isActive?: boolean, studentId?: string, isExpired?: boolean, createdFrom?: string, createdTo?: string, expiresFrom?: string, expiresTo?: string, pageNumber?: number, pageSize?: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<PaginationNotificationDTO>;
+    public apiNotificationGet(searchTerm?: string, type?: NotificationType, isActive?: boolean, studentId?: string, isExpired?: boolean, createdFrom?: string, createdTo?: string, expiresFrom?: string, expiresTo?: string, pageNumber?: number, pageSize?: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<PaginationNotificationDTO>>;
+    public apiNotificationGet(searchTerm?: string, type?: NotificationType, isActive?: boolean, studentId?: string, isExpired?: boolean, createdFrom?: string, createdTo?: string, expiresFrom?: string, expiresTo?: string, pageNumber?: number, pageSize?: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<PaginationNotificationDTO>>;
+    public apiNotificationGet(searchTerm?: string, type?: NotificationType, isActive?: boolean, studentId?: string, isExpired?: boolean, createdFrom?: string, createdTo?: string, expiresFrom?: string, expiresTo?: string, pageNumber?: number, pageSize?: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
 
         let localVarQueryParameters = new HttpParams({encoder: this.encoder});
+        if (searchTerm !== undefined && searchTerm !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>searchTerm, 'SearchTerm');
+        }
+        if (type !== undefined && type !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>type, 'Type');
+        }
+        if (isActive !== undefined && isActive !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>isActive, 'IsActive');
+        }
+        if (studentId !== undefined && studentId !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>studentId, 'StudentId');
+        }
+        if (isExpired !== undefined && isExpired !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>isExpired, 'IsExpired');
+        }
+        if (createdFrom !== undefined && createdFrom !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>createdFrom, 'CreatedFrom');
+        }
+        if (createdTo !== undefined && createdTo !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>createdTo, 'CreatedTo');
+        }
+        if (expiresFrom !== undefined && expiresFrom !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>expiresFrom, 'ExpiresFrom');
+        }
+        if (expiresTo !== undefined && expiresTo !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>expiresTo, 'ExpiresTo');
+        }
         if (pageNumber !== undefined && pageNumber !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>pageNumber, 'pageNumber');
+            <any>pageNumber, 'PageNumber');
         }
         if (pageSize !== undefined && pageSize !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>pageSize, 'pageSize');
+            <any>pageSize, 'PageSize');
         }
 
         let localVarHeaders = this.defaultHeaders;
+
+        let localVarCredential: string | undefined;
+        // authentication (TenantToken) required
+        localVarCredential = this.configuration.lookupCredential('TenantToken');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('X-Tenant-Token', localVarCredential);
+        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -244,8 +366,7 @@ export class NotificationService implements NotificationServiceInterface {
     }
 
     /**
-     * Delete a notification (soft delete)
-     * @param id The notification ID to delete
+     * @param id 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
@@ -258,6 +379,13 @@ export class NotificationService implements NotificationServiceInterface {
         }
 
         let localVarHeaders = this.defaultHeaders;
+
+        let localVarCredential: string | undefined;
+        // authentication (TenantToken) required
+        localVarCredential = this.configuration.lookupCredential('TenantToken');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('X-Tenant-Token', localVarCredential);
+        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -308,8 +436,7 @@ export class NotificationService implements NotificationServiceInterface {
     }
 
     /**
-     * Get a specific notification by ID
-     * @param id The notification ID
+     * @param id 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
@@ -322,6 +449,13 @@ export class NotificationService implements NotificationServiceInterface {
         }
 
         let localVarHeaders = this.defaultHeaders;
+
+        let localVarCredential: string | undefined;
+        // authentication (TenantToken) required
+        localVarCredential = this.configuration.lookupCredential('TenantToken');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('X-Tenant-Token', localVarCredential);
+        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -372,9 +506,8 @@ export class NotificationService implements NotificationServiceInterface {
     }
 
     /**
-     * Update an existing notification
-     * @param id The notification ID to update
-     * @param updateNotificationDTO The updated notification data
+     * @param id 
+     * @param updateNotificationDTO 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
@@ -387,6 +520,13 @@ export class NotificationService implements NotificationServiceInterface {
         }
 
         let localVarHeaders = this.defaultHeaders;
+
+        let localVarCredential: string | undefined;
+        // authentication (TenantToken) required
+        localVarCredential = this.configuration.lookupCredential('TenantToken');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('X-Tenant-Token', localVarCredential);
+        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -449,7 +589,6 @@ export class NotificationService implements NotificationServiceInterface {
     }
 
     /**
-     * Mark all notifications as read for the current user
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
@@ -459,6 +598,13 @@ export class NotificationService implements NotificationServiceInterface {
     public apiNotificationMarkAllAsReadPost(observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any> {
 
         let localVarHeaders = this.defaultHeaders;
+
+        let localVarCredential: string | undefined;
+        // authentication (TenantToken) required
+        localVarCredential = this.configuration.lookupCredential('TenantToken');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('X-Tenant-Token', localVarCredential);
+        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -508,8 +654,7 @@ export class NotificationService implements NotificationServiceInterface {
     }
 
     /**
-     * Mark specific notifications as read
-     * @param markAsReadDTO The notification IDs to mark as read
+     * @param markAsReadDTO 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
@@ -519,6 +664,13 @@ export class NotificationService implements NotificationServiceInterface {
     public apiNotificationMarkAsReadPost(markAsReadDTO?: MarkAsReadDTO, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
 
         let localVarHeaders = this.defaultHeaders;
+
+        let localVarCredential: string | undefined;
+        // authentication (TenantToken) required
+        localVarCredential = this.configuration.lookupCredential('TenantToken');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('X-Tenant-Token', localVarCredential);
+        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -581,16 +733,79 @@ export class NotificationService implements NotificationServiceInterface {
     }
 
     /**
-     * Get notifications for the current user
+     * @param searchTerm 
+     * @param type 
+     * @param isActive 
+     * @param studentId 
+     * @param isExpired 
+     * @param createdFrom 
+     * @param createdTo 
+     * @param expiresFrom 
+     * @param expiresTo 
+     * @param pageNumber 
+     * @param pageSize 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiNotificationMyGet(observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Array<ShowNotificationDTO>>;
-    public apiNotificationMyGet(observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<ShowNotificationDTO>>>;
-    public apiNotificationMyGet(observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<ShowNotificationDTO>>>;
-    public apiNotificationMyGet(observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public apiNotificationMyGet(searchTerm?: string, type?: NotificationType, isActive?: boolean, studentId?: string, isExpired?: boolean, createdFrom?: string, createdTo?: string, expiresFrom?: string, expiresTo?: string, pageNumber?: number, pageSize?: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Array<ShowNotificationDTO>>;
+    public apiNotificationMyGet(searchTerm?: string, type?: NotificationType, isActive?: boolean, studentId?: string, isExpired?: boolean, createdFrom?: string, createdTo?: string, expiresFrom?: string, expiresTo?: string, pageNumber?: number, pageSize?: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<ShowNotificationDTO>>>;
+    public apiNotificationMyGet(searchTerm?: string, type?: NotificationType, isActive?: boolean, studentId?: string, isExpired?: boolean, createdFrom?: string, createdTo?: string, expiresFrom?: string, expiresTo?: string, pageNumber?: number, pageSize?: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<ShowNotificationDTO>>>;
+    public apiNotificationMyGet(searchTerm?: string, type?: NotificationType, isActive?: boolean, studentId?: string, isExpired?: boolean, createdFrom?: string, createdTo?: string, expiresFrom?: string, expiresTo?: string, pageNumber?: number, pageSize?: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+
+        let localVarQueryParameters = new HttpParams({encoder: this.encoder});
+        if (searchTerm !== undefined && searchTerm !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>searchTerm, 'SearchTerm');
+        }
+        if (type !== undefined && type !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>type, 'Type');
+        }
+        if (isActive !== undefined && isActive !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>isActive, 'IsActive');
+        }
+        if (studentId !== undefined && studentId !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>studentId, 'StudentId');
+        }
+        if (isExpired !== undefined && isExpired !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>isExpired, 'IsExpired');
+        }
+        if (createdFrom !== undefined && createdFrom !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>createdFrom, 'CreatedFrom');
+        }
+        if (createdTo !== undefined && createdTo !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>createdTo, 'CreatedTo');
+        }
+        if (expiresFrom !== undefined && expiresFrom !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>expiresFrom, 'ExpiresFrom');
+        }
+        if (expiresTo !== undefined && expiresTo !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>expiresTo, 'ExpiresTo');
+        }
+        if (pageNumber !== undefined && pageNumber !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>pageNumber, 'PageNumber');
+        }
+        if (pageSize !== undefined && pageSize !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>pageSize, 'PageSize');
+        }
 
         let localVarHeaders = this.defaultHeaders;
+
+        let localVarCredential: string | undefined;
+        // authentication (TenantToken) required
+        localVarCredential = this.configuration.lookupCredential('TenantToken');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('X-Tenant-Token', localVarCredential);
+        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -630,6 +845,7 @@ export class NotificationService implements NotificationServiceInterface {
         return this.httpClient.request<Array<ShowNotificationDTO>>('get', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
+                params: localVarQueryParameters,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,
@@ -641,7 +857,6 @@ export class NotificationService implements NotificationServiceInterface {
     }
 
     /**
-     * Get notification statistics for the current user
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
@@ -651,6 +866,13 @@ export class NotificationService implements NotificationServiceInterface {
     public apiNotificationMyStatsGet(observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
 
         let localVarHeaders = this.defaultHeaders;
+
+        let localVarCredential: string | undefined;
+        // authentication (TenantToken) required
+        localVarCredential = this.configuration.lookupCredential('TenantToken');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('X-Tenant-Token', localVarCredential);
+        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -701,16 +923,79 @@ export class NotificationService implements NotificationServiceInterface {
     }
 
     /**
-     * Get unread notifications for the current user
+     * @param searchTerm 
+     * @param type 
+     * @param isActive 
+     * @param studentId 
+     * @param isExpired 
+     * @param createdFrom 
+     * @param createdTo 
+     * @param expiresFrom 
+     * @param expiresTo 
+     * @param pageNumber 
+     * @param pageSize 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiNotificationMyUnreadGet(observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Array<ShowNotificationDTO>>;
-    public apiNotificationMyUnreadGet(observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<ShowNotificationDTO>>>;
-    public apiNotificationMyUnreadGet(observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<ShowNotificationDTO>>>;
-    public apiNotificationMyUnreadGet(observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public apiNotificationMyUnreadGet(searchTerm?: string, type?: NotificationType, isActive?: boolean, studentId?: string, isExpired?: boolean, createdFrom?: string, createdTo?: string, expiresFrom?: string, expiresTo?: string, pageNumber?: number, pageSize?: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Array<ShowNotificationDTO>>;
+    public apiNotificationMyUnreadGet(searchTerm?: string, type?: NotificationType, isActive?: boolean, studentId?: string, isExpired?: boolean, createdFrom?: string, createdTo?: string, expiresFrom?: string, expiresTo?: string, pageNumber?: number, pageSize?: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<ShowNotificationDTO>>>;
+    public apiNotificationMyUnreadGet(searchTerm?: string, type?: NotificationType, isActive?: boolean, studentId?: string, isExpired?: boolean, createdFrom?: string, createdTo?: string, expiresFrom?: string, expiresTo?: string, pageNumber?: number, pageSize?: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<ShowNotificationDTO>>>;
+    public apiNotificationMyUnreadGet(searchTerm?: string, type?: NotificationType, isActive?: boolean, studentId?: string, isExpired?: boolean, createdFrom?: string, createdTo?: string, expiresFrom?: string, expiresTo?: string, pageNumber?: number, pageSize?: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+
+        let localVarQueryParameters = new HttpParams({encoder: this.encoder});
+        if (searchTerm !== undefined && searchTerm !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>searchTerm, 'SearchTerm');
+        }
+        if (type !== undefined && type !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>type, 'Type');
+        }
+        if (isActive !== undefined && isActive !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>isActive, 'IsActive');
+        }
+        if (studentId !== undefined && studentId !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>studentId, 'StudentId');
+        }
+        if (isExpired !== undefined && isExpired !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>isExpired, 'IsExpired');
+        }
+        if (createdFrom !== undefined && createdFrom !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>createdFrom, 'CreatedFrom');
+        }
+        if (createdTo !== undefined && createdTo !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>createdTo, 'CreatedTo');
+        }
+        if (expiresFrom !== undefined && expiresFrom !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>expiresFrom, 'ExpiresFrom');
+        }
+        if (expiresTo !== undefined && expiresTo !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>expiresTo, 'ExpiresTo');
+        }
+        if (pageNumber !== undefined && pageNumber !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>pageNumber, 'PageNumber');
+        }
+        if (pageSize !== undefined && pageSize !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>pageSize, 'PageSize');
+        }
 
         let localVarHeaders = this.defaultHeaders;
+
+        let localVarCredential: string | undefined;
+        // authentication (TenantToken) required
+        localVarCredential = this.configuration.lookupCredential('TenantToken');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('X-Tenant-Token', localVarCredential);
+        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -750,6 +1035,7 @@ export class NotificationService implements NotificationServiceInterface {
         return this.httpClient.request<Array<ShowNotificationDTO>>('get', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
+                params: localVarQueryParameters,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,
@@ -761,8 +1047,7 @@ export class NotificationService implements NotificationServiceInterface {
     }
 
     /**
-     * Create a new notification
-     * @param createNotificationDTO The notification data to create
+     * @param createNotificationDTO 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
@@ -772,6 +1057,13 @@ export class NotificationService implements NotificationServiceInterface {
     public apiNotificationPost(createNotificationDTO?: CreateNotificationDTO, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
 
         let localVarHeaders = this.defaultHeaders;
+
+        let localVarCredential: string | undefined;
+        // authentication (TenantToken) required
+        localVarCredential = this.configuration.lookupCredential('TenantToken');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('X-Tenant-Token', localVarCredential);
+        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -848,6 +1140,13 @@ export class NotificationService implements NotificationServiceInterface {
 
         let localVarHeaders = this.defaultHeaders;
 
+        let localVarCredential: string | undefined;
+        // authentication (TenantToken) required
+        localVarCredential = this.configuration.lookupCredential('TenantToken');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('X-Tenant-Token', localVarCredential);
+        }
+
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
@@ -896,20 +1195,83 @@ export class NotificationService implements NotificationServiceInterface {
     }
 
     /**
-     * Get notifications by type
-     * @param type The notification type
+     * @param type 
+     * @param searchTerm 
+     * @param type2 
+     * @param isActive 
+     * @param studentId 
+     * @param isExpired 
+     * @param createdFrom 
+     * @param createdTo 
+     * @param expiresFrom 
+     * @param expiresTo 
+     * @param pageNumber 
+     * @param pageSize 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiNotificationTypeTypeGet(type: NotificationType, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Array<ShowNotificationDTO>>;
-    public apiNotificationTypeTypeGet(type: NotificationType, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<ShowNotificationDTO>>>;
-    public apiNotificationTypeTypeGet(type: NotificationType, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<ShowNotificationDTO>>>;
-    public apiNotificationTypeTypeGet(type: NotificationType, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public apiNotificationTypeTypeGet(type: NotificationType, searchTerm?: string, type2?: NotificationType, isActive?: boolean, studentId?: string, isExpired?: boolean, createdFrom?: string, createdTo?: string, expiresFrom?: string, expiresTo?: string, pageNumber?: number, pageSize?: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Array<ShowNotificationDTO>>;
+    public apiNotificationTypeTypeGet(type: NotificationType, searchTerm?: string, type2?: NotificationType, isActive?: boolean, studentId?: string, isExpired?: boolean, createdFrom?: string, createdTo?: string, expiresFrom?: string, expiresTo?: string, pageNumber?: number, pageSize?: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<ShowNotificationDTO>>>;
+    public apiNotificationTypeTypeGet(type: NotificationType, searchTerm?: string, type2?: NotificationType, isActive?: boolean, studentId?: string, isExpired?: boolean, createdFrom?: string, createdTo?: string, expiresFrom?: string, expiresTo?: string, pageNumber?: number, pageSize?: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<ShowNotificationDTO>>>;
+    public apiNotificationTypeTypeGet(type: NotificationType, searchTerm?: string, type2?: NotificationType, isActive?: boolean, studentId?: string, isExpired?: boolean, createdFrom?: string, createdTo?: string, expiresFrom?: string, expiresTo?: string, pageNumber?: number, pageSize?: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         if (type === null || type === undefined) {
             throw new Error('Required parameter type was null or undefined when calling apiNotificationTypeTypeGet.');
         }
 
+        let localVarQueryParameters = new HttpParams({encoder: this.encoder});
+        if (searchTerm !== undefined && searchTerm !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>searchTerm, 'SearchTerm');
+        }
+        if (type2 !== undefined && type2 !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>type2, 'Type');
+        }
+        if (isActive !== undefined && isActive !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>isActive, 'IsActive');
+        }
+        if (studentId !== undefined && studentId !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>studentId, 'StudentId');
+        }
+        if (isExpired !== undefined && isExpired !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>isExpired, 'IsExpired');
+        }
+        if (createdFrom !== undefined && createdFrom !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>createdFrom, 'CreatedFrom');
+        }
+        if (createdTo !== undefined && createdTo !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>createdTo, 'CreatedTo');
+        }
+        if (expiresFrom !== undefined && expiresFrom !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>expiresFrom, 'ExpiresFrom');
+        }
+        if (expiresTo !== undefined && expiresTo !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>expiresTo, 'ExpiresTo');
+        }
+        if (pageNumber !== undefined && pageNumber !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>pageNumber, 'PageNumber');
+        }
+        if (pageSize !== undefined && pageSize !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>pageSize, 'PageSize');
+        }
+
         let localVarHeaders = this.defaultHeaders;
+
+        let localVarCredential: string | undefined;
+        // authentication (TenantToken) required
+        localVarCredential = this.configuration.lookupCredential('TenantToken');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('X-Tenant-Token', localVarCredential);
+        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -949,6 +1311,7 @@ export class NotificationService implements NotificationServiceInterface {
         return this.httpClient.request<Array<ShowNotificationDTO>>('get', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
+                params: localVarQueryParameters,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,
@@ -960,20 +1323,83 @@ export class NotificationService implements NotificationServiceInterface {
     }
 
     /**
-     * Get notifications by user ID (Admin only)
-     * @param userId The user ID
+     * @param userId 
+     * @param searchTerm 
+     * @param type 
+     * @param isActive 
+     * @param studentId 
+     * @param isExpired 
+     * @param createdFrom 
+     * @param createdTo 
+     * @param expiresFrom 
+     * @param expiresTo 
+     * @param pageNumber 
+     * @param pageSize 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiNotificationUserUserIdGet(userId: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Array<ShowNotificationDTO>>;
-    public apiNotificationUserUserIdGet(userId: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<ShowNotificationDTO>>>;
-    public apiNotificationUserUserIdGet(userId: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<ShowNotificationDTO>>>;
-    public apiNotificationUserUserIdGet(userId: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public apiNotificationUserUserIdGet(userId: string, searchTerm?: string, type?: NotificationType, isActive?: boolean, studentId?: string, isExpired?: boolean, createdFrom?: string, createdTo?: string, expiresFrom?: string, expiresTo?: string, pageNumber?: number, pageSize?: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Array<ShowNotificationDTO>>;
+    public apiNotificationUserUserIdGet(userId: string, searchTerm?: string, type?: NotificationType, isActive?: boolean, studentId?: string, isExpired?: boolean, createdFrom?: string, createdTo?: string, expiresFrom?: string, expiresTo?: string, pageNumber?: number, pageSize?: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<ShowNotificationDTO>>>;
+    public apiNotificationUserUserIdGet(userId: string, searchTerm?: string, type?: NotificationType, isActive?: boolean, studentId?: string, isExpired?: boolean, createdFrom?: string, createdTo?: string, expiresFrom?: string, expiresTo?: string, pageNumber?: number, pageSize?: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<ShowNotificationDTO>>>;
+    public apiNotificationUserUserIdGet(userId: string, searchTerm?: string, type?: NotificationType, isActive?: boolean, studentId?: string, isExpired?: boolean, createdFrom?: string, createdTo?: string, expiresFrom?: string, expiresTo?: string, pageNumber?: number, pageSize?: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         if (userId === null || userId === undefined) {
             throw new Error('Required parameter userId was null or undefined when calling apiNotificationUserUserIdGet.');
         }
 
+        let localVarQueryParameters = new HttpParams({encoder: this.encoder});
+        if (searchTerm !== undefined && searchTerm !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>searchTerm, 'SearchTerm');
+        }
+        if (type !== undefined && type !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>type, 'Type');
+        }
+        if (isActive !== undefined && isActive !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>isActive, 'IsActive');
+        }
+        if (studentId !== undefined && studentId !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>studentId, 'StudentId');
+        }
+        if (isExpired !== undefined && isExpired !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>isExpired, 'IsExpired');
+        }
+        if (createdFrom !== undefined && createdFrom !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>createdFrom, 'CreatedFrom');
+        }
+        if (createdTo !== undefined && createdTo !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>createdTo, 'CreatedTo');
+        }
+        if (expiresFrom !== undefined && expiresFrom !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>expiresFrom, 'ExpiresFrom');
+        }
+        if (expiresTo !== undefined && expiresTo !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>expiresTo, 'ExpiresTo');
+        }
+        if (pageNumber !== undefined && pageNumber !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>pageNumber, 'PageNumber');
+        }
+        if (pageSize !== undefined && pageSize !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>pageSize, 'PageSize');
+        }
+
         let localVarHeaders = this.defaultHeaders;
+
+        let localVarCredential: string | undefined;
+        // authentication (TenantToken) required
+        localVarCredential = this.configuration.lookupCredential('TenantToken');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('X-Tenant-Token', localVarCredential);
+        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -1013,6 +1439,7 @@ export class NotificationService implements NotificationServiceInterface {
         return this.httpClient.request<Array<ShowNotificationDTO>>('get', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
+                params: localVarQueryParameters,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,

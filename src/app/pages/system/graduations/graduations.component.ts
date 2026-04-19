@@ -42,7 +42,7 @@ export class GraduationsComponent {
 
   protected load(): void {
     this.isLoading.set(true);
-    this.graduationService.apiGraduationGet(this.currentPage(), this.pageSize()).subscribe({
+    this.graduationService.apiGraduationGet(undefined, undefined, undefined, undefined, this.currentPage(), this.pageSize()).subscribe({
       next: r => { this.items.set(r); this.isLoading.set(false); },
       error: () => {
         this.isLoading.set(false);

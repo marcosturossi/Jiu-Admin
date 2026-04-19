@@ -12,7 +12,7 @@ import { HttpHeaders }                                       from '@angular/comm
 
 import { Observable }                                        from 'rxjs';
 
-import { ApiAuthLoginPost401Response } from '../model/models';
+import { ApiAdminAcademiesIdGet404Response } from '../model/models';
 import { CreateBeltDTO } from '../model/models';
 import { PaginationBeltDTO } from '../model/models';
 import { ShowBeltDTO } from '../model/models';
@@ -29,39 +29,43 @@ export interface BeltServiceInterface {
     configuration: Configuration;
 
     /**
-     * Get all belts
      * 
-     * @param pageNumber Page number (default: 1)
-     * @param pageSize Page size (default: 20, max: 100)
+     * 
+     * @param color 
+     * @param isForKids 
+     * @param orderIndexFrom 
+     * @param orderIndexTo 
+     * @param pageNumber 
+     * @param pageSize 
      */
-    apiBeltGet(pageNumber?: number, pageSize?: number, extraHttpRequestParams?: any): Observable<PaginationBeltDTO>;
+    apiBeltGet(color?: string, isForKids?: boolean, orderIndexFrom?: number, orderIndexTo?: number, pageNumber?: number, pageSize?: number, extraHttpRequestParams?: any): Observable<PaginationBeltDTO>;
 
     /**
-     * Delete a belt
      * 
-     * @param id The belt ID to delete
+     * 
+     * @param id 
      */
     apiBeltIdDelete(id: string, extraHttpRequestParams?: any): Observable<{}>;
 
     /**
-     * Get a specific belt by ID
      * 
-     * @param id The belt ID
+     * 
+     * @param id 
      */
     apiBeltIdGet(id: string, extraHttpRequestParams?: any): Observable<ShowBeltDTO>;
 
     /**
-     * Update an existing belt
      * 
-     * @param id The belt ID to update
-     * @param updateBeltDTO The updated belt data
+     * 
+     * @param id 
+     * @param updateBeltDTO 
      */
     apiBeltIdPut(id: string, updateBeltDTO?: UpdateBeltDTO, extraHttpRequestParams?: any): Observable<ShowBeltDTO>;
 
     /**
-     * Create a new belt
      * 
-     * @param createBeltDTO The belt data to create
+     * 
+     * @param createBeltDTO 
      */
     apiBeltPost(createBeltDTO?: CreateBeltDTO, extraHttpRequestParams?: any): Observable<ShowBeltDTO>;
 

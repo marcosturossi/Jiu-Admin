@@ -12,7 +12,7 @@ import { HttpHeaders }                                       from '@angular/comm
 
 import { Observable }                                        from 'rxjs';
 
-import { ApiAuthLoginPost401Response } from '../model/models';
+import { ApiAdminAcademiesIdGet404Response } from '../model/models';
 import { CreateFrequencyDTO } from '../model/models';
 import { PaginationFrequencyDTO } from '../model/models';
 import { ShowFrequencyDTO } from '../model/models';
@@ -29,51 +29,72 @@ export interface FrequencyServiceInterface {
     configuration: Configuration;
 
     /**
-     * Get frequencies within a date range
      * 
-     * @param startDate The start date
-     * @param endDate The end date
-     * @param pageNumber The page number for pagination
-     * @param pageSize The page size for pagination
-     */
-    apiFrequencyDateRangeGet(startDate?: string, endDate?: string, pageNumber?: number, pageSize?: number, extraHttpRequestParams?: any): Observable<PaginationFrequencyDTO>;
-
-    /**
-     * Get all frequencies
      * 
+     * @param startDate 
+     * @param endDate 
+     * @param studentId 
+     * @param graduationId 
+     * @param lessonId 
+     * @param createdFrom 
+     * @param createdTo 
+     * @param lessonScheduledFrom 
+     * @param lessonScheduledTo 
      * @param pageNumber 
      * @param pageSize 
      */
-    apiFrequencyGet(pageNumber?: number, pageSize?: number, extraHttpRequestParams?: any): Observable<PaginationFrequencyDTO>;
+    apiFrequencyDateRangeGet(startDate?: string, endDate?: string, studentId?: string, graduationId?: string, lessonId?: string, createdFrom?: string, createdTo?: string, lessonScheduledFrom?: string, lessonScheduledTo?: string, pageNumber?: number, pageSize?: number, extraHttpRequestParams?: any): Observable<PaginationFrequencyDTO>;
 
     /**
-     * Get frequencies by graduation ID
      * 
-     * @param graduationId The graduation ID
-     * @param pageNumber The page number for pagination
-     * @param pageSize The page size for pagination
+     * 
+     * @param studentId 
+     * @param graduationId 
+     * @param lessonId 
+     * @param createdFrom 
+     * @param createdTo 
+     * @param lessonScheduledFrom 
+     * @param lessonScheduledTo 
+     * @param pageNumber 
+     * @param pageSize 
      */
-    apiFrequencyGraduationGraduationIdGet(graduationId: string, pageNumber?: number, pageSize?: number, extraHttpRequestParams?: any): Observable<PaginationFrequencyDTO>;
+    apiFrequencyGet(studentId?: string, graduationId?: string, lessonId?: string, createdFrom?: string, createdTo?: string, lessonScheduledFrom?: string, lessonScheduledTo?: string, pageNumber?: number, pageSize?: number, extraHttpRequestParams?: any): Observable<PaginationFrequencyDTO>;
 
     /**
-     * Delete a frequency
      * 
-     * @param id The frequency ID to delete
+     * 
+     * @param graduationId 
+     * @param studentId 
+     * @param graduationId2 
+     * @param lessonId 
+     * @param createdFrom 
+     * @param createdTo 
+     * @param lessonScheduledFrom 
+     * @param lessonScheduledTo 
+     * @param pageNumber 
+     * @param pageSize 
+     */
+    apiFrequencyGraduationGraduationIdGet(graduationId: string, studentId?: string, graduationId2?: string, lessonId?: string, createdFrom?: string, createdTo?: string, lessonScheduledFrom?: string, lessonScheduledTo?: string, pageNumber?: number, pageSize?: number, extraHttpRequestParams?: any): Observable<PaginationFrequencyDTO>;
+
+    /**
+     * 
+     * 
+     * @param id 
      */
     apiFrequencyIdDelete(id: string, extraHttpRequestParams?: any): Observable<{}>;
 
     /**
-     * Get a specific frequency by ID
      * 
-     * @param id The frequency ID
+     * 
+     * @param id 
      */
     apiFrequencyIdGet(id: string, extraHttpRequestParams?: any): Observable<ShowFrequencyDTO>;
 
     /**
-     * Update an existing frequency
      * 
-     * @param id The frequency ID to update
-     * @param updateFrequencyDTO The updated frequency data
+     * 
+     * @param id 
+     * @param updateFrequencyDTO 
      */
     apiFrequencyIdPut(id: string, updateFrequencyDTO?: UpdateFrequencyDTO, extraHttpRequestParams?: any): Observable<ShowFrequencyDTO>;
 
@@ -85,20 +106,26 @@ export interface FrequencyServiceInterface {
     apiFrequencyNextGraduationRequirementsStudentIdGet(studentId: string, extraHttpRequestParams?: any): Observable<ShowFrequencyUntilNextGraduation>;
 
     /**
-     * Create a new frequency
      * 
-     * @param createFrequencyDTO The frequency data to create
+     * 
+     * @param createFrequencyDTO 
      */
     apiFrequencyPost(createFrequencyDTO?: CreateFrequencyDTO, extraHttpRequestParams?: any): Observable<ShowFrequencyDTO>;
 
     /**
-     * Get frequencies by user ID
+     * 
      * 
      * @param userId 
-     * @param studentId The student ID
-     * @param pageNumber The page number for pagination
-     * @param pageSize The page size for pagination
+     * @param studentId 
+     * @param graduationId 
+     * @param lessonId 
+     * @param createdFrom 
+     * @param createdTo 
+     * @param lessonScheduledFrom 
+     * @param lessonScheduledTo 
+     * @param pageNumber 
+     * @param pageSize 
      */
-    apiFrequencyUserUserIdGet(userId: string, studentId?: string, pageNumber?: number, pageSize?: number, extraHttpRequestParams?: any): Observable<PaginationFrequencyDTO>;
+    apiFrequencyUserUserIdGet(userId: string, studentId?: string, graduationId?: string, lessonId?: string, createdFrom?: string, createdTo?: string, lessonScheduledFrom?: string, lessonScheduledTo?: string, pageNumber?: number, pageSize?: number, extraHttpRequestParams?: any): Observable<PaginationFrequencyDTO>;
 
 }

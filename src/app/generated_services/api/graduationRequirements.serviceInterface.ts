@@ -12,7 +12,7 @@ import { HttpHeaders }                                       from '@angular/comm
 
 import { Observable }                                        from 'rxjs';
 
-import { ApiAuthLoginPost401Response } from '../model/models';
+import { ApiAdminAcademiesIdGet404Response } from '../model/models';
 import { CreateGraduationRequirementsDTO } from '../model/models';
 import { ShowGraduationRequirementsDTO } from '../model/models';
 import { UpdateGraduationRequirementsDTO } from '../model/models';
@@ -27,44 +27,44 @@ export interface GraduationRequirementsServiceInterface {
     configuration: Configuration;
 
     /**
-     * Get graduation requirements by belt ID
      * 
-     * @param beltId The belt ID
+     * 
+     * @param beltId 
      */
     apiGraduationRequirementsByBeltBeltIdGet(beltId: string, extraHttpRequestParams?: any): Observable<Array<ShowGraduationRequirementsDTO>>;
 
     /**
-     * Get all graduation requirements
+     * 
      * 
      */
     apiGraduationRequirementsGet(extraHttpRequestParams?: any): Observable<Array<ShowGraduationRequirementsDTO>>;
 
     /**
-     * Delete a graduation requirement
      * 
-     * @param id The graduation requirement ID to delete
+     * 
+     * @param id 
      */
     apiGraduationRequirementsIdDelete(id: string, extraHttpRequestParams?: any): Observable<{}>;
 
     /**
-     * Get a specific graduation requirement by ID
      * 
-     * @param id The graduation requirement ID
+     * 
+     * @param id 
      */
     apiGraduationRequirementsIdGet(id: string, extraHttpRequestParams?: any): Observable<ShowGraduationRequirementsDTO>;
 
     /**
-     * Update an existing graduation requirement
      * 
-     * @param id The graduation requirement ID to update
-     * @param updateGraduationRequirementsDTO The updated graduation requirement data
+     * 
+     * @param id 
+     * @param updateGraduationRequirementsDTO 
      */
     apiGraduationRequirementsIdPut(id: string, updateGraduationRequirementsDTO?: UpdateGraduationRequirementsDTO, extraHttpRequestParams?: any): Observable<ShowGraduationRequirementsDTO>;
 
     /**
-     * Create a new graduation requirement
      * 
-     * @param createGraduationRequirementsDTO The graduation requirement data to create
+     * 
+     * @param createGraduationRequirementsDTO 
      */
     apiGraduationRequirementsPost(createGraduationRequirementsDTO?: CreateGraduationRequirementsDTO, extraHttpRequestParams?: any): Observable<ShowGraduationRequirementsDTO>;
 

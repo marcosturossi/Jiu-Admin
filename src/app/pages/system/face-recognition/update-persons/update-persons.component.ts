@@ -76,7 +76,7 @@ export class UpdatePersonsComponent {
     this.isUpdating.set(true);
     const images = this.selectedFiles();
     if (images.length > 0) {
-      this.personsService.addPersonImagesApiV1PersonsPersonIdImagesPost(this.person().id, images).subscribe({
+      this.personsService.addPersonImagesApiV1PersonsPersonIdImagesPost(this.person().id, this.previewUrls()).subscribe({
         next: () => { this.ns.showSuccess('Imagens Adicionadas!', 'As imagens foram adicionadas com sucesso.'); this.personUpdated.emit(this.person()); this.close(); },
         error: () => { this.ns.showError('Erro ao Adicionar Imagens', 'Não foi possível adicionar as imagens.'); this.isUpdating.set(false); },
         complete: () => this.isUpdating.set(false)

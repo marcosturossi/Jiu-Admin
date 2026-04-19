@@ -18,7 +18,7 @@ import { CustomHttpParameterCodec }                          from '../encoder';
 import { Observable }                                        from 'rxjs';
 
 // @ts-ignore
-import { ApiAuthLoginPost401Response } from '../model/apiAuthLoginPost401Response';
+import { ApiAdminAcademiesIdGet404Response } from '../model/apiAdminAcademiesIdGet404Response';
 // @ts-ignore
 import { CreateStudentDTO } from '../model/createStudentDTO';
 // @ts-ignore
@@ -42,7 +42,6 @@ import { Configuration }                                     from '../configurat
 import {
     StudentsServiceInterface
 } from './students.serviceInterface';
-import { environment } from '../../enviroments/environment';
 
 
 
@@ -51,7 +50,7 @@ import { environment } from '../../enviroments/environment';
 })
 export class StudentsService implements StudentsServiceInterface {
 
-    protected basePath = environment.server;
+    protected basePath = 'http://localhost:8080';
     public defaultHeaders = new HttpHeaders();
     public configuration = new Configuration();
     public encoder: HttpParameterCodec;
@@ -125,16 +124,59 @@ export class StudentsService implements StudentsServiceInterface {
     }
 
     /**
-     * Get all active students
+     * @param name 
+     * @param email 
+     * @param isActive 
+     * @param birthDateFrom 
+     * @param birthDateTo 
+     * @param pageNumber 
+     * @param pageSize 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiStudentsActiveGet(observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Array<ShowStudentDTO>>;
-    public apiStudentsActiveGet(observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<ShowStudentDTO>>>;
-    public apiStudentsActiveGet(observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<ShowStudentDTO>>>;
-    public apiStudentsActiveGet(observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public apiStudentsActiveGet(name?: string, email?: string, isActive?: boolean, birthDateFrom?: string, birthDateTo?: string, pageNumber?: number, pageSize?: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Array<ShowStudentDTO>>;
+    public apiStudentsActiveGet(name?: string, email?: string, isActive?: boolean, birthDateFrom?: string, birthDateTo?: string, pageNumber?: number, pageSize?: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<ShowStudentDTO>>>;
+    public apiStudentsActiveGet(name?: string, email?: string, isActive?: boolean, birthDateFrom?: string, birthDateTo?: string, pageNumber?: number, pageSize?: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<ShowStudentDTO>>>;
+    public apiStudentsActiveGet(name?: string, email?: string, isActive?: boolean, birthDateFrom?: string, birthDateTo?: string, pageNumber?: number, pageSize?: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+
+        let localVarQueryParameters = new HttpParams({encoder: this.encoder});
+        if (name !== undefined && name !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>name, 'Name');
+        }
+        if (email !== undefined && email !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>email, 'Email');
+        }
+        if (isActive !== undefined && isActive !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>isActive, 'IsActive');
+        }
+        if (birthDateFrom !== undefined && birthDateFrom !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>birthDateFrom, 'BirthDateFrom');
+        }
+        if (birthDateTo !== undefined && birthDateTo !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>birthDateTo, 'BirthDateTo');
+        }
+        if (pageNumber !== undefined && pageNumber !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>pageNumber, 'PageNumber');
+        }
+        if (pageSize !== undefined && pageSize !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>pageSize, 'PageSize');
+        }
 
         let localVarHeaders = this.defaultHeaders;
+
+        let localVarCredential: string | undefined;
+        // authentication (TenantToken) required
+        localVarCredential = this.configuration.lookupCredential('TenantToken');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('X-Tenant-Token', localVarCredential);
+        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -174,6 +216,7 @@ export class StudentsService implements StudentsServiceInterface {
         return this.httpClient.request<Array<ShowStudentDTO>>('get', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
+                params: localVarQueryParameters,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,
@@ -185,28 +228,59 @@ export class StudentsService implements StudentsServiceInterface {
     }
 
     /**
-     * Get all students
-     * @param pageNumber Page number (default: 1)
-     * @param pageSize Page size (default: 20, max: 100)
+     * @param name 
+     * @param email 
+     * @param isActive 
+     * @param birthDateFrom 
+     * @param birthDateTo 
+     * @param pageNumber 
+     * @param pageSize 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiStudentsGet(pageNumber?: number, pageSize?: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<PaginationStudentDTO>;
-    public apiStudentsGet(pageNumber?: number, pageSize?: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<PaginationStudentDTO>>;
-    public apiStudentsGet(pageNumber?: number, pageSize?: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<PaginationStudentDTO>>;
-    public apiStudentsGet(pageNumber?: number, pageSize?: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public apiStudentsGet(name?: string, email?: string, isActive?: boolean, birthDateFrom?: string, birthDateTo?: string, pageNumber?: number, pageSize?: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<PaginationStudentDTO>;
+    public apiStudentsGet(name?: string, email?: string, isActive?: boolean, birthDateFrom?: string, birthDateTo?: string, pageNumber?: number, pageSize?: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<PaginationStudentDTO>>;
+    public apiStudentsGet(name?: string, email?: string, isActive?: boolean, birthDateFrom?: string, birthDateTo?: string, pageNumber?: number, pageSize?: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<PaginationStudentDTO>>;
+    public apiStudentsGet(name?: string, email?: string, isActive?: boolean, birthDateFrom?: string, birthDateTo?: string, pageNumber?: number, pageSize?: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
 
         let localVarQueryParameters = new HttpParams({encoder: this.encoder});
+        if (name !== undefined && name !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>name, 'Name');
+        }
+        if (email !== undefined && email !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>email, 'Email');
+        }
+        if (isActive !== undefined && isActive !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>isActive, 'IsActive');
+        }
+        if (birthDateFrom !== undefined && birthDateFrom !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>birthDateFrom, 'BirthDateFrom');
+        }
+        if (birthDateTo !== undefined && birthDateTo !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>birthDateTo, 'BirthDateTo');
+        }
         if (pageNumber !== undefined && pageNumber !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>pageNumber, 'pageNumber');
+            <any>pageNumber, 'PageNumber');
         }
         if (pageSize !== undefined && pageSize !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>pageSize, 'pageSize');
+            <any>pageSize, 'PageSize');
         }
 
         let localVarHeaders = this.defaultHeaders;
+
+        let localVarCredential: string | undefined;
+        // authentication (TenantToken) required
+        localVarCredential = this.configuration.lookupCredential('TenantToken');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('X-Tenant-Token', localVarCredential);
+        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -258,8 +332,7 @@ export class StudentsService implements StudentsServiceInterface {
     }
 
     /**
-     * Delete a student
-     * @param id The student ID to delete
+     * @param id 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
@@ -272,6 +345,13 @@ export class StudentsService implements StudentsServiceInterface {
         }
 
         let localVarHeaders = this.defaultHeaders;
+
+        let localVarCredential: string | undefined;
+        // authentication (TenantToken) required
+        localVarCredential = this.configuration.lookupCredential('TenantToken');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('X-Tenant-Token', localVarCredential);
+        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -322,8 +402,7 @@ export class StudentsService implements StudentsServiceInterface {
     }
 
     /**
-     * Get a specific student by ID
-     * @param id The student ID
+     * @param id 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
@@ -336,6 +415,13 @@ export class StudentsService implements StudentsServiceInterface {
         }
 
         let localVarHeaders = this.defaultHeaders;
+
+        let localVarCredential: string | undefined;
+        // authentication (TenantToken) required
+        localVarCredential = this.configuration.lookupCredential('TenantToken');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('X-Tenant-Token', localVarCredential);
+        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -386,9 +472,8 @@ export class StudentsService implements StudentsServiceInterface {
     }
 
     /**
-     * Upload student photo from base64 string
-     * @param id The student ID
-     * @param uploadPhotoBase64DTO The photo data containing base64 string and content type
+     * @param id 
+     * @param uploadPhotoBase64DTO 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
@@ -401,6 +486,13 @@ export class StudentsService implements StudentsServiceInterface {
         }
 
         let localVarHeaders = this.defaultHeaders;
+
+        let localVarCredential: string | undefined;
+        // authentication (TenantToken) required
+        localVarCredential = this.configuration.lookupCredential('TenantToken');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('X-Tenant-Token', localVarCredential);
+        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -463,8 +555,7 @@ export class StudentsService implements StudentsServiceInterface {
     }
 
     /**
-     * Delete student photo
-     * @param id The student ID
+     * @param id 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
@@ -477,6 +568,13 @@ export class StudentsService implements StudentsServiceInterface {
         }
 
         let localVarHeaders = this.defaultHeaders;
+
+        let localVarCredential: string | undefined;
+        // authentication (TenantToken) required
+        localVarCredential = this.configuration.lookupCredential('TenantToken');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('X-Tenant-Token', localVarCredential);
+        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -527,8 +625,7 @@ export class StudentsService implements StudentsServiceInterface {
     }
 
     /**
-     * Get student photo
-     * @param id The student ID
+     * @param id 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
@@ -541,6 +638,13 @@ export class StudentsService implements StudentsServiceInterface {
         }
 
         let localVarHeaders = this.defaultHeaders;
+
+        let localVarCredential: string | undefined;
+        // authentication (TenantToken) required
+        localVarCredential = this.configuration.lookupCredential('TenantToken');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('X-Tenant-Token', localVarCredential);
+        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -591,9 +695,8 @@ export class StudentsService implements StudentsServiceInterface {
     }
 
     /**
-     * Upload student photo
-     * @param id The student ID
-     * @param photo The photo file to upload
+     * @param id 
+     * @param photo 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
@@ -606,6 +709,13 @@ export class StudentsService implements StudentsServiceInterface {
         }
 
         let localVarHeaders = this.defaultHeaders;
+
+        let localVarCredential: string | undefined;
+        // authentication (TenantToken) required
+        localVarCredential = this.configuration.lookupCredential('TenantToken');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('X-Tenant-Token', localVarCredential);
+        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -679,9 +789,8 @@ export class StudentsService implements StudentsServiceInterface {
     }
 
     /**
-     * Get student photo URL
-     * @param id The student ID
-     * @param expiryHours URL expiry time in hours (default: 1 hour)
+     * @param id 
+     * @param expiryHours 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
@@ -700,6 +809,13 @@ export class StudentsService implements StudentsServiceInterface {
         }
 
         let localVarHeaders = this.defaultHeaders;
+
+        let localVarCredential: string | undefined;
+        // authentication (TenantToken) required
+        localVarCredential = this.configuration.lookupCredential('TenantToken');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('X-Tenant-Token', localVarCredential);
+        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -751,9 +867,8 @@ export class StudentsService implements StudentsServiceInterface {
     }
 
     /**
-     * Update an existing student
-     * @param id The student ID to update
-     * @param updateStudentDTO The updated student data
+     * @param id 
+     * @param updateStudentDTO 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
@@ -766,6 +881,13 @@ export class StudentsService implements StudentsServiceInterface {
         }
 
         let localVarHeaders = this.defaultHeaders;
+
+        let localVarCredential: string | undefined;
+        // authentication (TenantToken) required
+        localVarCredential = this.configuration.lookupCredential('TenantToken');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('X-Tenant-Token', localVarCredential);
+        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -828,8 +950,7 @@ export class StudentsService implements StudentsServiceInterface {
     }
 
     /**
-     * Get student by Keycloak user ID
-     * @param keycloakUserId The Keycloak user ID
+     * @param keycloakUserId 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
@@ -842,6 +963,13 @@ export class StudentsService implements StudentsServiceInterface {
         }
 
         let localVarHeaders = this.defaultHeaders;
+
+        let localVarCredential: string | undefined;
+        // authentication (TenantToken) required
+        localVarCredential = this.configuration.lookupCredential('TenantToken');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('X-Tenant-Token', localVarCredential);
+        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -892,8 +1020,7 @@ export class StudentsService implements StudentsServiceInterface {
     }
 
     /**
-     * Create a new student
-     * @param createStudentDTO The student data to create
+     * @param createStudentDTO 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
@@ -903,6 +1030,13 @@ export class StudentsService implements StudentsServiceInterface {
     public apiStudentsPost(createStudentDTO?: CreateStudentDTO, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
 
         let localVarHeaders = this.defaultHeaders;
+
+        let localVarCredential: string | undefined;
+        // authentication (TenantToken) required
+        localVarCredential = this.configuration.lookupCredential('TenantToken');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('X-Tenant-Token', localVarCredential);
+        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -965,8 +1099,7 @@ export class StudentsService implements StudentsServiceInterface {
     }
 
     /**
-     * Search students with filters
-     * @param studentSearchDTO Search criteria
+     * @param studentSearchDTO 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
@@ -976,6 +1109,13 @@ export class StudentsService implements StudentsServiceInterface {
     public apiStudentsSearchPost(studentSearchDTO?: StudentSearchDTO, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
 
         let localVarHeaders = this.defaultHeaders;
+
+        let localVarCredential: string | undefined;
+        // authentication (TenantToken) required
+        localVarCredential = this.configuration.lookupCredential('TenantToken');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('X-Tenant-Token', localVarCredential);
+        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {

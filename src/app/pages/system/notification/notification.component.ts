@@ -42,7 +42,7 @@ export class NotificationComponent {
 
   protected load(): void {
     this.isLoading.set(true);
-    this.apiNotificationService.apiNotificationGet(this.currentPage(), this.pageSize()).subscribe({
+    this.apiNotificationService.apiNotificationGet(undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, this.currentPage(), this.pageSize()).subscribe({
       next: r => { this.items.set(r); this.isLoading.set(false); },
       error: () => { this.isLoading.set(false); this.ns.showError('Erro ao Carregar Notificações!', 'Não foi possível carregar a lista de notificações. Tente novamente.'); }
     });

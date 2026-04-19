@@ -1,0 +1,35 @@
+<form [formGroup]="form" (ngSubmit)="save()" class="dialog-form">
+  <div class="field">
+    <label for="name">Nome *</label>
+    <input pInputText id="name" formControlName="name" placeholder="Ex: Plano Mensal" class="w-full" />
+  </div>
+  <div class="field">
+    <label for="description">Descrição</label>
+    <textarea pTextarea id="description" formControlName="description" placeholder="Descrição do plano" class="w-full" rows="3" autoResize="true"></textarea>
+  </div>
+  <div class="field">
+    <label for="monthDuration">Duração (meses) *</label>
+    <p-inputnumber
+      id="monthDuration"
+      formControlName="monthDuration"
+      [min]="1"
+      [showButtons]="true"
+      class="w-full"
+    />
+  </div>
+  <div class="field">
+    <label for="price">Preço *</label>
+    <p-inputnumber
+      id="price"
+      formControlName="price"
+      mode="currency"
+      currency="BRL"
+      locale="pt-BR"
+      class="w-full"
+    />
+  </div>
+  <div class="dialog-actions">
+    <p-button label="Cancelar" severity="secondary" [text]="true" (onClick)="close()" />
+    <p-button label="Salvar" icon="pi pi-check" type="submit" />
+  </div>
+</form>

@@ -45,7 +45,7 @@ export class BeltsComponent {
 
   protected load(): void {
     this.isLoading.set(true);
-    this.beltService.apiBeltGet(this.currentPage(), this.pageSize()).subscribe({
+    this.beltService.apiBeltGet(undefined, undefined, undefined, undefined, this.currentPage(), this.pageSize()).subscribe({
       next: result => { this.items.set(result); this.isLoading.set(false); },
       error: () => { this.isLoading.set(false); this.notificationService.showError('Erro de Carregamento', 'Não foi possível carregar a lista de faixas.'); }
     });

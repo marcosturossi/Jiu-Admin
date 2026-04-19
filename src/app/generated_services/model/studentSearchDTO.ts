@@ -16,7 +16,7 @@ export interface StudentSearchDTO {
     isActive?: boolean | null;
     birthDateFrom?: string | null;
     birthDateTo?: string | null;
-    pageSize?: number;
     pageNumber?: number;
+    pageSize?: number;
 }
 

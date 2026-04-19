@@ -49,7 +49,7 @@ export class StudentsComponent {
 
   protected load(): void {
     this.isLoading.set(true);
-    this.studentsService.apiStudentsGet(this.currentPage(), this.pageSize()).subscribe({
+    this.studentsService.apiStudentsGet(undefined, undefined, undefined, undefined, undefined, this.currentPage(), this.pageSize()).subscribe({
       next: result => { this.items.set(result); this.isLoading.set(false); },
       error: () => { this.isLoading.set(false); this.notificationService.showError('Erro de Carregamento', 'Não foi possível carregar a lista de alunos.'); }
     });

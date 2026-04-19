@@ -1,0 +1,14 @@
+<form [formGroup]="form" (ngSubmit)="save()" class="dialog-form">
+  <div class="field">
+    <label>Status *</label>
+    <p-select formControlName="status" [options]="statusOptions" optionLabel="label" optionValue="value" class="w-full" />
+  </div>
+  <div class="field">
+    <label>Observações</label>
+    <textarea pTextarea formControlName="notes" rows="3" class="w-full" placeholder="Observações"></textarea>
+  </div>
+  <div class="dialog-actions">
+    <p-button label="Cancelar" severity="secondary" [text]="true" (onClick)="close()" />
+    <p-button label="Atualizar" icon="pi pi-check" type="submit" [loading]="isSaving()" />
+  </div>
+</form>

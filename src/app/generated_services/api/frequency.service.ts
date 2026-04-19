@@ -18,7 +18,7 @@ import { CustomHttpParameterCodec }                          from '../encoder';
 import { Observable }                                        from 'rxjs';
 
 // @ts-ignore
-import { ApiAuthLoginPost401Response } from '../model/apiAuthLoginPost401Response';
+import { ApiAdminAcademiesIdGet404Response } from '../model/apiAdminAcademiesIdGet404Response';
 // @ts-ignore
 import { CreateFrequencyDTO } from '../model/createFrequencyDTO';
 // @ts-ignore
@@ -36,7 +36,6 @@ import { Configuration }                                     from '../configurat
 import {
     FrequencyServiceInterface
 } from './frequency.serviceInterface';
-import { environment } from '../../enviroments/environment';
 
 
 
@@ -45,7 +44,7 @@ import { environment } from '../../enviroments/environment';
 })
 export class FrequencyService implements FrequencyServiceInterface {
 
-    protected basePath = environment.server;
+    protected basePath = 'http://localhost:8080';
     public defaultHeaders = new HttpHeaders();
     public configuration = new Configuration();
     public encoder: HttpParameterCodec;
@@ -106,18 +105,24 @@ export class FrequencyService implements FrequencyServiceInterface {
     }
 
     /**
-     * Get frequencies within a date range
-     * @param startDate The start date
-     * @param endDate The end date
-     * @param pageNumber The page number for pagination
-     * @param pageSize The page size for pagination
+     * @param startDate 
+     * @param endDate 
+     * @param studentId 
+     * @param graduationId 
+     * @param lessonId 
+     * @param createdFrom 
+     * @param createdTo 
+     * @param lessonScheduledFrom 
+     * @param lessonScheduledTo 
+     * @param pageNumber 
+     * @param pageSize 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiFrequencyDateRangeGet(startDate?: string, endDate?: string, pageNumber?: number, pageSize?: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<PaginationFrequencyDTO>;
-    public apiFrequencyDateRangeGet(startDate?: string, endDate?: string, pageNumber?: number, pageSize?: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<PaginationFrequencyDTO>>;
-    public apiFrequencyDateRangeGet(startDate?: string, endDate?: string, pageNumber?: number, pageSize?: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<PaginationFrequencyDTO>>;
-    public apiFrequencyDateRangeGet(startDate?: string, endDate?: string, pageNumber?: number, pageSize?: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public apiFrequencyDateRangeGet(startDate?: string, endDate?: string, studentId?: string, graduationId?: string, lessonId?: string, createdFrom?: string, createdTo?: string, lessonScheduledFrom?: string, lessonScheduledTo?: string, pageNumber?: number, pageSize?: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<PaginationFrequencyDTO>;
+    public apiFrequencyDateRangeGet(startDate?: string, endDate?: string, studentId?: string, graduationId?: string, lessonId?: string, createdFrom?: string, createdTo?: string, lessonScheduledFrom?: string, lessonScheduledTo?: string, pageNumber?: number, pageSize?: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<PaginationFrequencyDTO>>;
+    public apiFrequencyDateRangeGet(startDate?: string, endDate?: string, studentId?: string, graduationId?: string, lessonId?: string, createdFrom?: string, createdTo?: string, lessonScheduledFrom?: string, lessonScheduledTo?: string, pageNumber?: number, pageSize?: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<PaginationFrequencyDTO>>;
+    public apiFrequencyDateRangeGet(startDate?: string, endDate?: string, studentId?: string, graduationId?: string, lessonId?: string, createdFrom?: string, createdTo?: string, lessonScheduledFrom?: string, lessonScheduledTo?: string, pageNumber?: number, pageSize?: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
 
         let localVarQueryParameters = new HttpParams({encoder: this.encoder});
         if (startDate !== undefined && startDate !== null) {
@@ -128,16 +133,51 @@ export class FrequencyService implements FrequencyServiceInterface {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
             <any>endDate, 'endDate');
         }
+        if (studentId !== undefined && studentId !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>studentId, 'StudentId');
+        }
+        if (graduationId !== undefined && graduationId !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>graduationId, 'GraduationId');
+        }
+        if (lessonId !== undefined && lessonId !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>lessonId, 'LessonId');
+        }
+        if (createdFrom !== undefined && createdFrom !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>createdFrom, 'CreatedFrom');
+        }
+        if (createdTo !== undefined && createdTo !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>createdTo, 'CreatedTo');
+        }
+        if (lessonScheduledFrom !== undefined && lessonScheduledFrom !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>lessonScheduledFrom, 'LessonScheduledFrom');
+        }
+        if (lessonScheduledTo !== undefined && lessonScheduledTo !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>lessonScheduledTo, 'LessonScheduledTo');
+        }
         if (pageNumber !== undefined && pageNumber !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>pageNumber, 'pageNumber');
+            <any>pageNumber, 'PageNumber');
         }
         if (pageSize !== undefined && pageSize !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>pageSize, 'pageSize');
+            <any>pageSize, 'PageSize');
         }
 
         let localVarHeaders = this.defaultHeaders;
+
+        let localVarCredential: string | undefined;
+        // authentication (TenantToken) required
+        localVarCredential = this.configuration.lookupCredential('TenantToken');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('X-Tenant-Token', localVarCredential);
+        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -189,28 +229,69 @@ export class FrequencyService implements FrequencyServiceInterface {
     }
 
     /**
-     * Get all frequencies
+     * @param studentId 
+     * @param graduationId 
+     * @param lessonId 
+     * @param createdFrom 
+     * @param createdTo 
+     * @param lessonScheduledFrom 
+     * @param lessonScheduledTo 
      * @param pageNumber 
      * @param pageSize 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiFrequencyGet(pageNumber?: number, pageSize?: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<PaginationFrequencyDTO>;
-    public apiFrequencyGet(pageNumber?: number, pageSize?: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<PaginationFrequencyDTO>>;
-    public apiFrequencyGet(pageNumber?: number, pageSize?: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<PaginationFrequencyDTO>>;
-    public apiFrequencyGet(pageNumber?: number, pageSize?: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public apiFrequencyGet(studentId?: string, graduationId?: string, lessonId?: string, createdFrom?: string, createdTo?: string, lessonScheduledFrom?: string, lessonScheduledTo?: string, pageNumber?: number, pageSize?: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<PaginationFrequencyDTO>;
+    public apiFrequencyGet(studentId?: string, graduationId?: string, lessonId?: string, createdFrom?: string, createdTo?: string, lessonScheduledFrom?: string, lessonScheduledTo?: string, pageNumber?: number, pageSize?: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<PaginationFrequencyDTO>>;
+    public apiFrequencyGet(studentId?: string, graduationId?: string, lessonId?: string, createdFrom?: string, createdTo?: string, lessonScheduledFrom?: string, lessonScheduledTo?: string, pageNumber?: number, pageSize?: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<PaginationFrequencyDTO>>;
+    public apiFrequencyGet(studentId?: string, graduationId?: string, lessonId?: string, createdFrom?: string, createdTo?: string, lessonScheduledFrom?: string, lessonScheduledTo?: string, pageNumber?: number, pageSize?: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
 
         let localVarQueryParameters = new HttpParams({encoder: this.encoder});
+        if (studentId !== undefined && studentId !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>studentId, 'StudentId');
+        }
+        if (graduationId !== undefined && graduationId !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>graduationId, 'GraduationId');
+        }
+        if (lessonId !== undefined && lessonId !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>lessonId, 'LessonId');
+        }
+        if (createdFrom !== undefined && createdFrom !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>createdFrom, 'CreatedFrom');
+        }
+        if (createdTo !== undefined && createdTo !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>createdTo, 'CreatedTo');
+        }
+        if (lessonScheduledFrom !== undefined && lessonScheduledFrom !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>lessonScheduledFrom, 'LessonScheduledFrom');
+        }
+        if (lessonScheduledTo !== undefined && lessonScheduledTo !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>lessonScheduledTo, 'LessonScheduledTo');
+        }
         if (pageNumber !== undefined && pageNumber !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>pageNumber, 'pageNumber');
+            <any>pageNumber, 'PageNumber');
         }
         if (pageSize !== undefined && pageSize !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>pageSize, 'pageSize');
+            <any>pageSize, 'PageSize');
         }
 
         let localVarHeaders = this.defaultHeaders;
+
+        let localVarCredential: string | undefined;
+        // authentication (TenantToken) required
+        localVarCredential = this.configuration.lookupCredential('TenantToken');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('X-Tenant-Token', localVarCredential);
+        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -262,32 +343,73 @@ export class FrequencyService implements FrequencyServiceInterface {
     }
 
     /**
-     * Get frequencies by graduation ID
-     * @param graduationId The graduation ID
-     * @param pageNumber The page number for pagination
-     * @param pageSize The page size for pagination
+     * @param graduationId 
+     * @param studentId 
+     * @param graduationId2 
+     * @param lessonId 
+     * @param createdFrom 
+     * @param createdTo 
+     * @param lessonScheduledFrom 
+     * @param lessonScheduledTo 
+     * @param pageNumber 
+     * @param pageSize 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiFrequencyGraduationGraduationIdGet(graduationId: string, pageNumber?: number, pageSize?: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<PaginationFrequencyDTO>;
-    public apiFrequencyGraduationGraduationIdGet(graduationId: string, pageNumber?: number, pageSize?: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<PaginationFrequencyDTO>>;
-    public apiFrequencyGraduationGraduationIdGet(graduationId: string, pageNumber?: number, pageSize?: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<PaginationFrequencyDTO>>;
-    public apiFrequencyGraduationGraduationIdGet(graduationId: string, pageNumber?: number, pageSize?: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public apiFrequencyGraduationGraduationIdGet(graduationId: string, studentId?: string, graduationId2?: string, lessonId?: string, createdFrom?: string, createdTo?: string, lessonScheduledFrom?: string, lessonScheduledTo?: string, pageNumber?: number, pageSize?: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<PaginationFrequencyDTO>;
+    public apiFrequencyGraduationGraduationIdGet(graduationId: string, studentId?: string, graduationId2?: string, lessonId?: string, createdFrom?: string, createdTo?: string, lessonScheduledFrom?: string, lessonScheduledTo?: string, pageNumber?: number, pageSize?: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<PaginationFrequencyDTO>>;
+    public apiFrequencyGraduationGraduationIdGet(graduationId: string, studentId?: string, graduationId2?: string, lessonId?: string, createdFrom?: string, createdTo?: string, lessonScheduledFrom?: string, lessonScheduledTo?: string, pageNumber?: number, pageSize?: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<PaginationFrequencyDTO>>;
+    public apiFrequencyGraduationGraduationIdGet(graduationId: string, studentId?: string, graduationId2?: string, lessonId?: string, createdFrom?: string, createdTo?: string, lessonScheduledFrom?: string, lessonScheduledTo?: string, pageNumber?: number, pageSize?: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         if (graduationId === null || graduationId === undefined) {
             throw new Error('Required parameter graduationId was null or undefined when calling apiFrequencyGraduationGraduationIdGet.');
         }
 
         let localVarQueryParameters = new HttpParams({encoder: this.encoder});
+        if (studentId !== undefined && studentId !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>studentId, 'StudentId');
+        }
+        if (graduationId2 !== undefined && graduationId2 !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>graduationId2, 'GraduationId');
+        }
+        if (lessonId !== undefined && lessonId !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>lessonId, 'LessonId');
+        }
+        if (createdFrom !== undefined && createdFrom !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>createdFrom, 'CreatedFrom');
+        }
+        if (createdTo !== undefined && createdTo !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>createdTo, 'CreatedTo');
+        }
+        if (lessonScheduledFrom !== undefined && lessonScheduledFrom !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>lessonScheduledFrom, 'LessonScheduledFrom');
+        }
+        if (lessonScheduledTo !== undefined && lessonScheduledTo !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>lessonScheduledTo, 'LessonScheduledTo');
+        }
         if (pageNumber !== undefined && pageNumber !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>pageNumber, 'pageNumber');
+            <any>pageNumber, 'PageNumber');
         }
         if (pageSize !== undefined && pageSize !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>pageSize, 'pageSize');
+            <any>pageSize, 'PageSize');
         }
 
         let localVarHeaders = this.defaultHeaders;
+
+        let localVarCredential: string | undefined;
+        // authentication (TenantToken) required
+        localVarCredential = this.configuration.lookupCredential('TenantToken');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('X-Tenant-Token', localVarCredential);
+        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -339,8 +461,7 @@ export class FrequencyService implements FrequencyServiceInterface {
     }
 
     /**
-     * Delete a frequency
-     * @param id The frequency ID to delete
+     * @param id 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
@@ -353,6 +474,13 @@ export class FrequencyService implements FrequencyServiceInterface {
         }
 
         let localVarHeaders = this.defaultHeaders;
+
+        let localVarCredential: string | undefined;
+        // authentication (TenantToken) required
+        localVarCredential = this.configuration.lookupCredential('TenantToken');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('X-Tenant-Token', localVarCredential);
+        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -403,8 +531,7 @@ export class FrequencyService implements FrequencyServiceInterface {
     }
 
     /**
-     * Get a specific frequency by ID
-     * @param id The frequency ID
+     * @param id 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
@@ -417,6 +544,13 @@ export class FrequencyService implements FrequencyServiceInterface {
         }
 
         let localVarHeaders = this.defaultHeaders;
+
+        let localVarCredential: string | undefined;
+        // authentication (TenantToken) required
+        localVarCredential = this.configuration.lookupCredential('TenantToken');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('X-Tenant-Token', localVarCredential);
+        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -467,9 +601,8 @@ export class FrequencyService implements FrequencyServiceInterface {
     }
 
     /**
-     * Update an existing frequency
-     * @param id The frequency ID to update
-     * @param updateFrequencyDTO The updated frequency data
+     * @param id 
+     * @param updateFrequencyDTO 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
@@ -482,6 +615,13 @@ export class FrequencyService implements FrequencyServiceInterface {
         }
 
         let localVarHeaders = this.defaultHeaders;
+
+        let localVarCredential: string | undefined;
+        // authentication (TenantToken) required
+        localVarCredential = this.configuration.lookupCredential('TenantToken');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('X-Tenant-Token', localVarCredential);
+        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -558,6 +698,13 @@ export class FrequencyService implements FrequencyServiceInterface {
 
         let localVarHeaders = this.defaultHeaders;
 
+        let localVarCredential: string | undefined;
+        // authentication (TenantToken) required
+        localVarCredential = this.configuration.lookupCredential('TenantToken');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('X-Tenant-Token', localVarCredential);
+        }
+
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
@@ -607,8 +754,7 @@ export class FrequencyService implements FrequencyServiceInterface {
     }
 
     /**
-     * Create a new frequency
-     * @param createFrequencyDTO The frequency data to create
+     * @param createFrequencyDTO 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
@@ -618,6 +764,13 @@ export class FrequencyService implements FrequencyServiceInterface {
     public apiFrequencyPost(createFrequencyDTO?: CreateFrequencyDTO, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
 
         let localVarHeaders = this.defaultHeaders;
+
+        let localVarCredential: string | undefined;
+        // authentication (TenantToken) required
+        localVarCredential = this.configuration.lookupCredential('TenantToken');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('X-Tenant-Token', localVarCredential);
+        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -680,18 +833,23 @@ export class FrequencyService implements FrequencyServiceInterface {
     }
 
     /**
-     * Get frequencies by user ID
      * @param userId 
-     * @param studentId The student ID
-     * @param pageNumber The page number for pagination
-     * @param pageSize The page size for pagination
+     * @param studentId 
+     * @param graduationId 
+     * @param lessonId 
+     * @param createdFrom 
+     * @param createdTo 
+     * @param lessonScheduledFrom 
+     * @param lessonScheduledTo 
+     * @param pageNumber 
+     * @param pageSize 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiFrequencyUserUserIdGet(userId: string, studentId?: string, pageNumber?: number, pageSize?: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<PaginationFrequencyDTO>;
-    public apiFrequencyUserUserIdGet(userId: string, studentId?: string, pageNumber?: number, pageSize?: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<PaginationFrequencyDTO>>;
-    public apiFrequencyUserUserIdGet(userId: string, studentId?: string, pageNumber?: number, pageSize?: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<PaginationFrequencyDTO>>;
-    public apiFrequencyUserUserIdGet(userId: string, studentId?: string, pageNumber?: number, pageSize?: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public apiFrequencyUserUserIdGet(userId: string, studentId?: string, graduationId?: string, lessonId?: string, createdFrom?: string, createdTo?: string, lessonScheduledFrom?: string, lessonScheduledTo?: string, pageNumber?: number, pageSize?: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<PaginationFrequencyDTO>;
+    public apiFrequencyUserUserIdGet(userId: string, studentId?: string, graduationId?: string, lessonId?: string, createdFrom?: string, createdTo?: string, lessonScheduledFrom?: string, lessonScheduledTo?: string, pageNumber?: number, pageSize?: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<PaginationFrequencyDTO>>;
+    public apiFrequencyUserUserIdGet(userId: string, studentId?: string, graduationId?: string, lessonId?: string, createdFrom?: string, createdTo?: string, lessonScheduledFrom?: string, lessonScheduledTo?: string, pageNumber?: number, pageSize?: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<PaginationFrequencyDTO>>;
+    public apiFrequencyUserUserIdGet(userId: string, studentId?: string, graduationId?: string, lessonId?: string, createdFrom?: string, createdTo?: string, lessonScheduledFrom?: string, lessonScheduledTo?: string, pageNumber?: number, pageSize?: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         if (userId === null || userId === undefined) {
             throw new Error('Required parameter userId was null or undefined when calling apiFrequencyUserUserIdGet.');
         }
@@ -699,18 +857,49 @@ export class FrequencyService implements FrequencyServiceInterface {
         let localVarQueryParameters = new HttpParams({encoder: this.encoder});
         if (studentId !== undefined && studentId !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>studentId, 'studentId');
+            <any>studentId, 'StudentId');
+        }
+        if (graduationId !== undefined && graduationId !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>graduationId, 'GraduationId');
+        }
+        if (lessonId !== undefined && lessonId !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>lessonId, 'LessonId');
+        }
+        if (createdFrom !== undefined && createdFrom !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>createdFrom, 'CreatedFrom');
+        }
+        if (createdTo !== undefined && createdTo !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>createdTo, 'CreatedTo');
+        }
+        if (lessonScheduledFrom !== undefined && lessonScheduledFrom !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>lessonScheduledFrom, 'LessonScheduledFrom');
+        }
+        if (lessonScheduledTo !== undefined && lessonScheduledTo !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>lessonScheduledTo, 'LessonScheduledTo');
         }
         if (pageNumber !== undefined && pageNumber !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>pageNumber, 'pageNumber');
+            <any>pageNumber, 'PageNumber');
         }
         if (pageSize !== undefined && pageSize !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>pageSize, 'pageSize');
+            <any>pageSize, 'PageSize');
         }
 
         let localVarHeaders = this.defaultHeaders;
+
+        let localVarCredential: string | undefined;
+        // authentication (TenantToken) required
+        localVarCredential = this.configuration.lookupCredential('TenantToken');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('X-Tenant-Token', localVarCredential);
+        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -746,7 +935,7 @@ export class FrequencyService implements FrequencyServiceInterface {
             }
         }
 
-        let localVarPath = `/api/Frequency/user/${this.configuration.encodeParam({name: "userId", value: userId, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`;
+        let localVarPath = `/api/Frequency/user/${this.configuration.encodeParam({name: "userId", value: userId, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: "uuid"})}`;
         return this.httpClient.request<PaginationFrequencyDTO>('get', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,

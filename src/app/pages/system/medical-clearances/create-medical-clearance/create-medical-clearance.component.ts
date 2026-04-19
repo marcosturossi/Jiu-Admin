@@ -46,7 +46,7 @@ export class CreateMedicalClearanceComponent implements OnDestroy {
 
   constructor() {
     this.isLoadingStudents.set(true);
-    this.studentsService.apiStudentsGet(1, 100).subscribe({
+    this.studentsService.apiStudentsGet(undefined, undefined, undefined, undefined, undefined, 1, 100).subscribe({
       next: result => {
         const list = result.items ?? [];
         this.students.set(list);

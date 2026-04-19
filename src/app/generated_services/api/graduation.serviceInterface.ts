@@ -30,16 +30,26 @@ export interface GraduationServiceInterface {
      * 
      * 
      * @param beltId 
+     * @param studentId 
+     * @param beltId2 
+     * @param graduationDateFrom 
+     * @param graduationDateTo 
+     * @param pageNumber 
+     * @param pageSize 
      */
-    apiGraduationBeltBeltIdGet(beltId: string, extraHttpRequestParams?: any): Observable<Array<ShowGraduationDTO>>;
+    apiGraduationBeltBeltIdGet(beltId: string, studentId?: string, beltId2?: string, graduationDateFrom?: string, graduationDateTo?: string, pageNumber?: number, pageSize?: number, extraHttpRequestParams?: any): Observable<Array<ShowGraduationDTO>>;
 
     /**
      * 
      * 
+     * @param studentId 
+     * @param beltId 
+     * @param graduationDateFrom 
+     * @param graduationDateTo 
      * @param pageNumber 
      * @param pageSize 
      */
-    apiGraduationGet(pageNumber?: number, pageSize?: number, extraHttpRequestParams?: any): Observable<PaginationGraduationDTO>;
+    apiGraduationGet(studentId?: string, beltId?: string, graduationDateFrom?: string, graduationDateTo?: string, pageNumber?: number, pageSize?: number, extraHttpRequestParams?: any): Observable<PaginationGraduationDTO>;
 
     /**
      * 
@@ -75,7 +85,12 @@ export interface GraduationServiceInterface {
      * 
      * @param userId 
      * @param studentId 
+     * @param beltId 
+     * @param graduationDateFrom 
+     * @param graduationDateTo 
+     * @param pageNumber 
+     * @param pageSize 
      */
-    apiGraduationUserUserIdGet(userId: string, studentId?: string, extraHttpRequestParams?: any): Observable<Array<ShowGraduationDTO>>;
+    apiGraduationUserUserIdGet(userId: string, studentId?: string, beltId?: string, graduationDateFrom?: string, graduationDateTo?: string, pageNumber?: number, pageSize?: number, extraHttpRequestParams?: any): Observable<Array<ShowGraduationDTO>>;
 
 }

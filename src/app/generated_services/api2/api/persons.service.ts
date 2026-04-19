@@ -38,7 +38,6 @@ import { Configuration }                                     from '../configurat
 import {
     PersonsServiceInterface
 } from './persons.serviceInterface';
-import { environment } from '../../../enviroments/environment';
 
 
 
@@ -47,7 +46,7 @@ import { environment } from '../../../enviroments/environment';
 })
 export class PersonsService implements PersonsServiceInterface {
 
-    protected basePath = environment.face_api;
+    protected basePath = 'http://localhost:8003';
     public defaultHeaders = new HttpHeaders();
     public configuration = new Configuration();
     public encoder: HttpParameterCodec;
@@ -128,10 +127,10 @@ export class PersonsService implements PersonsServiceInterface {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public addPersonImagesApiV1PersonsPersonIdImagesPost(personId: string, images: Array<Blob>, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<{ [key: string]: any; }>;
-    public addPersonImagesApiV1PersonsPersonIdImagesPost(personId: string, images: Array<Blob>, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<{ [key: string]: any; }>>;
-    public addPersonImagesApiV1PersonsPersonIdImagesPost(personId: string, images: Array<Blob>, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<{ [key: string]: any; }>>;
-    public addPersonImagesApiV1PersonsPersonIdImagesPost(personId: string, images: Array<Blob>, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public addPersonImagesApiV1PersonsPersonIdImagesPost(personId: string, images: Array<string>, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<{ [key: string]: any; }>;
+    public addPersonImagesApiV1PersonsPersonIdImagesPost(personId: string, images: Array<string>, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<{ [key: string]: any; }>>;
+    public addPersonImagesApiV1PersonsPersonIdImagesPost(personId: string, images: Array<string>, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<{ [key: string]: any; }>>;
+    public addPersonImagesApiV1PersonsPersonIdImagesPost(personId: string, images: Array<string>, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         if (personId === null || personId === undefined) {
             throw new Error('Required parameter personId was null or undefined when calling addPersonImagesApiV1PersonsPersonIdImagesPost.');
         }
@@ -173,9 +172,6 @@ export class PersonsService implements PersonsServiceInterface {
         let localVarFormParams: { append(param: string, value: any): any; };
         let localVarUseForm = false;
         let localVarConvertFormParamsToString = false;
-        // use FormData to transmit files using content-type "multipart/form-data"
-        // see https://stackoverflow.com/questions/4007969/application-x-www-form-urlencoded-or-multipart-form-data
-        localVarUseForm = canConsumeForm;
         if (localVarUseForm) {
             localVarFormParams = new FormData();
         } else {
@@ -430,10 +426,10 @@ export class PersonsService implements PersonsServiceInterface {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public recognizeFacesApiV1RecognizePost(image: Blob, drawBoxes?: boolean, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<RecognitionResponse>;
-    public recognizeFacesApiV1RecognizePost(image: Blob, drawBoxes?: boolean, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<RecognitionResponse>>;
-    public recognizeFacesApiV1RecognizePost(image: Blob, drawBoxes?: boolean, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<RecognitionResponse>>;
-    public recognizeFacesApiV1RecognizePost(image: Blob, drawBoxes?: boolean, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public recognizeFacesApiV1RecognizePost(image: string, drawBoxes?: boolean, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<RecognitionResponse>;
+    public recognizeFacesApiV1RecognizePost(image: string, drawBoxes?: boolean, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<RecognitionResponse>>;
+    public recognizeFacesApiV1RecognizePost(image: string, drawBoxes?: boolean, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<RecognitionResponse>>;
+    public recognizeFacesApiV1RecognizePost(image: string, drawBoxes?: boolean, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         if (image === null || image === undefined) {
             throw new Error('Required parameter image was null or undefined when calling recognizeFacesApiV1RecognizePost.');
         }
@@ -472,9 +468,6 @@ export class PersonsService implements PersonsServiceInterface {
         let localVarFormParams: { append(param: string, value: any): any; };
         let localVarUseForm = false;
         let localVarConvertFormParamsToString = false;
-        // use FormData to transmit files using content-type "multipart/form-data"
-        // see https://stackoverflow.com/questions/4007969/application-x-www-form-urlencoded-or-multipart-form-data
-        localVarUseForm = canConsumeForm;
         if (localVarUseForm) {
             localVarFormParams = new FormData();
         } else {
@@ -523,10 +516,10 @@ export class PersonsService implements PersonsServiceInterface {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public registerMultiplePhotosApiV1RegisterMultiplePost(name: string, images: Array<Blob>, personId?: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<RegisterMultipleResponse>;
-    public registerMultiplePhotosApiV1RegisterMultiplePost(name: string, images: Array<Blob>, personId?: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<RegisterMultipleResponse>>;
-    public registerMultiplePhotosApiV1RegisterMultiplePost(name: string, images: Array<Blob>, personId?: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<RegisterMultipleResponse>>;
-    public registerMultiplePhotosApiV1RegisterMultiplePost(name: string, images: Array<Blob>, personId?: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public registerMultiplePhotosApiV1RegisterMultiplePost(name: string, images: Array<string>, personId?: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<RegisterMultipleResponse>;
+    public registerMultiplePhotosApiV1RegisterMultiplePost(name: string, images: Array<string>, personId?: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<RegisterMultipleResponse>>;
+    public registerMultiplePhotosApiV1RegisterMultiplePost(name: string, images: Array<string>, personId?: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<RegisterMultipleResponse>>;
+    public registerMultiplePhotosApiV1RegisterMultiplePost(name: string, images: Array<string>, personId?: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         if (name === null || name === undefined) {
             throw new Error('Required parameter name was null or undefined when calling registerMultiplePhotosApiV1RegisterMultiplePost.');
         }
@@ -568,9 +561,6 @@ export class PersonsService implements PersonsServiceInterface {
         let localVarFormParams: { append(param: string, value: any): any; };
         let localVarUseForm = false;
         let localVarConvertFormParamsToString = false;
-        // use FormData to transmit files using content-type "multipart/form-data"
-        // see https://stackoverflow.com/questions/4007969/application-x-www-form-urlencoded-or-multipart-form-data
-        localVarUseForm = canConsumeForm;
         if (localVarUseForm) {
             localVarFormParams = new FormData();
         } else {
@@ -628,10 +618,10 @@ export class PersonsService implements PersonsServiceInterface {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public registerPersonApiV1RegisterPost(name: string, image: Blob, personId?: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<RegisterPersonResponse>;
-    public registerPersonApiV1RegisterPost(name: string, image: Blob, personId?: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<RegisterPersonResponse>>;
-    public registerPersonApiV1RegisterPost(name: string, image: Blob, personId?: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<RegisterPersonResponse>>;
-    public registerPersonApiV1RegisterPost(name: string, image: Blob, personId?: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public registerPersonApiV1RegisterPost(name: string, image: string, personId?: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<RegisterPersonResponse>;
+    public registerPersonApiV1RegisterPost(name: string, image: string, personId?: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<RegisterPersonResponse>>;
+    public registerPersonApiV1RegisterPost(name: string, image: string, personId?: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<RegisterPersonResponse>>;
+    public registerPersonApiV1RegisterPost(name: string, image: string, personId?: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         if (name === null || name === undefined) {
             throw new Error('Required parameter name was null or undefined when calling registerPersonApiV1RegisterPost.');
         }
@@ -673,9 +663,6 @@ export class PersonsService implements PersonsServiceInterface {
         let localVarFormParams: { append(param: string, value: any): any; };
         let localVarUseForm = false;
         let localVarConvertFormParamsToString = false;
-        // use FormData to transmit files using content-type "multipart/form-data"
-        // see https://stackoverflow.com/questions/4007969/application-x-www-form-urlencoded-or-multipart-form-data
-        localVarUseForm = canConsumeForm;
         if (localVarUseForm) {
             localVarFormParams = new FormData();
         } else {

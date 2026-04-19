@@ -1,0 +1,16 @@
+<form [formGroup]="form" (ngSubmit)="save()" class="dialog-form">
+  <div class="field">
+    <label for="name">Nome *</label>
+    <input pInputText id="name" formControlName="name" placeholder="Ex: Mensalidade" class="w-full" />
+  </div>
+  <div class="field">
+    <div class="checkbox-row">
+      <p-checkbox formControlName="isActive" [binary]="true" inputId="isActive" />
+      <label for="isActive">Ativo</label>
+    </div>
+  </div>
+  <div class="dialog-actions">
+    <p-button label="Cancelar" severity="secondary" [text]="true" (onClick)="close()" />
+    <p-button label="Salvar" icon="pi pi-check" type="submit" />
+  </div>
+</form>

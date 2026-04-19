@@ -15,5 +15,7 @@ export interface ValidationError {
     loc: Array<ValidationErrorLocInner>;
     msg: string;
     type: string;
+    input?: any | null;
+    ctx?: object;
 }
 

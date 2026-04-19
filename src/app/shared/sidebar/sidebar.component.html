@@ -7,18 +7,23 @@
     </div>
 
     <nav class="sidebar-nav">
-      @for (item of navItems; track item.route) {
-        <a
-          class="sidebar-link"
-          [class.active]="isActive(item.route)"
-          (click)="navigate(item.route)"
-          role="button"
-          tabindex="0"
-          (keydown.enter)="navigate(item.route)"
-        >
-          <i [class]="item.icon" class="sidebar-icon"></i>
-          <span>{{ item.label }}</span>
-        </a>
+      @for (section of sections; track section.title) {
+        <div class="sidebar-section">
+          <span class="sidebar-section-title">{{ section.title }}</span>
+          @for (item of section.items; track item.route) {
+            <a
+              class="sidebar-link"
+              [class.active]="isActive(item.route)"
+              (click)="navigate(item.route)"
+              role="button"
+              tabindex="0"
+              (keydown.enter)="navigate(item.route)"
+            >
+              <i [class]="item.icon" class="sidebar-icon"></i>
+              <span>{{ item.label }}</span>
+            </a>
+          }
+        </div>
       }
     </nav>
   </div>

@@ -28,4 +28,16 @@ export interface HealthServiceInterface {
      */
     healthGet(extraHttpRequestParams?: any): Observable<{}>;
 
+    /**
+     * 
+     * 
+     */
+    healthLiveGet(extraHttpRequestParams?: any): Observable<{}>;
+
+    /**
+     * 
+     * 
+     */
+    healthReadyGet(extraHttpRequestParams?: any): Observable<{}>;
+
 }

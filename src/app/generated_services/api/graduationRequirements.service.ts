@@ -18,7 +18,7 @@ import { CustomHttpParameterCodec }                          from '../encoder';
 import { Observable }                                        from 'rxjs';
 
 // @ts-ignore
-import { ApiAuthLoginPost401Response } from '../model/apiAuthLoginPost401Response';
+import { ApiAdminAcademiesIdGet404Response } from '../model/apiAdminAcademiesIdGet404Response';
 // @ts-ignore
 import { CreateGraduationRequirementsDTO } from '../model/createGraduationRequirementsDTO';
 // @ts-ignore
@@ -32,7 +32,6 @@ import { Configuration }                                     from '../configurat
 import {
     GraduationRequirementsServiceInterface
 } from './graduationRequirements.serviceInterface';
-import { environment } from '../../enviroments/environment';
 
 
 
@@ -41,7 +40,7 @@ import { environment } from '../../enviroments/environment';
 })
 export class GraduationRequirementsService implements GraduationRequirementsServiceInterface {
 
-    protected basePath = environment.server;
+    protected basePath = 'http://localhost:8080';
     public defaultHeaders = new HttpHeaders();
     public configuration = new Configuration();
     public encoder: HttpParameterCodec;
@@ -102,8 +101,7 @@ export class GraduationRequirementsService implements GraduationRequirementsServ
     }
 
     /**
-     * Get graduation requirements by belt ID
-     * @param beltId The belt ID
+     * @param beltId 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
@@ -116,6 +114,13 @@ export class GraduationRequirementsService implements GraduationRequirementsServ
         }
 
         let localVarHeaders = this.defaultHeaders;
+
+        let localVarCredential: string | undefined;
+        // authentication (TenantToken) required
+        localVarCredential = this.configuration.lookupCredential('TenantToken');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('X-Tenant-Token', localVarCredential);
+        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -166,7 +171,6 @@ export class GraduationRequirementsService implements GraduationRequirementsServ
     }
 
     /**
-     * Get all graduation requirements
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
@@ -176,6 +180,13 @@ export class GraduationRequirementsService implements GraduationRequirementsServ
     public apiGraduationRequirementsGet(observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
 
         let localVarHeaders = this.defaultHeaders;
+
+        let localVarCredential: string | undefined;
+        // authentication (TenantToken) required
+        localVarCredential = this.configuration.lookupCredential('TenantToken');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('X-Tenant-Token', localVarCredential);
+        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -226,8 +237,7 @@ export class GraduationRequirementsService implements GraduationRequirementsServ
     }
 
     /**
-     * Delete a graduation requirement
-     * @param id The graduation requirement ID to delete
+     * @param id 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
@@ -240,6 +250,13 @@ export class GraduationRequirementsService implements GraduationRequirementsServ
         }
 
         let localVarHeaders = this.defaultHeaders;
+
+        let localVarCredential: string | undefined;
+        // authentication (TenantToken) required
+        localVarCredential = this.configuration.lookupCredential('TenantToken');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('X-Tenant-Token', localVarCredential);
+        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -290,8 +307,7 @@ export class GraduationRequirementsService implements GraduationRequirementsServ
     }
 
     /**
-     * Get a specific graduation requirement by ID
-     * @param id The graduation requirement ID
+     * @param id 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
@@ -304,6 +320,13 @@ export class GraduationRequirementsService implements GraduationRequirementsServ
         }
 
         let localVarHeaders = this.defaultHeaders;
+
+        let localVarCredential: string | undefined;
+        // authentication (TenantToken) required
+        localVarCredential = this.configuration.lookupCredential('TenantToken');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('X-Tenant-Token', localVarCredential);
+        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -354,9 +377,8 @@ export class GraduationRequirementsService implements GraduationRequirementsServ
     }
 
     /**
-     * Update an existing graduation requirement
-     * @param id The graduation requirement ID to update
-     * @param updateGraduationRequirementsDTO The updated graduation requirement data
+     * @param id 
+     * @param updateGraduationRequirementsDTO 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
@@ -369,6 +391,13 @@ export class GraduationRequirementsService implements GraduationRequirementsServ
         }
 
         let localVarHeaders = this.defaultHeaders;
+
+        let localVarCredential: string | undefined;
+        // authentication (TenantToken) required
+        localVarCredential = this.configuration.lookupCredential('TenantToken');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('X-Tenant-Token', localVarCredential);
+        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -431,8 +460,7 @@ export class GraduationRequirementsService implements GraduationRequirementsServ
     }
 
     /**
-     * Create a new graduation requirement
-     * @param createGraduationRequirementsDTO The graduation requirement data to create
+     * @param createGraduationRequirementsDTO 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
@@ -442,6 +470,13 @@ export class GraduationRequirementsService implements GraduationRequirementsServ
     public apiGraduationRequirementsPost(createGraduationRequirementsDTO?: CreateGraduationRequirementsDTO, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
 
         let localVarHeaders = this.defaultHeaders;
+
+        let localVarCredential: string | undefined;
+        // authentication (TenantToken) required
+        localVarCredential = this.configuration.lookupCredential('TenantToken');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('X-Tenant-Token', localVarCredential);
+        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {

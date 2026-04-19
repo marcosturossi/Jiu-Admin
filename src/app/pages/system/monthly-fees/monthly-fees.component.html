@@ -1,0 +1,93 @@
+<section class="page-section">
+  <div class="page-toolbar">
+    <p-select
+      [options]="statusOptions"
+      [ngModel]="filterStatus()"
+      (ngModelChange)="filterStatus.set($event)"
+      optionLabel="label"
+      optionValue="value"
+      placeholder="Filtrar por status"
+      (onChange)="onFilterChange()"
+      styleClass="w-12rem" />
+  </div>
+
+  <p-table [value]="items()?.items ?? []" [loading]="isLoading()" styleClass="p-datatable-sm p-datatable-striped">
+    <ng-template pTemplate="header">
+      <tr>
+        <th>Vencimento</th>
+        <th>Valor</th>
+        <th>Status</th>
+        <th>Pago em</th>
+        <th>Valor Pago</th>
+        <th>Observações</th>
+        <th class="text-center" style="width: 7rem">Ações</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-fee>
+      <tr>
+        <td>{{ fee.dueDate | date:'dd/MM/yyyy' }}</td>
+        <td>{{ fee.amount | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}</td>
+        <td><p-tag [value]="getStatusLabel(fee.status)" [severity]="getStatusSeverity(fee.status)" /></td>
+        <td>{{ fee.paidAt ? (fee.paidAt | date:'dd/MM/yyyy') : '—' }}</td>
+        <td>{{ fee.paidAmount != null ? (fee.paidAmount | currency:'BRL':'symbol':'1.2-2':'pt-BR') : '—' }}</td>
+        <td class="notes-cell">{{ fee.notes || '—' }}</td>
+        <td class="text-center">
+          @if (fee.status !== 1) {
+            <p-button
+              icon="pi pi-dollar"
+              [text]="true"
+              severity="success"
+              size="small"
+              pTooltip="Registrar Pagamento"
+              (onClick)="openPay(fee)" />
+          }
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <tr><td [colSpan]="7" class="text-center py-5 text-muted">Nenhuma mensalidade encontrada.</td></tr>
+    </ng-template>
+  </p-table>
+
+  <app-pagination
+    [currentPage]="currentPage()"
+    [totalPages]="items()?.totalPages ?? 1"
+    [pageSize]="pageSize()"
+    [totalItems]="items()?.totalCount ?? 0"
+    (pageChange)="onPageChange($event)"
+    (pageSizeChange)="onPageSizeChange($event)" />
+
+  <p-dialog
+    [visible]="openedPay()"
+    (visibleChange)="openedPay.set($event)"
+    header="Registrar Pagamento"
+    [modal]="true"
+    [draggable]="false"
+    styleClass="w-full md:w-25rem">
+    <form [formGroup]="payForm" (ngSubmit)="confirmPay()" class="pay-form">
+      <div class="field">
+        <label for="paidAmount">Valor Pago *</label>
+        <p-inputnumber
+          inputId="paidAmount"
+          formControlName="paidAmount"
+          mode="currency"
+          currency="BRL"
+          locale="pt-BR"
+          [min]="0.01"
+          styleClass="w-full" />
+      </div>
+      <div class="field">
+        <label for="paidAt">Data do Pagamento *</label>
+        <input pInputText id="paidAt" type="date" formControlName="paidAt" class="w-full" />
+      </div>
+      <div class="field">
+        <label for="notes">Observações</label>
+        <input pInputText id="notes" formControlName="notes" class="w-full" placeholder="Opcional" />
+      </div>
+      <div class="dialog-actions">
+        <p-button label="Cancelar" severity="secondary" [text]="true" (onClick)="openedPay.set(false)" />
+        <p-button label="Confirmar" icon="pi pi-check" type="submit" [loading]="isPaying()" [disabled]="payForm.invalid" />
+      </div>
+    </form>
+  </p-dialog>
+</section>

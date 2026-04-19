@@ -13,7 +13,7 @@
 export interface ShowLessonDTO { 
     id?: string;
     createdAt?: string;
-    title?: string | null;
+    title: string;
     description?: string | null;
     scheduledDate?: string;
     duration?: string;

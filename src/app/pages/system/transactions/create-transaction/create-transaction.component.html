@@ -1,0 +1,51 @@
+<form [formGroup]="form" (ngSubmit)="save()" class="transaction-form">
+  <div class="field">
+    <label for="type">Tipo *</label>
+    <p-select inputId="type" formControlName="type" [options]="typeOptions" optionLabel="label" optionValue="value" styleClass="w-full" />
+  </div>
+
+  <div class="field">
+    <label for="category">Categoria</label>
+    <p-select
+      inputId="category"
+      formControlName="transactionCategoryId"
+      [options]="categories()"
+      optionLabel="name"
+      optionValue="id"
+      [showClear]="true"
+      placeholder="Sem categoria"
+      styleClass="w-full" />
+  </div>
+
+  <div class="field">
+    <label for="description">Descrição</label>
+    <input pInputText id="description" formControlName="description" class="w-full" placeholder="Opcional" />
+  </div>
+
+  <div class="field">
+    <label for="amount">Valor *</label>
+    <p-inputnumber
+      inputId="amount"
+      formControlName="amount"
+      mode="currency"
+      currency="BRL"
+      locale="pt-BR"
+      [min]="0.01"
+      styleClass="w-full" />
+  </div>
+
+  <div class="field">
+    <label for="transactionDate">Data *</label>
+    <input pInputText id="transactionDate" type="date" formControlName="transactionDate" class="w-full" />
+  </div>
+
+  <div class="field">
+    <label for="reference">Referência</label>
+    <input pInputText id="reference" formControlName="reference" class="w-full" placeholder="Opcional" />
+  </div>
+
+  <div class="form-actions">
+    <p-button label="Cancelar" severity="secondary" [text]="true" type="button" (onClick)="close()" />
+    <p-button label="Salvar" icon="pi pi-check" type="submit" [loading]="isSaving()" [disabled]="form.invalid" />
+  </div>
+</form>

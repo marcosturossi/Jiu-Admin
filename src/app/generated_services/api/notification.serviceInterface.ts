@@ -12,7 +12,7 @@ import { HttpHeaders }                                       from '@angular/comm
 
 import { Observable }                                        from 'rxjs';
 
-import { ApiAuthLoginPost401Response } from '../model/models';
+import { ApiAdminAcademiesIdGet404Response } from '../model/models';
 import { CreateNotificationDTO } from '../model/models';
 import { MarkAsReadDTO } from '../model/models';
 import { NotificationStatsDTO } from '../model/models';
@@ -32,76 +32,113 @@ export interface NotificationServiceInterface {
     configuration: Configuration;
 
     /**
-     * Cleanup expired notifications (Admin only)
+     * 
+     * 
+     */
+    apiNotificationActiveGet(extraHttpRequestParams?: any): Observable<Array<ShowNotificationDTO>>;
+
+    /**
+     * 
      * 
      */
     apiNotificationCleanupExpiredPost(extraHttpRequestParams?: any): Observable<{}>;
 
     /**
-     * Get all notifications (Admin only)
      * 
+     * 
+     * @param searchTerm 
+     * @param type 
+     * @param isActive 
+     * @param studentId 
+     * @param isExpired 
+     * @param createdFrom 
+     * @param createdTo 
+     * @param expiresFrom 
+     * @param expiresTo 
      * @param pageNumber 
      * @param pageSize 
      */
-    apiNotificationGet(pageNumber?: number, pageSize?: number, extraHttpRequestParams?: any): Observable<PaginationNotificationDTO>;
+    apiNotificationGet(searchTerm?: string, type?: NotificationType, isActive?: boolean, studentId?: string, isExpired?: boolean, createdFrom?: string, createdTo?: string, expiresFrom?: string, expiresTo?: string, pageNumber?: number, pageSize?: number, extraHttpRequestParams?: any): Observable<PaginationNotificationDTO>;
 
     /**
-     * Delete a notification (soft delete)
      * 
-     * @param id The notification ID to delete
+     * 
+     * @param id 
      */
     apiNotificationIdDelete(id: string, extraHttpRequestParams?: any): Observable<{}>;
 
     /**
-     * Get a specific notification by ID
      * 
-     * @param id The notification ID
+     * 
+     * @param id 
      */
     apiNotificationIdGet(id: string, extraHttpRequestParams?: any): Observable<ShowNotificationDTO>;
 
     /**
-     * Update an existing notification
      * 
-     * @param id The notification ID to update
-     * @param updateNotificationDTO The updated notification data
+     * 
+     * @param id 
+     * @param updateNotificationDTO 
      */
     apiNotificationIdPut(id: string, updateNotificationDTO?: UpdateNotificationDTO, extraHttpRequestParams?: any): Observable<ShowNotificationDTO>;
 
     /**
-     * Mark all notifications as read for the current user
+     * 
      * 
      */
     apiNotificationMarkAllAsReadPost(extraHttpRequestParams?: any): Observable<{}>;
 
     /**
-     * Mark specific notifications as read
      * 
-     * @param markAsReadDTO The notification IDs to mark as read
+     * 
+     * @param markAsReadDTO 
      */
     apiNotificationMarkAsReadPost(markAsReadDTO?: MarkAsReadDTO, extraHttpRequestParams?: any): Observable<{}>;
 
     /**
-     * Get notifications for the current user
      * 
+     * 
+     * @param searchTerm 
+     * @param type 
+     * @param isActive 
+     * @param studentId 
+     * @param isExpired 
+     * @param createdFrom 
+     * @param createdTo 
+     * @param expiresFrom 
+     * @param expiresTo 
+     * @param pageNumber 
+     * @param pageSize 
      */
-    apiNotificationMyGet(extraHttpRequestParams?: any): Observable<Array<ShowNotificationDTO>>;
+    apiNotificationMyGet(searchTerm?: string, type?: NotificationType, isActive?: boolean, studentId?: string, isExpired?: boolean, createdFrom?: string, createdTo?: string, expiresFrom?: string, expiresTo?: string, pageNumber?: number, pageSize?: number, extraHttpRequestParams?: any): Observable<Array<ShowNotificationDTO>>;
 
     /**
-     * Get notification statistics for the current user
+     * 
      * 
      */
     apiNotificationMyStatsGet(extraHttpRequestParams?: any): Observable<NotificationStatsDTO>;
 
     /**
-     * Get unread notifications for the current user
      * 
+     * 
+     * @param searchTerm 
+     * @param type 
+     * @param isActive 
+     * @param studentId 
+     * @param isExpired 
+     * @param createdFrom 
+     * @param createdTo 
+     * @param expiresFrom 
+     * @param expiresTo 
+     * @param pageNumber 
+     * @param pageSize 
      */
-    apiNotificationMyUnreadGet(extraHttpRequestParams?: any): Observable<Array<ShowNotificationDTO>>;
+    apiNotificationMyUnreadGet(searchTerm?: string, type?: NotificationType, isActive?: boolean, studentId?: string, isExpired?: boolean, createdFrom?: string, createdTo?: string, expiresFrom?: string, expiresTo?: string, pageNumber?: number, pageSize?: number, extraHttpRequestParams?: any): Observable<Array<ShowNotificationDTO>>;
 
     /**
-     * Create a new notification
      * 
-     * @param createNotificationDTO The notification data to create
+     * 
+     * @param createNotificationDTO 
      */
     apiNotificationPost(createNotificationDTO?: CreateNotificationDTO, extraHttpRequestParams?: any): Observable<ShowNotificationDTO>;
 
@@ -113,17 +150,39 @@ export interface NotificationServiceInterface {
     apiNotificationSendWeeklyReportOffsetDaysGet(offsetDays: number, extraHttpRequestParams?: any): Observable<{}>;
 
     /**
-     * Get notifications by type
      * 
-     * @param type The notification type
+     * 
+     * @param type 
+     * @param searchTerm 
+     * @param type2 
+     * @param isActive 
+     * @param studentId 
+     * @param isExpired 
+     * @param createdFrom 
+     * @param createdTo 
+     * @param expiresFrom 
+     * @param expiresTo 
+     * @param pageNumber 
+     * @param pageSize 
      */
-    apiNotificationTypeTypeGet(type: NotificationType, extraHttpRequestParams?: any): Observable<Array<ShowNotificationDTO>>;
+    apiNotificationTypeTypeGet(type: NotificationType, searchTerm?: string, type2?: NotificationType, isActive?: boolean, studentId?: string, isExpired?: boolean, createdFrom?: string, createdTo?: string, expiresFrom?: string, expiresTo?: string, pageNumber?: number, pageSize?: number, extraHttpRequestParams?: any): Observable<Array<ShowNotificationDTO>>;
 
     /**
-     * Get notifications by user ID (Admin only)
      * 
-     * @param userId The user ID
+     * 
+     * @param userId 
+     * @param searchTerm 
+     * @param type 
+     * @param isActive 
+     * @param studentId 
+     * @param isExpired 
+     * @param createdFrom 
+     * @param createdTo 
+     * @param expiresFrom 
+     * @param expiresTo 
+     * @param pageNumber 
+     * @param pageSize 
      */
-    apiNotificationUserUserIdGet(userId: string, extraHttpRequestParams?: any): Observable<Array<ShowNotificationDTO>>;
+    apiNotificationUserUserIdGet(userId: string, searchTerm?: string, type?: NotificationType, isActive?: boolean, studentId?: string, isExpired?: boolean, createdFrom?: string, createdTo?: string, expiresFrom?: string, expiresTo?: string, pageNumber?: number, pageSize?: number, extraHttpRequestParams?: any): Observable<Array<ShowNotificationDTO>>;
 
 }

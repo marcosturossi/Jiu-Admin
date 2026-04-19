@@ -11,7 +11,7 @@
 
 
 export interface BaseLessonDTO { 
-    title?: string | null;
+    title: string;
     description?: string | null;
     scheduledDate?: string;
     duration?: string;

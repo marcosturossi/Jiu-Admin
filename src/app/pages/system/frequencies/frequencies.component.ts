@@ -37,7 +37,7 @@ export class FrequenciesComponent {
 
   protected load(): void {
     this.isLoading.set(true);
-    this.frequencyService.apiFrequencyGet(this.currentPage(), this.pageSize()).subscribe({
+    this.frequencyService.apiFrequencyGet(undefined, undefined, undefined, undefined, undefined, undefined, undefined, this.currentPage(), this.pageSize()).subscribe({
       next: r => { this.items.set(r); this.isLoading.set(false); },
       error: () => {
         this.isLoading.set(false);
