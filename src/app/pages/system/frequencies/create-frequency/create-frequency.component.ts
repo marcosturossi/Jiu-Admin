@@ -7,13 +7,10 @@ import { PersonsService } from '../../../../generated_services/api2/api/persons.
 import { RecognitionResponse } from '../../../../generated_services/api2/model/recognitionResponse';
 import { PersonListResponse } from '../../../../generated_services/api2/model/personListResponse';
 import { NotificationService } from '../../../../services/notification.service';
-import { ButtonModule } from 'primeng/button';
-import { SelectModule } from 'primeng/select';
-import { CheckboxModule } from 'primeng/checkbox';
 
 @Component({
   selector: 'app-create-frequency',
-  imports: [ReactiveFormsModule, ButtonModule, SelectModule, CheckboxModule],
+  imports: [ReactiveFormsModule],
   templateUrl: './create-frequency.component.html',
   styleUrl: './create-frequency.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush

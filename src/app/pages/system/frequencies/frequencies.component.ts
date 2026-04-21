@@ -6,13 +6,10 @@ import { UpdateFrequencyComponent } from './update-frequency/update-frequency.co
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
 import { PaginationComponent } from '../../../shared/pagination/pagination.component';
-import { TableModule } from 'primeng/table';
-import { ButtonModule } from 'primeng/button';
-import { DialogModule } from 'primeng/dialog';
 
 @Component({
   selector: 'app-frequencies',
-  imports: [CreateFrequencyComponent, UpdateFrequencyComponent, DatePipe, PaginationComponent, TableModule, ButtonModule, DialogModule],
+  imports: [CreateFrequencyComponent, UpdateFrequencyComponent, DatePipe, PaginationComponent],
   templateUrl: './frequencies.component.html',
   styleUrl: './frequencies.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush

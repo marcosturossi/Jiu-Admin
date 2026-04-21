@@ -1,9 +1,5 @@
 import { ChangeDetectionStrategy, Component, effect, inject, input, output, signal } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
-import { ButtonModule } from 'primeng/button';
-import { InputTextModule } from 'primeng/inputtext';
-import { InputNumberModule } from 'primeng/inputnumber';
-import { SelectModule } from 'primeng/select';
 import { FinancialTransactionService } from '../../../../generated_services/api/financialTransaction.service';
 import { ShowTransactionCategoryDTO, ShowTransactionDTO, TransactionType } from '../../../../generated_services';
 import { NotificationService } from '../../../../services/notification.service';
@@ -11,7 +7,7 @@ import { NotificationService } from '../../../../services/notification.service';
 @Component({
   selector: 'app-update-transaction',
   standalone: true,
-  imports: [ReactiveFormsModule, ButtonModule, InputTextModule, InputNumberModule, SelectModule],
+  imports: [ReactiveFormsModule],
   templateUrl: './update-transaction.component.html',
   styleUrl: './update-transaction.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -1,44 +1,83 @@
 <section class="page-section">
   <div class="page-toolbar">
-    <p-button label="Novo Requisito" icon="pi pi-plus" (onClick)="openCreate()" />
+    <button class="btn btn-primary" (click)="openCreate()">
+      <i class="bi bi-plus-lg me-1"></i> Novo Requisito
+    </button>
   </div>
 
-  <p-table [value]="items()" [loading]="isLoading()"
-           styleClass="p-datatable-sm p-datatable-striped" [tableStyle]="{'min-width': '40rem'}">
-    <ng-template pTemplate="header">
-      <tr>
-        <th>Faixa</th>
-        <th>Descrição</th>
-        <th>Aulas Mínimas</th>
-        <th class="text-center" style="width:8rem">Ações</th>
-      </tr>
-    </ng-template>
-    <ng-template pTemplate="body" let-req>
-      <tr>
-        <td><p-tag [value]="req.belt?.color ?? 'N/A'" /></td>
-        <td>{{ req.description }}</td>
-        <td>{{ req.minimumClasses ?? 0 }}</td>
-        <td class="text-center">
-          <p-button icon="pi pi-pencil" [text]="true" severity="info" size="small" (onClick)="openEdit(req)" />
-          <p-button icon="pi pi-trash" [text]="true" severity="danger" size="small" (onClick)="delete(req)" />
-        </td>
-      </tr>
-    </ng-template>
-    <ng-template pTemplate="emptymessage">
-      <tr><td [colSpan]="4" class="text-center py-5 text-muted">Nenhum registro.</td></tr>
-    </ng-template>
-  </p-table>
-
-  <p-dialog [visible]="openedCreate()" (visibleChange)="openedCreate.set($event)"
-    header="Novo Requisito" [modal]="true" [draggable]="false" [resizable]="false" styleClass="w-full md:w-30rem">
-    <app-create-graduation-requirement (closeEvent)="openedCreate.set(false)" (graduationRequirementCreated)="onCreated()" />
-  </p-dialog>
-
-  <p-dialog [visible]="openedUpdate()" (visibleChange)="openedUpdate.set($event)"
-    header="Editar Requisito" [modal]="true" [draggable]="false" [resizable]="false" styleClass="w-full md:w-30rem">
-    @if (selected()) {
-      <app-update-graduation-requirement [requirement]="selected()!" (closeEvent)="openedUpdate.set(false)" (graduationRequirementUpdated)="onUpdated()" />
-    }
-  </p-dialog>
+  @if (isLoading()) {
+    <div class="d-flex justify-content-center py-5">
+      <div class="spinner-border text-secondary" role="status"><span class="visually-hidden">Carregando...</span></div>
+    </div>
+  } @else {
+    <div class="table-responsive">
+      <table class="table table-hover table-sm align-middle">
+        <thead class="table-light">
+          <tr>
+            <th>Faixa</th>
+            <th>Descrição</th>
+            <th>Aulas Mínimas</th>
+            <th class="text-center" style="width:8rem">Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          @if (items().length === 0) {
+            <tr><td colspan="4" class="text-center py-5 text-muted">Nenhum registro.</td></tr>
+          }
+          @for (req of items(); track req.id) {
+            <tr>
+              <td><span class="badge bg-secondary">{{ req.belt?.color ?? 'N/A' }}</span></td>
+              <td>{{ req.description }}</td>
+              <td>{{ req.minimumClasses ?? 0 }}</td>
+              <td class="text-center">
+                <button class="btn btn-sm btn-outline-info me-1" (click)="openEdit(req)">
+                  <i class="bi bi-pencil"></i>
+                </button>
+                <button class="btn btn-sm btn-outline-danger" (click)="delete(req)">
+                  <i class="bi bi-trash"></i>
+                </button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
 </section>
+
+@if (openedCreate()) {
+  <div class="modal-backdrop-custom" (click)="openedCreate.set(false)"></div>
+  <div class="modal show d-block" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Novo Requisito</h5>
+          <button type="button" class="btn-close" (click)="openedCreate.set(false)" aria-label="Fechar"></button>
+        </div>
+        <div class="modal-body">
+          <app-create-graduation-requirement (closeEvent)="openedCreate.set(false)" (graduationRequirementCreated)="onCreated()" />
+        </div>
+      </div>
+    </div>
+  </div>
+}
+
+@if (openedUpdate()) {
+  <div class="modal-backdrop-custom" (click)="openedUpdate.set(false)"></div>
+  <div class="modal show d-block" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Editar Requisito</h5>
+          <button type="button" class="btn-close" (click)="openedUpdate.set(false)" aria-label="Fechar"></button>
+        </div>
+        <div class="modal-body">
+          @if (selected()) {
+            <app-update-graduation-requirement [requirement]="selected()!" (closeEvent)="openedUpdate.set(false)" (graduationRequirementUpdated)="onUpdated()" />
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+}
 

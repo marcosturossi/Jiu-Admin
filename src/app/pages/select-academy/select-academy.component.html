@@ -8,36 +8,37 @@
     <p class="academy-subtitle">Digite o slug da sua academia para continuar</p>
 
     @if (errorMsg()) {
-      <p-message severity="error" [text]="errorMsg()!" styleClass="w-full mb-4" />
+      <div class="alert alert-danger py-2 mb-3" role="alert">{{ errorMsg() }}</div>
     }
 
     <form class="academy-form" (ngSubmit)="onSubmit()">
-      <div class="field">
-        <label for="slug" class="field-label">Slug da Academia</label>
+      <div class="mb-3">
+        <label for="slug" class="form-label fw-semibold">Slug da Academia</label>
         <input
           id="slug"
-          pInputText
           type="text"
+          class="form-control"
           placeholder="ex: carlson-gracie-sp"
           [value]="slug()"
           (input)="slug.set($any($event.target).value)"
           [disabled]="isLoading()"
-          class="w-full"
           autocomplete="off"
           autocapitalize="none"
           spellcheck="false"
         />
       </div>
 
-      <p-button
+      <button
         type="submit"
-        label="Continuar"
-        icon="pi pi-arrow-right"
-        iconPos="right"
-        styleClass="w-full mt-3"
-        [loading]="isLoading()"
-        [disabled]="isLoading()"
-      />
+        class="btn btn-primary w-100 mt-2"
+        [disabled]="isLoading()">
+        @if (isLoading()) {
+          <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+          Carregando...
+        } @else {
+          Continuar <i class="bi bi-arrow-right ms-1"></i>
+        }
+      </button>
     </form>
   </div>
 </div>

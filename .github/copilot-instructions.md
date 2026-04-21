@@ -69,23 +69,24 @@ export const environment = {
 - **`changeDetection: ChangeDetectionStrategy.OnPush`** on every component
 - **Standalone components** always — never add components to NgModule declarations
 
-## UI — PrimeNG 19 LTS
+## UI — Bootstrap 5 + ng-bootstrap
 
-All UI components come from **PrimeNG 19 LTS** (no Bootstrap):
+All UI components use **Bootstrap 5** CSS with **ng-bootstrap** for interactive components (dropdowns, modals, tooltips):
 
-| Old (Bootstrap) | New (PrimeNG) |
+| Component | Bootstrap |
 |---|---|
-| `<table class="table">` | `<p-table>` |
-| `<div class="modal">` | `<p-dialog>` |
-| `<button class="btn">` | `<p-button>` |
-| `<span class="badge">` | `<p-tag>` |
-| `<select class="form-select">` | `<p-select>` |
-| `<input class="form-control">` | `<p-inputtext>` |
-| `<div class="spinner-border">` | `<p-progressSpinner>` |
+| Table | `<table class="table table-hover table-sm">` |
+| Modal | `@if (sig()) { <div class="modal show d-block">` + backdrop |
+| Button | `<button class="btn btn-primary">` |
+| Badge | `<span class="badge bg-success">` |
+| Select | `<select class="form-select">` |
+| Input | `<input class="form-control">` |
+| Spinner | `<div class="spinner-border">` |
+| Alert | `<div class="alert alert-danger">` |
 
-Theme is `Aura` from `@primeuix/themes` (NOT `primeng/themes/aura`).
+Icons: **Bootstrap Icons** (`bi bi-*`). Use `<i class="bi bi-plus-lg"></i>` etc.
 
-Icons: **PrimeIcons** (`pi pi-*`). No Bootstrap Icons.
+Toasts/notifications: **ngx-toastr** (handled by `NotificationService` — API unchanged).
 
 ## Key Conventions
 
@@ -107,8 +108,8 @@ Call `this.subnavService.setTitle("Nome da Página")` in `ngOnInit` of every pag
 ### Create/Update dialog pattern
 
 - **Parent** controls `openedCreate = signal(false)` and `selected = signal<Item | null>(null)`.
-- **Child** dialog provides only form content (no `<p-dialog>` wrapper) and emits `itemCreated` / `closeEvent` outputs.
-- **Parent template** wraps child in `<p-dialog [visible]="openedCreate()" (visibleChange)="openedCreate.set($event)">`.
+- **Child** dialog provides only form content (no Bootstrap modal wrapper) and emits `itemCreated` / `closeEvent` outputs.
+- **Parent template** wraps child in a Bootstrap `@if (sig()) { <div class="modal show d-block">` block with a backdrop div.
 
 ### Pagination
 

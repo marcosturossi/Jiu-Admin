@@ -1,18 +1,20 @@
-<form [formGroup]="form" class="dialog-form">
-  <div class="field">
+<form [formGroup]="form">
+  <div class="mb-3">
     <label for="color">Cor da Faixa *</label>
-    <input pInputText id="color" formControlName="color" placeholder="Digite a cor da faixa" class="w-full" />
+    <input type="text" class="form-control" id="color" formControlName="color" placeholder="Digite a cor da faixa" />
   </div>
-  <div class="field">
+  <div class="mb-3">
     <label for="orderIndex">Ordem *</label>
-    <input pInputText id="orderIndex" formControlName="orderIndex" placeholder="Digite a ordem" type="number" class="w-full" />
+    <input type="number" class="form-control" id="orderIndex" formControlName="orderIndex" placeholder="Digite a ordem" />
   </div>
-  <div class="field flex-row gap-2 align-items-center">
-    <p-checkbox formControlName="isForKids" [binary]="true" inputId="isForKids" />
-    <label for="isForKids">Para Crianças</label>
+  <div class="mb-3 form-check">
+    <input class="form-check-input" type="checkbox" formControlName="isForKids" id="isForKids" />
+    <label class="form-check-label" for="isForKids">Para Crianças</label>
   </div>
-  <div class="dialog-actions">
-    <p-button label="Cancelar" severity="secondary" [outlined]="true" (onClick)="close()" />
-    <p-button label="Salvar" icon="pi pi-check" (onClick)="save()" [disabled]="form.invalid" />
+  <div class="d-flex gap-2 justify-content-end mt-3">
+    <button type="button" class="btn btn-outline-secondary" (click)="close()">Cancelar</button>
+    <button type="button" class="btn btn-primary" (click)="save()" [disabled]="form.invalid">
+      <i class="bi bi-check-lg me-1"></i>Salvar
+    </button>
   </div>
 </form>

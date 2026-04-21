@@ -1,8 +1,4 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
-import { TableModule } from 'primeng/table';
-import { ButtonModule } from 'primeng/button';
-import { TagModule } from 'primeng/tag';
-import { DialogModule } from 'primeng/dialog';
 import { BeltService, ShowBeltDTO, PaginationBeltDTO } from '../../../generated_services';
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
@@ -13,10 +9,6 @@ import { UpdateBeltComponent } from './update-belt/update-belt.component';
 @Component({
   selector: 'app-belts',
   imports: [
-    TableModule,
-    ButtonModule,
-    TagModule,
-    DialogModule,
     PaginationComponent,
     CreateBeltComponent,
     UpdateBeltComponent,

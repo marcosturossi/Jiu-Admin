@@ -1,35 +1,24 @@
-<form [formGroup]="form" (ngSubmit)="save()" class="dialog-form">
-  <div class="field">
+<form [formGroup]="form" (ngSubmit)="save()">
+  <div class="mb-3">
     <label for="name">Nome *</label>
-    <input pInputText id="name" formControlName="name" placeholder="Ex: Plano Mensal" class="w-full" />
+    <input type="text" class="form-control" id="name" formControlName="name" placeholder="Ex: Plano Mensal" />
   </div>
-  <div class="field">
+  <div class="mb-3">
     <label for="description">Descrição</label>
-    <textarea pTextarea id="description" formControlName="description" placeholder="Descrição do plano" class="w-full" rows="3" autoResize="true"></textarea>
+    <textarea class="form-control" id="description" formControlName="description" placeholder="Descrição do plano" rows="3"></textarea>
   </div>
-  <div class="field">
+  <div class="mb-3">
     <label for="monthDuration">Duração (meses) *</label>
-    <p-inputnumber
-      id="monthDuration"
-      formControlName="monthDuration"
-      [min]="1"
-      [showButtons]="true"
-      class="w-full"
-    />
+    <input type="number" class="form-control" id="monthDuration" formControlName="monthDuration" min="1" />
   </div>
-  <div class="field">
+  <div class="mb-3">
     <label for="price">Preço *</label>
-    <p-inputnumber
-      id="price"
-      formControlName="price"
-      mode="currency"
-      currency="BRL"
-      locale="pt-BR"
-      class="w-full"
-    />
+    <input type="number" class="form-control" id="price" formControlName="price" step="0.01" />
   </div>
-  <div class="dialog-actions">
-    <p-button label="Cancelar" severity="secondary" [text]="true" (onClick)="close()" />
-    <p-button label="Salvar" icon="pi pi-check" type="submit" />
+  <div class="d-flex gap-2 justify-content-end mt-3">
+    <button type="button" class="btn btn-outline-secondary" (click)="close()">Cancelar</button>
+    <button type="submit" class="btn btn-primary">
+      <i class="bi bi-check-lg me-1"></i>Salvar
+    </button>
   </div>
 </form>

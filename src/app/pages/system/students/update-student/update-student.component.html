@@ -1,38 +1,40 @@
-<form [formGroup]="form" class="dialog-form">
-  <div class="field">
+<form [formGroup]="form">
+  <div class="mb-3">
     <label for="userName">Usuário *</label>
-    <input pInputText id="userName" formControlName="userName" placeholder="Digite o nome de usuário" class="w-full" />
+    <input type="text" class="form-control" id="userName" formControlName="userName" placeholder="Digite o nome de usuário" />
   </div>
-  <div class="field">
+  <div class="mb-3">
     <label for="email">E-mail *</label>
-    <input pInputText id="email" formControlName="email" placeholder="Digite o e-mail" type="email" class="w-full" />
+    <input type="email" class="form-control" id="email" formControlName="email" placeholder="Digite o e-mail" />
   </div>
-  <div class="field">
+  <div class="mb-3">
     <label for="phoneNumber">Telefone</label>
-    <input pInputText id="phoneNumber" formControlName="phoneNumber" placeholder="Digite o telefone" class="w-full" />
+    <input type="text" class="form-control" id="phoneNumber" formControlName="phoneNumber" placeholder="Digite o telefone" />
   </div>
-  <div class="field">
+  <div class="mb-3">
     <label for="firstName">Nome</label>
-    <input pInputText id="firstName" formControlName="firstName" placeholder="Digite o primeiro nome" class="w-full" />
+    <input type="text" class="form-control" id="firstName" formControlName="firstName" placeholder="Digite o primeiro nome" />
   </div>
-  <div class="field">
+  <div class="mb-3">
     <label for="lastName">Sobrenome</label>
-    <input pInputText id="lastName" formControlName="lastName" placeholder="Digite o sobrenome" class="w-full" />
+    <input type="text" class="form-control" id="lastName" formControlName="lastName" placeholder="Digite o sobrenome" />
   </div>
-  <div class="field">
+  <div class="mb-3">
     <label for="birthDay">Data de Nascimento</label>
-    <p-datepicker formControlName="birthDay" dateFormat="yy-mm-dd" [showIcon]="true" class="w-full" inputId="birthDay" />
+    <input type="date" class="form-control" id="birthDay" formControlName="birthDay" />
   </div>
-  <div class="field flex-row gap-2 align-items-center">
-    <p-checkbox formControlName="isActive" [binary]="true" inputId="isActive" />
-    <label for="isActive">Ativo</label>
+  <div class="form-check mb-3">
+    <input class="form-check-input" type="checkbox" formControlName="isActive" id="isActive" />
+    <label class="form-check-label" for="isActive">Ativo</label>
   </div>
-  <div class="field">
+  <div class="mb-3">
     <label for="preferredUsername">Usuário Preferido</label>
-    <input pInputText id="preferredUsername" formControlName="preferredUsername" placeholder="Digite o usuário preferido" class="w-full" />
+    <input type="text" class="form-control" id="preferredUsername" formControlName="preferredUsername" placeholder="Digite o usuário preferido" />
   </div>
-  <div class="dialog-actions">
-    <p-button label="Cancelar" severity="secondary" [outlined]="true" (onClick)="close()" />
-    <p-button label="Salvar" icon="pi pi-check" (onClick)="save()" [disabled]="form.invalid" />
+  <div class="d-flex gap-2 justify-content-end mt-3">
+    <button type="button" class="btn btn-outline-secondary" (click)="close()">Cancelar</button>
+    <button type="button" class="btn btn-primary" (click)="save()" [disabled]="form.invalid">
+      <i class="bi bi-check-lg me-1"></i>Salvar
+    </button>
   </div>
 </form>

@@ -1,15 +1,12 @@
 import { ChangeDetectionStrategy, Component, effect, inject, input, output } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
-import { InputTextModule } from 'primeng/inputtext';
-import { ButtonModule } from 'primeng/button';
-import { CheckboxModule } from 'primeng/checkbox';
 import { NoticesService } from '../../../../generated_services/api/notices.service';
 import { ShowNoticesDTO, UpdateNoticesDTO } from '../../../../generated_services/model/models';
 import { NotificationService } from '../../../../services/notification.service';
 
 @Component({
   selector: 'app-update-notice',
-  imports: [ReactiveFormsModule, InputTextModule, ButtonModule, CheckboxModule],
+  imports: [ReactiveFormsModule],
   templateUrl: './update-notice.component.html',
   styleUrl: './update-notice.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

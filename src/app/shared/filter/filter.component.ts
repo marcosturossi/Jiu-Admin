@@ -1,14 +1,11 @@
 import { ChangeDetectionStrategy, Component, input, output, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { ButtonModule } from 'primeng/button';
-import { InputTextModule } from 'primeng/inputtext';
-import { SelectModule } from 'primeng/select';
 import { FilterInterface, OperationEnum } from '../interface/filter.interface';
 
 @Component({
   selector: 'app-filter',
   standalone: true,
-  imports: [FormsModule, ButtonModule, InputTextModule, SelectModule],
+  imports: [FormsModule],
   templateUrl: './filter.component.html',
   styleUrl: './filter.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -23,9 +20,6 @@ export class FilterComponent {
   protected readonly selectedOperation = signal<OperationEnum>(OperationEnum.eq);
 
   protected readonly operations = Object.values(OperationEnum);
-
-  protected readonly keyOptions = () => this.filterKeys().map(k => ({ label: k, value: k }));
-  protected readonly operationOptions = this.operations.map(op => ({ label: op, value: op }));
 
   close(): void {
     this.closeFilterEvent.emit();

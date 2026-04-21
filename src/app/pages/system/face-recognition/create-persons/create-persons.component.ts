@@ -5,13 +5,11 @@ import { RegisterMultipleResponse } from '../../../../generated_services/api2/mo
 import { StudentsService } from '../../../../generated_services/api/students.service';
 import { ShowStudentDTO } from '../../../../generated_services/model/showStudentDTO';
 import { NotificationService } from '../../../../services/notification.service';
-import { ButtonModule } from 'primeng/button';
-import { SelectModule } from 'primeng/select';
 
 @Component({
   selector: 'app-create-persons',
   standalone: true,
-  imports: [ReactiveFormsModule, ButtonModule, SelectModule],
+  imports: [ReactiveFormsModule],
   templateUrl: './create-persons.component.html',
   styleUrl: './create-persons.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush

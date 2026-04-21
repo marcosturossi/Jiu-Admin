@@ -5,12 +5,6 @@ import {
   signal,
 } from '@angular/core';
 import { DatePipe, SlicePipe } from '@angular/common';
-import { TableModule } from 'primeng/table';
-import { ButtonModule } from 'primeng/button';
-import { TagModule } from 'primeng/tag';
-import { DialogModule } from 'primeng/dialog';
-import { InputTextModule } from 'primeng/inputtext';
-import { TooltipModule } from 'primeng/tooltip';
 import { AcademyService } from '../../../generated_services/api/academy.service';
 import { ShowAcademyDTO } from '../../../generated_services/model/showAcademyDTO';
 import { PaginationAcademyDTO } from '../../../generated_services/model/paginationAcademyDTO';
@@ -24,12 +18,6 @@ import { UpdateAcademyComponent } from './update-academy/update-academy.componen
   selector: 'app-academies',
   standalone: true,
   imports: [
-    TableModule,
-    ButtonModule,
-    TagModule,
-    DialogModule,
-    InputTextModule,
-    TooltipModule,
     DatePipe,
     SlicePipe,
     PaginationComponent,

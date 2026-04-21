@@ -1,55 +1,97 @@
 <section class="page-section">
   <div class="page-toolbar">
-    <p-button label="Nova Graduação" icon="pi pi-plus" (onClick)="openCreate()" />
+    <button type="button" class="btn btn-primary" (click)="openCreate()">
+      <i class="bi bi-plus-lg me-1"></i>Nova Graduação
+    </button>
   </div>
 
-  <p-table [value]="items()?.items ?? []" [loading]="isLoading()"
-           styleClass="p-datatable-sm p-datatable-striped" [tableStyle]="{'min-width': '50rem'}">
-    <ng-template pTemplate="header">
-      <tr>
-        <th>Aluno</th>
-        <th>Data Graduação</th>
-        <th>Faixa</th>
-        <th>Ordem</th>
-        <th>Para Crianças</th>
-        <th class="text-center" style="width:8rem">Ações</th>
-      </tr>
-    </ng-template>
-    <ng-template pTemplate="body" let-graduation>
-      <tr>
-        <td>{{ graduation.student?.firstName }} {{ graduation.student?.lastName }}</td>
-        <td>{{ graduation.graduationDate | date:'dd/MM/yyyy' }}</td>
-        <td><p-tag [value]="graduation.belt?.color ?? ''" /></td>
-        <td>{{ graduation.belt?.orderIndex }}</td>
-        <td>
-          <p-tag [value]="graduation.belt?.isForKids ? 'Crianças' : 'Adultos'"
-                 [severity]="graduation.belt?.isForKids ? 'success' : 'warn'" />
-        </td>
-        <td class="text-center">
-          <p-button icon="pi pi-pencil" [text]="true" severity="info" size="small" (onClick)="openEdit(graduation)" />
-          <p-button icon="pi pi-trash" [text]="true" severity="danger" size="small" (onClick)="delete(graduation)" />
-        </td>
-      </tr>
-    </ng-template>
-    <ng-template pTemplate="emptymessage">
-      <tr><td [colSpan]="6" class="text-center py-5 text-muted">Nenhum registro.</td></tr>
-    </ng-template>
-  </p-table>
+  @if (isLoading()) {
+    <div class="d-flex justify-content-center py-5">
+      <div class="spinner-border text-secondary" role="status">
+        <span class="visually-hidden">Carregando...</span>
+      </div>
+    </div>
+  } @else {
+    <div class="table-responsive">
+      <table class="table table-hover table-sm align-middle">
+        <thead class="table-light">
+          <tr>
+            <th>Aluno</th>
+            <th>Data Graduação</th>
+            <th>Faixa</th>
+            <th>Ordem</th>
+            <th>Para Crianças</th>
+            <th class="text-center" style="width:8rem">Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          @if ((items()?.items ?? []).length === 0) {
+            <tr><td colspan="6" class="text-center py-5 text-muted">Nenhum registro.</td></tr>
+          }
+          @for (graduation of items()?.items ?? []; track graduation.id) {
+            <tr>
+              <td>{{ graduation.student?.firstName }} {{ graduation.student?.lastName }}</td>
+              <td>{{ graduation.graduationDate | date:'dd/MM/yyyy' }}</td>
+              <td><span class="badge bg-secondary">{{ graduation.belt?.color }}</span></td>
+              <td>{{ graduation.belt?.orderIndex }}</td>
+              <td>
+                <span [class]="'badge ' + (graduation.belt?.isForKids ? 'bg-success' : 'bg-warning text-dark')">
+                  {{ graduation.belt?.isForKids ? 'Crianças' : 'Adultos' }}
+                </span>
+              </td>
+              <td class="text-center">
+                <button type="button" class="btn btn-sm btn-outline-info me-1" (click)="openEdit(graduation)">
+                  <i class="bi bi-pencil"></i>
+                </button>
+                <button type="button" class="btn btn-sm btn-outline-danger" (click)="delete(graduation)">
+                  <i class="bi bi-trash"></i>
+                </button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
 
   <app-pagination [currentPage]="currentPage()" [totalPages]="items()?.totalPages ?? 1"
     [pageSize]="pageSize()" [totalItems]="items()?.totalCount ?? 0"
     (pageChange)="onPageChange($event)" (pageSizeChange)="onPageSizeChange($event)" />
 
-  <p-dialog [visible]="openedCreate()" (visibleChange)="openedCreate.set($event)"
-    header="Nova Graduação" [modal]="true" [draggable]="false" [resizable]="false" styleClass="w-full md:w-30rem">
-    <app-create-graduation (closeEvent)="openedCreate.set(false)" (graduationCreated)="onCreated()" />
-  </p-dialog>
+  @if (openedCreate()) {
+    <div class="modal-backdrop-custom" (click)="openedCreate.set(false)"></div>
+    <div class="modal show d-block" tabindex="-1">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Nova Graduação</h5>
+            <button type="button" class="btn-close" (click)="openedCreate.set(false)" aria-label="Fechar"></button>
+          </div>
+          <div class="modal-body">
+            <app-create-graduation (closeEvent)="openedCreate.set(false)" (graduationCreated)="onCreated()" />
+          </div>
+        </div>
+      </div>
+    </div>
+  }
 
-  <p-dialog [visible]="openedUpdate()" (visibleChange)="openedUpdate.set($event)"
-    header="Editar Graduação" [modal]="true" [draggable]="false" [resizable]="false" styleClass="w-full md:w-30rem">
-    @if (selected()) {
-      <app-update-graduation [graduation]="selected()!" (closeEvent)="openedUpdate.set(false)" (graduationUpdated)="onUpdated()" />
-    }
-  </p-dialog>
+  @if (openedUpdate()) {
+    <div class="modal-backdrop-custom" (click)="openedUpdate.set(false)"></div>
+    <div class="modal show d-block" tabindex="-1">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Editar Graduação</h5>
+            <button type="button" class="btn-close" (click)="openedUpdate.set(false)" aria-label="Fechar"></button>
+          </div>
+          <div class="modal-body">
+            @if (selected()) {
+              <app-update-graduation [graduation]="selected()!" (closeEvent)="openedUpdate.set(false)" (graduationUpdated)="onUpdated()" />
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  }
 </section>
 

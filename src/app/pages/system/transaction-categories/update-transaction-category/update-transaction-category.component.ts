@@ -1,15 +1,12 @@
 import { ChangeDetectionStrategy, Component, effect, inject, input, output } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
-import { InputTextModule } from 'primeng/inputtext';
-import { ButtonModule } from 'primeng/button';
-import { CheckboxModule } from 'primeng/checkbox';
 import { TransactionCategoryService, ShowTransactionCategoryDTO, UpdateTransactionCategoryDTO } from '../../../../generated_services';
 import { NotificationService } from '../../../../services/notification.service';
 
 @Component({
   selector: 'app-update-transaction-category',
   standalone: true,
-  imports: [ReactiveFormsModule, InputTextModule, ButtonModule, CheckboxModule],
+  imports: [ReactiveFormsModule],
   templateUrl: './update-transaction-category.component.html',
   styleUrl: './update-transaction-category.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

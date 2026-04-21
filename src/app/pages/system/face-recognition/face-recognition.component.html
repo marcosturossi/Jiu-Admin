@@ -1,6 +1,8 @@
 <section class="page-section face-recognition-page">
   <div class="page-toolbar">
-    <p-button label="Nova Pessoa" icon="pi pi-user-plus" (onClick)="openCreate()" />
+    <button type="button" class="btn btn-primary" (click)="openCreate()">
+      <i class="bi bi-person-plus me-1"></i>Nova Pessoa
+    </button>
   </div>
 
   @if (!isLoading() && persons().length > 0) {
@@ -15,62 +17,99 @@
     </div>
   }
 
-  <p-table [value]="persons()" [loading]="isLoading()"
-           styleClass="p-datatable-sm p-datatable-striped" [tableStyle]="{'min-width':'30rem'}">
-    <ng-template pTemplate="header">
-      <tr>
-        <th>Nome</th>
-        <th class="text-center">Imagens</th>
-        <th class="text-center" style="width:8rem">Ações</th>
-      </tr>
-    </ng-template>
-    <ng-template pTemplate="body" let-person>
-      <tr>
-        <td><strong>{{ person.name }}</strong></td>
-        <td class="text-center">
-          <div class="images-row">
-            @for (img of person.images; track img.id; let i = $index) {
-              @if (i < 4) {
-                <div class="thumb-wrap">
-                  <img [src]="getImageSrc(img)" [alt]="person.name" class="thumb" />
-                  @if (img.is_primary) {
-                    <span class="primary-badge" title="Principal"><i class="pi pi-star-fill"></i></span>
+  @if (isLoading()) {
+    <div class="d-flex justify-content-center py-5">
+      <div class="spinner-border text-secondary" role="status"><span class="visually-hidden">Carregando...</span></div>
+    </div>
+  } @else {
+    <div class="table-responsive">
+      <table class="table table-hover table-sm align-middle">
+        <thead class="table-light">
+          <tr>
+            <th>Nome</th>
+            <th class="text-center">Imagens</th>
+            <th class="text-center" style="width:8rem">Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          @if (persons().length === 0) {
+            <tr><td colspan="3" class="text-center py-5 text-muted">Nenhuma pessoa cadastrada.</td></tr>
+          }
+          @for (person of persons(); track person.id) {
+            <tr>
+              <td><strong>{{ person.name }}</strong></td>
+              <td class="text-center">
+                <div class="images-row">
+                  @for (img of person.images; track img.id; let i = $index) {
+                    @if (i < 4) {
+                      <div class="thumb-wrap">
+                        <img [src]="getImageSrc(img)" [alt]="person.name" class="thumb" />
+                        @if (img.is_primary) {
+                          <span class="primary-badge" title="Principal"><i class="bi bi-star-fill"></i></span>
+                        }
+                      </div>
+                    }
+                  }
+                  @if (person.images && person.images.length > 4) {
+                    <div class="thumb-more">+{{ person.images.length - 4 }}</div>
+                  }
+                  @if (!person.images || person.images.length === 0) {
+                    <small class="text-muted">Nenhuma imagem</small>
                   }
                 </div>
-              }
-            }
-            @if (person.images && person.images.length > 4) {
-              <div class="thumb-more">+{{ person.images.length - 4 }}</div>
-            }
-            @if (!person.images || person.images.length === 0) {
-              <small class="text-muted">Nenhuma imagem</small>
-            }
-          </div>
-        </td>
-        <td class="text-center">
-          <p-button icon="pi pi-pencil" [text]="true" severity="info" size="small" (onClick)="openEdit(person)" />
-          <p-button icon="pi pi-trash" [text]="true" severity="danger" size="small" (onClick)="deletePerson(person)" />
-        </td>
-      </tr>
-    </ng-template>
-    <ng-template pTemplate="emptymessage">
-      <tr><td [colSpan]="3" class="text-center py-5 text-muted">Nenhuma pessoa cadastrada.</td></tr>
-    </ng-template>
-  </p-table>
+              </td>
+              <td class="text-center">
+                <button type="button" class="btn btn-sm btn-outline-info me-1" (click)="openEdit(person)">
+                  <i class="bi bi-pencil"></i>
+                </button>
+                <button type="button" class="btn btn-sm btn-outline-danger" (click)="deletePerson(person)">
+                  <i class="bi bi-trash"></i>
+                </button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
 
   <app-pagination [currentPage]="currentPage()" [totalPages]="totalPages()"
     [pageSize]="pageSize()" [totalItems]="totalItems()"
     (pageChange)="onPageChange($event)" (pageSizeChange)="onPageSizeChange($event)" />
-
-  <p-dialog [visible]="openedCreate()" (visibleChange)="openedCreate.set($event)"
-    header="Nova Pessoa" [modal]="true" [draggable]="false" [resizable]="false" styleClass="w-full md:w-30rem">
-    <app-create-persons (closeEvent)="openedCreate.set(false)" (personCreated)="onPersonCreated()" />
-  </p-dialog>
-
-  <p-dialog [visible]="openedUpdate()" (visibleChange)="openedUpdate.set($event)"
-    header="Editar Pessoa" [modal]="true" [draggable]="false" [resizable]="false" styleClass="w-full md:w-30rem">
-    @if (selected()) {
-      <app-update-persons [person]="selected()!" (closeEvent)="openedUpdate.set(false)" (personUpdated)="onPersonUpdated($event)" />
-    }
-  </p-dialog>
 </section>
+
+@if (openedCreate()) {
+  <div class="modal-backdrop-custom" (click)="openedCreate.set(false)"></div>
+  <div class="modal show d-block" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Nova Pessoa</h5>
+          <button type="button" class="btn-close" (click)="openedCreate.set(false)" aria-label="Fechar"></button>
+        </div>
+        <div class="modal-body">
+          <app-create-persons (closeEvent)="openedCreate.set(false)" (personCreated)="onPersonCreated()" />
+        </div>
+      </div>
+    </div>
+  </div>
+}
+
+@if (openedUpdate()) {
+  <div class="modal-backdrop-custom" (click)="openedUpdate.set(false)"></div>
+  <div class="modal show d-block" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Editar Pessoa</h5>
+          <button type="button" class="btn-close" (click)="openedUpdate.set(false)" aria-label="Fechar"></button>
+        </div>
+        <div class="modal-body">
+          @if (selected()) {
+            <app-update-persons [person]="selected()!" (closeEvent)="openedUpdate.set(false)" (personUpdated)="onPersonUpdated($event)" />
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+}

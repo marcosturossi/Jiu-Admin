@@ -1,51 +1,49 @@
-<form [formGroup]="form" (ngSubmit)="save()" class="transaction-form">
-  <div class="field">
+<form [formGroup]="form" (ngSubmit)="save()">
+  <div class="mb-3">
     <label for="type">Tipo *</label>
-    <p-select inputId="type" formControlName="type" [options]="typeOptions" optionLabel="label" optionValue="value" styleClass="w-full" />
+    <select class="form-select" id="type" formControlName="type">
+      <option value="" disabled>Selecione</option>
+      @for (opt of typeOptions; track opt.value) {
+        <option [value]="opt.value">{{ opt.label }}</option>
+      }
+    </select>
   </div>
 
-  <div class="field">
+  <div class="mb-3">
     <label for="category">Categoria</label>
-    <p-select
-      inputId="category"
-      formControlName="transactionCategoryId"
-      [options]="categories()"
-      optionLabel="name"
-      optionValue="id"
-      [showClear]="true"
-      placeholder="Sem categoria"
-      styleClass="w-full" />
+    <select class="form-select" id="category" formControlName="transactionCategoryId">
+      <option value="">Sem categoria</option>
+      @for (opt of categories(); track opt.id) {
+        <option [value]="opt.id">{{ opt.name }}</option>
+      }
+    </select>
   </div>
 
-  <div class="field">
+  <div class="mb-3">
     <label for="description">Descrição</label>
-    <input pInputText id="description" formControlName="description" class="w-full" placeholder="Opcional" />
+    <input type="text" class="form-control" id="description" formControlName="description" placeholder="Opcional" />
   </div>
 
-  <div class="field">
+  <div class="mb-3">
     <label for="amount">Valor *</label>
-    <p-inputnumber
-      inputId="amount"
-      formControlName="amount"
-      mode="currency"
-      currency="BRL"
-      locale="pt-BR"
-      [min]="0.01"
-      styleClass="w-full" />
+    <input type="number" class="form-control" id="amount" formControlName="amount" step="0.01" min="0.01" />
   </div>
 
-  <div class="field">
+  <div class="mb-3">
     <label for="transactionDate">Data *</label>
-    <input pInputText id="transactionDate" type="date" formControlName="transactionDate" class="w-full" />
+    <input type="date" class="form-control" id="transactionDate" formControlName="transactionDate" />
   </div>
 
-  <div class="field">
+  <div class="mb-3">
     <label for="reference">Referência</label>
-    <input pInputText id="reference" formControlName="reference" class="w-full" placeholder="Opcional" />
+    <input type="text" class="form-control" id="reference" formControlName="reference" placeholder="Opcional" />
   </div>
 
-  <div class="form-actions">
-    <p-button label="Cancelar" severity="secondary" [text]="true" type="button" (onClick)="close()" />
-    <p-button label="Salvar" icon="pi pi-check" type="submit" [loading]="isSaving()" [disabled]="form.invalid" />
+  <div class="d-flex gap-2 justify-content-end mt-3">
+    <button type="button" class="btn btn-outline-secondary" (click)="close()">Cancelar</button>
+    <button type="submit" class="btn btn-primary" [disabled]="isSaving() || form.invalid">
+      @if (isSaving()) { <span class="spinner-border spinner-border-sm me-1" role="status"></span> }
+      <i class="bi bi-check-lg me-1"></i>Salvar
+    </button>
   </div>
 </form>

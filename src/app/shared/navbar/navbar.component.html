@@ -1,26 +1,30 @@
 <header class="app-navbar">
   <div class="navbar-start">
-    <p-button
-      [icon]="sidebarOpen() ? 'pi pi-times' : 'pi pi-bars'"
-      [text]="true"
-      severity="secondary"
-      styleClass="navbar-toggle"
-      (onClick)="toggleSidebar()"
+    <button
+      class="btn btn-link navbar-toggle p-0"
+      (click)="toggleSidebar()"
       aria-label="Toggle menu"
-    />
+    >
+      <i [class]="sidebarOpen() ? 'bi bi-x-lg' : 'bi bi-list'" style="font-size:1.4rem;"></i>
+    </button>
     <img class="navbar-logo" src="assets/company/carlson_logo.png" alt="Carlson Gracie" />
   </div>
 
   <div class="navbar-end">
-    <p-menu #menu [model]="userMenuItems" [popup]="true" />
-    <p-button
-      [label]="userName()"
-      icon="pi pi-user"
-      [text]="true"
-      severity="secondary"
-      styleClass="navbar-user-btn"
-      (onClick)="menu.toggle($event)"
-    />
+    <div ngbDropdown class="d-inline-block">
+      <button class="btn btn-link navbar-user-btn text-white" ngbDropdownToggle>
+        <i class="bi bi-person me-1"></i>{{ userName() }}
+      </button>
+      <div ngbDropdownMenu>
+        <button ngbDropdownItem (click)="switchAcademy()">
+          <i class="bi bi-building me-2"></i>Trocar Academia
+        </button>
+        <div class="dropdown-divider"></div>
+        <button ngbDropdownItem (click)="logout()">
+          <i class="bi bi-box-arrow-right me-2"></i>Sair
+        </button>
+      </div>
+    </div>
   </div>
 </header>
 

@@ -1,16 +1,14 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
 @Component({
   selector: 'app-loading',
   standalone: true,
-  imports: [ProgressSpinnerModule],
+  imports: [],
   template: `
     <div class="loading-overlay">
-      <p-progressSpinner
-        strokeWidth="3"
-        animationDuration="0.8s"
-      />
+      <div class="spinner-border text-secondary" role="status">
+        <span class="visually-hidden">Carregando...</span>
+      </div>
     </div>
   `,
   styles: [`

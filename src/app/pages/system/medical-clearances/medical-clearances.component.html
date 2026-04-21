@@ -1,59 +1,91 @@
 <section class="page-section">
   <div class="page-toolbar">
-    <p-button label="Novo Atestado" icon="pi pi-file" (onClick)="openCreate()" />
+    <button type="button" class="btn btn-primary" (click)="openCreate()"><i class="bi bi-file-text me-1"></i>Novo Atestado</button>
   </div>
 
-  <p-table [value]="items()?.items ?? []" [loading]="isLoading()"
-           styleClass="p-datatable-sm p-datatable-striped" [tableStyle]="{'min-width':'40rem'}">
-    <ng-template pTemplate="header">
-      <tr>
-        <th>Aluno</th>
-        <th>Status</th>
-        <th>Expira em</th>
-        <th>Criado em</th>
-        <th class="text-center" style="width:8rem">Ações</th>
-      </tr>
-    </ng-template>
-    <ng-template pTemplate="body" let-clearance>
-      <tr>
-        <td><strong>{{ clearance.student?.firstName }} {{ clearance.student?.lastName }}</strong></td>
-        <td>
-          <p-tag [value]="getStatusLabel(clearance)" [severity]="getStatusSeverity(clearance)" />
-        </td>
-        <td>
-          {{ clearance.expiresAt | date:'dd/MM/yyyy' }}
-          @if (clearance.daysUntilExpiry !== undefined && clearance.daysUntilExpiry >= 0) {
-            <small class="text-muted"> ({{ clearance.daysUntilExpiry }} dias)</small>
+  @if (isLoading()) {
+    <div class="d-flex justify-content-center py-5">
+      <div class="spinner-border text-secondary" role="status"><span class="visually-hidden">Carregando...</span></div>
+    </div>
+  } @else {
+    <div class="table-responsive">
+      <table class="table table-hover table-sm align-middle">
+        <thead class="table-light">
+          <tr>
+            <th>Aluno</th>
+            <th>Status</th>
+            <th>Expira em</th>
+            <th>Criado em</th>
+            <th class="text-center" style="width:8rem">Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          @if ((items()?.items ?? []).length === 0) {
+            <tr><td colspan="5" class="text-center py-5 text-muted">Nenhum atestado médico encontrado.</td></tr>
           }
-        </td>
-        <td>{{ clearance.createdAt | date:'dd/MM/yyyy HH:mm' }}</td>
-        <td class="text-center">
-          <p-button icon="pi pi-trash" [text]="true" severity="danger" size="small" (onClick)="deleteMedicalClearance(clearance)" />
-          @if (clearance.hasAttachment) {
-            <p-button icon="pi pi-eye" [text]="true" severity="secondary" size="small" (onClick)="openAttachment(clearance)" title="Visualizar Arquivo" />
+          @for (clearance of items()?.items ?? []; track clearance.id) {
+            <tr>
+              <td><strong>{{ clearance.student?.firstName }} {{ clearance.student?.lastName }}</strong></td>
+              <td>
+                <span [class]="'badge ' + ({'success': 'bg-success', 'warn': 'bg-warning text-dark', 'danger': 'bg-danger', 'secondary': 'bg-secondary', 'info': 'bg-info text-dark'})[getStatusSeverity(clearance)]">{{ getStatusLabel(clearance) }}</span>
+              </td>
+              <td>
+                {{ clearance.expiresAt | date:'dd/MM/yyyy' }}
+                @if (clearance.daysUntilExpiry !== undefined && clearance.daysUntilExpiry >= 0) {
+                  <small class="text-muted"> ({{ clearance.daysUntilExpiry }} dias)</small>
+                }
+              </td>
+              <td>{{ clearance.createdAt | date:'dd/MM/yyyy HH:mm' }}</td>
+              <td class="text-center">
+                <button type="button" class="btn btn-sm btn-outline-danger" (click)="deleteMedicalClearance(clearance)"><i class="bi bi-trash"></i></button>
+                @if (clearance.hasAttachment) {
+                  <button type="button" class="btn btn-sm btn-outline-secondary" (click)="openAttachment(clearance)" title="Visualizar Arquivo"><i class="bi bi-eye"></i></button>
+                }
+              </td>
+            </tr>
           }
-        </td>
-      </tr>
-    </ng-template>
-    <ng-template pTemplate="emptymessage">
-      <tr><td [colSpan]="5" class="text-center py-5 text-muted">Nenhum atestado médico encontrado.</td></tr>
-    </ng-template>
-  </p-table>
+        </tbody>
+      </table>
+    </div>
+  }
 
   <app-pagination [currentPage]="currentPage()" [totalPages]="items()?.totalPages ?? 1"
     [pageSize]="pageSize()" [totalItems]="items()?.totalCount ?? 0"
     (pageChange)="onPageChange($event)" (pageSizeChange)="onPageSizeChange($event)" />
-
-  <p-dialog [visible]="openedCreate()" (visibleChange)="openedCreate.set($event)"
-    header="Novo Atestado Médico" [modal]="true" [draggable]="false" [resizable]="false" styleClass="w-full md:w-30rem">
-    <app-create-medical-clearance (closeEvent)="openedCreate.set(false)" (medicalClearanceCreated)="onCreated()" />
-  </p-dialog>
-
-  <p-dialog [visible]="attachmentDialogVisible()" (visibleChange)="attachmentDialogVisible.set($event)"
-    header="Visualizar Atestado" [modal]="true" [draggable]="false" [resizable]="false" styleClass="w-full md:w-60rem"
-    (onHide)="closeAttachmentViewer()">
-    @if (attachmentBlob()) {
-      <app-blob-viewer [blob]="attachmentBlob()!" [mimeType]="attachmentMimeType()" />
-    }
-  </p-dialog>
 </section>
+
+@if (openedCreate()) {
+  <div class="modal-backdrop-custom" (click)="openedCreate.set(false)"></div>
+  <div class="modal show d-block" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Novo Atestado Médico</h5>
+          <button type="button" class="btn-close" (click)="openedCreate.set(false)" aria-label="Fechar"></button>
+        </div>
+        <div class="modal-body">
+          <app-create-medical-clearance (closeEvent)="openedCreate.set(false)" (medicalClearanceCreated)="onCreated()" />
+        </div>
+      </div>
+    </div>
+  </div>
+}
+
+@if (attachmentDialogVisible()) {
+  <div class="modal-backdrop-custom" (click)="closeAttachmentViewer()"></div>
+  <div class="modal show d-block" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Visualizar Atestado</h5>
+          <button type="button" class="btn-close" (click)="closeAttachmentViewer()" aria-label="Fechar"></button>
+        </div>
+        <div class="modal-body">
+          @if (attachmentBlob()) {
+            <app-blob-viewer [blob]="attachmentBlob()!" [mimeType]="attachmentMimeType()" />
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+}

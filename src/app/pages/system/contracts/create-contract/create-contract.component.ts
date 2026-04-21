@@ -1,9 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject, output, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ButtonModule } from 'primeng/button';
-import { SelectModule } from 'primeng/select';
-import { DatePickerModule } from 'primeng/datepicker';
-import { TextareaModule } from 'primeng/textarea';
 import { ContractService } from '../../../../generated_services/api/contract.service';
 import { FeePlanService } from '../../../../generated_services/api/feePlan.service';
 import { StudentsService } from '../../../../generated_services/api/students.service';
@@ -13,7 +9,7 @@ import { NotificationService } from '../../../../services/notification.service';
 @Component({
   selector: 'app-create-contract',
   standalone: true,
-  imports: [ReactiveFormsModule, ButtonModule, SelectModule, DatePickerModule, TextareaModule],
+  imports: [ReactiveFormsModule],
   templateUrl: './create-contract.component.html',
   styleUrl: './create-contract.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

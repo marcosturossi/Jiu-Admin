@@ -1,21 +1,31 @@
-<form [formGroup]="form" class="dialog-form">
-  <div class="field">
-    <label for="studentId">Aluno *</label>
-    <p-select [options]="studentOptions()" formControlName="studentId"
-      optionLabel="label" optionValue="id" placeholder="Selecione um aluno" class="w-full" />
+<form [formGroup]="form">
+  <div class="mb-3">
+    <label for="studentId" class="form-label">Aluno *</label>
+    <select class="form-select" id="studentId" formControlName="studentId">
+      <option value="" disabled selected>Selecione um aluno</option>
+      @for (opt of studentOptions(); track opt.id) {
+        <option [value]="opt.id">{{ opt.label }}</option>
+      }
+    </select>
   </div>
-  <div class="field">
-    <label for="beltId">Faixa *</label>
-    <p-select [options]="belts()" formControlName="beltId"
-      optionLabel="color" optionValue="id" placeholder="Selecione uma faixa" class="w-full" />
+  <div class="mb-3">
+    <label for="beltId" class="form-label">Faixa *</label>
+    <select class="form-select" id="beltId" formControlName="beltId">
+      <option value="" disabled selected>Selecione uma faixa</option>
+      @for (opt of belts(); track opt.id) {
+        <option [value]="opt.id">{{ opt.color }}</option>
+      }
+    </select>
   </div>
-  <div class="field">
-    <label for="graduationDate">Data *</label>
-    <input pInputText type="date" id="graduationDate" formControlName="graduationDate" class="w-full" />
+  <div class="mb-3">
+    <label for="graduationDate" class="form-label">Data *</label>
+    <input type="date" class="form-control" id="graduationDate" formControlName="graduationDate" />
   </div>
-  <div class="dialog-actions">
-    <p-button label="Cancelar" severity="secondary" [outlined]="true" (onClick)="close()" />
-    <p-button label="Salvar" icon="pi pi-check" (onClick)="save()" [disabled]="form.invalid" />
+  <div class="d-flex gap-2 justify-content-end mt-3">
+    <button type="button" class="btn btn-outline-secondary" (click)="close()">Cancelar</button>
+    <button type="button" class="btn btn-primary" (click)="save()" [disabled]="form.invalid">
+      <i class="bi bi-check-lg me-1"></i>Salvar
+    </button>
   </div>
 </form>
 

@@ -1,16 +1,12 @@
 import { ChangeDetectionStrategy, Component, inject, output } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
-import { InputTextModule } from 'primeng/inputtext';
-import { ButtonModule } from 'primeng/button';
-import { CheckboxModule } from 'primeng/checkbox';
-import { DatePickerModule } from 'primeng/datepicker';
 import { StudentsService } from '../../../../generated_services/api/students.service';
 import { CreateStudentDTO } from '../../../../generated_services/model/createStudentDTO';
 import { NotificationService } from '../../../../services/notification.service';
 
 @Component({
   selector: 'app-create-student',
-  imports: [ReactiveFormsModule, InputTextModule, ButtonModule, CheckboxModule, DatePickerModule],
+  imports: [ReactiveFormsModule],
   templateUrl: './create-student.component.html',
   styleUrl: './create-student.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

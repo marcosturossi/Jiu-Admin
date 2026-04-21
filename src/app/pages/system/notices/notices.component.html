@@ -1,61 +1,86 @@
 <section class="page-section">
   <div class="page-toolbar">
-    <p-button label="Novo Aviso" icon="pi pi-plus" (onClick)="openCreate()" />
+    <button type="button" class="btn btn-primary" (click)="openCreate()">
+      <i class="bi bi-plus-lg me-1"></i>Novo Aviso
+    </button>
   </div>
 
-  <p-table
-    [value]="items()"
-    [loading]="isLoading()"
-    styleClass="p-datatable-sm p-datatable-striped"
-    [tableStyle]="{ 'min-width': '40rem' }"
-  >
-    <ng-template pTemplate="header">
-      <tr>
-        <th>Descrição</th>
-        <th>Status</th>
-        <th>Data de Criação</th>
-        <th class="text-center" style="width: 8rem">Ações</th>
-      </tr>
-    </ng-template>
-    <ng-template pTemplate="body" let-notice>
-      <tr>
-        <td>{{ notice.description }}</td>
-        <td><p-tag [value]="notice.isActive ? 'Ativo' : 'Inativo'" [severity]="notice.isActive ? 'success' : 'secondary'" /></td>
-        <td>{{ notice.createdAt | date:'dd/MM/yyyy HH:mm' }}</td>
-        <td class="text-center">
-          <p-button icon="pi pi-pencil" [text]="true" severity="info" size="small" (onClick)="openEdit(notice)" />
-          <p-button icon="pi pi-trash" [text]="true" severity="danger" size="small" (onClick)="delete(notice)" />
-        </td>
-      </tr>
-    </ng-template>
-    <ng-template pTemplate="emptymessage">
-      <tr><td [colSpan]="4" class="text-center py-5 text-muted">Nenhum registro encontrado.</td></tr>
-    </ng-template>
-  </p-table>
-
-  <p-dialog
-    [visible]="openedCreate()"
-    (visibleChange)="openedCreate.set($event)"
-    header="Novo Aviso"
-    [modal]="true"
-    [draggable]="false"
-    [resizable]="false"
-    styleClass="w-full md:w-30rem"
-  >
-    <app-create-notice (closeEvent)="openedCreate.set(false)" (noticeCreated)="onCreated()" />
-  </p-dialog>
-
-  <p-dialog
-    [visible]="openedUpdate()"
-    (visibleChange)="openedUpdate.set($event)"
-    header="Editar Aviso"
-    [modal]="true"
-    [draggable]="false"
-    [resizable]="false"
-    styleClass="w-full md:w-30rem"
-  >
-    @if (selected()) {
-      <app-update-notice [notice]="selected()!" (closeEvent)="openedUpdate.set(false)" (noticeUpdated)="onUpdated()" />
-    }
-  </p-dialog>
+  @if (isLoading()) {
+    <div class="d-flex justify-content-center py-5">
+      <div class="spinner-border text-secondary" role="status"><span class="visually-hidden">Carregando...</span></div>
+    </div>
+  } @else {
+    <div class="table-responsive">
+      <table class="table table-hover table-sm align-middle">
+        <thead class="table-light">
+          <tr>
+            <th>Descrição</th>
+            <th>Status</th>
+            <th>Data de Criação</th>
+            <th class="text-center" style="width:8rem">Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          @if (items().length === 0) {
+            <tr><td colspan="4" class="text-center py-5 text-muted">Nenhum registro encontrado.</td></tr>
+          }
+          @for (notice of items(); track notice.id) {
+            <tr>
+              <td>{{ notice.description }}</td>
+              <td>
+                <span [class]="'badge ' + (notice.isActive ? 'bg-success' : 'bg-secondary')">
+                  {{ notice.isActive ? 'Ativo' : 'Inativo' }}
+                </span>
+              </td>
+              <td>{{ notice.createdAt | date:'dd/MM/yyyy HH:mm' }}</td>
+              <td class="text-center">
+                <button type="button" class="btn btn-sm btn-outline-info me-1" (click)="openEdit(notice)">
+                  <i class="bi bi-pencil"></i>
+                </button>
+                <button type="button" class="btn btn-sm btn-outline-danger" (click)="delete(notice)">
+                  <i class="bi bi-trash"></i>
+                </button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
 </section>
+
+@if (openedCreate()) {
+  <div class="modal-backdrop-custom" (click)="openedCreate.set(false)"></div>
+  <div class="modal show d-block" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Novo Aviso</h5>
+          <button type="button" class="btn-close" (click)="openedCreate.set(false)" aria-label="Fechar"></button>
+        </div>
+        <div class="modal-body">
+          <app-create-notice (closeEvent)="openedCreate.set(false)" (noticeCreated)="onCreated()" />
+        </div>
+      </div>
+    </div>
+  </div>
+}
+
+@if (openedUpdate()) {
+  <div class="modal-backdrop-custom" (click)="openedUpdate.set(false)"></div>
+  <div class="modal show d-block" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Editar Aviso</h5>
+          <button type="button" class="btn-close" (click)="openedUpdate.set(false)" aria-label="Fechar"></button>
+        </div>
+        <div class="modal-body">
+          @if (selected()) {
+            <app-update-notice [notice]="selected()!" (closeEvent)="openedUpdate.set(false)" (noticeUpdated)="onUpdated()" />
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+}

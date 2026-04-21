@@ -1,19 +1,23 @@
-<form [formGroup]="personForm" class="dialog-form">
-  <div class="field">
-    <label for="studentSelect">Aluno *</label>
-    <p-select id="studentSelect" [options]="studentOptions()" formControlName="studentId"
-      optionLabel="label" optionValue="value" placeholder="Selecione um aluno..." class="w-full" />
+<form [formGroup]="personForm">
+  <div class="mb-3">
+    <label for="studentSelect" class="form-label">Aluno *</label>
+    <select id="studentSelect" formControlName="studentId" class="form-select">
+      <option value="" disabled>Selecione um aluno...</option>
+      @for (opt of studentOptions(); track opt.value) {
+        <option [value]="opt.value">{{ opt.label }}</option>
+      }
+    </select>
   </div>
 
-  <div class="field">
-    <label for="imagesInput">Fotos do rosto *</label>
-    <input type="file" id="imagesInput" class="file-input" accept="image/*" multiple (change)="onFilesSelected($event)" />
-    <small class="hint">Formatos aceitos: JPG, PNG, GIF. Tamanho máximo: 5MB por imagem. Selecione até 10 fotos.</small>
+  <div class="mb-3">
+    <label for="imagesInput" class="form-label">Fotos do rosto *</label>
+    <input type="file" id="imagesInput" class="form-control" accept="image/*" multiple (change)="onFilesSelected($event)" />
+    <small class="text-muted">Formatos aceitos: JPG, PNG, GIF. Tamanho máximo: 5MB por imagem. Selecione até 10 fotos.</small>
   </div>
 
   @if (previewUrls().length > 0) {
-    <div class="preview-section">
-      <label>Pré-visualização</label>
+    <div class="preview-section mb-3">
+      <label class="form-label">Pré-visualização</label>
       <div class="preview-grid">
         @for (url of previewUrls(); track url) {
           <div class="preview-item">
@@ -21,17 +25,17 @@
           </div>
         }
       </div>
-      <p-button label="Limpar" icon="pi pi-trash" severity="secondary" [outlined]="true" size="small" (onClick)="clearImages()" />
+      <button type="button" class="btn btn-sm btn-outline-secondary mt-2" (click)="clearImages()">
+        <i class="bi bi-trash me-1"></i>Limpar
+      </button>
     </div>
   }
 
-  <div class="dialog-actions">
-    <p-button label="Cancelar" severity="secondary" [outlined]="true" (onClick)="close()" />
-    <p-button
-      [label]="isCreating() ? 'Criando...' : 'Criar Pessoa'"
-      icon="pi pi-check"
-      [loading]="isCreating()"
-      [disabled]="!personForm.valid || isCreating()"
-      (onClick)="create()" />
+  <div class="d-flex gap-2 justify-content-end mt-3">
+    <button type="button" class="btn btn-outline-secondary" (click)="close()">Cancelar</button>
+    <button type="button" class="btn btn-primary" (click)="create()" [disabled]="!personForm.valid || isCreating()">
+      @if (isCreating()) { <span class="spinner-border spinner-border-sm me-1" role="status"></span> }
+      <i class="bi bi-check-lg me-1"></i>{{ isCreating() ? 'Criando...' : 'Criar Pessoa' }}
+    </button>
   </div>
 </form>

@@ -1,9 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
-import { TableModule } from 'primeng/table';
-import { ButtonModule } from 'primeng/button';
-import { TagModule } from 'primeng/tag';
-import { DialogModule } from 'primeng/dialog';
 import { NoticesService } from '../../../generated_services/api/notices.service';
 import { ShowNoticesDTO } from '../../../generated_services/model/showNoticesDTO';
 import { SubnavService } from '../../../services/subnav.service';
@@ -14,10 +10,6 @@ import { UpdateNoticeComponent } from './update-notice/update-notice.component';
 @Component({
   selector: 'app-notices',
   imports: [
-    TableModule,
-    ButtonModule,
-    TagModule,
-    DialogModule,
     DatePipe,
     CreateNoticeComponent,
     UpdateNoticeComponent,

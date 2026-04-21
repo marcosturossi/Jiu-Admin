@@ -1,20 +1,23 @@
-<form [formGroup]="form" class="dialog-form">
-  <div class="field">
+<form [formGroup]="form">
+  <div class="mb-3">
     <label for="studentId">Aluno *</label>
     @if (isLoadingStudents()) {
       <small class="hint">Carregando alunos...</small>
     }
-    <p-select id="studentId" [options]="studentOptions()" formControlName="studentId"
-      optionLabel="label" optionValue="value" placeholder="Selecione um aluno" class="w-full" />
+    <select id="studentId" class="form-select" formControlName="studentId">
+      <option value="" disabled>Selecione um aluno</option>
+      @for (opt of studentOptions(); track opt.value) {
+        <option [value]="opt.value">{{ opt.label }}</option>
+      }
+    </select>
   </div>
 
-  <div class="field">
+  <div class="mb-3">
     <label for="expiresAt">Data de Expiração *</label>
-    <p-datepicker id="expiresAt" formControlName="expiresAt" dateFormat="dd/mm/yy"
-      placeholder="Selecione a data" class="w-full" />
+    <input type="date" id="expiresAt" class="form-control" formControlName="expiresAt" />
   </div>
 
-  <div class="field">
+  <div class="mb-3">
     <label for="file">Arquivo (opcional)</label>
     <input type="file" id="file" class="file-input" (change)="onFileSelected($event)" />
     @if (selectedFile()) {
@@ -35,18 +38,20 @@
     }
   </div>
 
-  <div class="checkbox-row">
-    <p-checkbox formControlName="isApproved" [binary]="true" inputId="isApprovedCheck" />
-    <label for="isApprovedCheck">Aprovado</label>
+  <div class="form-check mb-3">
+    <input class="form-check-input" type="checkbox" formControlName="isApproved" id="isApprovedCheck" />
+    <label class="form-check-label" for="isApprovedCheck">Aprovado</label>
   </div>
 
-  <div class="checkbox-row">
-    <p-checkbox formControlName="isActive" [binary]="true" inputId="isActiveCheck" />
-    <label for="isActiveCheck">Ativo</label>
+  <div class="form-check mb-3">
+    <input class="form-check-input" type="checkbox" formControlName="isActive" id="isActiveCheck" />
+    <label class="form-check-label" for="isActiveCheck">Ativo</label>
   </div>
 
-  <div class="dialog-actions">
-    <p-button label="Cancelar" severity="secondary" [outlined]="true" (onClick)="close()" />
-    <p-button label="Salvar" icon="pi pi-check" (onClick)="create()" [disabled]="form.invalid" />
+  <div class="d-flex gap-2 justify-content-end mt-3">
+    <button type="button" class="btn btn-outline-secondary" (click)="close()">Cancelar</button>
+    <button type="button" class="btn btn-primary" (click)="create()" [disabled]="form.invalid">
+      <i class="bi bi-check-lg me-1"></i>Salvar
+    </button>
   </div>
 </form>

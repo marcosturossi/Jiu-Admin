@@ -1,47 +1,86 @@
 <section class="page-section">
   <div class="page-toolbar">
-    <p-button label="Nova Frequência" icon="pi pi-check-square" (onClick)="openCreate()" />
+    <button class="btn btn-primary" (click)="openCreate()">
+      <i class="bi bi-check-square me-1"></i> Nova Frequência
+    </button>
   </div>
 
-  <p-table [value]="items()?.items ?? []" [loading]="isLoading()"
-           styleClass="p-datatable-sm p-datatable-striped" [tableStyle]="{'min-width':'40rem'}">
-    <ng-template pTemplate="header">
-      <tr>
-        <th>Aluno</th>
-        <th>Aula</th>
-        <th>Data de Criação</th>
-        <th class="text-center" style="width:8rem">Ações</th>
-      </tr>
-    </ng-template>
-    <ng-template pTemplate="body" let-frequency>
-      <tr>
-        <td><strong>{{ frequency.studentName }}</strong></td>
-        <td>{{ frequency.lessonTitle }}</td>
-        <td>{{ frequency.createdAt | date:'dd/MM/yyyy HH:mm' }}</td>
-        <td class="text-center">
-          <p-button icon="pi pi-pencil" [text]="true" severity="info" size="small" (onClick)="openEdit(frequency)" />
-          <p-button icon="pi pi-trash" [text]="true" severity="danger" size="small" (onClick)="deleteFrequency(frequency)" />
-        </td>
-      </tr>
-    </ng-template>
-    <ng-template pTemplate="emptymessage">
-      <tr><td [colSpan]="4" class="text-center py-5 text-muted">Nenhuma frequência encontrada.</td></tr>
-    </ng-template>
-  </p-table>
+  @if (isLoading()) {
+    <div class="d-flex justify-content-center py-5">
+      <div class="spinner-border text-secondary" role="status"><span class="visually-hidden">Carregando...</span></div>
+    </div>
+  } @else {
+    <div class="table-responsive">
+      <table class="table table-hover table-sm align-middle">
+        <thead class="table-light">
+          <tr>
+            <th>Aluno</th>
+            <th>Aula</th>
+            <th>Data de Criação</th>
+            <th class="text-center" style="width:8rem">Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          @if ((items()?.items ?? []).length === 0) {
+            <tr><td colspan="4" class="text-center py-5 text-muted">Nenhuma frequência encontrada.</td></tr>
+          }
+          @for (frequency of items()?.items ?? []; track frequency.id) {
+            <tr>
+              <td><strong>{{ frequency.studentName }}</strong></td>
+              <td>{{ frequency.lessonTitle }}</td>
+              <td>{{ frequency.createdAt | date:'dd/MM/yyyy HH:mm' }}</td>
+              <td class="text-center">
+                <button class="btn btn-sm btn-outline-info me-1" (click)="openEdit(frequency)">
+                  <i class="bi bi-pencil"></i>
+                </button>
+                <button class="btn btn-sm btn-outline-danger" (click)="deleteFrequency(frequency)">
+                  <i class="bi bi-trash"></i>
+                </button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
 
   <app-pagination [currentPage]="currentPage()" [totalPages]="items()?.totalPages ?? 1"
     [pageSize]="pageSize()" [totalItems]="items()?.totalCount ?? 0"
     (pageChange)="onPageChange($event)" (pageSizeChange)="onPageSizeChange($event)" />
-
-  <p-dialog [visible]="openedCreate()" (visibleChange)="openedCreate.set($event)"
-    header="Nova Frequência" [modal]="true" [draggable]="false" [resizable]="false" styleClass="w-full md:w-50rem">
-    <app-create-frequency (closeEvent)="openedCreate.set(false)" (frequencyCreated)="onCreated()" />
-  </p-dialog>
-
-  <p-dialog [visible]="openedUpdate()" (visibleChange)="openedUpdate.set($event)"
-    header="Editar Frequência" [modal]="true" [draggable]="false" [resizable]="false" styleClass="w-full md:w-30rem">
-    @if (selected()) {
-      <app-update-frequency [frequency]="selected()!" (closeEvent)="openedUpdate.set(false)" (frequencyUpdated)="onUpdated()" />
-    }
-  </p-dialog>
 </section>
+
+@if (openedCreate()) {
+  <div class="modal-backdrop-custom" (click)="openedCreate.set(false)"></div>
+  <div class="modal show d-block" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Nova Frequência</h5>
+          <button type="button" class="btn-close" (click)="openedCreate.set(false)" aria-label="Fechar"></button>
+        </div>
+        <div class="modal-body">
+          <app-create-frequency (closeEvent)="openedCreate.set(false)" (frequencyCreated)="onCreated()" />
+        </div>
+      </div>
+    </div>
+  </div>
+}
+
+@if (openedUpdate()) {
+  <div class="modal-backdrop-custom" (click)="openedUpdate.set(false)"></div>
+  <div class="modal show d-block" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Editar Frequência</h5>
+          <button type="button" class="btn-close" (click)="openedUpdate.set(false)" aria-label="Fechar"></button>
+        </div>
+        <div class="modal-body">
+          @if (selected()) {
+            <app-update-frequency [frequency]="selected()!" (closeEvent)="openedUpdate.set(false)" (frequencyUpdated)="onUpdated()" />
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+}

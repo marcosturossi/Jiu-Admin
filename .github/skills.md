@@ -86,7 +86,11 @@ Use built-in control flow — no `*ngIf` / `*ngFor`:
 ```html
 <!-- ✅ Correct -->
 @if (isLoading()) {
-  <p-progressSpinner />
+  <div class="d-flex justify-content-center py-5">
+    <div class="spinner-border text-secondary" role="status">
+      <span class="visually-hidden">Carregando...</span>
+    </div>
+  </div>
 }
 
 @for (item of items(); track item.id) {
@@ -105,59 +109,73 @@ Signals update the view automatically — no `markForCheck()` needed.
 
 ---
 
-## PrimeNG 19 LTS Patterns
-
-### Theme
-
-The Aura preset from `@primeuix/themes` is applied globally in `app.config.ts`:
-
-```ts
-import Aura from '@primeuix/themes/aura';
-providePrimeNG({ theme: { preset: Aura } })
-```
-
-Never import `primeng/themes/*` — that path does not exist in PrimeNG 19 LTS.
+## Bootstrap 5 Patterns
 
 ### Tables
 
-Replace all `<table class="table">` with `p-table`:
-
 ```html
-<p-table [value]="items()" [loading]="isLoading()" [paginator]="false" stripedRows>
-  <ng-template #header>
-    <tr>
-      <th>Nome</th>
-      <th>Ações</th>
-    </tr>
-  </ng-template>
-  <ng-template #body let-item>
-    <tr>
-      <td>{{ item.name }}</td>
-      <td>
-        <p-button icon="pi pi-pencil" (onClick)="openEdit(item)" severity="secondary" text />
-        <p-button icon="pi pi-trash" (onClick)="delete(item)" severity="danger" text />
-      </td>
-    </tr>
-  </ng-template>
-</p-table>
+@if (isLoading()) {
+  <div class="d-flex justify-content-center py-5">
+    <div class="spinner-border text-secondary" role="status">
+      <span class="visually-hidden">Carregando...</span>
+    </div>
+  </div>
+} @else {
+  <div class="table-responsive">
+    <table class="table table-hover table-sm align-middle">
+      <thead class="table-light">
+        <tr>
+          <th>Nome</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        @if ((items()?.items ?? []).length === 0) {
+          <tr><td colspan="4" class="text-center py-5 text-muted">Nenhum registro encontrado.</td></tr>
+        }
+        @for (item of items()?.items ?? []; track item.id) {
+          <tr>
+            <td>{{ item.name }}</td>
+            <td class="text-end">
+              <button type="button" class="btn btn-sm btn-outline-secondary me-1" (click)="openEdit(item)">
+                <i class="bi bi-pencil"></i>
+              </button>
+              <button type="button" class="btn btn-sm btn-outline-danger" (click)="delete(item)">
+                <i class="bi bi-trash"></i>
+              </button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+}
 ```
 
 Use the shared `PaginationComponent` below the table for pagination.
 
 ### Dialogs (modals)
 
-Create/update dialogs use `p-dialog`. The **parent** controls visibility; the **child** provides only form content:
+Create/update dialogs use Bootstrap modal. The **parent** controls visibility; the **child** provides only form content:
 
 **Parent template:**
 ```html
-<p-dialog
-  header="Criar Item"
-  [visible]="openedCreate()"
-  (visibleChange)="openedCreate.set($event)"
-  [modal]="true"
-  [style]="{ width: '600px' }">
-  <app-create-item (itemCreated)="onCreated()" (closeEvent)="openedCreate.set(false)" />
-</p-dialog>
+@if (openedCreate()) {
+  <div class="modal-backdrop-custom" (click)="openedCreate.set(false)"></div>
+  <div class="modal show d-block" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Criar Item</h5>
+          <button type="button" class="btn-close" (click)="openedCreate.set(false)" aria-label="Fechar"></button>
+        </div>
+        <div class="modal-body">
+          <app-create-item (itemCreated)="onCreated()" (closeEvent)="openedCreate.set(false)" />
+        </div>
+      </div>
+    </div>
+  </div>
+}
 ```
 
 **Child component** — form content only (no modal wrapper HTML):
@@ -169,50 +187,68 @@ readonly itemCreated  = output<void>();
 ### Buttons
 
 ```html
-<p-button label="Criar" icon="pi pi-plus" (onClick)="openedCreate.set(true)" />
-<p-button label="Salvar" icon="pi pi-check" (onClick)="submit()" />
-<p-button label="Cancelar" severity="secondary" (onClick)="closeEvent.emit()" />
-<p-button icon="pi pi-trash" severity="danger" text (onClick)="delete(item)" />
+<button type="button" class="btn btn-primary" (click)="openedCreate.set(true)">
+  <i class="bi bi-plus-lg me-1"></i>Criar
+</button>
+<button type="button" class="btn btn-primary" (click)="submit()">
+  <i class="bi bi-check-lg me-1"></i>Salvar
+</button>
+<button type="button" class="btn btn-outline-secondary" (click)="closeEvent.emit()">Cancelar</button>
+<button type="button" class="btn btn-sm btn-outline-danger" (click)="delete(item)">
+  <i class="bi bi-trash"></i>
+</button>
 ```
 
 ### Form inputs
 
 ```html
-<p-inputtext [(ngModel)]="name" placeholder="Nome" fluid />
-<p-select [options]="belts()" optionLabel="name" optionValue="id" [(ngModel)]="beltId" placeholder="Selecione" fluid />
-<p-textarea [(ngModel)]="description" rows="4" fluid />
+<input type="text" class="form-control" formControlName="name" placeholder="Nome" />
+<select class="form-select" formControlName="beltId">
+  <option value="" disabled>Selecione</option>
+  @for (b of belts(); track b.id) { <option [value]="b.id">{{ b.color }}</option> }
+</select>
+<textarea class="form-control" formControlName="description" rows="4"></textarea>
+<input type="date" class="form-control" formControlName="birthDate" />
+<input type="number" class="form-control" formControlName="amount" step="0.01" />
+<div class="form-check">
+  <input class="form-check-input" type="checkbox" formControlName="isForKids" id="isForKids" />
+  <label class="form-check-label" for="isForKids">Para Crianças</label>
+</div>
 ```
 
-### Tags / badges
+### Badges
 
 ```html
-<p-tag [value]="item.belt.name" severity="info" />
-<p-tag value="Ativo" severity="success" />
-<p-tag value="Inativo" severity="danger" />
+<span class="badge bg-info text-dark">{{ item.belt.name }}</span>
+<span class="badge bg-success">Ativo</span>
+<span class="badge bg-danger">Inativo</span>
+<span class="badge bg-warning text-dark">Pendente</span>
 ```
 
 ### Toast notifications
 
-`<p-toast />` must be present in the layout (it is in `system.component.html`).
-Trigger notifications via `NotificationService` — never call `MessageService` directly in components.
+Notifications are handled globally by `ngx-toastr` (no `<p-toast>` needed in templates).
+Trigger via `NotificationService` — never call `ToastrService` directly in components.
 
 ### Icons
 
-Use PrimeIcons (`pi pi-*`). Common icons:
+Use Bootstrap Icons (`bi bi-*`). Common icons:
 
 | Action | Icon |
 |---|---|
-| Add / Create | `pi pi-plus` |
-| Edit | `pi pi-pencil` |
-| Delete | `pi pi-trash` |
-| Save | `pi pi-check` |
-| Close | `pi pi-times` |
-| Search | `pi pi-search` |
-| Refresh | `pi pi-refresh` |
-| User | `pi pi-user` |
-| Belt / Award | `pi pi-star` |
-| Calendar | `pi pi-calendar` |
-| File | `pi pi-file` |
+| Add / Create | `bi bi-plus-lg` |
+| Edit | `bi bi-pencil` |
+| Delete | `bi bi-trash` |
+| Save | `bi bi-check-lg` |
+| Close | `bi bi-x-lg` |
+| Search | `bi bi-search` |
+| Refresh | `bi bi-arrow-clockwise` |
+| User | `bi bi-person` |
+| Users | `bi bi-people` |
+| Calendar | `bi bi-calendar3` |
+| File | `bi bi-file-earmark-text` |
+| Arrow right | `bi bi-arrow-right` |
+| Filter | `bi bi-funnel` |
 
 ---
 
@@ -398,8 +434,8 @@ loadStudents(): void {
 - ❌ Do not use `*ngIf` / `*ngFor` — use `@if` / `@for`
 - ❌ Do not use `@Input()` / `@Output()` decorators — use `input()` / `output()` signals
 - ❌ Do not inject via constructor — use `inject()`
-- ❌ Do not use Bootstrap classes (`row`, `col-*`, `btn`, `modal`, etc.)
-- ❌ Do not call `MessageService` directly from components — use `NotificationService`
+- ❌ Do not use PrimeNG components (`p-table`, `p-button`, `p-dialog`, etc.)
+- ❌ Do not call `ToastrService` directly from components — use `NotificationService`
 - ❌ Do not edit `src/app/generated_services/` manually
 - ❌ Do not create components without `changeDetection: ChangeDetectionStrategy.OnPush`
 - ❌ Do not use `alert()` or `console.log()` for user feedback

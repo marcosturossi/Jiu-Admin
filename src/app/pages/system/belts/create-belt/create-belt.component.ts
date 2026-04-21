@@ -1,15 +1,12 @@
 import { ChangeDetectionStrategy, Component, inject, output } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
-import { InputTextModule } from 'primeng/inputtext';
-import { ButtonModule } from 'primeng/button';
-import { CheckboxModule } from 'primeng/checkbox';
 import { BeltService } from '../../../../generated_services';
 import { CreateBeltDTO } from '../../../../generated_services/model/createBeltDTO';
 import { NotificationService } from '../../../../services/notification.service';
 
 @Component({
   selector: 'app-create-belt',
-  imports: [ReactiveFormsModule, InputTextModule, ButtonModule, CheckboxModule],
+  imports: [ReactiveFormsModule],
   templateUrl: './create-belt.component.html',
   styleUrl: './create-belt.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

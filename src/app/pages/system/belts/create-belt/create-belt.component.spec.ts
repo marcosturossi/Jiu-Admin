@@ -1,6 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
-import { MessageService } from 'primeng/api';
 
 import { CreateBeltComponent } from './create-belt.component';
 
@@ -11,7 +10,7 @@ describe('CreateBeltComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [CreateBeltComponent],
-      providers: [provideHttpClient(), MessageService]
+      providers: [provideHttpClient()]
     })
     .compileComponents();
 

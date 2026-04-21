@@ -1,22 +1,28 @@
-<form [formGroup]="form" class="dialog-form">
-  <div class="field">
-    <label for="beltId">Faixa *</label>
-    <p-select [options]="belts()" formControlName="beltId"
-      optionLabel="color" optionValue="id" placeholder="Selecione uma faixa" class="w-full" />
+<form [formGroup]="form">
+  <div class="mb-3">
+    <label for="beltId" class="form-label">Faixa *</label>
+    <select id="beltId" formControlName="beltId" class="form-select">
+      <option value="" disabled>Selecione uma faixa</option>
+      @for (opt of belts(); track opt.id) {
+        <option [value]="opt.id">{{ opt.color }}</option>
+      }
+    </select>
   </div>
-  <div class="field">
-    <label for="description">Descrição do Requisito *</label>
-    <textarea pTextarea id="description" formControlName="description"
-      placeholder="Digite a descrição do requisito" rows="3" class="w-full"></textarea>
+  <div class="mb-3">
+    <label for="description" class="form-label">Descrição do Requisito *</label>
+    <textarea id="description" formControlName="description"
+      placeholder="Digite a descrição do requisito" rows="3" class="form-control"></textarea>
   </div>
-  <div class="field">
-    <label for="minimumClasses">Número Mínimo de Aulas</label>
-    <input pInputText type="number" id="minimumClasses" formControlName="minimumClasses"
-      placeholder="Digite o número mínimo de aulas" class="w-full" />
+  <div class="mb-3">
+    <label for="minimumClasses" class="form-label">Número Mínimo de Aulas</label>
+    <input type="number" id="minimumClasses" formControlName="minimumClasses"
+      placeholder="Digite o número mínimo de aulas" class="form-control" />
   </div>
-  <div class="dialog-actions">
-    <p-button label="Cancelar" severity="secondary" [outlined]="true" (onClick)="close()" />
-    <p-button label="Salvar" icon="pi pi-check" (onClick)="save()" [disabled]="form.invalid" />
+  <div class="d-flex gap-2 justify-content-end mt-3">
+    <button class="btn btn-outline-secondary" type="button" (click)="close()">Cancelar</button>
+    <button class="btn btn-primary" type="button" [disabled]="form.invalid" (click)="save()">
+      <i class="bi bi-check-lg me-1"></i> Salvar
+    </button>
   </div>
 </form>
 

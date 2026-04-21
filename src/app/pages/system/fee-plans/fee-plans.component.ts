@@ -1,8 +1,4 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
-import { TableModule } from 'primeng/table';
-import { ButtonModule } from 'primeng/button';
-import { TagModule } from 'primeng/tag';
-import { DialogModule } from 'primeng/dialog';
 import { CurrencyPipe } from '@angular/common';
 import { FeePlanService, PaginationFeePlanDTO, ShowFeePlanDTO } from '../../../generated_services';
 import { SubnavService } from '../../../services/subnav.service';
@@ -15,10 +11,6 @@ import { UpdateFeePlanComponent } from './update-fee-plan/update-fee-plan.compon
   selector: 'app-fee-plans',
   standalone: true,
   imports: [
-    TableModule,
-    ButtonModule,
-    TagModule,
-    DialogModule,
     CurrencyPipe,
     PaginationComponent,
     CreateFeePlanComponent,

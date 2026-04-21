@@ -1,12 +1,12 @@
-<form [formGroup]="personForm" class="dialog-form">
-  <div class="field">
-    <label for="name">Nome *</label>
-    <input pInputText id="name" formControlName="name" placeholder="Digite o nome completo" class="w-full" />
+<form [formGroup]="personForm">
+  <div class="mb-3">
+    <label for="name" class="form-label">Nome *</label>
+    <input id="name" formControlName="name" placeholder="Digite o nome completo" class="form-control" />
   </div>
 
   @if (existingImages().length > 0) {
-    <div class="field">
-      <label>Imagens já cadastradas</label>
+    <div class="mb-3">
+      <label class="form-label">Imagens já cadastradas</label>
       <div class="existing-images">
         @for (img of existingImages(); track img.id) {
           <div class="existing-item">
@@ -14,23 +14,24 @@
             @if (img.is_primary) {
               <span class="primary-label">Principal</span>
             }
-            <p-button icon="pi pi-times" [text]="true" severity="danger" size="small"
-              (onClick)="removeImage(img)" title="Remover imagem" styleClass="remove-btn" />
+            <button type="button" class="btn btn-sm btn-outline-danger remove-btn" (click)="removeImage(img)" title="Remover imagem">
+              <i class="bi bi-x-lg"></i>
+            </button>
           </div>
         }
       </div>
     </div>
   }
 
-  <div class="field">
-    <label for="imagesInput">Adicionar novas fotos</label>
-    <input type="file" id="imagesInput" class="file-input" accept="image/*" multiple (change)="onFilesSelected($event)" />
-    <small class="hint">Formatos aceitos: JPG, PNG, GIF. Tamanho máximo: 5MB por imagem.</small>
+  <div class="mb-3">
+    <label for="imagesInput" class="form-label">Adicionar novas fotos</label>
+    <input type="file" id="imagesInput" class="form-control" accept="image/*" multiple (change)="onFilesSelected($event)" />
+    <small class="text-muted">Formatos aceitos: JPG, PNG, GIF. Tamanho máximo: 5MB por imagem.</small>
   </div>
 
   @if (selectedFiles().length > 0) {
-    <div class="preview-section">
-      <label>Pré-visualização das novas fotos</label>
+    <div class="preview-section mb-3">
+      <label class="form-label">Pré-visualização das novas fotos</label>
       <div class="preview-grid">
         @for (url of previewUrls(); track url) {
           <div class="preview-item">
@@ -38,17 +39,17 @@
           </div>
         }
       </div>
-      <p-button label="Limpar" icon="pi pi-trash" severity="secondary" [outlined]="true" size="small" (onClick)="clearImages()" />
+      <button type="button" class="btn btn-sm btn-outline-secondary mt-2" (click)="clearImages()">
+        <i class="bi bi-trash me-1"></i>Limpar
+      </button>
     </div>
   }
 
-  <div class="dialog-actions">
-    <p-button label="Cancelar" severity="secondary" [outlined]="true" (onClick)="close()" />
-    <p-button
-      [label]="isUpdating() ? 'Salvando...' : 'Salvar Alterações'"
-      icon="pi pi-check"
-      [loading]="isUpdating()"
-      [disabled]="!personForm.valid || isUpdating()"
-      (onClick)="update()" />
+  <div class="d-flex gap-2 justify-content-end mt-3">
+    <button type="button" class="btn btn-outline-secondary" (click)="close()">Cancelar</button>
+    <button type="button" class="btn btn-primary" (click)="update()" [disabled]="!personForm.valid || isUpdating()">
+      @if (isUpdating()) { <span class="spinner-border spinner-border-sm me-1" role="status"></span> }
+      <i class="bi bi-check-lg me-1"></i>{{ isUpdating() ? 'Salvando...' : 'Salvar Alterações' }}
+    </button>
   </div>
 </form>

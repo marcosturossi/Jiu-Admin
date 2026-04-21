@@ -1,56 +1,65 @@
 <section class="page-section">
   <div class="page-toolbar">
-    <p-select
-      [options]="statusOptions"
-      [ngModel]="filterStatus()"
-      (ngModelChange)="filterStatus.set($event)"
-      optionLabel="label"
-      optionValue="value"
-      placeholder="Filtrar por status"
-      (onChange)="onFilterChange()"
-      styleClass="w-12rem" />
-    <p-button label="Novo Contrato" icon="pi pi-plus" (onClick)="openCreate()" />
+    <select class="form-select" style="width:12rem" [ngModel]="filterStatus()" (ngModelChange)="filterStatus.set($event); onFilterChange()">
+      <option value="" disabled>Filtrar por status</option>
+      @for (opt of statusOptions; track opt.value) {
+        <option [value]="opt.value">{{ opt.label }}</option>
+      }
+    </select>
+    <button type="button" class="btn btn-primary" (click)="openCreate()"><i class="bi bi-plus-lg me-1"></i>Novo Contrato</button>
   </div>
 
-  <p-table [value]="items()?.items ?? []" [loading]="isLoading()" styleClass="p-datatable-sm p-datatable-striped">
-    <ng-template pTemplate="header">
-      <tr>
-        <th>Aluno</th>
-        <th>Plano</th>
-        <th>Início</th>
-        <th>Término</th>
-        <th>Mensalidade</th>
-        <th>Status</th>
-        <th>Mensalidades</th>
-        <th class="text-center" style="width: 8rem">Ações</th>
-      </tr>
-    </ng-template>
-    <ng-template pTemplate="body" let-contract>
-      <tr>
-        <td>{{ getStudentName(contract.studentId) }}</td>
-        <td>{{ contract.feePlanName }}</td>
-        <td>{{ contract.startDate | date:'dd/MM/yyyy' }}</td>
-        <td>{{ contract.endDate | date:'dd/MM/yyyy' }}</td>
-        <td>{{ contract.monthlyAmount | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}</td>
-        <td><p-tag [value]="getStatusLabel(contract.status)" [severity]="getStatusSeverity(contract.status)" /></td>
-        <td>
-          <span class="fee-progress">
-            <span class="paid">{{ contract.paidFees }}</span>/{{ contract.totalFees }}
-            @if (contract.overdueFees) {
-              <p-tag [value]="contract.overdueFees + ' vencidas'" severity="danger" styleClass="ml-1 text-xs" />
-            }
-          </span>
-        </td>
-        <td class="text-center">
-          <p-button icon="pi pi-pencil" [text]="true" severity="info" size="small" (onClick)="openEdit(contract)" />
-          <p-button icon="pi pi-trash" [text]="true" severity="danger" size="small" (onClick)="delete(contract)" />
-        </td>
-      </tr>
-    </ng-template>
-    <ng-template pTemplate="emptymessage">
-      <tr><td [colSpan]="8" class="text-center py-5 text-muted">Nenhum contrato encontrado.</td></tr>
-    </ng-template>
-  </p-table>
+  @if (isLoading()) {
+    <div class="d-flex justify-content-center py-5">
+      <div class="spinner-border text-secondary" role="status"><span class="visually-hidden">Carregando...</span></div>
+    </div>
+  } @else {
+    <div class="table-responsive">
+      <table class="table table-hover table-sm align-middle">
+        <thead class="table-light">
+          <tr>
+            <th>Aluno</th>
+            <th>Plano</th>
+            <th>Início</th>
+            <th>Término</th>
+            <th>Mensalidade</th>
+            <th>Status</th>
+            <th>Mensalidades</th>
+            <th class="text-center" style="width: 8rem">Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          @if ((items()?.items ?? []).length === 0) {
+            <tr><td colspan="8" class="text-center py-5 text-muted">Nenhum contrato encontrado.</td></tr>
+          }
+          @for (contract of items()?.items ?? []; track contract.id) {
+            <tr>
+              <td>{{ getStudentName(contract.studentId) }}</td>
+              <td>{{ contract.feePlanName }}</td>
+              <td>{{ contract.startDate | date:'dd/MM/yyyy' }}</td>
+              <td>{{ contract.endDate | date:'dd/MM/yyyy' }}</td>
+              <td>{{ contract.monthlyAmount | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}</td>
+              <td>
+                <span [class]="'badge ' + ({'success': 'bg-success', 'warn': 'bg-warning text-dark', 'danger': 'bg-danger', 'info': 'bg-info text-dark', 'secondary': 'bg-secondary'})[getStatusSeverity(contract.status)]">{{ getStatusLabel(contract.status) }}</span>
+              </td>
+              <td>
+                <span class="fee-progress">
+                  <span class="paid">{{ contract.paidFees }}</span>/{{ contract.totalFees }}
+                  @if (contract.overdueFees) {
+                    <span class="badge bg-danger ms-1">{{ contract.overdueFees }} vencidas</span>
+                  }
+                </span>
+              </td>
+              <td class="text-center">
+                <button type="button" class="btn btn-sm btn-outline-info" (click)="openEdit(contract)"><i class="bi bi-pencil"></i></button>
+                <button type="button" class="btn btn-sm btn-outline-danger" (click)="delete(contract)"><i class="bi bi-trash"></i></button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
 
   <app-pagination
     [currentPage]="currentPage()"
@@ -59,14 +68,40 @@
     [totalItems]="items()?.totalCount ?? 0"
     (pageChange)="onPageChange($event)"
     (pageSizeChange)="onPageSizeChange($event)" />
-
-  <p-dialog [visible]="openedCreate()" (visibleChange)="openedCreate.set($event)" header="Novo Contrato" [modal]="true" [draggable]="false" styleClass="w-full md:w-35rem">
-    <app-create-contract (closeEvent)="openedCreate.set(false)" (contractCreated)="onCreated()" />
-  </p-dialog>
-
-  <p-dialog [visible]="openedUpdate()" (visibleChange)="openedUpdate.set($event)" header="Atualizar Contrato" [modal]="true" [draggable]="false" styleClass="w-full md:w-30rem">
-    @if (selected()) {
-      <app-update-contract [contract]="selected()!" (closeEvent)="openedUpdate.set(false)" (contractUpdated)="onUpdated()" />
-    }
-  </p-dialog>
 </section>
+
+@if (openedCreate()) {
+  <div class="modal-backdrop-custom" (click)="openedCreate.set(false)"></div>
+  <div class="modal show d-block" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Novo Contrato</h5>
+          <button type="button" class="btn-close" (click)="openedCreate.set(false)" aria-label="Fechar"></button>
+        </div>
+        <div class="modal-body">
+          <app-create-contract (closeEvent)="openedCreate.set(false)" (contractCreated)="onCreated()" />
+        </div>
+      </div>
+    </div>
+  </div>
+}
+
+@if (openedUpdate()) {
+  <div class="modal-backdrop-custom" (click)="openedUpdate.set(false)"></div>
+  <div class="modal show d-block" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Atualizar Contrato</h5>
+          <button type="button" class="btn-close" (click)="openedUpdate.set(false)" aria-label="Fechar"></button>
+        </div>
+        <div class="modal-body">
+          @if (selected()) {
+            <app-update-contract [contract]="selected()!" (closeEvent)="openedUpdate.set(false)" (contractUpdated)="onUpdated()" />
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+}

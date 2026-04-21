@@ -1,7 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject, output } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
-import { InputTextModule } from 'primeng/inputtext';
-import { ButtonModule } from 'primeng/button';
 import { AcademyService } from '../../../../generated_services/api/academy.service';
 import { CreateAcademyDTO } from '../../../../generated_services/model/createAcademyDTO';
 import { NotificationService } from '../../../../services/notification.service';
@@ -9,7 +7,7 @@ import { NotificationService } from '../../../../services/notification.service';
 @Component({
   selector: 'app-create-academy',
   standalone: true,
-  imports: [ReactiveFormsModule, InputTextModule, ButtonModule],
+  imports: [ReactiveFormsModule],
   templateUrl: './create-academy.component.html',
   styleUrl: './create-academy.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

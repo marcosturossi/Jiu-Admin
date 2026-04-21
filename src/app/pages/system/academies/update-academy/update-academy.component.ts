@@ -1,8 +1,5 @@
 import { ChangeDetectionStrategy, Component, effect, inject, input, output } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
-import { InputTextModule } from 'primeng/inputtext';
-import { ButtonModule } from 'primeng/button';
-import { CheckboxModule } from 'primeng/checkbox';
 import { AcademyService } from '../../../../generated_services/api/academy.service';
 import { ShowAcademyDTO } from '../../../../generated_services/model/showAcademyDTO';
 import { UpdateAcademyDTO } from '../../../../generated_services/model/updateAcademyDTO';
@@ -11,7 +8,7 @@ import { NotificationService } from '../../../../services/notification.service';
 @Component({
   selector: 'app-update-academy',
   standalone: true,
-  imports: [ReactiveFormsModule, InputTextModule, ButtonModule, CheckboxModule],
+  imports: [ReactiveFormsModule],
   templateUrl: './update-academy.component.html',
   styleUrl: './update-academy.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

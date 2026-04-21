@@ -1,7 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { RouterModule } from '@angular/router';
 import { provideHttpClient } from '@angular/common/http';
-import { MessageService } from 'primeng/api';
 import { AppComponent } from './app.component';
 
 describe('AppComponent', () => {
@@ -11,7 +10,7 @@ describe('AppComponent', () => {
         RouterModule.forRoot([]),
         AppComponent
       ],
-      providers: [provideHttpClient(), MessageService]
+      providers: [provideHttpClient()]
     }).compileComponents();
   });
 

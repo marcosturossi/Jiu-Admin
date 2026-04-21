@@ -1,55 +1,71 @@
 <section class="page-section">
   <div class="page-toolbar">
     <input
-      pInputText
+      type="text"
+      class="form-control"
       [ngModel]="searchTerm()"
       (ngModelChange)="onSearch($event)"
-      placeholder="Buscar transação..."
-      class="search-input" />
-    <p-select
-      [options]="typeOptions"
+      placeholder="Buscar transação..." />
+    <select
+      class="form-select"
       [ngModel]="filterType()"
-      (ngModelChange)="filterType.set($event)"
-      optionLabel="label"
-      optionValue="value"
-      placeholder="Tipo"
-      (onChange)="onFilterChange()"
-      styleClass="w-10rem" />
-    <p-button label="Nova Transação" icon="pi pi-plus" (onClick)="openCreate()" />
+      (ngModelChange)="filterType.set($event); onFilterChange()">
+      <option value="">Tipo</option>
+      @for (opt of typeOptions; track opt.value) {
+        <option [value]="opt.value">{{ opt.label }}</option>
+      }
+    </select>
+    <button type="button" class="btn btn-primary" (click)="openCreate()">
+      <i class="bi bi-plus-lg me-1"></i>Nova Transação
+    </button>
   </div>
 
-  <p-table [value]="items()?.items ?? []" [loading]="isLoading()" styleClass="p-datatable-sm p-datatable-striped">
-    <ng-template pTemplate="header">
-      <tr>
-        <th>Tipo</th>
-        <th>Categoria</th>
-        <th>Descrição</th>
-        <th>Valor</th>
-        <th>Data</th>
-        <th>Referência</th>
-        <th class="text-center" style="width: 8rem">Ações</th>
-      </tr>
-    </ng-template>
-    <ng-template pTemplate="body" let-transaction>
-      <tr>
-        <td><p-tag [value]="getTypeLabel(transaction.type)" [severity]="getTypeSeverity(transaction.type)" /></td>
-        <td>{{ getCategoryName(transaction.transactionCategoryId) }}</td>
-        <td class="desc-cell">{{ transaction.description || '—' }}</td>
-        <td [class.amount-income]="transaction.type === 0" [class.amount-expense]="transaction.type === 1">
-          {{ transaction.amount | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}
-        </td>
-        <td>{{ transaction.transactionDate | date:'dd/MM/yyyy' }}</td>
-        <td>{{ transaction.reference || '—' }}</td>
-        <td class="text-center">
-          <p-button icon="pi pi-pencil" [text]="true" severity="info" size="small" (onClick)="openEdit(transaction)" />
-          <p-button icon="pi pi-trash" [text]="true" severity="danger" size="small" (onClick)="delete(transaction)" />
-        </td>
-      </tr>
-    </ng-template>
-    <ng-template pTemplate="emptymessage">
-      <tr><td [colSpan]="7" class="text-center py-5 text-muted">Nenhuma transação encontrada.</td></tr>
-    </ng-template>
-  </p-table>
+  @if (isLoading()) {
+    <div class="d-flex justify-content-center py-5">
+      <div class="spinner-border text-secondary" role="status"><span class="visually-hidden">Carregando...</span></div>
+    </div>
+  } @else {
+    <div class="table-responsive">
+      <table class="table table-hover table-sm align-middle">
+        <thead class="table-light">
+          <tr>
+            <th>Tipo</th>
+            <th>Categoria</th>
+            <th>Descrição</th>
+            <th>Valor</th>
+            <th>Data</th>
+            <th>Referência</th>
+            <th class="text-center" style="width: 8rem">Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          @if ((items()?.items ?? []).length === 0) {
+            <tr><td colspan="7" class="text-center py-5 text-muted">Nenhuma transação encontrada.</td></tr>
+          }
+          @for (transaction of items()?.items ?? []; track transaction.id) {
+            <tr>
+              <td>
+                <span [class]="'badge ' + ({'success':'bg-success','danger':'bg-danger','secondary':'bg-secondary'})[getTypeSeverity(transaction.type)]">
+                  {{ getTypeLabel(transaction.type) }}
+                </span>
+              </td>
+              <td>{{ getCategoryName(transaction.transactionCategoryId) }}</td>
+              <td class="desc-cell">{{ transaction.description || '—' }}</td>
+              <td [class.amount-income]="transaction.type === 0" [class.amount-expense]="transaction.type === 1">
+                {{ transaction.amount | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}
+              </td>
+              <td>{{ transaction.transactionDate | date:'dd/MM/yyyy' }}</td>
+              <td>{{ transaction.reference || '—' }}</td>
+              <td class="text-center">
+                <button type="button" class="btn btn-sm btn-outline-info" (click)="openEdit(transaction)"><i class="bi bi-pencil"></i></button>
+                <button type="button" class="btn btn-sm btn-outline-danger" (click)="delete(transaction)"><i class="bi bi-trash"></i></button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
 
   <app-pagination
     [currentPage]="currentPage()"
@@ -58,14 +74,40 @@
     [totalItems]="items()?.totalCount ?? 0"
     (pageChange)="onPageChange($event)"
     (pageSizeChange)="onPageSizeChange($event)" />
-
-  <p-dialog [visible]="openedCreate()" (visibleChange)="openedCreate.set($event)" header="Nova Transação" [modal]="true" [draggable]="false" styleClass="w-full md:w-35rem">
-    <app-create-transaction [categories]="categories()" (closeEvent)="openedCreate.set(false)" (transactionCreated)="onCreated()" />
-  </p-dialog>
-
-  <p-dialog [visible]="openedUpdate()" (visibleChange)="openedUpdate.set($event)" header="Atualizar Transação" [modal]="true" [draggable]="false" styleClass="w-full md:w-35rem">
-    @if (selected()) {
-      <app-update-transaction [transaction]="selected()!" [categories]="categories()" (closeEvent)="openedUpdate.set(false)" (transactionUpdated)="onUpdated()" />
-    }
-  </p-dialog>
 </section>
+
+@if (openedCreate()) {
+  <div class="modal-backdrop-custom" (click)="openedCreate.set(false)"></div>
+  <div class="modal show d-block" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Nova Transação</h5>
+          <button type="button" class="btn-close" (click)="openedCreate.set(false)" aria-label="Fechar"></button>
+        </div>
+        <div class="modal-body">
+          <app-create-transaction [categories]="categories()" (closeEvent)="openedCreate.set(false)" (transactionCreated)="onCreated()" />
+        </div>
+      </div>
+    </div>
+  </div>
+}
+
+@if (openedUpdate()) {
+  <div class="modal-backdrop-custom" (click)="openedUpdate.set(false)"></div>
+  <div class="modal show d-block" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Atualizar Transação</h5>
+          <button type="button" class="btn-close" (click)="openedUpdate.set(false)" aria-label="Fechar"></button>
+        </div>
+        <div class="modal-body">
+          @if (selected()) {
+            <app-update-transaction [transaction]="selected()!" [categories]="categories()" (closeEvent)="openedUpdate.set(false)" (transactionUpdated)="onUpdated()" />
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+}

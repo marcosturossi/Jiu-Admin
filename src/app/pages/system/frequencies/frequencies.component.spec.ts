@@ -1,6 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
-import { MessageService } from 'primeng/api';
 
 import { FrequenciesComponent } from './frequencies.component';
 
@@ -11,7 +10,7 @@ describe('FrequenciesComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [FrequenciesComponent],
-      providers: [provideHttpClient(), MessageService]
+      providers: [provideHttpClient()]
     })
     .compileComponents();
 

@@ -1,8 +1,4 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
-import { TableModule } from 'primeng/table';
-import { ButtonModule } from 'primeng/button';
-import { TagModule } from 'primeng/tag';
-import { DialogModule } from 'primeng/dialog';
 import { DatePipe } from '@angular/common';
 import { TransactionCategoryService, PaginationTransactionCategoryDTO, ShowTransactionCategoryDTO } from '../../../generated_services';
 import { SubnavService } from '../../../services/subnav.service';
@@ -15,10 +11,6 @@ import { UpdateTransactionCategoryComponent } from './update-transaction-categor
   selector: 'app-transaction-categories',
   standalone: true,
   imports: [
-    TableModule,
-    ButtonModule,
-    TagModule,
-    DialogModule,
     DatePipe,
     PaginationComponent,
     CreateTransactionCategoryComponent,

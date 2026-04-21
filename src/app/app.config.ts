@@ -2,10 +2,8 @@ import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
-import { providePrimeNG } from 'primeng/config';
-import Aura from '@primeuix/themes/aura';
+import { provideToastr } from 'ngx-toastr';
 import { includeBearerTokenInterceptor } from 'keycloak-angular';
-import { MessageService } from 'primeng/api';
 
 import { routes } from './app.routes';
 import { keycloakProviders } from './auth/keycloak.providers';
@@ -18,14 +16,11 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(
       withInterceptors([includeBearerTokenInterceptor])
     ),
-    providePrimeNG({
-      theme: {
-        preset: Aura,
-        options: { darkModeSelector: false },
-      },
-      ripple: true,
+    provideToastr({
+      timeOut: 4000,
+      positionClass: 'toast-top-right',
+      preventDuplicates: true,
     }),
     keycloakProviders,
-    MessageService,
   ]
 };

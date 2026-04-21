@@ -1,9 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
-import { TableModule } from 'primeng/table';
-import { ButtonModule } from 'primeng/button';
-import { TagModule } from 'primeng/tag';
-import { DialogModule } from 'primeng/dialog';
 import { StudentsService } from '../../../generated_services/api/students.service';
 import { ShowStudentDTO } from '../../../generated_services/model/showStudentDTO';
 import { PaginationStudentDTO } from '../../../generated_services/model/paginationStudentDTO';
@@ -16,10 +12,6 @@ import { UpdateStudentComponent } from './update-student/update-student.componen
 @Component({
   selector: 'app-students',
   imports: [
-    TableModule,
-    ButtonModule,
-    TagModule,
-    DialogModule,
     DatePipe,
     PaginationComponent,
     CreateStudentComponent,

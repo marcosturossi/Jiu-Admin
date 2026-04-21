@@ -7,16 +7,13 @@ import { UpdatePersonsComponent } from './update-persons/update-persons.componen
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
 import { PaginationComponent } from '../../../shared/pagination/pagination.component';
-import { TableModule } from 'primeng/table';
-import { ButtonModule } from 'primeng/button';
-import { DialogModule } from 'primeng/dialog';
 
 @Component({
   selector: 'app-face-recognition',
   templateUrl: './face-recognition.component.html',
   styleUrl: './face-recognition.component.scss',
   standalone: true,
-  imports: [CreatePersonsComponent, UpdatePersonsComponent, PaginationComponent, TableModule, ButtonModule, DialogModule],
+  imports: [CreatePersonsComponent, UpdatePersonsComponent, PaginationComponent],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FaceRecognitionComponent {

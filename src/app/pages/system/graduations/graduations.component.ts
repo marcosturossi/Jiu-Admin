@@ -1,9 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
-import { TableModule } from 'primeng/table';
-import { ButtonModule } from 'primeng/button';
-import { TagModule } from 'primeng/tag';
-import { DialogModule } from 'primeng/dialog';
 import { GraduationService } from '../../../generated_services/api/graduation.service';
 import { PaginationGraduationDTO, ShowGraduationDTO } from '../../../generated_services';
 import { CreateGraduationComponent } from './create-graduation/create-graduation.component';
@@ -16,8 +12,10 @@ import { PaginationComponent } from '../../../shared/pagination/pagination.compo
   selector: 'app-graduations',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    TableModule, ButtonModule, TagModule, DialogModule,
-    PaginationComponent, CreateGraduationComponent, UpdateGraduationComponent, DatePipe,
+    PaginationComponent,
+    CreateGraduationComponent,
+    UpdateGraduationComponent,
+    DatePipe,
   ],
   templateUrl: './graduations.component.html',
   styleUrl: './graduations.component.scss',

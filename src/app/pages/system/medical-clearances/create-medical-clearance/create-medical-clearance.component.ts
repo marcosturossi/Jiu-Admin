@@ -6,15 +6,10 @@ import { CreateMedicalClearanceDTO } from '../../../../generated_services/model/
 import { ShowStudentDTO } from '../../../../generated_services/model/showStudentDTO';
 import { NotificationService } from '../../../../services/notification.service';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
-import { ButtonModule } from 'primeng/button';
-import { InputTextModule } from 'primeng/inputtext';
-import { SelectModule } from 'primeng/select';
-import { CheckboxModule } from 'primeng/checkbox';
-import { DatePickerModule } from 'primeng/datepicker';
 
 @Component({
   selector: 'app-create-medical-clearance',
-  imports: [ReactiveFormsModule, ButtonModule, InputTextModule, SelectModule, CheckboxModule, DatePickerModule],
+  imports: [ReactiveFormsModule],
   templateUrl: './create-medical-clearance.component.html',
   styleUrl: './create-medical-clearance.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush

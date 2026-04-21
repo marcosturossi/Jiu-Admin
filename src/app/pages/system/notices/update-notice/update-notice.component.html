@@ -1,14 +1,17 @@
-<form [formGroup]="form" class="dialog-form">
-  <div class="field">
-    <label for="description">Descrição *</label>
-    <textarea pInputText id="description" formControlName="description" placeholder="Digite a descrição do aviso" rows="4" class="w-full" style="resize: vertical;"></textarea>
+<form [formGroup]="form">
+  <div class="mb-3">
+    <label for="description" class="form-label">Descrição *</label>
+    <textarea id="description" formControlName="description" placeholder="Digite a descrição do aviso"
+      rows="4" class="form-control" style="resize: vertical;"></textarea>
   </div>
-  <div class="field flex-row gap-2 align-items-center">
-    <p-checkbox formControlName="isActive" [binary]="true" inputId="isActive" />
-    <label for="isActive">Ativo</label>
+  <div class="form-check mb-3">
+    <input type="checkbox" class="form-check-input" formControlName="isActive" id="isActive" />
+    <label class="form-check-label" for="isActive">Ativo</label>
   </div>
-  <div class="dialog-actions">
-    <p-button label="Cancelar" severity="secondary" [outlined]="true" (onClick)="close()" />
-    <p-button label="Salvar" icon="pi pi-check" (onClick)="save()" [disabled]="form.invalid" />
+  <div class="d-flex gap-2 justify-content-end mt-3">
+    <button type="button" class="btn btn-outline-secondary" (click)="close()">Cancelar</button>
+    <button type="button" class="btn btn-primary" (click)="save()" [disabled]="form.invalid">
+      <i class="bi bi-check-lg me-1"></i>Salvar
+    </button>
   </div>
 </form>

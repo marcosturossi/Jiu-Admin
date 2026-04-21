@@ -4,13 +4,11 @@ import { PersonsService } from '../../../../generated_services/api2/api/persons.
 import { PersonDetailResponse } from '../../../../generated_services/api2/model/personDetailResponse';
 import { FaceImageResponse } from '../../../../generated_services/api2/model/faceImageResponse';
 import { NotificationService } from '../../../../services/notification.service';
-import { ButtonModule } from 'primeng/button';
-import { InputTextModule } from 'primeng/inputtext';
 
 @Component({
   selector: 'app-update-persons',
   standalone: true,
-  imports: [ReactiveFormsModule, ButtonModule, InputTextModule],
+  imports: [ReactiveFormsModule],
   templateUrl: './update-persons.component.html',
   styleUrl: './update-persons.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush

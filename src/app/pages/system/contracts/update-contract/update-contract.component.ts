@@ -1,8 +1,5 @@
 import { ChangeDetectionStrategy, Component, effect, inject, input, output, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ButtonModule } from 'primeng/button';
-import { SelectModule } from 'primeng/select';
-import { TextareaModule } from 'primeng/textarea';
 import { ContractService } from '../../../../generated_services/api/contract.service';
 import { ShowContractDTO, ContractStatus } from '../../../../generated_services';
 import { NotificationService } from '../../../../services/notification.service';
@@ -10,7 +7,7 @@ import { NotificationService } from '../../../../services/notification.service';
 @Component({
   selector: 'app-update-contract',
   standalone: true,
-  imports: [ReactiveFormsModule, ButtonModule, SelectModule, TextareaModule],
+  imports: [ReactiveFormsModule],
   templateUrl: './update-contract.component.html',
   styleUrl: './update-contract.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

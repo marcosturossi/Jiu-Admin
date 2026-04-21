@@ -24,7 +24,6 @@ import { MonthlyFeesComponent } from './monthly-fees/monthly-fees.component';
 import { TransactionsComponent } from './transactions/transactions.component';
 import { TransactionCategoriesComponent } from './transaction-categories/transaction-categories.component';
 import { AcademiesComponent } from './academies/academies.component';
-import { ToastModule } from 'primeng/toast';
 
 export const routes: Routes = [
   {
@@ -71,7 +70,6 @@ export const routes: Routes = [
     NavbarComponent,
     FilterComponent,
     SubnavComponent,
-    ToastModule,
   ],
   exports: [
     SystemComponent,

@@ -1,38 +1,43 @@
-<form [formGroup]="frequencyForm" class="dialog-form">
-  <div class="field">
-    <label for="lessonSelect">Selecione a Aula *</label>
-    <p-select
-      id="lessonSelect"
-      [options]="lessonOptions()"
-      formControlName="lessonId"
-      optionLabel="label"
-      optionValue="value"
-      placeholder="Selecione uma aula..."
-      class="w-full" />
+<form [formGroup]="frequencyForm">
+  <div class="mb-3">
+    <label for="lessonSelect" class="form-label">Selecione a Aula *</label>
+    <select id="lessonSelect" formControlName="lessonId" class="form-select">
+      <option value="" disabled>Selecione uma aula...</option>
+      @for (opt of lessonOptions(); track opt.value) {
+        <option [value]="opt.value">{{ opt.label }}</option>
+      }
+    </select>
   </div>
 
   <!-- Image Recognition Section -->
   <div class="recognition-card">
     <div class="recognition-header">
-      <i class="pi pi-camera"></i>
+      <i class="bi bi-camera"></i>
       <span>Reconhecimento Automático por Imagem</span>
     </div>
     <div class="recognition-body">
       <div class="recognition-upload">
-        <div class="field">
-          <label for="imageInput">Fazer upload da foto da turma</label>
+        <div class="mb-3">
+          <label for="imageInput" class="form-label">Fazer upload da foto da turma</label>
           <input type="file" id="imageInput" accept="image/*" (change)="onFileSelected($event)" class="file-input" />
           <small class="hint">Formatos aceitos: JPG, PNG, GIF. Tamanho máximo: 5MB.</small>
         </div>
 
         @if (selectedFile()) {
           <div class="recognition-actions">
-            <p-button label="Reconhecer Alunos" icon="pi pi-search"
-              [loading]="isRecognizing()"
+            <button class="btn btn-primary" type="button"
               [disabled]="isRecognizing() || !frequencyForm.get('lessonId')?.value"
-              (onClick)="recognizeStudents()" />
-            <p-button label="Limpar" icon="pi pi-trash" severity="secondary" [outlined]="true"
-              (onClick)="clearImage()" />
+              (click)="recognizeStudents()">
+              @if (isRecognizing()) {
+                <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+              } @else {
+                <i class="bi bi-search me-1"></i>
+              }
+              Reconhecer Alunos
+            </button>
+            <button class="btn btn-outline-secondary" type="button" (click)="clearImage()">
+              <i class="bi bi-trash me-1"></i> Limpar
+            </button>
           </div>
 
           @if (!frequencyForm.get('lessonId')?.value) {
@@ -48,19 +53,20 @@
             <img [src]="previewUrl()" alt="Preview" class="preview-img" />
           </div>
           @if (recognizedStudentIds().length > 0) {
-            <small class="success-hint"><i class="pi pi-check-circle"></i> {{ recognizedStudentIds().length }} aluno(s) reconhecido(s)!</small>
+            <small class="success-hint"><i class="bi bi-check-circle"></i> {{ recognizedStudentIds().length }} aluno(s) reconhecido(s)!</small>
           }
         </div>
       }
     </div>
   </div>
 
-  <div class="field">
+  <div class="mb-3">
     <div class="students-header">
-      <label>Selecione os Alunos *</label>
+      <label class="form-label">Selecione os Alunos *</label>
       <div class="students-actions">
-        <p-button [label]="isAllSelected() ? 'Desmarcar Todos' : 'Selecionar Todos'"
-          severity="secondary" [outlined]="true" size="small" (onClick)="toggleSelectAll()" />
+        <button class="btn btn-outline-secondary btn-sm" type="button" (click)="toggleSelectAll()">
+          {{ isAllSelected() ? 'Desmarcar Todos' : 'Selecionar Todos' }}
+        </button>
         <span class="count-badge">{{ getSelectedStudentsCount() }} selecionados</span>
       </div>
     </div>
@@ -72,7 +78,7 @@
           <label [for]="'student-' + i" class="student-label">
             {{ student.firstName }} {{ student.lastName }}
             @if (isStudentRecognized(student.id!)) {
-              <i class="pi pi-check-circle" style="color: var(--p-green-500)" title="Reconhecido automaticamente"></i>
+              <i class="bi bi-check-circle" style="color: var(--p-green-500)" title="Reconhecido automaticamente"></i>
             }
           </label>
         </div>
@@ -84,13 +90,18 @@
     </small>
   </div>
 
-  <div class="dialog-actions">
-    <p-button label="Cancelar" severity="secondary" [outlined]="true" (onClick)="close()" />
-    <p-button
-      [label]="isCreating() ? 'Criando ' + getSelectedStudentsCount() + ' frequências...' : 'Criar ' + getSelectedStudentsCount() + ' frequências'"
-      icon="pi pi-check"
-      [loading]="isCreating()"
+  <div class="d-flex gap-2 justify-content-end mt-3">
+    <button class="btn btn-outline-secondary" type="button" (click)="close()">Cancelar</button>
+    <button class="btn btn-primary" type="button"
       [disabled]="!isFormValid() || isCreating()"
-      (onClick)="create()" />
+      (click)="create()">
+      @if (isCreating()) {
+        <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+        Criando {{ getSelectedStudentsCount() }} frequências...
+      } @else {
+        <i class="bi bi-check-lg me-1"></i>
+        Criar {{ getSelectedStudentsCount() }} frequências
+      }
+    </button>
   </div>
 </form>

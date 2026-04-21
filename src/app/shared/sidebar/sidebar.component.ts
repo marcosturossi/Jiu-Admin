@@ -27,48 +27,48 @@ export class SidebarComponent {
     {
       title: 'Principal',
       items: [
-        { route: '/system/home', label: 'Dashboard', icon: 'pi pi-home' },
+        { route: '/system/home', label: 'Dashboard', icon: 'bi bi-house' },
       ]
     },
     {
       title: 'Acadêmico',
       items: [
-        { route: '/system/students', label: 'Alunos', icon: 'pi pi-users' },
-        { route: '/system/lessons', label: 'Aulas', icon: 'pi pi-calendar' },
-        { route: '/system/graduations', label: 'Graduações', icon: 'pi pi-star' },
-        { route: '/system/frequencies', label: 'Frequências', icon: 'pi pi-check-square' },
-        { route: '/system/belts', label: 'Faixas', icon: 'pi pi-bookmark' },
-        { route: '/system/graduation-requirements', label: 'Requisitos', icon: 'pi pi-list-check' },
+        { route: '/system/students', label: 'Alunos', icon: 'bi bi-people' },
+        { route: '/system/lessons', label: 'Aulas', icon: 'bi bi-calendar3' },
+        { route: '/system/graduations', label: 'Graduações', icon: 'bi bi-award' },
+        { route: '/system/frequencies', label: 'Frequências', icon: 'bi bi-check2-square' },
+        { route: '/system/belts', label: 'Faixas', icon: 'bi bi-bookmark' },
+        { route: '/system/graduation-requirements', label: 'Requisitos', icon: 'bi bi-list-check' },
       ]
     },
     {
       title: 'Financeiro',
       items: [
-        { route: '/system/contracts', label: 'Contratos', icon: 'pi pi-file-edit' },
-        { route: '/system/monthly-fees', label: 'Mensalidades', icon: 'pi pi-credit-card' },
-        { route: '/system/fee-plans', label: 'Planos', icon: 'pi pi-receipt' },
-        { route: '/system/transactions', label: 'Transações', icon: 'pi pi-arrow-right-arrow-left' },
-        { route: '/system/transaction-categories', label: 'Categorias', icon: 'pi pi-tags' },
+        { route: '/system/contracts', label: 'Contratos', icon: 'bi bi-file-earmark-text' },
+        { route: '/system/monthly-fees', label: 'Mensalidades', icon: 'bi bi-credit-card' },
+        { route: '/system/fee-plans', label: 'Planos', icon: 'bi bi-receipt' },
+        { route: '/system/transactions', label: 'Transações', icon: 'bi bi-arrow-left-right' },
+        { route: '/system/transaction-categories', label: 'Categorias', icon: 'bi bi-tags' },
       ]
     },
     {
       title: 'Comunicação',
       items: [
-        { route: '/system/notices', label: 'Avisos', icon: 'pi pi-bell' },
-        { route: '/system/notification', label: 'Notificações', icon: 'pi pi-megaphone' },
+        { route: '/system/notices', label: 'Avisos', icon: 'bi bi-bell' },
+        { route: '/system/notification', label: 'Notificações', icon: 'bi bi-megaphone' },
       ]
     },
     {
       title: 'Saúde e Segurança',
       items: [
-        { route: '/system/medical-clearances', label: 'Atestados Médicos', icon: 'pi pi-heart' },
-        { route: '/system/face-recognition', label: 'Reconhecimento', icon: 'pi pi-id-card' },
+        { route: '/system/medical-clearances', label: 'Atestados Médicos', icon: 'bi bi-heart-pulse' },
+        { route: '/system/face-recognition', label: 'Reconhecimento', icon: 'bi bi-person-badge' },
       ]
     },
     {
       title: 'Configurações',
       items: [
-        { route: '/system/academies', label: 'Academias', icon: 'pi pi-building' },
+        { route: '/system/academies', label: 'Academias', icon: 'bi bi-building' },
       ]
     },
   ];

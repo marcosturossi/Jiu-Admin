@@ -8,25 +8,13 @@ import {
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import Keycloak from 'keycloak-js';
-import { InputTextModule } from 'primeng/inputtext';
-import { ButtonModule } from 'primeng/button';
-import { CardModule } from 'primeng/card';
-import { MessageModule } from 'primeng/message';
-import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { PublicService } from '../../generated_services/api/public.service';
 import { AcademySessionService } from '../../services/academy-session.service';
 
 @Component({
   selector: 'app-select-academy',
   standalone: true,
-  imports: [
-    FormsModule,
-    InputTextModule,
-    ButtonModule,
-    CardModule,
-    MessageModule,
-    ProgressSpinnerModule,
-  ],
+  imports: [FormsModule],
   templateUrl: './select-academy.component.html',
   styleUrl: './select-academy.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

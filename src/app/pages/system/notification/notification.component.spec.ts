@@ -1,6 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
-import { MessageService } from 'primeng/api';
 
 import { NotificationComponent } from './notification.component';
 
@@ -11,7 +10,7 @@ describe('NotificationComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [NotificationComponent],
-      providers: [provideHttpClient(), MessageService]
+      providers: [provideHttpClient()]
     })
     .compileComponents();
 

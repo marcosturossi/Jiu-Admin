@@ -6,16 +6,10 @@ import { UpdateNotificationDTO } from '../../../../generated_services/model/upda
 import { NotificationType } from '../../../../generated_services/model/notificationType';
 import { NotificationPriority } from '../../../../generated_services/model/notificationPriority';
 import { NotificationService } from '../../../../services/notification.service';
-import { ButtonModule } from 'primeng/button';
-import { InputTextModule } from 'primeng/inputtext';
-import { SelectModule } from 'primeng/select';
-import { TextareaModule } from 'primeng/textarea';
-import { CheckboxModule } from 'primeng/checkbox';
-import { DatePickerModule } from 'primeng/datepicker';
 
 @Component({
   selector: 'app-update-notification',
-  imports: [ReactiveFormsModule, ButtonModule, InputTextModule, SelectModule, TextareaModule, CheckboxModule, DatePickerModule],
+  imports: [ReactiveFormsModule],
   templateUrl: './update-notification.component.html',
   styleUrl: './update-notification.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush

@@ -1,62 +1,71 @@
-<form [formGroup]="form" class="dialog-form">
-  <div class="form-row">
-    <div class="field" style="flex:2">
-      <label for="title">Título *</label>
-      <input pInputText id="title" formControlName="title" placeholder="Digite o título da notificação" class="w-full" />
+<form [formGroup]="form">
+  <div class="row g-2">
+    <div class="col mb-3">
+      <label for="title" class="form-label">Título *</label>
+      <input id="title" formControlName="title" placeholder="Digite o título da notificação" class="form-control" />
     </div>
-    <div class="field" style="flex:1">
-      <label for="type">Tipo *</label>
-      <p-select id="type" [options]="notificationTypes" formControlName="type"
-        optionLabel="label" optionValue="value" placeholder="Selecione" class="w-full" />
-    </div>
-  </div>
-
-  <div class="field">
-    <label for="message">Mensagem *</label>
-    <textarea pTextarea id="message" formControlName="message" rows="4"
-      placeholder="Digite a mensagem da notificação" class="w-full"></textarea>
-  </div>
-
-  <div class="form-row">
-    <div class="field" style="flex:1">
-      <label for="priority">Prioridade</label>
-      <p-select id="priority" [options]="notificationPriorities" formControlName="priority"
-        optionLabel="label" optionValue="value" placeholder="Selecione" class="w-full" />
-    </div>
-    <div class="field" style="flex:1">
-      <label for="userId">ID do Usuário</label>
-      <input pInputText id="userId" formControlName="userId" placeholder="Vazio = todos os usuários" class="w-full" />
-      <small class="hint">Deixe vazio para enviar para todos os usuários</small>
+    <div class="col mb-3">
+      <label for="type" class="form-label">Tipo *</label>
+      <select id="type" formControlName="type" class="form-select">
+        <option value="" disabled>Selecione</option>
+        @for (opt of notificationTypes; track opt.value) {
+          <option [value]="opt.value">{{ opt.label }}</option>
+        }
+      </select>
     </div>
   </div>
 
-  <div class="form-row">
-    <div class="field" style="flex:1">
-      <label for="expiresAt">Data de Expiração</label>
-      <p-datepicker id="expiresAt" formControlName="expiresAt" [showTime]="true" [showSeconds]="false"
-        placeholder="Sem expiração" class="w-full" />
-      <small class="hint">Deixe vazio para notificação sem expiração</small>
+  <div class="mb-3">
+    <label for="message" class="form-label">Mensagem *</label>
+    <textarea id="message" formControlName="message" rows="4"
+      placeholder="Digite a mensagem da notificação" class="form-control"></textarea>
+  </div>
+
+  <div class="row g-2">
+    <div class="col mb-3">
+      <label for="priority" class="form-label">Prioridade</label>
+      <select id="priority" formControlName="priority" class="form-select">
+        <option value="" disabled>Selecione</option>
+        @for (opt of notificationPriorities; track opt.value) {
+          <option [value]="opt.value">{{ opt.label }}</option>
+        }
+      </select>
     </div>
-    <div class="field" style="flex:1">
-      <label for="actionUrl">URL de Ação</label>
-      <input pInputText id="actionUrl" formControlName="actionUrl" placeholder="URL opcional para ação" class="w-full" />
+    <div class="col mb-3">
+      <label for="userId" class="form-label">ID do Usuário</label>
+      <input id="userId" formControlName="userId" placeholder="Vazio = todos os usuários" class="form-control" />
+      <small class="text-muted">Deixe vazio para enviar para todos os usuários</small>
     </div>
   </div>
 
-  <div class="field">
-    <label for="metadata">Metadados (JSON)</label>
-    <textarea pTextarea id="metadata" formControlName="metadata" rows="2"
-      placeholder='{"key": "value"}' class="w-full"></textarea>
-    <small class="hint">Dados adicionais em formato JSON (opcional)</small>
+  <div class="row g-2">
+    <div class="col mb-3">
+      <label for="expiresAt" class="form-label">Data de Expiração</label>
+      <input type="datetime-local" id="expiresAt" formControlName="expiresAt" class="form-control" />
+      <small class="text-muted">Deixe vazio para notificação sem expiração</small>
+    </div>
+    <div class="col mb-3">
+      <label for="actionUrl" class="form-label">URL de Ação</label>
+      <input id="actionUrl" formControlName="actionUrl" placeholder="URL opcional para ação" class="form-control" />
+    </div>
   </div>
 
-  <div class="checkbox-row">
-    <p-checkbox formControlName="isActive" [binary]="true" inputId="isActiveCheck" />
-    <label for="isActiveCheck">Notificação Ativa</label>
+  <div class="mb-3">
+    <label for="metadata" class="form-label">Metadados (JSON)</label>
+    <textarea id="metadata" formControlName="metadata" rows="2"
+      placeholder='{"key": "value"}' class="form-control"></textarea>
+    <small class="text-muted">Dados adicionais em formato JSON (opcional)</small>
   </div>
 
-  <div class="dialog-actions">
-    <p-button label="Cancelar" severity="secondary" [outlined]="true" (onClick)="close()" />
-    <p-button label="Salvar" icon="pi pi-check" (onClick)="create()" [disabled]="form.invalid" />
+  <div class="form-check mb-3">
+    <input type="checkbox" class="form-check-input" formControlName="isActive" id="isActiveCheck" />
+    <label class="form-check-label" for="isActiveCheck">Notificação Ativa</label>
+  </div>
+
+  <div class="d-flex gap-2 justify-content-end mt-3">
+    <button type="button" class="btn btn-outline-secondary" (click)="close()">Cancelar</button>
+    <button type="button" class="btn btn-primary" (click)="create()" [disabled]="form.invalid">
+      <i class="bi bi-check-lg me-1"></i>Salvar
+    </button>
   </div>
 </form>

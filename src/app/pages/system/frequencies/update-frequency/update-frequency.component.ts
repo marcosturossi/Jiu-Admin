@@ -3,13 +3,11 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { FrequencyService, StudentsService, PaginationStudentDTO } from '../../../../generated_services';
 import { ShowFrequencyDTO, UpdateFrequencyDTO } from '../../../../generated_services';
 import { NotificationService } from '../../../../services/notification.service';
-import { SelectModule } from 'primeng/select';
-import { ButtonModule } from 'primeng/button';
 import { signal } from '@angular/core';
 
 @Component({
   selector: 'app-update-frequency',
-  imports: [ReactiveFormsModule, SelectModule, ButtonModule],
+  imports: [ReactiveFormsModule],
   templateUrl: './update-frequency.component.html',
   styleUrl: './update-frequency.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush

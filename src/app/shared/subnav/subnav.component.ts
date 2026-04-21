@@ -17,7 +17,7 @@ import { SubnavService } from '../../services/subnav.service';
     .page-title {
       font-size: 1.25rem;
       font-weight: 600;
-      color: var(--p-text-color, #1a1f37);
+      color: var(--brand-text);
       margin: 0;
     }
   `],

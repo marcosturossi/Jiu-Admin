@@ -1,17 +1,14 @@
 import { ChangeDetectionStrategy, Component, inject, signal, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import Keycloak from 'keycloak-js';
-import { ButtonModule } from 'primeng/button';
-import { MenuModule } from 'primeng/menu';
-import { AvatarModule } from 'primeng/avatar';
-import { MenuItem } from 'primeng/api';
+import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
 import { AuthServiceService } from '../../services/auth-service.service';
 import { AcademySessionService } from '../../services/academy-session.service';
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [CommonModule, ButtonModule, MenuModule, AvatarModule],
+  imports: [CommonModule, NgbDropdownModule],
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -23,22 +20,6 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
   protected readonly sidebarOpen = signal(false);
   protected readonly userName    = signal<string>('');
-
-  protected readonly userMenuItems: MenuItem[] = [
-    {
-      label: 'Trocar Academia',
-      icon: 'pi pi-building',
-      command: () => this.switchAcademy(),
-    },
-    {
-      separator: true,
-    },
-    {
-      label: 'Sair',
-      icon: 'pi pi-sign-out',
-      command: () => this.logout(),
-    },
-  ];
 
   private observer?: MutationObserver;
 
@@ -60,12 +41,12 @@ export class NavbarComponent implements OnInit, OnDestroy {
     document.body.classList.toggle('sidebar-open', next);
   }
 
-  private switchAcademy(): void {
+  protected switchAcademy(): void {
     this.academySession.clearAcademy();
     this.keycloak.logout({ redirectUri: window.location.origin + '/select-academy' });
   }
 
-  private logout(): void {
+  protected logout(): void {
     this.keycloak.logout({ redirectUri: window.location.origin });
   }
 }

@@ -1,8 +1,4 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
-import { TableModule } from 'primeng/table';
-import { ButtonModule } from 'primeng/button';
-import { TagModule } from 'primeng/tag';
-import { DialogModule } from 'primeng/dialog';
 import { GraduationRequirementsService, ShowGraduationRequirementsDTO } from '../../../generated_services';
 import { CreateGraduationRequirementComponent } from './create-graduation-requirement/create-graduation-requirement.component';
 import { UpdateGraduationRequirementComponent } from './update-graduation-requirement/update-graduation-requirement.component';
@@ -13,8 +9,8 @@ import { NotificationService } from '../../../services/notification.service';
   selector: 'app-graduation-requirements',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    TableModule, ButtonModule, TagModule, DialogModule,
-    CreateGraduationRequirementComponent, UpdateGraduationRequirementComponent,
+    CreateGraduationRequirementComponent,
+    UpdateGraduationRequirementComponent,
   ],
   templateUrl: './graduation-requirements.component.html',
   styleUrl: './graduation-requirements.component.scss',

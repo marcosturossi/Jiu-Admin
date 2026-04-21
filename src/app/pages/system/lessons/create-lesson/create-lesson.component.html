@@ -1,38 +1,40 @@
-<form [formGroup]="form" class="dialog-form">
-  <div class="field">
-    <div class="flex align-items-center gap-2">
-      <p-checkbox inputId="generate-title" [binary]="true"
+<form [formGroup]="form">
+  <div class="mb-3">
+    <div class="form-check">
+      <input class="form-check-input" type="checkbox" id="generate-title"
         [ngModel]="autoTitle()" [ngModelOptions]="{standalone: true}"
         (ngModelChange)="onAutoTitleChange($event)" />
-      <label for="generate-title">Gerar Título Automático</label>
+      <label class="form-check-label" for="generate-title">Gerar Título Automático</label>
     </div>
   </div>
-  <div class="field">
-    <label for="title">Título *</label>
-    <input pInputText id="title" formControlName="title" placeholder="Título da aula" class="w-full" />
+  <div class="mb-3">
+    <label for="title" class="form-label">Título *</label>
+    <input type="text" class="form-control" id="title" formControlName="title" placeholder="Título da aula" />
   </div>
-  <div class="field">
-    <label for="description">Descrição</label>
-    <textarea pTextarea id="description" formControlName="description"
-      placeholder="Descrição da aula" rows="3" class="w-full"></textarea>
+  <div class="mb-3">
+    <label for="description" class="form-label">Descrição</label>
+    <textarea class="form-control" id="description" formControlName="description"
+      placeholder="Descrição da aula" rows="3"></textarea>
   </div>
-  <div class="field">
-    <label for="scheduledDate">Data e Hora *</label>
-    <input pInputText type="datetime-local" id="scheduledDate" formControlName="scheduledDate" class="w-full" />
+  <div class="mb-3">
+    <label for="scheduledDate" class="form-label">Data e Hora *</label>
+    <input type="datetime-local" class="form-control" id="scheduledDate" formControlName="scheduledDate" />
   </div>
-  <div class="field">
-    <label for="duration">Duração *</label>
-    <input pInputText type="time" id="duration" formControlName="duration" placeholder="00:00" class="w-full" />
+  <div class="mb-3">
+    <label for="duration" class="form-label">Duração *</label>
+    <input type="time" class="form-control" id="duration" formControlName="duration" placeholder="00:00" />
   </div>
-  <div class="field">
-    <div class="flex align-items-center gap-2">
-      <p-checkbox inputId="isActive" formControlName="isActive" [binary]="true" />
-      <label for="isActive">Ativo</label>
+  <div class="mb-3">
+    <div class="form-check">
+      <input class="form-check-input" type="checkbox" formControlName="isActive" id="isActive" />
+      <label class="form-check-label" for="isActive">Ativo</label>
     </div>
   </div>
-  <div class="dialog-actions">
-    <p-button label="Cancelar" severity="secondary" [outlined]="true" (onClick)="close()" />
-    <p-button label="Salvar" icon="pi pi-check" (onClick)="save()" [disabled]="form.invalid" />
+  <div class="d-flex gap-2 justify-content-end mt-3">
+    <button type="button" class="btn btn-outline-secondary" (click)="close()">Cancelar</button>
+    <button type="button" class="btn btn-primary" (click)="save()" [disabled]="form.invalid">
+      <i class="bi bi-check-lg me-1"></i>Salvar
+    </button>
   </div>
 </form>
 

@@ -8,14 +8,10 @@ import { NotificationService } from '../../../services/notification.service';
 import { PaginationMedicalClearanceDTO } from '../../../generated_services';
 import { PaginationComponent } from '../../../shared/pagination/pagination.component';
 import { BlobViewerComponent } from '../../../shared/blob-viewer/blob-viewer.component';
-import { TableModule } from 'primeng/table';
-import { ButtonModule } from 'primeng/button';
-import { TagModule } from 'primeng/tag';
-import { DialogModule } from 'primeng/dialog';
 
 @Component({
   selector: 'app-medical-clearances',
-  imports: [DatePipe, CreateMedicalClearanceComponent, PaginationComponent, BlobViewerComponent, TableModule, ButtonModule, TagModule, DialogModule],
+  imports: [DatePipe, CreateMedicalClearanceComponent, PaginationComponent, BlobViewerComponent],
   templateUrl: './medical-clearances.component.html',
   styleUrl: './medical-clearances.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush

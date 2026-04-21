@@ -1,55 +1,97 @@
 <section class="page-section">
   <div class="page-toolbar">
-    <p-button label="Nova Aula" icon="pi pi-plus" (onClick)="openCreate()" />
+    <button type="button" class="btn btn-primary" (click)="openCreate()">
+      <i class="bi bi-plus-lg me-1"></i>Nova Aula
+    </button>
   </div>
 
-  <p-table [value]="items()?.items ?? []" [loading]="isLoading()"
-           styleClass="p-datatable-sm p-datatable-striped" [tableStyle]="{'min-width': '50rem'}">
-    <ng-template pTemplate="header">
-      <tr>
-        <th>Título</th>
-        <th>Descrição</th>
-        <th>Início</th>
-        <th>Duração</th>
-        <th>Status</th>
-        <th class="text-center" style="width:8rem">Ações</th>
-      </tr>
-    </ng-template>
-    <ng-template pTemplate="body" let-lesson>
-      <tr>
-        <td>{{ lesson.title }}</td>
-        <td>{{ lesson.description }}</td>
-        <td>{{ lesson.scheduledDate | date:'dd/MM/yyyy HH:mm' }}</td>
-        <td>{{ lesson.duration }}</td>
-        <td>
-          <p-tag [value]="lesson.isActive ? 'Ativa' : 'Inativa'"
-                 [severity]="lesson.isActive ? 'success' : 'danger'" />
-        </td>
-        <td class="text-center">
-          <p-button icon="pi pi-pencil" [text]="true" severity="info" size="small" (onClick)="openEdit(lesson)" />
-          <p-button icon="pi pi-trash" [text]="true" severity="danger" size="small" (onClick)="delete(lesson)" />
-        </td>
-      </tr>
-    </ng-template>
-    <ng-template pTemplate="emptymessage">
-      <tr><td [colSpan]="6" class="text-center py-5 text-muted">Nenhum registro.</td></tr>
-    </ng-template>
-  </p-table>
+  @if (isLoading()) {
+    <div class="d-flex justify-content-center py-5">
+      <div class="spinner-border text-secondary" role="status">
+        <span class="visually-hidden">Carregando...</span>
+      </div>
+    </div>
+  } @else {
+    <div class="table-responsive">
+      <table class="table table-hover table-sm align-middle">
+        <thead class="table-light">
+          <tr>
+            <th>Título</th>
+            <th>Descrição</th>
+            <th>Início</th>
+            <th>Duração</th>
+            <th>Status</th>
+            <th class="text-center" style="width:8rem">Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          @if ((items()?.items ?? []).length === 0) {
+            <tr><td colspan="6" class="text-center py-5 text-muted">Nenhum registro.</td></tr>
+          }
+          @for (lesson of items()?.items ?? []; track lesson.id) {
+            <tr>
+              <td>{{ lesson.title }}</td>
+              <td>{{ lesson.description }}</td>
+              <td>{{ lesson.scheduledDate | date:'dd/MM/yyyy HH:mm' }}</td>
+              <td>{{ lesson.duration }}</td>
+              <td>
+                <span [class]="'badge ' + (lesson.isActive ? 'bg-success' : 'bg-danger')">
+                  {{ lesson.isActive ? 'Ativa' : 'Inativa' }}
+                </span>
+              </td>
+              <td class="text-center">
+                <button type="button" class="btn btn-sm btn-outline-info me-1" (click)="openEdit(lesson)">
+                  <i class="bi bi-pencil"></i>
+                </button>
+                <button type="button" class="btn btn-sm btn-outline-danger" (click)="delete(lesson)">
+                  <i class="bi bi-trash"></i>
+                </button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
 
   <app-pagination [currentPage]="currentPage()" [totalPages]="items()?.totalPages ?? 1"
     [pageSize]="pageSize()" [totalItems]="items()?.totalCount ?? 0"
     (pageChange)="onPageChange($event)" (pageSizeChange)="onPageSizeChange($event)" />
 
-  <p-dialog [visible]="openedCreate()" (visibleChange)="openedCreate.set($event)"
-    header="Nova Aula" [modal]="true" [draggable]="false" [resizable]="false" styleClass="w-full md:w-30rem">
-    <app-create-lesson (closeEvent)="openedCreate.set(false)" (lessonCreated)="onCreated()" />
-  </p-dialog>
+  @if (openedCreate()) {
+    <div class="modal-backdrop-custom" (click)="openedCreate.set(false)"></div>
+    <div class="modal show d-block" tabindex="-1">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Nova Aula</h5>
+            <button type="button" class="btn-close" (click)="openedCreate.set(false)" aria-label="Fechar"></button>
+          </div>
+          <div class="modal-body">
+            <app-create-lesson (closeEvent)="openedCreate.set(false)" (lessonCreated)="onCreated()" />
+          </div>
+        </div>
+      </div>
+    </div>
+  }
 
-  <p-dialog [visible]="openedUpdate()" (visibleChange)="openedUpdate.set($event)"
-    header="Editar Aula" [modal]="true" [draggable]="false" [resizable]="false" styleClass="w-full md:w-30rem">
-    @if (selected()) {
-      <app-update-lesson [lesson]="selected()!" (closeEvent)="openedUpdate.set(false)" (lessonUpdated)="onUpdated()" />
-    }
-  </p-dialog>
+  @if (openedUpdate()) {
+    <div class="modal-backdrop-custom" (click)="openedUpdate.set(false)"></div>
+    <div class="modal show d-block" tabindex="-1">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Editar Aula</h5>
+            <button type="button" class="btn-close" (click)="openedUpdate.set(false)" aria-label="Fechar"></button>
+          </div>
+          <div class="modal-body">
+            @if (selected()) {
+              <app-update-lesson [lesson]="selected()!" (closeEvent)="openedUpdate.set(false)" (lessonUpdated)="onUpdated()" />
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  }
 </section>
 

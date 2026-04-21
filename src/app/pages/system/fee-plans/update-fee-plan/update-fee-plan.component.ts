@@ -1,17 +1,12 @@
 import { ChangeDetectionStrategy, Component, effect, inject, input, output } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
-import { InputTextModule } from 'primeng/inputtext';
-import { InputNumberModule } from 'primeng/inputnumber';
-import { ButtonModule } from 'primeng/button';
-import { CheckboxModule } from 'primeng/checkbox';
-import { TextareaModule } from 'primeng/textarea';
 import { FeePlanService, ShowFeePlanDTO, UpdateFeePlanDTO } from '../../../../generated_services';
 import { NotificationService } from '../../../../services/notification.service';
 
 @Component({
   selector: 'app-update-fee-plan',
   standalone: true,
-  imports: [ReactiveFormsModule, InputTextModule, InputNumberModule, ButtonModule, CheckboxModule, TextareaModule],
+  imports: [ReactiveFormsModule],
   templateUrl: './update-fee-plan.component.html',
   styleUrl: './update-fee-plan.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

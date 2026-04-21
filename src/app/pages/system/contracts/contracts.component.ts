@@ -1,9 +1,4 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
-import { TableModule } from 'primeng/table';
-import { ButtonModule } from 'primeng/button';
-import { TagModule } from 'primeng/tag';
-import { DialogModule } from 'primeng/dialog';
-import { SelectModule } from 'primeng/select';
 import { DatePipe, CurrencyPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ContractService } from '../../../generated_services/api/contract.service';
@@ -19,9 +14,12 @@ import { UpdateContractComponent } from './update-contract/update-contract.compo
   selector: 'app-contracts',
   standalone: true,
   imports: [
-    TableModule, ButtonModule, TagModule, DialogModule, SelectModule,
-    DatePipe, CurrencyPipe, FormsModule,
-    PaginationComponent, CreateContractComponent, UpdateContractComponent,
+    DatePipe,
+    CurrencyPipe,
+    FormsModule,
+    PaginationComponent,
+    CreateContractComponent,
+    UpdateContractComponent,
   ],
   templateUrl: './contracts.component.html',
   styleUrl: './contracts.component.scss',

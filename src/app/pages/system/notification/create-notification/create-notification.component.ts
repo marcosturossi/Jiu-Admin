@@ -5,16 +5,10 @@ import { CreateNotificationDTO } from '../../../../generated_services/model/crea
 import { NotificationType } from '../../../../generated_services/model/notificationType';
 import { NotificationPriority } from '../../../../generated_services/model/notificationPriority';
 import { NotificationService } from '../../../../services/notification.service';
-import { ButtonModule } from 'primeng/button';
-import { InputTextModule } from 'primeng/inputtext';
-import { SelectModule } from 'primeng/select';
-import { TextareaModule } from 'primeng/textarea';
-import { CheckboxModule } from 'primeng/checkbox';
-import { DatePickerModule } from 'primeng/datepicker';
 
 @Component({
   selector: 'app-create-notification',
-  imports: [ReactiveFormsModule, ButtonModule, InputTextModule, SelectModule, TextareaModule, CheckboxModule, DatePickerModule],
+  imports: [ReactiveFormsModule],
   templateUrl: './create-notification.component.html',
   styleUrl: './create-notification.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush

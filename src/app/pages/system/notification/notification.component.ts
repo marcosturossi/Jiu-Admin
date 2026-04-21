@@ -10,14 +10,10 @@ import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
 import { PaginationNotificationDTO } from '../../../generated_services';
 import { PaginationComponent } from '../../../shared/pagination/pagination.component';
-import { TableModule } from 'primeng/table';
-import { ButtonModule } from 'primeng/button';
-import { TagModule } from 'primeng/tag';
-import { DialogModule } from 'primeng/dialog';
 
 @Component({
   selector: 'app-notification',
-  imports: [DatePipe, CreateNotificationComponent, UpdateNotificationComponent, PaginationComponent, TableModule, ButtonModule, TagModule, DialogModule],
+  imports: [DatePipe, CreateNotificationComponent, UpdateNotificationComponent, PaginationComponent],
   templateUrl: './notification.component.html',
   styleUrl: './notification.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush

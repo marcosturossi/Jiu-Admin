@@ -1,9 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
-import { TableModule } from 'primeng/table';
-import { ButtonModule } from 'primeng/button';
-import { TagModule } from 'primeng/tag';
-import { DialogModule } from 'primeng/dialog';
 import { LessonService } from '../../../generated_services/api/lesson.service';
 import { ShowLessonDTO } from '../../../generated_services/model/showLessonDTO';
 import { PaginationLessonDTO } from '../../../generated_services';
@@ -17,8 +13,10 @@ import { PaginationComponent } from '../../../shared/pagination/pagination.compo
   selector: 'app-lessons',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    TableModule, ButtonModule, TagModule, DialogModule,
-    PaginationComponent, CreateLessonComponent, UpdateLessonComponent, DatePipe,
+    PaginationComponent,
+    CreateLessonComponent,
+    UpdateLessonComponent,
+    DatePipe,
   ],
   templateUrl: './lessons.component.html',
   styleUrl: './lessons.component.scss',

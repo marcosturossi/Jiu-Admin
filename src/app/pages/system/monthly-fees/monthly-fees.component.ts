@@ -1,11 +1,4 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
-import { TableModule } from 'primeng/table';
-import { ButtonModule } from 'primeng/button';
-import { TagModule } from 'primeng/tag';
-import { DialogModule } from 'primeng/dialog';
-import { SelectModule } from 'primeng/select';
-import { InputTextModule } from 'primeng/inputtext';
-import { InputNumberModule } from 'primeng/inputnumber';
 import { DatePipe, CurrencyPipe } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { MonthlyFeeService } from '../../../generated_services/api/monthlyFee.service';
@@ -18,8 +11,10 @@ import { PaginationComponent } from '../../../shared/pagination/pagination.compo
   selector: 'app-monthly-fees',
   standalone: true,
   imports: [
-    TableModule, ButtonModule, TagModule, DialogModule, SelectModule, InputTextModule,
-    InputNumberModule, DatePipe, CurrencyPipe, FormsModule, ReactiveFormsModule,
+    DatePipe,
+    CurrencyPipe,
+    FormsModule,
+    ReactiveFormsModule,
     PaginationComponent,
   ],
   templateUrl: './monthly-fees.component.html',

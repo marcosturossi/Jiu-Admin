@@ -1,9 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject, output, signal } from '@angular/core';
 import { ReactiveFormsModule, FormsModule, FormBuilder, Validators } from '@angular/forms';
-import { InputTextModule } from 'primeng/inputtext';
-import { ButtonModule } from 'primeng/button';
-import { CheckboxModule } from 'primeng/checkbox';
-import { TextareaModule } from 'primeng/textarea';
 import { LessonService } from '../../../../generated_services/api/lesson.service';
 import { CreateLessonDTO } from '../../../../generated_services/model/createLessonDTO';
 import { NotificationService } from '../../../../services/notification.service';
@@ -11,7 +7,7 @@ import { NotificationService } from '../../../../services/notification.service';
 @Component({
   selector: 'app-create-lesson',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ReactiveFormsModule, FormsModule, InputTextModule, ButtonModule, CheckboxModule, TextareaModule],
+  imports: [ReactiveFormsModule, FormsModule],
   templateUrl: './create-lesson.component.html',
   styleUrl: './create-lesson.component.scss',
 })

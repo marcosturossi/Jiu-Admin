@@ -1,25 +1,27 @@
-<form [formGroup]="form" class="dialog-form">
-  <div class="field">
+<form [formGroup]="form">
+  <div class="mb-3">
     <label for="name">Nome da Academia *</label>
     <input
-      pInputText
+      type="text"
+      class="form-control"
       id="name"
       formControlName="name"
       placeholder="Ex: Carlson Gracie São Paulo"
-      class="w-full"
     />
     @if (form.get('name')?.invalid && form.get('name')?.touched) {
       <small class="text-danger">Nome é obrigatório.</small>
     }
   </div>
 
-  <div class="field flex-row gap-2 align-items-center">
-    <p-checkbox formControlName="isActive" [binary]="true" inputId="isActive" />
-    <label for="isActive">Ativa</label>
+  <div class="mb-3 form-check">
+    <input class="form-check-input" type="checkbox" formControlName="isActive" id="isActive" />
+    <label class="form-check-label" for="isActive">Ativa</label>
   </div>
 
-  <div class="dialog-actions">
-    <p-button label="Cancelar" severity="secondary" [outlined]="true" (onClick)="close()" />
-    <p-button label="Salvar" icon="pi pi-check" (onClick)="save()" [disabled]="form.invalid" />
+  <div class="d-flex gap-2 justify-content-end mt-3">
+    <button type="button" class="btn btn-outline-secondary" (click)="close()">Cancelar</button>
+    <button type="button" class="btn btn-primary" (click)="save()" [disabled]="form.invalid">
+      <i class="bi bi-check-lg me-1"></i>Salvar
+    </button>
   </div>
 </form>

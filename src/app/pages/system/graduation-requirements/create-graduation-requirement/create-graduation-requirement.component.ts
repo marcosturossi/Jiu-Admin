@@ -1,9 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject, output, signal } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
-import { InputTextModule } from 'primeng/inputtext';
-import { ButtonModule } from 'primeng/button';
-import { SelectModule } from 'primeng/select';
-import { TextareaModule } from 'primeng/textarea';
 import { GraduationRequirementsService, BeltService, ShowBeltDTO } from '../../../../generated_services';
 import { CreateGraduationRequirementsDTO } from '../../../../generated_services/model/createGraduationRequirementsDTO';
 import { NotificationService } from '../../../../services/notification.service';
@@ -11,7 +7,7 @@ import { NotificationService } from '../../../../services/notification.service';
 @Component({
   selector: 'app-create-graduation-requirement',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ReactiveFormsModule, InputTextModule, ButtonModule, SelectModule, TextareaModule],
+  imports: [ReactiveFormsModule],
   templateUrl: './create-graduation-requirement.component.html',
   styleUrl: './create-graduation-requirement.component.scss',
 })

@@ -1,10 +1,4 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
-import { TableModule } from 'primeng/table';
-import { ButtonModule } from 'primeng/button';
-import { TagModule } from 'primeng/tag';
-import { DialogModule } from 'primeng/dialog';
-import { SelectModule } from 'primeng/select';
-import { InputTextModule } from 'primeng/inputtext';
 import { DatePipe, CurrencyPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { FinancialTransactionService } from '../../../generated_services/api/financialTransaction.service';
@@ -20,9 +14,12 @@ import { UpdateTransactionComponent } from './update-transaction/update-transact
   selector: 'app-transactions',
   standalone: true,
   imports: [
-    TableModule, ButtonModule, TagModule, DialogModule, SelectModule, InputTextModule,
-    DatePipe, CurrencyPipe, FormsModule,
-    PaginationComponent, CreateTransactionComponent, UpdateTransactionComponent,
+    DatePipe,
+    CurrencyPipe,
+    FormsModule,
+    PaginationComponent,
+    CreateTransactionComponent,
+    UpdateTransactionComponent,
   ],
   templateUrl: './transactions.component.html',
   styleUrl: './transactions.component.scss',

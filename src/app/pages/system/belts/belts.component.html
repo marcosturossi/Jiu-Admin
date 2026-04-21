@@ -1,37 +1,48 @@
 <section class="page-section">
   <div class="page-toolbar">
-    <p-button label="Nova Faixa" icon="pi pi-plus" (onClick)="openCreate()" />
+    <button type="button" class="btn btn-primary" (click)="openCreate()">
+      <i class="bi bi-plus-lg me-1"></i>Nova Faixa
+    </button>
   </div>
 
-  <p-table
-    [value]="items()?.items ?? []"
-    [loading]="isLoading()"
-    styleClass="p-datatable-sm p-datatable-striped"
-    [tableStyle]="{ 'min-width': '40rem' }"
-  >
-    <ng-template pTemplate="header">
-      <tr>
-        <th>Cor</th>
-        <th>Ordem</th>
-        <th>Para Crianças</th>
-        <th class="text-center" style="width: 8rem">Ações</th>
-      </tr>
-    </ng-template>
-    <ng-template pTemplate="body" let-belt>
-      <tr>
-        <td>{{ belt.color }}</td>
-        <td><p-tag [value]="belt.orderIndex?.toString()" severity="info" /></td>
-        <td><p-tag [value]="belt.isForKids ? 'Sim' : 'Não'" [severity]="belt.isForKids ? 'success' : 'warn'" /></td>
-        <td class="text-center">
-          <p-button icon="pi pi-pencil" [text]="true" severity="info" size="small" (onClick)="openEdit(belt)" />
-          <p-button icon="pi pi-trash" [text]="true" severity="danger" size="small" (onClick)="delete(belt)" />
-        </td>
-      </tr>
-    </ng-template>
-    <ng-template pTemplate="emptymessage">
-      <tr><td [colSpan]="4" class="text-center py-5 text-muted">Nenhum registro encontrado.</td></tr>
-    </ng-template>
-  </p-table>
+  @if (isLoading()) {
+    <div class="d-flex justify-content-center py-5">
+      <div class="spinner-border text-secondary" role="status"><span class="visually-hidden">Carregando...</span></div>
+    </div>
+  } @else {
+    <div class="table-responsive">
+      <table class="table table-hover table-sm align-middle">
+        <thead class="table-light">
+          <tr>
+            <th>Cor</th>
+            <th>Ordem</th>
+            <th>Para Crianças</th>
+            <th class="text-center" style="width: 8rem">Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          @if ((items()?.items ?? []).length === 0) {
+            <tr><td colspan="4" class="text-center py-5 text-muted">Nenhum registro encontrado.</td></tr>
+          }
+          @for (belt of items()?.items ?? []; track belt.id) {
+            <tr>
+              <td>{{ belt.color }}</td>
+              <td><span class="badge bg-info text-dark">{{ belt.orderIndex }}</span></td>
+              <td><span [class]="'badge ' + (belt.isForKids ? 'bg-success' : 'bg-warning text-dark')">{{ belt.isForKids ? 'Sim' : 'Não' }}</span></td>
+              <td class="text-center">
+                <button type="button" class="btn btn-sm btn-outline-info" (click)="openEdit(belt)" title="Editar">
+                  <i class="bi bi-pencil"></i>
+                </button>
+                <button type="button" class="btn btn-sm btn-outline-danger" (click)="delete(belt)" title="Excluir">
+                  <i class="bi bi-trash"></i>
+                </button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
 
   <app-pagination
     [currentPage]="currentPage()"
@@ -40,30 +51,40 @@
     [totalItems]="items()?.totalCount ?? 0"
     (pageChange)="onPageChange($event)"
     (pageSizeChange)="onPageSizeChange($event)" />
-
-  <p-dialog
-    [visible]="openedCreate()"
-    (visibleChange)="openedCreate.set($event)"
-    header="Nova Faixa"
-    [modal]="true"
-    [draggable]="false"
-    [resizable]="false"
-    styleClass="w-full md:w-30rem"
-  >
-    <app-create-belt (closeEvent)="openedCreate.set(false)" (beltCreated)="onCreated()" />
-  </p-dialog>
-
-  <p-dialog
-    [visible]="openedUpdate()"
-    (visibleChange)="openedUpdate.set($event)"
-    header="Editar Faixa"
-    [modal]="true"
-    [draggable]="false"
-    [resizable]="false"
-    styleClass="w-full md:w-30rem"
-  >
-    @if (selected()) {
-      <app-update-belt [belt]="selected()!" (closeEvent)="openedUpdate.set(false)" (beltUpdated)="onUpdated()" />
-    }
-  </p-dialog>
 </section>
+
+@if (openedCreate()) {
+  <div class="modal-backdrop-custom" (click)="openedCreate.set(false)"></div>
+  <div class="modal show d-block" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Nova Faixa</h5>
+          <button type="button" class="btn-close" (click)="openedCreate.set(false)" aria-label="Fechar"></button>
+        </div>
+        <div class="modal-body">
+          <app-create-belt (closeEvent)="openedCreate.set(false)" (beltCreated)="onCreated()" />
+        </div>
+      </div>
+    </div>
+  </div>
+}
+
+@if (openedUpdate()) {
+  <div class="modal-backdrop-custom" (click)="openedUpdate.set(false)"></div>
+  <div class="modal show d-block" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Editar Faixa</h5>
+          <button type="button" class="btn-close" (click)="openedUpdate.set(false)" aria-label="Fechar"></button>
+        </div>
+        <div class="modal-body">
+          @if (selected()) {
+            <app-update-belt [belt]="selected()!" (closeEvent)="openedUpdate.set(false)" (beltUpdated)="onUpdated()" />
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+}

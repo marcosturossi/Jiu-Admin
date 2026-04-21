@@ -1,8 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, inject, output, signal } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
-import { InputTextModule } from 'primeng/inputtext';
-import { ButtonModule } from 'primeng/button';
-import { SelectModule } from 'primeng/select';
 import { GraduationService } from '../../../../generated_services/api/graduation.service';
 import { BeltService } from '../../../../generated_services/api/belt.service';
 import { StudentsService } from '../../../../generated_services/api/students.service';
@@ -12,7 +9,7 @@ import { NotificationService } from '../../../../services/notification.service';
 @Component({
   selector: 'app-create-graduation',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ReactiveFormsModule, InputTextModule, ButtonModule, SelectModule],
+  imports: [ReactiveFormsModule],
   templateUrl: './create-graduation.component.html',
   styleUrl: './create-graduation.component.scss',
 })
