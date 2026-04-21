@@ -60,10 +60,14 @@ describe('SelectAcademyComponent', () => {
       expect(component).toBeTruthy();
     });
 
-    it('renders the slug text input (no select)', () => {
+    it('renders the select dropdown even with no history', () => {
+      const el: HTMLElement = fixture.nativeElement;
+      expect(el.querySelector('select#academySelect')).toBeTruthy();
+    });
+
+    it('renders the slug text input because selectedOption defaults to "other"', () => {
       const el: HTMLElement = fixture.nativeElement;
       expect(el.querySelector('input#slug')).toBeTruthy();
-      expect(el.querySelector('select#academySelect')).toBeNull();
     });
 
     it('shows an error when slug is empty and form is submitted', () => {
@@ -118,7 +122,7 @@ describe('SelectAcademyComponent', () => {
   describe('with history', () => {
     beforeEach(() => setup([MOCK_ACADEMY], MOCK_ACADEMY));
 
-    it('shows the select dropdown and hides the text input', () => {
+    it('shows the select dropdown and hides the text input when history item selected', () => {
       const el: HTMLElement = fixture.nativeElement;
       expect(el.querySelector('select#academySelect')).toBeTruthy();
       expect(el.querySelector('input#slug')).toBeNull();

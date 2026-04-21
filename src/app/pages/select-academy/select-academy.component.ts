@@ -33,7 +33,7 @@ export class SelectAcademyComponent implements OnInit {
   protected readonly errorMsg       = signal<string | null>(null);
 
   protected readonly showCustomInput = computed(
-    () => this.history().length === 0 || this.selectedOption() === 'other'
+    () => this.selectedOption() === 'other'
   );
 
   ngOnInit(): void {

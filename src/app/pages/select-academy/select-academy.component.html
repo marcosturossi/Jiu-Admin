@@ -18,22 +18,20 @@
     }
 
     <form class="academy-form" (ngSubmit)="onSubmit()">
-      @if (history().length > 0) {
-        <div class="mb-3">
-          <label for="academySelect" class="form-label fw-semibold">Academia</label>
-          <select
-            id="academySelect"
-            class="form-select"
-            [value]="selectedOption()"
-            (change)="selectedOption.set($any($event.target).value)"
-            [disabled]="isLoading()">
-            @for (item of history(); track item.slug) {
-              <option [value]="item.slug">{{ item.slug }}</option>
-            }
-            <option value="other">Outra academia...</option>
-          </select>
-        </div>
-      }
+      <div class="mb-3">
+        <label for="academySelect" class="form-label fw-semibold">Academia</label>
+        <select
+          id="academySelect"
+          class="form-select"
+          [value]="selectedOption()"
+          (change)="selectedOption.set($any($event.target).value)"
+          [disabled]="isLoading()">
+          @for (item of history(); track item.slug) {
+            <option [value]="item.slug">{{ item.slug }}</option>
+          }
+          <option value="other">Outra academia...</option>
+        </select>
+      </div>
 
       @if (showCustomInput()) {
         <div class="mb-3">
