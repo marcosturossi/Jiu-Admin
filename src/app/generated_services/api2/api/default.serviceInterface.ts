@@ -23,6 +23,12 @@ export interface DefaultServiceInterface {
     configuration: Configuration;
 
     /**
+     * Debug Headers
+     * Debug endpoint to check what headers are being received
+     */
+    debugHeadersDebugHeadersGet(extraHttpRequestParams?: any): Observable<any>;
+
+    /**
      * Read Root
      * 
      */

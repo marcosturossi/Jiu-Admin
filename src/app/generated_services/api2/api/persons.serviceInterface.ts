@@ -31,74 +31,70 @@ export interface PersonsServiceInterface {
 
     /**
      * Add Person Images
-     * Adiciona mais imagens a uma pessoa existente.  - **person_id**: ID da pessoa (UUID) - **images**: Lista de imagens contendo o rosto da pessoa (máximo 10)
+     * Adiciona mais imagens a uma pessoa existente.
      * @param personId 
      * @param images 
-     * @param xTenantToken 
      */
-    addPersonImagesApiV1PersonsPersonIdImagesPost(personId: string, images: Array<string>, xTenantToken?: string, extraHttpRequestParams?: any): Observable<{ [key: string]: any; }>;
+    addPersonImagesApiV1PersonsPersonIdImagesPost(personId: string, images: Array<string>, extraHttpRequestParams?: any): Observable<{ [key: string]: any; }>;
 
     /**
      * Delete Person
-     * Remove uma pessoa do sistema.  - **person_id**: ID da pessoa (UUID)
+     * Remove uma pessoa do sistema.
      * @param personId 
-     * @param xTenantToken 
      */
-    deletePersonApiV1PersonsPersonIdDelete(personId: string, xTenantToken?: string, extraHttpRequestParams?: any): Observable<{ [key: string]: any; }>;
+    deletePersonApiV1PersonsPersonIdDelete(personId: string, extraHttpRequestParams?: any): Observable<{ [key: string]: any; }>;
 
     /**
      * Get Person Details
      * Obtém detalhes de uma pessoa específica.
      * @param personId 
-     * @param xTenantToken 
      */
-    getPersonDetailsApiV1PersonsPersonIdGet(personId: string, xTenantToken?: string, extraHttpRequestParams?: any): Observable<PersonDetailResponse>;
+    getPersonDetailsApiV1PersonsPersonIdGet(personId: string, extraHttpRequestParams?: any): Observable<PersonDetailResponse>;
 
     /**
      * List Persons
-     * Lista todas as pessoas registradas no sistema.
+     * Lista pessoas registradas no sistema com suporte a filtros.
      * @param page Página atual
      * @param pageSize Tamanho da página
-     * @param xTenantToken 
+     * @param name Filtrar por nome (parcial, sem distinção de maiúsculas)
+     * @param isActive Filtrar por status ativo
+     * @param createdFrom Data de criação a partir de (YYYY-MM-DD)
+     * @param createdTo Data de criação até (YYYY-MM-DD)
      */
-    listPersonsApiV1PersonsGet(page?: number, pageSize?: number, xTenantToken?: string, extraHttpRequestParams?: any): Observable<PersonListResponse>;
+    listPersonsApiV1PersonsGet(page?: number, pageSize?: number, name?: string, isActive?: boolean, createdFrom?: string, createdTo?: string, extraHttpRequestParams?: any): Observable<PersonListResponse>;
 
     /**
      * Recognize Faces
-     * Reconhece todas as faces presentes na imagem.  - **image**: Imagem para análise - **draw_boxes**: Se verdadeiro, retorna a imagem com caixas desenhadas ao redor das faces  Retorna a lista de faces encontradas com seus nomes e posições.
+     * Reconhece todas as faces presentes na imagem.
      * @param image 
-     * @param xTenantToken 
      * @param drawBoxes 
      */
-    recognizeFacesApiV1RecognizePost(image: string, xTenantToken?: string, drawBoxes?: boolean, extraHttpRequestParams?: any): Observable<RecognitionResponse>;
+    recognizeFacesApiV1RecognizePost(image: string, drawBoxes?: boolean, extraHttpRequestParams?: any): Observable<RecognitionResponse>;
 
     /**
      * Register Multiple Photos
-     * Registra múltiplas fotos da mesma pessoa para melhor reconhecimento.  - **name**: Nome da pessoa - **images**: Lista de imagens contendo o rosto da pessoa - **person_id**: ID opcional da pessoa (UUID)  Retorna informações da pessoa registrada com múltiplas fotos.
+     * Registra múltiplas fotos da mesma pessoa para melhor reconhecimento.
      * @param name 
      * @param images 
-     * @param xTenantToken 
      * @param personId 
      */
-    registerMultiplePhotosApiV1RegisterMultiplePost(name: string, images: Array<string>, xTenantToken?: string, personId?: string, extraHttpRequestParams?: any): Observable<RegisterMultipleResponse>;
+    registerMultiplePhotosApiV1RegisterMultiplePost(name: string, images: Array<string>, personId?: string, extraHttpRequestParams?: any): Observable<RegisterMultipleResponse>;
 
     /**
      * Register Person
-     * Registra uma nova pessoa no sistema.  - **name**: Nome da pessoa - **image**: Imagem contendo o rosto da pessoa - **person_id**: ID opcional da pessoa (UUID)  Retorna o ID único da pessoa registrada.
+     * Registra uma nova pessoa no sistema.
      * @param name 
      * @param image 
-     * @param xTenantToken 
      * @param personId 
      */
-    registerPersonApiV1RegisterPost(name: string, image: string, xTenantToken?: string, personId?: string, extraHttpRequestParams?: any): Observable<RegisterPersonResponse>;
+    registerPersonApiV1RegisterPost(name: string, image: string, personId?: string, extraHttpRequestParams?: any): Observable<RegisterPersonResponse>;
 
     /**
      * Remove Person Image
-     * Remove uma imagem específica de uma pessoa.  - **person_id**: ID da pessoa (UUID) - **image_id**: ID da imagem a ser removida  Nota: Não é possível remover a única imagem de uma pessoa. Se a imagem removida for a primária, outra imagem será automaticamente definida como primária.
+     * Remove uma imagem específica de uma pessoa.
      * @param personId 
      * @param imageId 
-     * @param xTenantToken 
      */
-    removePersonImageApiV1PersonsPersonIdImagesImageIdDelete(personId: string, imageId: number, xTenantToken?: string, extraHttpRequestParams?: any): Observable<{ [key: string]: any; }>;
+    removePersonImageApiV1PersonsPersonIdImagesImageIdDelete(personId: string, imageId: number, extraHttpRequestParams?: any): Observable<{ [key: string]: any; }>;
 
 }
