@@ -138,7 +138,7 @@ export class CreateFrequencyComponent {
     this.isRecognizing.set(true);
     try {
       const result = await this.personsService
-        .recognizeFacesApiV1RecognizePost(this.previewUrl()!, false)
+        .recognizeFacesApiV1RecognizePost(this.previewUrl()!, undefined, false)
         .toPromise() as RecognitionResponse;
 
       const ids: string[] = [];

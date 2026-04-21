@@ -6,6 +6,7 @@ import { MenuModule } from 'primeng/menu';
 import { AvatarModule } from 'primeng/avatar';
 import { MenuItem } from 'primeng/api';
 import { AuthServiceService } from '../../services/auth-service.service';
+import { AcademySessionService } from '../../services/academy-session.service';
 
 @Component({
   selector: 'app-navbar',
@@ -16,13 +17,22 @@ import { AuthServiceService } from '../../services/auth-service.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NavbarComponent implements OnInit, OnDestroy {
-  private readonly keycloak = inject(Keycloak);
-  private readonly authService = inject(AuthServiceService);
+  private readonly keycloak        = inject(Keycloak);
+  private readonly authService     = inject(AuthServiceService);
+  private readonly academySession  = inject(AcademySessionService);
 
   protected readonly sidebarOpen = signal(false);
-  protected readonly userName = signal<string>('');
+  protected readonly userName    = signal<string>('');
 
   protected readonly userMenuItems: MenuItem[] = [
+    {
+      label: 'Trocar Academia',
+      icon: 'pi pi-building',
+      command: () => this.switchAcademy(),
+    },
+    {
+      separator: true,
+    },
     {
       label: 'Sair',
       icon: 'pi pi-sign-out',
@@ -48,6 +58,11 @@ export class NavbarComponent implements OnInit, OnDestroy {
     const next = !this.sidebarOpen();
     this.sidebarOpen.set(next);
     document.body.classList.toggle('sidebar-open', next);
+  }
+
+  private switchAcademy(): void {
+    this.academySession.clearAcademy();
+    this.keycloak.logout({ redirectUri: window.location.origin + '/select-academy' });
   }
 
   private logout(): void {

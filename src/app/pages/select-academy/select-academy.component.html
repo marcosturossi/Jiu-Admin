@@ -1,0 +1,43 @@
+<div class="select-academy-page">
+  <div class="select-academy-card">
+    <div class="academy-logo-wrapper">
+      <img src="assets/company/carlson_logo.png" alt="Carlson Gracie" class="academy-logo" />
+    </div>
+
+    <h1 class="academy-title">Sistema de Administração</h1>
+    <p class="academy-subtitle">Digite o slug da sua academia para continuar</p>
+
+    @if (errorMsg()) {
+      <p-message severity="error" [text]="errorMsg()!" styleClass="w-full mb-4" />
+    }
+
+    <form class="academy-form" (ngSubmit)="onSubmit()">
+      <div class="field">
+        <label for="slug" class="field-label">Slug da Academia</label>
+        <input
+          id="slug"
+          pInputText
+          type="text"
+          placeholder="ex: carlson-gracie-sp"
+          [value]="slug()"
+          (input)="slug.set($any($event.target).value)"
+          [disabled]="isLoading()"
+          class="w-full"
+          autocomplete="off"
+          autocapitalize="none"
+          spellcheck="false"
+        />
+      </div>
+
+      <p-button
+        type="submit"
+        label="Continuar"
+        icon="pi pi-arrow-right"
+        iconPos="right"
+        styleClass="w-full mt-3"
+        [loading]="isLoading()"
+        [disabled]="isLoading()"
+      />
+    </form>
+  </div>
+</div>

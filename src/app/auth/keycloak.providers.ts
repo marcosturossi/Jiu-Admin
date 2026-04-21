@@ -1,16 +1,20 @@
 import { provideKeycloak, withAutoRefreshToken, AutoRefreshTokenService, UserActivityService } from 'keycloak-angular';
 import { environment } from '../enviroments/environment';
+import { getStoredAcademy } from '../services/academy-session.service';
+
+const storedAcademy = getStoredAcademy();
 
 export const keycloakProviders = provideKeycloak({
   config: {
-    url:      environment.keycloak.url,
-    realm:    environment.keycloak.realm,
+    url:      storedAcademy?.keycloakUrl ?? environment.keycloak.url,
+    realm:    storedAcademy?.realm       ?? environment.keycloak.realm,
     clientId: environment.keycloak.clientId,
   },
   initOptions: {
-    onLoad:             'login-required',
-    checkLoginIframe:   false,
-    pkceMethod:         'S256',
+    onLoad:           storedAcademy ? 'login-required' : 'check-sso',
+    checkLoginIframe: false,
+    pkceMethod:       'S256',
+    silentCheckSsoRedirectUri: window.location.origin + '/silent-check-sso.html',
   },
   features: [
     withAutoRefreshToken({

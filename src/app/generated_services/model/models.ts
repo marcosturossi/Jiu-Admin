@@ -86,6 +86,7 @@ export * from './showNoticesDTO';
 export * from './showNotificationDTO';
 export * from './showNotificationDTOPaginationDTO';
 export * from './showNotificationStudentDTO';
+export * from './showRealmInfoDTO';
 export * from './showStudentDTO';
 export * from './showStudentDTOPaginationDTO';
 export * from './showTransactionCategoryDTO';

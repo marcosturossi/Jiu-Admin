@@ -32,6 +32,8 @@ api/notices.service.ts
 api/notices.serviceInterface.ts
 api/notification.service.ts
 api/notification.serviceInterface.ts
+api/public.service.ts
+api/public.serviceInterface.ts
 api/students.service.ts
 api/students.serviceInterface.ts
 api/transactionCategory.service.ts
@@ -129,6 +131,7 @@ model/showNoticesDTO.ts
 model/showNotificationDTO.ts
 model/showNotificationDTOPaginationDTO.ts
 model/showNotificationStudentDTO.ts
+model/showRealmInfoDTO.ts
 model/showStudentDTO.ts
 model/showStudentDTOPaginationDTO.ts
 model/showTransactionCategoryDTO.ts

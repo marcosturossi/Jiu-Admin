@@ -124,13 +124,14 @@ export class PersonsService implements PersonsServiceInterface {
      * Adiciona mais imagens a uma pessoa existente.  - **person_id**: ID da pessoa (UUID) - **images**: Lista de imagens contendo o rosto da pessoa (máximo 10)
      * @param personId 
      * @param images 
+     * @param xTenantToken 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public addPersonImagesApiV1PersonsPersonIdImagesPost(personId: string, images: Array<string>, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<{ [key: string]: any; }>;
-    public addPersonImagesApiV1PersonsPersonIdImagesPost(personId: string, images: Array<string>, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<{ [key: string]: any; }>>;
-    public addPersonImagesApiV1PersonsPersonIdImagesPost(personId: string, images: Array<string>, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<{ [key: string]: any; }>>;
-    public addPersonImagesApiV1PersonsPersonIdImagesPost(personId: string, images: Array<string>, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public addPersonImagesApiV1PersonsPersonIdImagesPost(personId: string, images: Array<string>, xTenantToken?: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<{ [key: string]: any; }>;
+    public addPersonImagesApiV1PersonsPersonIdImagesPost(personId: string, images: Array<string>, xTenantToken?: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<{ [key: string]: any; }>>;
+    public addPersonImagesApiV1PersonsPersonIdImagesPost(personId: string, images: Array<string>, xTenantToken?: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<{ [key: string]: any; }>>;
+    public addPersonImagesApiV1PersonsPersonIdImagesPost(personId: string, images: Array<string>, xTenantToken?: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         if (personId === null || personId === undefined) {
             throw new Error('Required parameter personId was null or undefined when calling addPersonImagesApiV1PersonsPersonIdImagesPost.');
         }
@@ -139,6 +140,9 @@ export class PersonsService implements PersonsServiceInterface {
         }
 
         let localVarHeaders = this.defaultHeaders;
+        if (xTenantToken !== undefined && xTenantToken !== null) {
+            localVarHeaders = localVarHeaders.set('X-Tenant-Token', String(xTenantToken));
+        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -218,18 +222,22 @@ export class PersonsService implements PersonsServiceInterface {
      * Delete Person
      * Remove uma pessoa do sistema.  - **person_id**: ID da pessoa (UUID)
      * @param personId 
+     * @param xTenantToken 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public deletePersonApiV1PersonsPersonIdDelete(personId: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<{ [key: string]: any; }>;
-    public deletePersonApiV1PersonsPersonIdDelete(personId: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<{ [key: string]: any; }>>;
-    public deletePersonApiV1PersonsPersonIdDelete(personId: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<{ [key: string]: any; }>>;
-    public deletePersonApiV1PersonsPersonIdDelete(personId: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public deletePersonApiV1PersonsPersonIdDelete(personId: string, xTenantToken?: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<{ [key: string]: any; }>;
+    public deletePersonApiV1PersonsPersonIdDelete(personId: string, xTenantToken?: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<{ [key: string]: any; }>>;
+    public deletePersonApiV1PersonsPersonIdDelete(personId: string, xTenantToken?: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<{ [key: string]: any; }>>;
+    public deletePersonApiV1PersonsPersonIdDelete(personId: string, xTenantToken?: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         if (personId === null || personId === undefined) {
             throw new Error('Required parameter personId was null or undefined when calling deletePersonApiV1PersonsPersonIdDelete.');
         }
 
         let localVarHeaders = this.defaultHeaders;
+        if (xTenantToken !== undefined && xTenantToken !== null) {
+            localVarHeaders = localVarHeaders.set('X-Tenant-Token', String(xTenantToken));
+        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -283,18 +291,22 @@ export class PersonsService implements PersonsServiceInterface {
      * Get Person Details
      * Obtém detalhes de uma pessoa específica.
      * @param personId 
+     * @param xTenantToken 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public getPersonDetailsApiV1PersonsPersonIdGet(personId: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<PersonDetailResponse>;
-    public getPersonDetailsApiV1PersonsPersonIdGet(personId: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<PersonDetailResponse>>;
-    public getPersonDetailsApiV1PersonsPersonIdGet(personId: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<PersonDetailResponse>>;
-    public getPersonDetailsApiV1PersonsPersonIdGet(personId: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public getPersonDetailsApiV1PersonsPersonIdGet(personId: string, xTenantToken?: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<PersonDetailResponse>;
+    public getPersonDetailsApiV1PersonsPersonIdGet(personId: string, xTenantToken?: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<PersonDetailResponse>>;
+    public getPersonDetailsApiV1PersonsPersonIdGet(personId: string, xTenantToken?: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<PersonDetailResponse>>;
+    public getPersonDetailsApiV1PersonsPersonIdGet(personId: string, xTenantToken?: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         if (personId === null || personId === undefined) {
             throw new Error('Required parameter personId was null or undefined when calling getPersonDetailsApiV1PersonsPersonIdGet.');
         }
 
         let localVarHeaders = this.defaultHeaders;
+        if (xTenantToken !== undefined && xTenantToken !== null) {
+            localVarHeaders = localVarHeaders.set('X-Tenant-Token', String(xTenantToken));
+        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -349,13 +361,14 @@ export class PersonsService implements PersonsServiceInterface {
      * Lista todas as pessoas registradas no sistema.
      * @param page Página atual
      * @param pageSize Tamanho da página
+     * @param xTenantToken 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public listPersonsApiV1PersonsGet(page?: number, pageSize?: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<PersonListResponse>;
-    public listPersonsApiV1PersonsGet(page?: number, pageSize?: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<PersonListResponse>>;
-    public listPersonsApiV1PersonsGet(page?: number, pageSize?: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<PersonListResponse>>;
-    public listPersonsApiV1PersonsGet(page?: number, pageSize?: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public listPersonsApiV1PersonsGet(page?: number, pageSize?: number, xTenantToken?: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<PersonListResponse>;
+    public listPersonsApiV1PersonsGet(page?: number, pageSize?: number, xTenantToken?: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<PersonListResponse>>;
+    public listPersonsApiV1PersonsGet(page?: number, pageSize?: number, xTenantToken?: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<PersonListResponse>>;
+    public listPersonsApiV1PersonsGet(page?: number, pageSize?: number, xTenantToken?: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
 
         let localVarQueryParameters = new HttpParams({encoder: this.encoder});
         if (page !== undefined && page !== null) {
@@ -368,6 +381,9 @@ export class PersonsService implements PersonsServiceInterface {
         }
 
         let localVarHeaders = this.defaultHeaders;
+        if (xTenantToken !== undefined && xTenantToken !== null) {
+            localVarHeaders = localVarHeaders.set('X-Tenant-Token', String(xTenantToken));
+        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -422,19 +438,23 @@ export class PersonsService implements PersonsServiceInterface {
      * Recognize Faces
      * Reconhece todas as faces presentes na imagem.  - **image**: Imagem para análise - **draw_boxes**: Se verdadeiro, retorna a imagem com caixas desenhadas ao redor das faces  Retorna a lista de faces encontradas com seus nomes e posições.
      * @param image 
+     * @param xTenantToken 
      * @param drawBoxes 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public recognizeFacesApiV1RecognizePost(image: string, drawBoxes?: boolean, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<RecognitionResponse>;
-    public recognizeFacesApiV1RecognizePost(image: string, drawBoxes?: boolean, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<RecognitionResponse>>;
-    public recognizeFacesApiV1RecognizePost(image: string, drawBoxes?: boolean, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<RecognitionResponse>>;
-    public recognizeFacesApiV1RecognizePost(image: string, drawBoxes?: boolean, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public recognizeFacesApiV1RecognizePost(image: string, xTenantToken?: string, drawBoxes?: boolean, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<RecognitionResponse>;
+    public recognizeFacesApiV1RecognizePost(image: string, xTenantToken?: string, drawBoxes?: boolean, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<RecognitionResponse>>;
+    public recognizeFacesApiV1RecognizePost(image: string, xTenantToken?: string, drawBoxes?: boolean, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<RecognitionResponse>>;
+    public recognizeFacesApiV1RecognizePost(image: string, xTenantToken?: string, drawBoxes?: boolean, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         if (image === null || image === undefined) {
             throw new Error('Required parameter image was null or undefined when calling recognizeFacesApiV1RecognizePost.');
         }
 
         let localVarHeaders = this.defaultHeaders;
+        if (xTenantToken !== undefined && xTenantToken !== null) {
+            localVarHeaders = localVarHeaders.set('X-Tenant-Token', String(xTenantToken));
+        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -512,14 +532,15 @@ export class PersonsService implements PersonsServiceInterface {
      * Registra múltiplas fotos da mesma pessoa para melhor reconhecimento.  - **name**: Nome da pessoa - **images**: Lista de imagens contendo o rosto da pessoa - **person_id**: ID opcional da pessoa (UUID)  Retorna informações da pessoa registrada com múltiplas fotos.
      * @param name 
      * @param images 
+     * @param xTenantToken 
      * @param personId 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public registerMultiplePhotosApiV1RegisterMultiplePost(name: string, images: Array<string>, personId?: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<RegisterMultipleResponse>;
-    public registerMultiplePhotosApiV1RegisterMultiplePost(name: string, images: Array<string>, personId?: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<RegisterMultipleResponse>>;
-    public registerMultiplePhotosApiV1RegisterMultiplePost(name: string, images: Array<string>, personId?: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<RegisterMultipleResponse>>;
-    public registerMultiplePhotosApiV1RegisterMultiplePost(name: string, images: Array<string>, personId?: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public registerMultiplePhotosApiV1RegisterMultiplePost(name: string, images: Array<string>, xTenantToken?: string, personId?: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<RegisterMultipleResponse>;
+    public registerMultiplePhotosApiV1RegisterMultiplePost(name: string, images: Array<string>, xTenantToken?: string, personId?: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<RegisterMultipleResponse>>;
+    public registerMultiplePhotosApiV1RegisterMultiplePost(name: string, images: Array<string>, xTenantToken?: string, personId?: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<RegisterMultipleResponse>>;
+    public registerMultiplePhotosApiV1RegisterMultiplePost(name: string, images: Array<string>, xTenantToken?: string, personId?: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         if (name === null || name === undefined) {
             throw new Error('Required parameter name was null or undefined when calling registerMultiplePhotosApiV1RegisterMultiplePost.');
         }
@@ -528,6 +549,9 @@ export class PersonsService implements PersonsServiceInterface {
         }
 
         let localVarHeaders = this.defaultHeaders;
+        if (xTenantToken !== undefined && xTenantToken !== null) {
+            localVarHeaders = localVarHeaders.set('X-Tenant-Token', String(xTenantToken));
+        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -614,14 +638,15 @@ export class PersonsService implements PersonsServiceInterface {
      * Registra uma nova pessoa no sistema.  - **name**: Nome da pessoa - **image**: Imagem contendo o rosto da pessoa - **person_id**: ID opcional da pessoa (UUID)  Retorna o ID único da pessoa registrada.
      * @param name 
      * @param image 
+     * @param xTenantToken 
      * @param personId 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public registerPersonApiV1RegisterPost(name: string, image: string, personId?: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<RegisterPersonResponse>;
-    public registerPersonApiV1RegisterPost(name: string, image: string, personId?: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<RegisterPersonResponse>>;
-    public registerPersonApiV1RegisterPost(name: string, image: string, personId?: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<RegisterPersonResponse>>;
-    public registerPersonApiV1RegisterPost(name: string, image: string, personId?: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public registerPersonApiV1RegisterPost(name: string, image: string, xTenantToken?: string, personId?: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<RegisterPersonResponse>;
+    public registerPersonApiV1RegisterPost(name: string, image: string, xTenantToken?: string, personId?: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<RegisterPersonResponse>>;
+    public registerPersonApiV1RegisterPost(name: string, image: string, xTenantToken?: string, personId?: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<RegisterPersonResponse>>;
+    public registerPersonApiV1RegisterPost(name: string, image: string, xTenantToken?: string, personId?: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         if (name === null || name === undefined) {
             throw new Error('Required parameter name was null or undefined when calling registerPersonApiV1RegisterPost.');
         }
@@ -630,6 +655,9 @@ export class PersonsService implements PersonsServiceInterface {
         }
 
         let localVarHeaders = this.defaultHeaders;
+        if (xTenantToken !== undefined && xTenantToken !== null) {
+            localVarHeaders = localVarHeaders.set('X-Tenant-Token', String(xTenantToken));
+        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -710,13 +738,14 @@ export class PersonsService implements PersonsServiceInterface {
      * Remove uma imagem específica de uma pessoa.  - **person_id**: ID da pessoa (UUID) - **image_id**: ID da imagem a ser removida  Nota: Não é possível remover a única imagem de uma pessoa. Se a imagem removida for a primária, outra imagem será automaticamente definida como primária.
      * @param personId 
      * @param imageId 
+     * @param xTenantToken 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public removePersonImageApiV1PersonsPersonIdImagesImageIdDelete(personId: string, imageId: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<{ [key: string]: any; }>;
-    public removePersonImageApiV1PersonsPersonIdImagesImageIdDelete(personId: string, imageId: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<{ [key: string]: any; }>>;
-    public removePersonImageApiV1PersonsPersonIdImagesImageIdDelete(personId: string, imageId: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<{ [key: string]: any; }>>;
-    public removePersonImageApiV1PersonsPersonIdImagesImageIdDelete(personId: string, imageId: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public removePersonImageApiV1PersonsPersonIdImagesImageIdDelete(personId: string, imageId: number, xTenantToken?: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<{ [key: string]: any; }>;
+    public removePersonImageApiV1PersonsPersonIdImagesImageIdDelete(personId: string, imageId: number, xTenantToken?: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<{ [key: string]: any; }>>;
+    public removePersonImageApiV1PersonsPersonIdImagesImageIdDelete(personId: string, imageId: number, xTenantToken?: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<{ [key: string]: any; }>>;
+    public removePersonImageApiV1PersonsPersonIdImagesImageIdDelete(personId: string, imageId: number, xTenantToken?: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         if (personId === null || personId === undefined) {
             throw new Error('Required parameter personId was null or undefined when calling removePersonImageApiV1PersonsPersonIdImagesImageIdDelete.');
         }
@@ -725,6 +754,9 @@ export class PersonsService implements PersonsServiceInterface {
         }
 
         let localVarHeaders = this.defaultHeaders;
+        if (xTenantToken !== undefined && xTenantToken !== null) {
+            localVarHeaders = localVarHeaders.set('X-Tenant-Token', String(xTenantToken));
+        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
