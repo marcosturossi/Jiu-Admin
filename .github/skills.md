@@ -404,3 +404,27 @@ loadStudents(): void {
 - ❌ Do not create components without `changeDetection: ChangeDetectionStrategy.OnPush`
 - ❌ Do not use `alert()` or `console.log()` for user feedback
 - ❌ Do not write user-facing text in English — use Brazilian Portuguese
+
+---
+
+## Testing Policy
+
+### Every change ships with tests
+
+Every production code change — new feature, bug fix, or refactor — must include or update tests that verify the changed behaviour. A change without tests is incomplete.
+
+### Tests must match the current implementation
+
+When behaviour changes, update the affected tests in the same commit. Never leave a test asserting something the code no longer does. Never skip or comment out a failing test to make CI pass.
+
+### Failing tests block the task
+
+Either (a) fix the implementation so the test still passes, or (b) update the test because the behaviour intentionally changed — document why in the commit message. Silent breakage is not acceptable.
+
+### Angular test setup conventions
+
+- Standalone components go in `imports: []`, not `declarations: []`
+- Always provide `provideHttpClient()` when the component or service makes HTTP calls
+- Use `fixture.componentRef.setInput('inputName', value)` before `detectChanges()` for required `input()` signals (avoids NG0950)
+- Use `jasmine.createSpyObj` to mock services; provide them via `{ provide: ServiceClass, useValue: spy }`
+- Extract `window.location.href` assignments into a protected method so tests can spy on them without triggering real navigation

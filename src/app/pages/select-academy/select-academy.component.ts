@@ -66,12 +66,16 @@ export class SelectAcademyComponent implements OnInit {
         }
         this.academySession.setAcademy(slugValue, null, realmInfo.keycloakUrl, realmInfo.realm);
         // Full reload so Keycloak APP_INITIALIZER picks up the new realm config
-        window.location.href = '/';
+        this.navigateToRoot();
       },
       error: () => {
         this.isLoading.set(false);
         this.errorMsg.set('Academia não encontrada. Verifique o slug e tente novamente.');
       },
     });
+  }
+
+  protected navigateToRoot(): void {
+    window.location.href = '/';
   }
 }
