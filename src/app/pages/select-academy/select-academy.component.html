@@ -5,28 +5,53 @@
     </div>
 
     <h1 class="academy-title">Sistema de Administração</h1>
-    <p class="academy-subtitle">Digite o slug da sua academia para continuar</p>
+    <p class="academy-subtitle">
+      @if (history().length > 0) {
+        Selecione sua academia ou adicione uma nova
+      } @else {
+        Digite o slug da sua academia para continuar
+      }
+    </p>
 
     @if (errorMsg()) {
       <div class="alert alert-danger py-2 mb-3" role="alert">{{ errorMsg() }}</div>
     }
 
     <form class="academy-form" (ngSubmit)="onSubmit()">
-      <div class="mb-3">
-        <label for="slug" class="form-label fw-semibold">Slug da Academia</label>
-        <input
-          id="slug"
-          type="text"
-          class="form-control"
-          placeholder="ex: carlson-gracie-sp"
-          [value]="slug()"
-          (input)="slug.set($any($event.target).value)"
-          [disabled]="isLoading()"
-          autocomplete="off"
-          autocapitalize="none"
-          spellcheck="false"
-        />
-      </div>
+      @if (history().length > 0) {
+        <div class="mb-3">
+          <label for="academySelect" class="form-label fw-semibold">Academia</label>
+          <select
+            id="academySelect"
+            class="form-select"
+            [value]="selectedOption()"
+            (change)="selectedOption.set($any($event.target).value)"
+            [disabled]="isLoading()">
+            @for (item of history(); track item.slug) {
+              <option [value]="item.slug">{{ item.slug }}</option>
+            }
+            <option value="other">Outra academia...</option>
+          </select>
+        </div>
+      }
+
+      @if (showCustomInput()) {
+        <div class="mb-3">
+          <label for="slug" class="form-label fw-semibold">Slug da Academia</label>
+          <input
+            id="slug"
+            type="text"
+            class="form-control"
+            placeholder="ex: carlson-gracie-sp"
+            [value]="customSlug()"
+            (input)="customSlug.set($any($event.target).value)"
+            [disabled]="isLoading()"
+            autocomplete="off"
+            autocapitalize="none"
+            spellcheck="false"
+          />
+        </div>
+      }
 
       <button
         type="submit"

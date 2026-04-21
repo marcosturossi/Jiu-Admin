@@ -2,6 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { AcademySessionService, getStoredAcademy, AcademySession } from './academy-session.service';
 
 const STORAGE_KEY = 'jiu_admin_academy';
+const HISTORY_KEY = 'jiu_admin_academy_history';
 
 const mockAcademy: AcademySession = {
   slug: 'test-academy',
@@ -64,6 +65,54 @@ describe('AcademySessionService', () => {
       service.setAcademy('s', null, 'http://url', 'r');
       expect(service.getAcademy()?.name).toBeNull();
     });
+
+    it('adds the new entry to history', () => {
+      service.setAcademy('slug-a', null, 'http://kc', 'realm-a');
+      const hist = service.getHistory();
+      expect(hist.length).toBe(1);
+      expect(hist[0].slug).toBe('slug-a');
+    });
+
+    it('places new entries at the front of history', () => {
+      service.setAcademy('slug-a', null, 'http://kc', 'realm-a');
+      service.setAcademy('slug-b', null, 'http://kc', 'realm-b');
+      const hist = service.getHistory();
+      expect(hist[0].slug).toBe('slug-b');
+      expect(hist[1].slug).toBe('slug-a');
+    });
+
+    it('deduplicates slugs in history', () => {
+      service.setAcademy('slug-a', null, 'http://kc', 'realm-a');
+      service.setAcademy('slug-b', null, 'http://kc', 'realm-b');
+      service.setAcademy('slug-a', null, 'http://kc', 'realm-a-updated');
+      const hist = service.getHistory();
+      expect(hist.length).toBe(2);
+      expect(hist[0].slug).toBe('slug-a');
+    });
+
+    it('caps history at 5 entries', () => {
+      for (let i = 1; i <= 7; i++) {
+        service.setAcademy(`slug-${i}`, null, 'http://kc', `realm-${i}`);
+      }
+      expect(service.getHistory().length).toBe(5);
+    });
+  });
+
+  describe('getHistory', () => {
+    it('returns empty array when nothing stored', () => {
+      expect(service.getHistory()).toEqual([]);
+    });
+
+    it('returns empty array on invalid JSON', () => {
+      localStorage.setItem(HISTORY_KEY, 'bad{{{');
+      expect(service.getHistory()).toEqual([]);
+    });
+
+    it('returns stored history array', () => {
+      const hist = [mockAcademy];
+      localStorage.setItem(HISTORY_KEY, JSON.stringify(hist));
+      expect(service.getHistory()).toEqual(hist);
+    });
   });
 
   describe('clearAcademy', () => {
@@ -75,6 +124,18 @@ describe('AcademySessionService', () => {
 
     it('is safe to call when nothing is stored', () => {
       expect(() => service.clearAcademy()).not.toThrow();
+    });
+  });
+
+  describe('clearHistory', () => {
+    it('removes the history from localStorage', () => {
+      service.setAcademy('slug-a', null, 'http://kc', 'realm-a');
+      service.clearHistory();
+      expect(service.getHistory()).toEqual([]);
+    });
+
+    it('is safe to call when no history exists', () => {
+      expect(() => service.clearHistory()).not.toThrow();
     });
   });
 });
