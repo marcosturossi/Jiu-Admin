@@ -23,15 +23,6 @@
 
   <div class="row g-2">
     <div class="col mb-3">
-      <label for="priority" class="form-label">Prioridade</label>
-      <select id="priority" formControlName="priority" class="form-select">
-        <option value="" disabled>Selecione</option>
-        @for (opt of notificationPriorities; track opt.value) {
-          <option [value]="opt.value">{{ opt.label }}</option>
-        }
-      </select>
-    </div>
-    <div class="col mb-3">
       <label for="userId" class="form-label">ID do Usuário</label>
       <input id="userId" formControlName="userId" placeholder="Vazio = todos os usuários" class="form-control" />
       <small class="text-muted">Deixe vazio para enviar para todos os usuários</small>

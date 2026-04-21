@@ -3,7 +3,6 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NotificationService as ApiNotificationService } from '../../../../generated_services/api/notification.service';
 import { CreateNotificationDTO } from '../../../../generated_services/model/createNotificationDTO';
 import { NotificationType } from '../../../../generated_services/model/notificationType';
-import { NotificationPriority } from '../../../../generated_services/model/notificationPriority';
 import { NotificationService } from '../../../../services/notification.service';
 
 @Component({
@@ -32,18 +31,10 @@ export class CreateNotificationComponent {
     { label: 'Geral', value: NotificationType.NUMBER_7 }
   ];
 
-  protected readonly notificationPriorities = [
-    { label: 'Baixa', value: NotificationPriority.NUMBER_0 },
-    { label: 'Normal', value: NotificationPriority.NUMBER_1 },
-    { label: 'Alta', value: NotificationPriority.NUMBER_2 },
-    { label: 'Crítica', value: NotificationPriority.NUMBER_3 }
-  ];
-
   protected readonly form = this.fb.group({
     title: ['', Validators.required],
     message: ['', Validators.required],
     type: [NotificationType.NUMBER_0, Validators.required],
-    priority: [NotificationPriority.NUMBER_1],
     userId: [''],
     isActive: [true],
     expiresAt: [null as Date | null],

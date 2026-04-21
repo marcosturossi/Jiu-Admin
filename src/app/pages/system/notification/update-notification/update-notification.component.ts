@@ -4,7 +4,6 @@ import { NotificationService as ApiNotificationService } from '../../../../gener
 import { ShowNotificationDTO } from '../../../../generated_services/model/showNotificationDTO';
 import { UpdateNotificationDTO } from '../../../../generated_services/model/updateNotificationDTO';
 import { NotificationType } from '../../../../generated_services/model/notificationType';
-import { NotificationPriority } from '../../../../generated_services/model/notificationPriority';
 import { NotificationService } from '../../../../services/notification.service';
 
 @Component({
@@ -34,18 +33,10 @@ export class UpdateNotificationComponent {
     { label: 'Geral', value: NotificationType.NUMBER_7 }
   ];
 
-  protected readonly notificationPriorities = [
-    { label: 'Baixa', value: NotificationPriority.NUMBER_0 },
-    { label: 'Normal', value: NotificationPriority.NUMBER_1 },
-    { label: 'Alta', value: NotificationPriority.NUMBER_2 },
-    { label: 'Crítica', value: NotificationPriority.NUMBER_3 }
-  ];
-
   protected readonly form = this.fb.group({
     title: ['', Validators.required],
     message: ['', Validators.required],
     type: [NotificationType.NUMBER_0 as NotificationType, Validators.required],
-    priority: [NotificationPriority.NUMBER_1 as NotificationPriority],
     userId: [''],
     isActive: [true],
     expiresAt: [null as Date | null],
@@ -93,8 +84,6 @@ export class UpdateNotificationComponent {
       title: v.title,
       message: v.message,
       type: v.type,
-      priority: v.priority,
-      userId: v.userId || null,
       isActive: v.isActive,
       expiresAt: v.expiresAt ? (v.expiresAt as Date).toISOString() : null,
       actionUrl: v.actionUrl || null,

@@ -5,7 +5,6 @@ import { ShowNotificationDTO } from '../../../generated_services/model/showNotif
 import { CreateNotificationComponent } from './create-notification/create-notification.component';
 import { UpdateNotificationComponent } from './update-notification/update-notification.component';
 import { NotificationType } from '../../../generated_services/model/notificationType';
-import { NotificationPriority } from '../../../generated_services/model/notificationPriority';
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
 import { PaginationNotificationDTO } from '../../../generated_services';
@@ -70,27 +69,6 @@ export class NotificationComponent {
       case NotificationType.NUMBER_6: return 'Frequência';
       case NotificationType.NUMBER_7: return 'Geral';
       default: return 'Desconhecido';
-    }
-  }
-
-  protected getNotificationPriorityText(priority?: NotificationPriority): string {
-    if (priority === undefined) return 'Normal';
-    switch (priority) {
-      case NotificationPriority.NUMBER_0: return 'Baixa';
-      case NotificationPriority.NUMBER_1: return 'Normal';
-      case NotificationPriority.NUMBER_2: return 'Alta';
-      case NotificationPriority.NUMBER_3: return 'Crítica';
-      default: return 'Normal';
-    }
-  }
-
-  protected getPrioritySeverity(priority?: NotificationPriority): 'success' | 'secondary' | 'warn' | 'danger' | undefined {
-    switch (priority) {
-      case NotificationPriority.NUMBER_0: return 'success';
-      case NotificationPriority.NUMBER_1: return 'secondary';
-      case NotificationPriority.NUMBER_2: return 'warn';
-      case NotificationPriority.NUMBER_3: return 'danger';
-      default: return 'secondary';
     }
   }
 

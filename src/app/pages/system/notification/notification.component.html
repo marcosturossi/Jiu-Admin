@@ -16,7 +16,6 @@
           <tr>
             <th>Título</th>
             <th>Tipo</th>
-            <th>Prioridade</th>
             <th>Status</th>
             <th>Usuário</th>
             <th>Data de Criação</th>
@@ -26,7 +25,7 @@
         </thead>
         <tbody>
           @if ((items()?.items ?? []).length === 0) {
-            <tr><td colspan="8" class="text-center py-5 text-muted">Nenhuma notificação encontrada.</td></tr>
+            <tr><td colspan="7" class="text-center py-5 text-muted">Nenhuma notificação encontrada.</td></tr>
           }
           @for (notification of items()?.items ?? []; track notification.id) {
             <tr>
@@ -35,11 +34,6 @@
                 <br /><small class="text-muted">{{ notification.message }}</small>
               </td>
               <td>{{ getNotificationTypeText(notification.type) }}</td>
-              <td>
-                <span [class]="'badge ' + ({'success':'bg-success','warn':'bg-warning text-dark','danger':'bg-danger','info':'bg-info text-dark','secondary':'bg-secondary'})[getPrioritySeverity(notification.priority)]">
-                  {{ getNotificationPriorityText(notification.priority) }}
-                </span>
-              </td>
               <td>
                 <span [class]="'badge ' + (notification.isActive ? 'bg-success' : 'bg-secondary')">
                   {{ getStatusText(notification.isActive) }}
