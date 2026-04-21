@@ -19,7 +19,7 @@
 
   <div class="mb-3">
     <label for="file">Arquivo (opcional)</label>
-    <input type="file" id="file" class="file-input" (change)="onFileSelected($event)" />
+    <input type="file" id="file" class="form-control" (change)="onFileSelected($event)" />
     @if (selectedFile()) {
       <div class="file-preview">
         <small class="hint">Arquivo selecionado: {{ selectedFile()!.name }}</small>

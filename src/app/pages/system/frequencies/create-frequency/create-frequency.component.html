@@ -19,7 +19,7 @@
       <div class="recognition-upload">
         <div class="mb-3">
           <label for="imageInput" class="form-label">Fazer upload da foto da turma</label>
-          <input type="file" id="imageInput" accept="image/*" (change)="onFileSelected($event)" class="file-input" />
+          <input type="file" id="imageInput" accept="image/*" (change)="onFileSelected($event)" class="form-control" />
           <small class="hint">Formatos aceitos: JPG, PNG, GIF. Tamanho máximo: 5MB.</small>
         </div>
 
@@ -78,7 +78,7 @@
           <label [for]="'student-' + i" class="student-label">
             {{ student.firstName }} {{ student.lastName }}
             @if (isStudentRecognized(student.id!)) {
-              <i class="bi bi-check-circle" style="color: var(--p-green-500)" title="Reconhecido automaticamente"></i>
+              <i class="bi bi-check-circle text-success" title="Reconhecido automaticamente"></i>
             }
           </label>
         </div>
@@ -86,7 +86,7 @@
     </div>
     <small class="hint">
       Será criada uma frequência individual para cada aluno selecionado.
-      <span style="color: var(--p-green-500)">Alunos em verde foram reconhecidos automaticamente.</span>
+      <span class="text-success">Alunos em verde foram reconhecidos automaticamente.</span>
     </small>
   </div>
 
