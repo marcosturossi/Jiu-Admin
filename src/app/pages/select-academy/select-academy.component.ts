@@ -7,34 +7,39 @@ import {
   signal,
 } from '@angular/core';
 import { Router } from '@angular/router';
-import { FormsModule } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
 import Keycloak from 'keycloak-js';
 import { PublicService } from '../../generated_services/api/public.service';
-import { AcademySessionService, AcademySession } from '../../services/academy-session.service';
+import { AcademySessionService } from '../../services/academy-session.service';
+import { environment } from '../../enviroments/environment';
+
+export interface PublicAcademyItem {
+  slug: string;
+  name: string;
+}
 
 @Component({
   selector: 'app-select-academy',
   standalone: true,
-  imports: [FormsModule],
+  imports: [],
   templateUrl: './select-academy.component.html',
   styleUrl: './select-academy.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SelectAcademyComponent implements OnInit {
-  private readonly keycloak         = inject(Keycloak);
-  private readonly router           = inject(Router);
-  private readonly publicService    = inject(PublicService);
-  private readonly academySession   = inject(AcademySessionService);
+  private readonly keycloak       = inject(Keycloak);
+  private readonly router         = inject(Router);
+  private readonly http           = inject(HttpClient);
+  private readonly publicService  = inject(PublicService);
+  private readonly academySession = inject(AcademySessionService);
 
-  protected readonly history        = signal<AcademySession[]>([]);
-  protected readonly selectedOption = signal<string>('other');
-  protected readonly customSlug     = signal('');
-  protected readonly isLoading      = signal(false);
-  protected readonly errorMsg       = signal<string | null>(null);
+  protected readonly academies    = signal<PublicAcademyItem[] | null>(null);
+  protected readonly selectedSlug = signal('');
+  protected readonly isLoading    = signal(false);
+  protected readonly errorMsg     = signal<string | null>(null);
+  protected readonly fetchError   = signal(false);
 
-  protected readonly showCustomInput = computed(
-    () => this.selectedOption() === 'other'
-  );
+  protected readonly ready = computed(() => this.academies() !== null);
 
   ngOnInit(): void {
     if (this.keycloak.authenticated) {
@@ -42,24 +47,30 @@ export class SelectAcademyComponent implements OnInit {
       return;
     }
 
-    const hist = this.academySession.getHistory();
-    this.history.set(hist);
-
     const current = this.academySession.getAcademy();
-    if (current && hist.some(h => h.slug === current.slug)) {
-      this.selectedOption.set(current.slug);
-    } else {
-      this.selectedOption.set('other');
-    }
+
+    this.http.get<PublicAcademyItem[]>(`${environment.server}/api/public/academies`).subscribe({
+      next: (list) => {
+        const safe = Array.isArray(list) ? list : [];
+        this.academies.set(safe);
+        if (safe.length > 0) {
+          const preselect = current && safe.some(a => a.slug === current.slug)
+            ? current.slug
+            : safe[0].slug;
+          this.selectedSlug.set(preselect);
+        }
+      },
+      error: () => {
+        this.academies.set([]);
+        this.fetchError.set(true);
+      },
+    });
   }
 
   protected onSubmit(): void {
-    const slug = this.showCustomInput()
-      ? this.customSlug().trim().toLowerCase()
-      : this.selectedOption();
-
+    const slug = this.selectedSlug();
     if (!slug) {
-      this.errorMsg.set('Por favor, informe o slug da academia.');
+      this.errorMsg.set('Selecione uma academia.');
       return;
     }
 
@@ -70,7 +81,7 @@ export class SelectAcademyComponent implements OnInit {
       next: (realmInfo) => {
         if (!realmInfo.keycloakUrl || !realmInfo.realm) {
           this.isLoading.set(false);
-          this.errorMsg.set('Academia não encontrada ou mal configurada. Verifique o slug.');
+          this.errorMsg.set('Academia não encontrada ou mal configurada.');
           return;
         }
         this.academySession.setAcademy(slug, null, realmInfo.keycloakUrl, realmInfo.realm);
@@ -78,7 +89,7 @@ export class SelectAcademyComponent implements OnInit {
       },
       error: () => {
         this.isLoading.set(false);
-        this.errorMsg.set('Academia não encontrada. Verifique o slug e tente novamente.');
+        this.errorMsg.set('Erro ao conectar com a academia. Tente novamente.');
       },
     });
   }
@@ -87,3 +98,4 @@ export class SelectAcademyComponent implements OnInit {
     window.location.href = '/';
   }
 }
+

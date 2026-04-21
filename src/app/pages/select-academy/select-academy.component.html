@@ -5,63 +5,51 @@
     </div>
 
     <h1 class="academy-title">Sistema de Administração</h1>
-    <p class="academy-subtitle">
-      @if (history().length > 0) {
-        Selecione sua academia ou adicione uma nova
-      } @else {
-        Digite o slug da sua academia para continuar
-      }
-    </p>
+    <p class="academy-subtitle">Selecione sua academia para continuar</p>
 
     @if (errorMsg()) {
       <div class="alert alert-danger py-2 mb-3" role="alert">{{ errorMsg() }}</div>
     }
 
-    <form class="academy-form" (ngSubmit)="onSubmit()">
-      <div class="mb-3">
-        <label for="academySelect" class="form-label fw-semibold">Academia</label>
-        <select
-          id="academySelect"
-          class="form-select"
-          [value]="selectedOption()"
-          (change)="selectedOption.set($any($event.target).value)"
-          [disabled]="isLoading()">
-          @for (item of history(); track item.slug) {
-            <option [value]="item.slug">{{ item.slug }}</option>
-          }
-          <option value="other">Outra academia...</option>
-        </select>
+    @if (!ready()) {
+      <div class="text-center py-4">
+        <span class="spinner-border text-primary" role="status" aria-hidden="true"></span>
+        <p class="text-muted mt-2 mb-0">Carregando academias...</p>
       </div>
-
-      @if (showCustomInput()) {
+    } @else if (fetchError()) {
+      <div class="alert alert-warning text-center">
+        <i class="bi bi-exclamation-triangle me-2"></i>
+        Não foi possível carregar a lista de academias.<br>
+        <small>Verifique a conexão com o servidor.</small>
+      </div>
+    } @else {
+      <form class="academy-form" (ngSubmit)="onSubmit()">
         <div class="mb-3">
-          <label for="slug" class="form-label fw-semibold">Slug da Academia</label>
-          <input
-            id="slug"
-            type="text"
-            class="form-control"
-            placeholder="ex: carlson-gracie-sp"
-            [value]="customSlug()"
-            (input)="customSlug.set($any($event.target).value)"
-            [disabled]="isLoading()"
-            autocomplete="off"
-            autocapitalize="none"
-            spellcheck="false"
-          />
+          <label for="academySelect" class="form-label fw-semibold">Academia</label>
+          <select
+            id="academySelect"
+            class="form-select form-select-lg"
+            [value]="selectedSlug()"
+            (change)="selectedSlug.set($any($event.target).value)"
+            [disabled]="isLoading()">
+            @for (item of academies()!; track item.slug) {
+              <option [value]="item.slug">{{ item.name || item.slug }}</option>
+            }
+          </select>
         </div>
-      }
 
-      <button
-        type="submit"
-        class="btn btn-primary w-100 mt-2"
-        [disabled]="isLoading()">
-        @if (isLoading()) {
-          <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-          Carregando...
-        } @else {
-          Continuar <i class="bi bi-arrow-right ms-1"></i>
-        }
-      </button>
-    </form>
+        <button
+          type="submit"
+          class="btn btn-primary w-100 mt-2"
+          [disabled]="isLoading()">
+          @if (isLoading()) {
+            <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+            Carregando...
+          } @else {
+            Continuar <i class="bi bi-arrow-right ms-1"></i>
+          }
+        </button>
+      </form>
+    }
   </div>
 </div>
