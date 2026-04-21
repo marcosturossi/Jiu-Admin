@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
 
 import { FrequenciesComponent } from './frequencies.component';
+import { provideToastr } from 'ngx-toastr';
 
 describe('FrequenciesComponent', () => {
   let component: FrequenciesComponent;
@@ -10,7 +11,7 @@ describe('FrequenciesComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [FrequenciesComponent],
-      providers: [provideHttpClient()]
+      providers: [provideHttpClient(), provideToastr()]
     })
     .compileComponents();
 

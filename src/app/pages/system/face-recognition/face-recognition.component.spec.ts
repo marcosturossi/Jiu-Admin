@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
 
 import { FaceRecognitionComponent } from './face-recognition.component';
+import { provideToastr } from 'ngx-toastr';
 
 describe('FaceRecognitionComponent', () => {
   let component: FaceRecognitionComponent;
@@ -10,7 +11,7 @@ describe('FaceRecognitionComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [FaceRecognitionComponent],
-      providers: [provideHttpClient()]
+      providers: [provideHttpClient(), provideToastr()]
     })
     .compileComponents();
 

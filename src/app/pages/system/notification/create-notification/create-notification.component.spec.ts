@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
 
 import { CreateNotificationComponent } from './create-notification.component';
+import { provideToastr } from 'ngx-toastr';
 
 describe('CreateNotificationComponent', () => {
   let component: CreateNotificationComponent;
@@ -10,7 +11,7 @@ describe('CreateNotificationComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [CreateNotificationComponent],
-      providers: [provideHttpClient()]
+      providers: [provideHttpClient(), provideToastr()]
     })
     .compileComponents();
 

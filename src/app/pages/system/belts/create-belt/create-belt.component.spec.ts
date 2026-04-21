@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
 
 import { CreateBeltComponent } from './create-belt.component';
+import { provideToastr } from 'ngx-toastr';
 
 describe('CreateBeltComponent', () => {
   let component: CreateBeltComponent;
@@ -10,7 +11,7 @@ describe('CreateBeltComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [CreateBeltComponent],
-      providers: [provideHttpClient()]
+      providers: [provideHttpClient(), provideToastr()]
     })
     .compileComponents();
 

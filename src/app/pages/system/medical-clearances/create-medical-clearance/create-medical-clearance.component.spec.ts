@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
 
 import { CreateMedicalClearanceComponent } from './create-medical-clearance.component';
+import { provideToastr } from 'ngx-toastr';
 
 describe('CreateMedicalClearanceComponent', () => {
   let component: CreateMedicalClearanceComponent;
@@ -10,7 +11,7 @@ describe('CreateMedicalClearanceComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [CreateMedicalClearanceComponent],
-      providers: [provideHttpClient()]
+      providers: [provideHttpClient(), provideToastr()]
     })
     .compileComponents();
 

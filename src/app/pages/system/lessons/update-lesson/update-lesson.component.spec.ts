@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
 
 import { UpdateLessonComponent } from './update-lesson.component';
+import { provideToastr } from 'ngx-toastr';
 
 describe('UpdateLessonComponent', () => {
   let component: UpdateLessonComponent;
@@ -10,7 +11,7 @@ describe('UpdateLessonComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [UpdateLessonComponent],
-      providers: [provideHttpClient()]
+      providers: [provideHttpClient(), provideToastr()]
     })
     .compileComponents();
 
