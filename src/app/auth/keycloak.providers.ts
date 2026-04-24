@@ -10,12 +10,11 @@ export const keycloakProviders = provideKeycloak({
     realm:    storedAcademy?.realm       ?? environment.keycloak.realm,
     clientId: environment.keycloak.clientId,
   },
-  initOptions: {
-    onLoad:           storedAcademy ? 'login-required' : 'check-sso',
+  initOptions: storedAcademy ? {
+    onLoad:           'login-required',
     checkLoginIframe: false,
     pkceMethod:       'S256',
-    silentCheckSsoRedirectUri: window.location.origin + '/silent-check-sso.html',
-  },
+  } : undefined,
   features: [
     withAutoRefreshToken({
       onInactivityTimeout: 'logout',

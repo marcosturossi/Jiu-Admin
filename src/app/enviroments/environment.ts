@@ -11,12 +11,12 @@
 
 export const environment = {
   production: false,
-  server: 'http://localhost:8080',
-  face_api: 'http://localhost:8003/api/v1',
+  server: 'http://localhost:9080',
+  face_api: 'http://localhost:9080/api',
   keycloak: {
     url: 'http://localhost:8180',
     realm: 'bjjclutch',
-    clientId: 'jiu-admin',
+    clientId: 'bjj-manager',
   },
 }
 

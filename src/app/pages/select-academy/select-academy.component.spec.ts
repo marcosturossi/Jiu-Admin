@@ -38,7 +38,12 @@ describe('SelectAcademyComponent', () => {
     ]);
     academySessionSpy.getAcademy.and.returnValue(null);
     academySessionSpy.getHistory.and.returnValue([]);
-    keycloakStub = { authenticated: false };
+    keycloakStub = {
+      authenticated: false,
+      didInitialize: false,
+      init:  jasmine.createSpy('init').and.returnValue(Promise.resolve(false)),
+      login: jasmine.createSpy('login').and.returnValue(new Promise(() => {})),
+    };
 
     await TestBed.configureTestingModule({
       imports: [SelectAcademyComponent],
@@ -120,16 +125,18 @@ describe('SelectAcademyComponent', () => {
       expect(component['selectedSlug']()).toBe('carlson-sp');
     });
 
-    it('submits selected slug and navigates on success', () => {
+    it('submits selected slug and calls keycloak.login on success', async () => {
       publicServiceSpy.apiPublicAcademiesSlugRealmGet.and.returnValue(
         of({ keycloakUrl: 'http://kc:8180', realm: 'carlson-realm' }) as any
       );
-      const navSpy = spyOn(component as any, 'navigateToRoot');
       component['selectedSlug'].set('carlson-rj');
       component['onSubmit']();
+      await fixture.whenStable();
       expect(publicServiceSpy.apiPublicAcademiesSlugRealmGet).toHaveBeenCalledWith('carlson-rj');
       expect(academySessionSpy.setAcademy).toHaveBeenCalled();
-      expect(navSpy).toHaveBeenCalled();
+      expect(keycloakStub.login).toHaveBeenCalledWith(
+        jasmine.objectContaining({ redirectUri: jasmine.stringContaining('/system') })
+      );
     });
 
     it('shows error when realm API fails', () => {

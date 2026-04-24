@@ -3,10 +3,16 @@ import { provideRouter } from '@angular/router';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { provideToastr } from 'ngx-toastr';
-import { includeBearerTokenInterceptor } from 'keycloak-angular';
+import { includeBearerTokenInterceptor, INCLUDE_BEARER_TOKEN_INTERCEPTOR_CONFIG } from 'keycloak-angular';
 
 import { routes } from './app.routes';
 import { keycloakProviders } from './auth/keycloak.providers';
+import { BASE_PATH as BASE_PATH_API1 } from './generated_services/variables';
+import { BASE_PATH as BASE_PATH_API2 } from './generated_services/api2/variables';
+import { environment } from './enviroments/environment';
+
+const urlPattern = (base: string) =>
+  new RegExp('^' + base.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -22,5 +28,14 @@ export const appConfig: ApplicationConfig = {
       preventDuplicates: true,
     }),
     keycloakProviders,
+    { provide: BASE_PATH_API1, useValue: environment.server },
+    { provide: BASE_PATH_API2, useValue: environment.face_api },
+    {
+      provide: INCLUDE_BEARER_TOKEN_INTERCEPTOR_CONFIG,
+      useValue: [
+        { urlPattern: urlPattern(environment.server) },
+        { urlPattern: urlPattern(environment.face_api) },
+      ],
+    },
   ]
 };

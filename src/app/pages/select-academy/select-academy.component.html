@@ -23,7 +23,7 @@
         <small>Verifique a conexão com o servidor.</small>
       </div>
     } @else {
-      <form class="academy-form" (ngSubmit)="onSubmit()">
+      <form class="academy-form" (submit)="$event.preventDefault(); onSubmit()">
         <div class="mb-3">
           <label for="academySelect" class="form-label fw-semibold">Academia</label>
           <select
