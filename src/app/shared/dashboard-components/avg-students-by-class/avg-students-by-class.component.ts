@@ -88,7 +88,6 @@ export class AvgStudentsByClassComponent implements AfterViewInit, OnDestroy {
   }
 
   private fetchDataAndUpdate(): void {
-    console.log('Fetching data for AvgStudentsByClassComponent');
     this.dashboardService.apiDashboardAttendanceGet().subscribe({
       next: (data: any) => {
         if (!data) return;

@@ -296,8 +296,7 @@ export class OnboardingConfirmationComponent {
   protected onFileChange(event: Event): void {
     const input = event.target as HTMLInputElement;
     if (input.files?.length) {
-      const file = input.files[0];
-      console.log('File selected:', file.name);
+      // File upload handled by parent component
     }
   }
 
