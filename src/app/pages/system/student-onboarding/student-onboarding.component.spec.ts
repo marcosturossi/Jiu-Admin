@@ -1,20 +1,28 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { StudentOnboardingComponent } from './student-onboarding.component';
 import { SubnavService } from '../../../services/subnav.service';
+import { StudentsService } from '../../../generated_services/api/students.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { provideHttpClient } from '@angular/common/http';
 
 describe('StudentOnboardingComponent', () => {
   let component: StudentOnboardingComponent;
   let fixture: ComponentFixture<StudentOnboardingComponent>;
   let subnavService: jasmine.SpyObj<SubnavService>;
+  let studentsService: jasmine.SpyObj<StudentsService>;
 
   beforeEach(async () => {
     subnavService = jasmine.createSpyObj('SubnavService', ['setTitle']);
+    studentsService = jasmine.createSpyObj('StudentsService', ['apiStudentsPost']);
 
     await TestBed.configureTestingModule({
       imports: [StudentOnboardingComponent, CommonModule, FormsModule],
-      providers: [{ provide: SubnavService, useValue: subnavService }],
+      providers: [
+        { provide: SubnavService, useValue: subnavService },
+        { provide: StudentsService, useValue: studentsService },
+        provideHttpClient(),
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(StudentOnboardingComponent);

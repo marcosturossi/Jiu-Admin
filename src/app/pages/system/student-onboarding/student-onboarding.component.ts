@@ -1,6 +1,7 @@
 import { Component, ChangeDetectionStrategy, signal, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SubnavService } from '../../../services/subnav.service';
+import { StudentsService } from '../../../generated_services/api/students.service';
 import { OnboardingBasicFormComponent } from './onboarding-basic-form.component';
 import { OnboardingBeltFormComponent } from './onboarding-belt-form.component';
 import { OnboardingContractFormComponent } from './onboarding-contract-form.component';
@@ -53,6 +54,7 @@ export interface StudentMedicalInfo {
 })
 export class StudentOnboardingComponent implements OnInit {
   private readonly subnavService = inject(SubnavService);
+  private readonly studentsService = inject(StudentsService);
 
   protected readonly currentStep = signal<number>(1);
   protected readonly maxSteps = 4;
@@ -114,25 +116,41 @@ export class StudentOnboardingComponent implements OnInit {
     this.errorMessage.set(null);
     
     try {
-      // TODO: Implement API call to submit all wizard data
-      const formData = {
-        basicInfo: this.basicInfo(),
-        beltInfo: this.beltInfo(),
-        contractInfo: this.contractInfo(),
-        medicalInfo: this.medicalInfo(),
+      const basic = this.basicInfo();
+      
+      // Prepare student data for API
+      const createStudentDTO = {
+        userName: basic.email.split('@')[0], // Use email prefix as username
+        email: basic.email,
+        phoneNumber: basic.phone,
+        firstName: basic.name.split(' ')[0],
+        lastName: basic.name.split(' ').slice(1).join(' '),
+        birthDay: basic.dateOfBirth,
       };
       
-      console.log('Submitting:', formData);
-      
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      // Call API to create student
+      await this.studentsService.apiStudentsPost(createStudentDTO).toPromise();
       
       this.successMessage.set('Aluno cadastrado com sucesso!');
       setTimeout(() => {
         this.resetForm();
       }, 2000);
     } catch (error) {
-      const errorMsg = error instanceof Error ? error.message : 'Erro ao cadastrar aluno. Tente novamente.';
+      let errorMsg = 'Erro ao cadastrar aluno. Tente novamente.';
+      
+      if (error instanceof Error) {
+        errorMsg = error.message;
+      } else if (typeof error === 'object' && error !== null) {
+        const err = error as any;
+        if (err.error?.message) {
+          errorMsg = err.error.message;
+        } else if (err.error?.detail) {
+          errorMsg = err.error.detail;
+        } else if (err.statusText) {
+          errorMsg = `Erro ${err.status}: ${err.statusText}`;
+        }
+      }
+      
       this.errorMessage.set(errorMsg);
     } finally {
       this.isSubmitting.set(false);
