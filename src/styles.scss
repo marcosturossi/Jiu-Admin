@@ -159,7 +159,13 @@ li {
 
 :root.dark-mode .table > :not(caption) > * > * {
   background-color: var(--brand-white);
+  color: var(--brand-text);
   border-color: var(--brand-border);
+}
+
+:root.dark-mode .table td,
+:root.dark-mode .table th {
+  color: var(--brand-text);
 }
 
 :root.dark-mode .table-hover > tbody > tr:hover {
@@ -258,6 +264,12 @@ li {
 
 .table > :not(caption) > * > * {
   background-color: var(--brand-white);
+  color: var(--brand-text);
+}
+
+.table td,
+.table th {
+  color: var(--brand-text);
 }
 
 /* ── Utility classes ────────────────────────────────────────────── */
