@@ -1,31 +1,27 @@
-<nav class="sidebar">
-  <div class="sidebar-overlay" (click)="close()"></div>
-
-  <div class="sidebar-inner">
-    <div class="sidebar-brand">
-      <img src="assets/company/carlson_logo.png" alt="Carlson Gracie" class="sidebar-logo" />
-    </div>
-
-    <nav class="sidebar-nav">
-      @for (section of sections; track section.title) {
-        <div class="sidebar-section">
+<nav class="sidebar" [class.expanded]="sidebarExpanded()">
+  <nav class="sidebar-nav">
+    @for (section of sections; track section.title) {
+      <div class="sidebar-section">
+        @if (sidebarExpanded()) {
           <span class="sidebar-section-title">{{ section.title }}</span>
-          @for (item of section.items; track item.route) {
-            <a
-              class="sidebar-link"
-              [class.active]="isActive(item.route)"
-              (click)="navigate(item.route)"
-              role="button"
-              tabindex="0"
-              (keydown.enter)="navigate(item.route)"
-            >
-              <i [class]="item.icon" class="sidebar-icon"></i>
-              <span>{{ item.label }}</span>
-            </a>
-          }
-        </div>
-      }
-    </nav>
-  </div>
+        }
+        @for (item of section.items; track item.route) {
+          <a
+            class="sidebar-link"
+            [class.active]="isActive(item.route)"
+            (click)="navigate(item.route)"
+            [attr.title]="!sidebarExpanded() ? item.label : null"
+            role="button"
+            tabindex="0"
+            (keydown.enter)="navigate(item.route)"
+          >
+            <i [class]="item.icon" class="sidebar-icon"></i>
+            @if (sidebarExpanded()) {
+              <span class="sidebar-label">{{ item.label }}</span>
+            }
+          </a>
+        }
+      </div>
+    }
+  </nav>
 </nav>
-

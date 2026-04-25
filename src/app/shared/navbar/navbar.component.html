@@ -3,16 +3,26 @@
     <button
       class="btn btn-link navbar-toggle p-0"
       (click)="toggleSidebar()"
-      aria-label="Toggle menu"
+      [attr.aria-label]="sidebarExpanded() ? 'Fechar menu' : 'Abrir menu'"
+      title="Toggle sidebar"
     >
-      <i [class]="sidebarOpen() ? 'bi bi-x-lg' : 'bi bi-list'" style="font-size:1.4rem;"></i>
+      <i [class]="sidebarExpanded() ? 'bi bi-chevron-left' : 'bi bi-chevron-right'" style="font-size:1.4rem;"></i>
     </button>
     <img class="navbar-logo" src="assets/company/carlson_logo.png" alt="Carlson Gracie" />
   </div>
 
   <div class="navbar-end">
+    <button
+      class="btn btn-link navbar-theme-btn p-0"
+      (click)="themeService.toggleTheme()"
+      [attr.aria-label]="themeService.currentTheme() === 'light' ? 'Ativar modo escuro' : 'Ativar modo claro'"
+      title="Toggle dark mode"
+    >
+      <i [class]="themeService.currentTheme() === 'light' ? 'bi bi-moon' : 'bi bi-sun-fill'" style="font-size:1.2rem;"></i>
+    </button>
+
     <div ngbDropdown class="d-inline-block">
-      <button class="btn btn-link navbar-user-btn text-white" ngbDropdownToggle>
+      <button class="btn btn-link navbar-user-btn" ngbDropdownToggle>
         <i class="bi bi-person me-1"></i>{{ userName() }}
       </button>
       <div ngbDropdownMenu>
@@ -27,4 +37,3 @@
     </div>
   </div>
 </header>
-

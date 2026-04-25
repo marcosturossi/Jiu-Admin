@@ -1,4 +1,4 @@
-import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
+import { ApplicationConfig, provideZoneChangeDetection, APP_INITIALIZER } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
@@ -10,6 +10,7 @@ import { keycloakProviders } from './auth/keycloak.providers';
 import { BASE_PATH as BASE_PATH_API1 } from './generated_services/variables';
 import { BASE_PATH as BASE_PATH_API2 } from './generated_services/api2/variables';
 import { environment } from './enviroments/environment';
+import { ThemeService } from './services/theme.service';
 
 const urlPattern = (base: string) =>
   new RegExp('^' + base.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
@@ -24,7 +25,7 @@ export const appConfig: ApplicationConfig = {
     ),
     provideToastr({
       timeOut: 4000,
-      positionClass: 'toast-top-right',
+      positionClass: 'toast-bottom-right',
       preventDuplicates: true,
     }),
     keycloakProviders,
@@ -36,6 +37,15 @@ export const appConfig: ApplicationConfig = {
         { urlPattern: urlPattern(environment.server) },
         { urlPattern: urlPattern(environment.face_api) },
       ],
+    },
+    {
+      provide: APP_INITIALIZER,
+      useFactory: (themeService: ThemeService) => () => {
+        // Theme service initializes itself on instantiation
+        return Promise.resolve();
+      },
+      deps: [ThemeService],
+      multi: true,
     },
   ]
 };

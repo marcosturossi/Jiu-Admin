@@ -1,0 +1,77 @@
+<div class="student-onboarding-container">
+  <div class="wizard-header">
+    <h2>Assistente de Cadastro de Alunos</h2>
+    <div class="progress-bar">
+      <div class="progress-fill" [style.width.%]="getStepProgress()"></div>
+    </div>
+    <div class="step-indicator">
+      Passo {{ currentStep() }} de {{ maxSteps }}
+    </div>
+  </div>
+
+  <div class="wizard-content">
+    <!-- Step 1: Basic Info -->
+    @if (currentStep() === 1) {
+      <app-onboarding-basic-form
+        [data]="basicInfo()"
+        (dataChange)="updateBasicInfo($event)"
+      />
+    }
+
+    <!-- Step 2: Belt Selection -->
+    @if (currentStep() === 2) {
+      <app-onboarding-belt-form
+        [data]="beltInfo()"
+        (dataChange)="updateBeltInfo($event)"
+      />
+    }
+
+    <!-- Step 3: Contract/Plan -->
+    @if (currentStep() === 3) {
+      <app-onboarding-contract-form
+        [data]="contractInfo()"
+        (dataChange)="updateContractInfo($event)"
+      />
+    }
+
+    <!-- Step 4: Medical & Confirmation -->
+    @if (currentStep() === 4) {
+      <app-onboarding-confirmation
+        [basicInfo]="basicInfo()"
+        [beltInfo]="beltInfo()"
+        [contractInfo]="contractInfo()"
+        [medicalInfo]="medicalInfo()"
+        (medicalDataChange)="updateMedicalInfo($event)"
+        (submit)="submitForm()"
+      />
+    }
+  </div>
+
+  <div class="wizard-footer">
+    <button
+      class="btn btn-secondary"
+      (click)="previousStep()"
+      [disabled]="currentStep() === 1"
+    >
+      <i class="bi bi-arrow-left me-2"></i>Anterior
+    </button>
+
+    @if (currentStep() < maxSteps) {
+      <button
+        class="btn btn-primary"
+        (click)="nextStep()"
+      >
+        Próximo<i class="bi bi-arrow-right ms-2"></i>
+      </button>
+    }
+
+    @if (currentStep() === maxSteps) {
+      <button
+        class="btn btn-success"
+        (click)="submitForm()"
+      >
+        <i class="bi bi-check-circle me-2"></i>Finalizar Cadastro
+      </button>
+    }
+  </div>
+</div>

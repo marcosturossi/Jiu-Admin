@@ -1,9 +1,10 @@
-import { ChangeDetectionStrategy, Component, inject, signal, OnInit, OnDestroy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import Keycloak from 'keycloak-js';
 import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
 import { AuthServiceService } from '../../services/auth-service.service';
 import { AcademySessionService } from '../../services/academy-session.service';
+import { ThemeService } from '../../services/theme.service';
 
 @Component({
   selector: 'app-navbar',
@@ -13,32 +14,26 @@ import { AcademySessionService } from '../../services/academy-session.service';
   styleUrl: './navbar.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class NavbarComponent implements OnInit, OnDestroy {
+export class NavbarComponent implements OnInit {
   private readonly keycloak        = inject(Keycloak);
   private readonly authService     = inject(AuthServiceService);
   private readonly academySession  = inject(AcademySessionService);
+  protected readonly themeService  = inject(ThemeService);
 
-  protected readonly sidebarOpen = signal(false);
   protected readonly userName    = signal<string>('');
-
-  private observer?: MutationObserver;
+  protected readonly sidebarExpanded = signal(false);
 
   ngOnInit(): void {
     this.userName.set(this.authService.getUsernameFromToken() ?? '');
-    this.observer = new MutationObserver(() => {
-      this.sidebarOpen.set(document.body.classList.contains('sidebar-open'));
-    });
-    this.observer.observe(document.body, { attributes: true, attributeFilter: ['class'] });
-  }
-
-  ngOnDestroy(): void {
-    this.observer?.disconnect();
   }
 
   protected toggleSidebar(): void {
-    const next = !this.sidebarOpen();
-    this.sidebarOpen.set(next);
-    document.body.classList.toggle('sidebar-open', next);
+    const newState = !this.sidebarExpanded();
+    this.sidebarExpanded.set(newState);
+    // Broadcast to sidebar component via a service or event
+    window.dispatchEvent(new CustomEvent('sidebar-toggle', { 
+      detail: { expanded: newState } 
+    }));
   }
 
   protected switchAcademy(): void {

@@ -24,6 +24,7 @@ import { MonthlyFeesComponent } from './monthly-fees/monthly-fees.component';
 import { TransactionsComponent } from './transactions/transactions.component';
 import { TransactionCategoriesComponent } from './transaction-categories/transaction-categories.component';
 import { AcademiesComponent } from './academies/academies.component';
+import { StudentOnboardingComponent } from './student-onboarding/student-onboarding.component';
 
 export const routes: Routes = [
   {
@@ -34,6 +35,7 @@ export const routes: Routes = [
       { path: '', redirectTo: 'home', pathMatch: 'full' },
       { path: 'home', component: HomeComponent },
       // Acadêmico
+      { path: 'student-onboarding', component: StudentOnboardingComponent },
       { path: 'students', component: StudentsComponent },
       { path: 'lessons', component: LessonsComponent },
       { path: 'graduations', component: GraduationsComponent },

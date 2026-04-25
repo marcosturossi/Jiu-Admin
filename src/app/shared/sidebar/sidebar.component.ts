@@ -1,5 +1,6 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal, OnInit, OnDestroy } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
+import { CommonModule } from '@angular/common';
 
 interface NavItem {
   route: string;
@@ -15,13 +16,14 @@ interface NavSection {
 @Component({
   selector: 'app-sidebar',
   standalone: true,
-  imports: [RouterModule],
+  imports: [RouterModule, CommonModule],
   templateUrl: './sidebar.component.html',
   styleUrl: './sidebar.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SidebarComponent {
+export class SidebarComponent implements OnInit, OnDestroy {
   private readonly router = inject(Router);
+  protected readonly sidebarExpanded = signal(false);
 
   protected readonly sections: NavSection[] = [
     {
@@ -33,6 +35,7 @@ export class SidebarComponent {
     {
       title: 'Acadêmico',
       items: [
+        { route: '/system/student-onboarding', label: 'Cadastros', icon: 'bi bi-clipboard-check' },
         { route: '/system/students', label: 'Alunos', icon: 'bi bi-people' },
         { route: '/system/lessons', label: 'Aulas', icon: 'bi bi-calendar3' },
         { route: '/system/graduations', label: 'Graduações', icon: 'bi bi-award' },
@@ -73,19 +76,25 @@ export class SidebarComponent {
     },
   ];
 
+  private toggleHandler = (event: Event) => {
+    const customEvent = event as CustomEvent;
+    this.sidebarExpanded.set(customEvent.detail.expanded);
+  };
+
+  ngOnInit(): void {
+    window.addEventListener('sidebar-toggle', this.toggleHandler);
+  }
+
+  ngOnDestroy(): void {
+    window.removeEventListener('sidebar-toggle', this.toggleHandler);
+  }
+
   isActive(route: string): boolean {
     return this.router.url.startsWith(route);
   }
 
   navigate(route: string): void {
-    this.router.navigate([route]).then(() => {
-      if (window.innerWidth < 992) {
-        document.body.classList.remove('sidebar-open');
-      }
-    });
-  }
-
-  close(): void {
-    document.body.classList.remove('sidebar-open');
+    this.router.navigate([route]);
   }
 }
+

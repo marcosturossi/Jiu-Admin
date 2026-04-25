@@ -1,12 +1,12 @@
 .app-navbar {
   position: fixed;
   top: 0;
-  left: 240px;
+  left: 0;
   right: 0;
   height: 60px;
-  z-index: 100;
-  background: #fff;
-  border-bottom: 1px solid #e9ecef;
+  z-index: 1041;
+  background: var(--brand-white);
+  border-bottom: 1px solid var(--brand-border);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -18,7 +18,7 @@
 .navbar-end {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 1rem;
 }
 
 .navbar-logo {
@@ -28,10 +28,23 @@
 
 ::ng-deep .navbar-toggle {
   padding: 0.5rem !important;
+  color: var(--brand-text) !important;
+  font-size: 1.4rem;
+}
+
+::ng-deep .navbar-theme-btn {
+  font-size: 0.875rem;
+  color: var(--brand-text) !important;
+  transition: color 0.2s ease;
+
+  &:hover {
+    color: var(--brand-primary) !important;
+  }
 }
 
 ::ng-deep .navbar-user-btn {
   font-size: 0.875rem;
+  color: var(--brand-text) !important;
 }
 
 @media (max-width: 991.98px) {
@@ -40,7 +53,7 @@
   }
 
   .navbar-logo {
-    display: none;
+    height: 28px;
   }
 }
 

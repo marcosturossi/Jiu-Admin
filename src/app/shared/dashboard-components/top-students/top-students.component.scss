@@ -3,7 +3,7 @@
 }
 
 .student-name {
-	color: #333;
+	color: var(--brand-text);
 }
 
 .student-count {
@@ -17,12 +17,12 @@
 	--accent: #2563eb; /* indigo-600 */
 	--accent-2: #06b6d4; /* cyan-500 */
 	--muted: #6b7280;
-	background: linear-gradient(180deg, #ffffff, #fbfdff);
+	background: linear-gradient(180deg, var(--brand-white), var(--brand-surface));
 	border-radius: 10px;
 	box-shadow: 0 6px 18px rgba(16,24,40,0.06);
-	border: 1px solid rgba(37,99,235,0.08);
+	border: 1px solid var(--brand-border);
 	overflow: hidden;
-	transition: transform .18s ease, box-shadow .18s ease;
+	transition: transform .18s ease, box-shadow .18s ease, background 0.3s ease;
 	display: flex;
 	flex-direction: column;
 }
@@ -53,11 +53,11 @@
 	font-size: 0.95rem;
 }
 
-.student-name { color: rgba(17,24,39,0.95); font-weight: 600; }
+.student-name { color: var(--brand-text); font-weight: 600; }
 
-.student-count { color: rgba(2,6,23,0.8); font-weight:700; }
+.student-count { color: var(--brand-text); font-weight:700; }
 
 /* Top list styles */
 .top-list { padding: 0; margin: 0; }
-.student-item { padding: 0.5rem 0.4rem; border-bottom: 1px solid rgba(0,0,0,0.04); }
+.student-item { padding: 0.5rem 0.4rem; border-bottom: 1px solid var(--brand-border); }
 .student-item:last-child { border-bottom: none; }

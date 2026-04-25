@@ -1,5 +1,6 @@
-import { AfterViewInit, Component, ElementRef, OnDestroy, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnDestroy, ViewChild, inject, effect } from '@angular/core';
 import { DashboardService } from '../../../generated_services/api/dashboard.service';
+import { ThemeService } from '../../../services/theme.service';
 
 @Component({
   selector: 'app-avg-students-by-class',
@@ -11,9 +12,20 @@ export class AvgStudentsByClassComponent implements AfterViewInit, OnDestroy {
   private chart: any;
   private resizeObserver?: ResizeObserver;
   private data: Array<{ name: string; value: number }> = [];
+  private themeService = inject(ThemeService);
 
   private palette = ['#2f80ed', '#34c38f', '#f6c343', '#f66d9b'];
   constructor(private dashboardService: DashboardService) {
+    // Re-render chart when theme changes
+    effect(() => {
+      const _ = this.themeService.currentTheme();
+      if (this.chart && this.data.length > 0) {
+        const option = this.getBaseOptions('Média Alunos por Aula');
+        option.xAxis.data = this.data.map(d => d.name);
+        option.series = [{ type: 'bar', data: this.data.map(d => d.value), label: { show: true, position: 'top' }, itemStyle: { borderRadius: [6,6,0,0] } }];
+        this.chart.setOption(option);
+      }
+    });
   }
 
   ngAfterViewInit(): void {
@@ -138,13 +150,15 @@ export class AvgStudentsByClassComponent implements AfterViewInit, OnDestroy {
   };
 
   private getBaseOptions(_: string) {
+    const theme = this.themeService.getChartTheme();
     return {
-      color: this.palette,
-      tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
-      legend: { bottom: 10 },
+      color: theme.color,
+      backgroundColor: 'transparent',
+      tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' }, ...theme.tooltip },
+      legend: { bottom: 10, ...theme.legend },
       grid: { left: 12, right: 12, top: 28, bottom: 48 },
-      xAxis: { type: 'category', axisLine: { lineStyle: { color: '#e6e9ef' } }, axisLabel: { color: '#6b7280' } },
-      yAxis: { type: 'value', axisLine: { show: false }, splitLine: { lineStyle: { color: '#f1f5f9' } }, axisLabel: { color: '#6b7280' } },
+      xAxis: { type: 'category', axisLine: theme.axisLine, axisLabel: theme.label },
+      yAxis: { type: 'value', axisLine: { show: false }, splitLine: theme.splitLine, axisLabel: theme.label },
       series: []
     } as any;
   }
