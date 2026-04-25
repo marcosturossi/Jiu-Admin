@@ -147,7 +147,7 @@ import { StudentContractInfo } from './student-onboarding.component';
 
     .pricing-info {
       padding: 1rem;
-      background: var(--brand-bg);
+      background: var(--brand-surface);
       border: 1px solid var(--brand-border);
       border-radius: 4px;
       display: flex;

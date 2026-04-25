@@ -1,4 +1,20 @@
 <div class="student-onboarding-container">
+  <!-- Error Alert -->
+  @if (errorMessage()) {
+    <div class="alert alert-danger" role="alert">
+      <i class="bi bi-exclamation-circle me-2"></i>
+      {{ errorMessage() }}
+    </div>
+  }
+
+  <!-- Success Alert -->
+  @if (successMessage()) {
+    <div class="alert alert-success" role="alert">
+      <i class="bi bi-check-circle me-2"></i>
+      {{ successMessage() }}
+    </div>
+  }
+
   <div class="wizard-header">
     <h2>Assistente de Cadastro de Alunos</h2>
     <div class="progress-bar">
@@ -51,7 +67,7 @@
     <button
       class="btn btn-secondary"
       (click)="previousStep()"
-      [disabled]="currentStep() === 1"
+      [disabled]="currentStep() === 1 || isSubmitting()"
     >
       <i class="bi bi-arrow-left me-2"></i>Anterior
     </button>
@@ -60,6 +76,7 @@
       <button
         class="btn btn-primary"
         (click)="nextStep()"
+        [disabled]="isSubmitting()"
       >
         Próximo<i class="bi bi-arrow-right ms-2"></i>
       </button>
@@ -69,8 +86,13 @@
       <button
         class="btn btn-success"
         (click)="submitForm()"
+        [disabled]="isSubmitting()"
       >
-        <i class="bi bi-check-circle me-2"></i>Finalizar Cadastro
+        @if (isSubmitting()) {
+          <span class="spinner-border spinner-border-sm me-2"></span>Processando...
+        } @else {
+          <i class="bi bi-check-circle me-2"></i>Finalizar Cadastro
+        }
       </button>
     }
   </div>

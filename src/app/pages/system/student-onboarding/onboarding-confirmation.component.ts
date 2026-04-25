@@ -174,7 +174,7 @@ import { StudentBasicInfo, StudentBeltInfo, StudentContractInfo, StudentMedicalI
       align-items: center;
       gap: 0.75rem;
       padding: 1rem;
-      background: var(--brand-bg);
+      background: var(--brand-surface);
       border-bottom: 1px solid var(--brand-border);
 
       i {

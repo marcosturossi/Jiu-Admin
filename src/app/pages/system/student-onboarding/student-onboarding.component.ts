@@ -56,6 +56,9 @@ export class StudentOnboardingComponent implements OnInit {
 
   protected readonly currentStep = signal<number>(1);
   protected readonly maxSteps = 4;
+  protected readonly isSubmitting = signal<boolean>(false);
+  protected readonly errorMessage = signal<string | null>(null);
+  protected readonly successMessage = signal<string | null>(null);
 
   protected readonly basicInfo = signal<StudentBasicInfo>({
     name: '',
@@ -95,23 +98,77 @@ export class StudentOnboardingComponent implements OnInit {
   protected nextStep(): void {
     if (this.currentStep() < this.maxSteps) {
       this.currentStep.update(step => step + 1);
+      this.errorMessage.set(null);
     }
   }
 
   protected previousStep(): void {
     if (this.currentStep() > 1) {
       this.currentStep.update(step => step - 1);
+      this.errorMessage.set(null);
     }
   }
 
   protected async submitForm(): Promise<void> {
-    // TODO: Implement API call to submit all wizard data
-    console.log('Submitting:', {
-      basicInfo: this.basicInfo(),
-      beltInfo: this.beltInfo(),
-      contractInfo: this.contractInfo(),
-      medicalInfo: this.medicalInfo(),
+    this.isSubmitting.set(true);
+    this.errorMessage.set(null);
+    
+    try {
+      // TODO: Implement API call to submit all wizard data
+      const formData = {
+        basicInfo: this.basicInfo(),
+        beltInfo: this.beltInfo(),
+        contractInfo: this.contractInfo(),
+        medicalInfo: this.medicalInfo(),
+      };
+      
+      console.log('Submitting:', formData);
+      
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      
+      this.successMessage.set('Aluno cadastrado com sucesso!');
+      setTimeout(() => {
+        this.resetForm();
+      }, 2000);
+    } catch (error) {
+      const errorMsg = error instanceof Error ? error.message : 'Erro ao cadastrar aluno. Tente novamente.';
+      this.errorMessage.set(errorMsg);
+    } finally {
+      this.isSubmitting.set(false);
+    }
+  }
+
+  private resetForm(): void {
+    this.currentStep.set(1);
+    this.basicInfo.set({
+      name: '',
+      email: '',
+      phone: '',
+      cpf: '',
+      dateOfBirth: '',
+      gender: '',
+      address: '',
+      city: '',
+      state: '',
+      zipCode: '',
     });
+    this.beltInfo.set({
+      beltId: '',
+      graduationId: '',
+      startDate: new Date().toISOString().split('T')[0],
+    });
+    this.contractInfo.set({
+      contractId: '',
+      feePlanId: '',
+      startDate: new Date().toISOString().split('T')[0],
+    });
+    this.medicalInfo.set({
+      hasRestrictions: false,
+      restrictions: '',
+      medicalClearanceUrl: '',
+    });
+    this.successMessage.set(null);
   }
 
   protected updateBasicInfo(data: Partial<StudentBasicInfo>): void {

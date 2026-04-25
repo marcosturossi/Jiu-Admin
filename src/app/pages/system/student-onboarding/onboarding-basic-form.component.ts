@@ -37,7 +37,9 @@ import { StudentBasicInfo } from './student-onboarding.component';
             required
           />
         </div>
+      </div>
 
+      <div class="form-section">
         <div class="form-group">
           <label for="phone" class="form-label">Telefone *</label>
           <input
@@ -66,8 +68,6 @@ import { StudentBasicInfo } from './student-onboarding.component';
       </div>
 
       <div class="form-section">
-        <h4>Data e Gênero</h4>
-
         <div class="form-group">
           <label for="dateOfBirth" class="form-label">Data de Nascimento *</label>
           <input
@@ -97,9 +97,11 @@ import { StudentBasicInfo } from './student-onboarding.component';
         </div>
       </div>
 
-      <div class="form-section">
+      <div class="form-section-title">
         <h4>Endereço</h4>
+      </div>
 
+      <div class="form-section">
         <div class="form-group">
           <label for="address" class="form-label">Rua *</label>
           <input
@@ -123,7 +125,9 @@ import { StudentBasicInfo } from './student-onboarding.component';
             (ngModelChange)="onDataChange('city', $event)"
           />
         </div>
+      </div>
 
+      <div class="form-section">
         <div class="form-group">
           <label for="state" class="form-label">Estado *</label>
           <input
@@ -157,16 +161,23 @@ import { StudentBasicInfo } from './student-onboarding.component';
     .onboarding-form {
       display: flex;
       flex-direction: column;
-      gap: 2rem;
+      gap: 1.5rem;
+      width: 100%;
+      box-sizing: border-box;
 
       h3 {
         margin: 0;
         color: var(--brand-text);
         font-size: 1.25rem;
       }
+    }
+
+    .form-section-title {
+      margin-top: 1rem;
+      margin-bottom: 0;
 
       h4 {
-        margin: 0 0 1rem;
+        margin: 0;
         color: var(--brand-text);
         font-size: 0.95rem;
         font-weight: 600;
@@ -177,8 +188,10 @@ import { StudentBasicInfo } from './student-onboarding.component';
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 1.5rem;
+      width: 100%;
+      box-sizing: border-box;
 
-      @media (max-width: 768px) {
+      @media (max-width: 992px) {
         grid-template-columns: 1fr;
       }
     }
@@ -187,6 +200,8 @@ import { StudentBasicInfo } from './student-onboarding.component';
       display: flex;
       flex-direction: column;
       gap: 0.5rem;
+      width: 100%;
+      box-sizing: border-box;
     }
 
     .form-label {
@@ -204,11 +219,18 @@ import { StudentBasicInfo } from './student-onboarding.component';
       color: var(--brand-text);
       font-family: inherit;
       font-size: 0.95rem;
+      width: 100%;
+      box-sizing: border-box;
 
       &:focus {
         outline: none;
         border-color: var(--brand-primary);
         box-shadow: 0 0 0 3px rgba(56, 56, 56, 0.1);
+      }
+
+      @media (prefers-color-scheme: dark) {
+        background: var(--brand-white);
+        color: var(--brand-text);
       }
     }
   `],

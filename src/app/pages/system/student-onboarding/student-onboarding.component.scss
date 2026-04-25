@@ -1,12 +1,43 @@
 .student-onboarding-container {
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: 1.5rem;
   padding: 2rem;
-  max-width: 900px;
+  max-width: 100%;
   margin: 0 auto;
   background: var(--brand-white);
   border-radius: 8px;
+  width: 100%;
+  box-sizing: border-box;
+
+  @media (min-width: 900px) {
+    max-width: 900px;
+  }
+}
+
+.alert {
+  padding: 1rem;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  font-size: 0.95rem;
+  margin: 0;
+
+  &.alert-danger {
+    background: rgba(220, 53, 69, 0.1);
+    border: 1px solid rgba(220, 53, 69, 0.3);
+    color: #dc3545;
+  }
+
+  &.alert-success {
+    background: rgba(25, 135, 84, 0.1);
+    border: 1px solid rgba(25, 135, 84, 0.3);
+    color: #198754;
+  }
+
+  i {
+    flex-shrink: 0;
+  }
 }
 
 .wizard-header {
@@ -43,6 +74,8 @@
 .wizard-content {
   min-height: 400px;
   animation: fadeIn 0.3s ease-in-out;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .wizard-footer {
@@ -51,13 +84,22 @@
   gap: 1rem;
   border-top: 1px solid var(--brand-border);
   padding-top: 2rem;
+  flex-wrap: wrap;
 
   button {
+    min-width: 120px;
+    flex: 1;
     min-width: 120px;
 
     &:disabled {
       opacity: 0.5;
       cursor: not-allowed;
+    }
+
+    .spinner-border {
+      width: 1rem;
+      height: 1rem;
+      border-width: 0.2em;
     }
   }
 }
@@ -76,7 +118,7 @@
 @media (max-width: 768px) {
   .student-onboarding-container {
     padding: 1rem;
-    gap: 1.5rem;
+    gap: 1rem;
   }
 
   .wizard-header h2 {
@@ -87,7 +129,8 @@
     flex-direction: column;
 
     button {
-      width: 100%;
+      width: 100% !important;
+      flex: 1;
     }
   }
 }
