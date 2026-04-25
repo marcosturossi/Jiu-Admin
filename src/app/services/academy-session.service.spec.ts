@@ -15,12 +15,12 @@ describe('AcademySessionService', () => {
   let service: AcademySessionService;
 
   beforeEach(() => {
-    localStorage.clear();
+    sessionStorage.clear();
     TestBed.configureTestingModule({});
     service = TestBed.inject(AcademySessionService);
   });
 
-  afterEach(() => localStorage.clear());
+  afterEach(() => sessionStorage.clear());
 
   describe('getAcademy', () => {
     it('returns null when nothing is stored', () => {
@@ -28,12 +28,12 @@ describe('AcademySessionService', () => {
     });
 
     it('returns parsed academy when stored', () => {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(mockAcademy));
+      sessionStorage.setItem(STORAGE_KEY, JSON.stringify(mockAcademy));
       expect(service.getAcademy()).toEqual(mockAcademy);
     });
 
     it('returns null when stored value is invalid JSON', () => {
-      localStorage.setItem(STORAGE_KEY, 'not-json{{{');
+      sessionStorage.setItem(STORAGE_KEY, 'not-json{{{');
       expect(service.getAcademy()).toBeNull();
     });
   });
@@ -44,15 +44,15 @@ describe('AcademySessionService', () => {
     });
 
     it('returns true when academy is stored', () => {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(mockAcademy));
+      sessionStorage.setItem(STORAGE_KEY, JSON.stringify(mockAcademy));
       expect(service.hasAcademy()).toBeTrue();
     });
   });
 
   describe('setAcademy', () => {
-    it('stores the academy in localStorage', () => {
+    it('stores the academy in sessionStorage', () => {
       service.setAcademy('my-slug', 'My Name', 'http://kc:8180', 'my-realm');
-      const stored = JSON.parse(localStorage.getItem(STORAGE_KEY)!);
+      const stored = JSON.parse(sessionStorage.getItem(STORAGE_KEY)!);
       expect(stored).toEqual({
         slug: 'my-slug',
         name: 'My Name',
@@ -104,22 +104,22 @@ describe('AcademySessionService', () => {
     });
 
     it('returns empty array on invalid JSON', () => {
-      localStorage.setItem(HISTORY_KEY, 'bad{{{');
+      sessionStorage.setItem(HISTORY_KEY, 'bad{{{');
       expect(service.getHistory()).toEqual([]);
     });
 
     it('returns stored history array', () => {
       const hist = [mockAcademy];
-      localStorage.setItem(HISTORY_KEY, JSON.stringify(hist));
+      sessionStorage.setItem(HISTORY_KEY, JSON.stringify(hist));
       expect(service.getHistory()).toEqual(hist);
     });
   });
 
   describe('clearAcademy', () => {
     it('removes the stored academy', () => {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(mockAcademy));
+      sessionStorage.setItem(STORAGE_KEY, JSON.stringify(mockAcademy));
       service.clearAcademy();
-      expect(localStorage.getItem(STORAGE_KEY)).toBeNull();
+      expect(sessionStorage.getItem(STORAGE_KEY)).toBeNull();
     });
 
     it('is safe to call when nothing is stored', () => {
@@ -128,7 +128,7 @@ describe('AcademySessionService', () => {
   });
 
   describe('clearHistory', () => {
-    it('removes the history from localStorage', () => {
+    it('removes the history from sessionStorage', () => {
       service.setAcademy('slug-a', null, 'http://kc', 'realm-a');
       service.clearHistory();
       expect(service.getHistory()).toEqual([]);
@@ -141,19 +141,19 @@ describe('AcademySessionService', () => {
 });
 
 describe('getStoredAcademy (standalone function)', () => {
-  afterEach(() => localStorage.clear());
+  afterEach(() => sessionStorage.clear());
 
   it('returns null when nothing is stored', () => {
     expect(getStoredAcademy()).toBeNull();
   });
 
   it('returns parsed academy when stored', () => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(mockAcademy));
+    sessionStorage.setItem(STORAGE_KEY, JSON.stringify(mockAcademy));
     expect(getStoredAcademy()).toEqual(mockAcademy);
   });
 
   it('returns null on invalid JSON', () => {
-    localStorage.setItem(STORAGE_KEY, '{bad');
+    sessionStorage.setItem(STORAGE_KEY, '{bad');
     expect(getStoredAcademy()).toBeNull();
   });
 });

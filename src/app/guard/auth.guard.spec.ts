@@ -40,7 +40,7 @@ describe('AuthGuard', () => {
   });
 
   it('calls keycloak.login when not authenticated but academy is stored', async () => {
-    localStorage.setItem('jiu_admin_academy', JSON.stringify({
+    sessionStorage.setItem('jiu_admin_academy', JSON.stringify({
       slug: 'rx-juveve', name: null, keycloakUrl: 'http://localhost:8180', realm: 'test',
     }));
     const result = await executeGuard({} as any, {} as any);
@@ -49,7 +49,7 @@ describe('AuthGuard', () => {
   });
 
   it('redirects to /select-academy instead of looping when login was already attempted', async () => {
-    localStorage.setItem('jiu_admin_academy', JSON.stringify({
+    sessionStorage.setItem('jiu_admin_academy', JSON.stringify({
       slug: 'rx-juveve', name: null, keycloakUrl: 'http://localhost:8180', realm: 'test',
     }));
     sessionStorage.setItem('kc_login_in_progress', '1');
@@ -57,7 +57,7 @@ describe('AuthGuard', () => {
     const router = TestBed.inject(Router);
     expect(keycloakStub.login).not.toHaveBeenCalled();
     expect(sessionStorage.getItem('kc_auth_error')).toBe('auth_failed');
-    expect(localStorage.getItem('jiu_admin_academy')).toBeNull();
+    expect(sessionStorage.getItem('jiu_admin_academy')).toBeNull();
     expect(result).toEqual(router.createUrlTree(['/select-academy']));
   });
 
