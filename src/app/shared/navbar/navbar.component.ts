@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import Keycloak from 'keycloak-js';
 import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
 import { AuthServiceService } from '../../services/auth-service.service';
-import { AcademySessionService } from '../../services/academy-session.service';
 import { ThemeService } from '../../services/theme.service';
 
 @Component({
@@ -15,12 +14,11 @@ import { ThemeService } from '../../services/theme.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NavbarComponent implements OnInit {
-  private readonly keycloak        = inject(Keycloak);
-  private readonly authService     = inject(AuthServiceService);
-  private readonly academySession  = inject(AcademySessionService);
-  protected readonly themeService  = inject(ThemeService);
+  private readonly keycloak       = inject(Keycloak);
+  private readonly authService    = inject(AuthServiceService);
+  protected readonly themeService = inject(ThemeService);
 
-  protected readonly userName    = signal<string>('');
+  protected readonly userName        = signal<string>('');
   protected readonly sidebarExpanded = signal(false);
 
   ngOnInit(): void {
@@ -30,15 +28,9 @@ export class NavbarComponent implements OnInit {
   protected toggleSidebar(): void {
     const newState = !this.sidebarExpanded();
     this.sidebarExpanded.set(newState);
-    // Broadcast to sidebar component via a service or event
-    window.dispatchEvent(new CustomEvent('sidebar-toggle', { 
-      detail: { expanded: newState } 
+    window.dispatchEvent(new CustomEvent('sidebar-toggle', {
+      detail: { expanded: newState }
     }));
-  }
-
-  protected switchAcademy(): void {
-    this.academySession.clearAcademy();
-    this.keycloak.logout({ redirectUri: window.location.origin + '/select-academy' });
   }
 
   protected logout(): void {

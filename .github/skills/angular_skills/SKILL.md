@@ -1,3 +1,8 @@
+---
+name: angular-skills
+description: Angular 19 architecture and coding practices for the Jiu-Admin project. Use this skill when implementing, reviewing, or refactoring Angular code to ensure consistency with signals, standalone components, Bootstrap 5, ng-bootstrap, and the existing project conventions.
+---
+
 # Copilot Skills & Coding Guidelines
 
 This document defines the conventions, patterns, and guidelines for AI-assisted development
