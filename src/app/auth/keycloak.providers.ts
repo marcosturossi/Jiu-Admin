@@ -7,11 +7,8 @@ export const keycloakProviders = provideKeycloak({
     realm:    environment.keycloak.realm,
     clientId: environment.keycloak.clientId,
   },
-  initOptions: {
-    onLoad:           'login-required',
-    checkLoginIframe: false,
-    pkceMethod:       'S256',
-  },
+  // initOptions omitted — initialization is handled by keycloakInitFactory APP_INITIALIZER
+  // which adds error handling for 401s caused by stale tokens or realm mismatches.
   features: [
     withAutoRefreshToken({
       onInactivityTimeout: 'logout',
