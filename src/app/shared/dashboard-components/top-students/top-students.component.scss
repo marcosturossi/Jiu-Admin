@@ -1,16 +1,4 @@
-.student-rank {
-	font-weight: 600;
-}
-
-.student-name {
-	color: var(--brand-text);
-}
-
-.student-count {
-	font-weight: 700;
-}
-
-.card-body { padding: 0.75rem; }
+.student-count { color: var(--brand-text); font-weight: 700; flex-shrink: 0; margin-left: 0.5rem; }
 
 /* Card wrapper used by dashboard widgets */
 .dashboard-card {
@@ -53,11 +41,26 @@
 	font-size: 0.95rem;
 }
 
-.student-name { color: var(--brand-text); font-weight: 600; }
-
-.student-count { color: var(--brand-text); font-weight:700; }
-
-/* Top list styles */
-.top-list { padding: 0; margin: 0; }
-.student-item { padding: 0.5rem 0.4rem; border-bottom: 1px solid var(--brand-border); }
+.student-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 0.4rem;
+  border-bottom: 1px solid var(--brand-border);
+}
 .student-item:last-child { border-bottom: none; }
+
+.student-left {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+.student-name {
+  color: var(--brand-text);
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
