@@ -70,7 +70,7 @@ export class UpdateTransactionComponent {
     this.isSaving.set(true);
     const v = this.form.value;
     this.transactionService.apiFinancialTransactionIdPut(this.transaction().id!, {
-      type: v.type ?? null,
+      type: v.type != null ? +v.type as TransactionType : null,
       transactionCategoryId: v.transactionCategoryId ?? null,
       description: v.description || null,
       amount: v.amount ?? null,

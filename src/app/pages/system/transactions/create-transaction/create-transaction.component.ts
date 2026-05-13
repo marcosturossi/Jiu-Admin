@@ -50,7 +50,7 @@ export class CreateTransactionComponent {
     this.isSaving.set(true);
     const v = this.form.value;
     this.transactionService.apiFinancialTransactionPost({
-      type: v.type ?? undefined,
+      type: v.type != null ? +v.type as TransactionType : undefined,
       transactionCategoryId: v.transactionCategoryId ?? undefined,
       description: v.description || null,
       amount: v.amount ?? undefined,
