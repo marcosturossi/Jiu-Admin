@@ -99,7 +99,7 @@ describe('SearchSelectComponent', () => {
     (component as any).isOpen.set(true);
     (component as any).query.set('joão');
     fixture.detectChanges();
-    const items = fixture.nativeElement.querySelectorAll('li.list-group-item.list-group-item-action:not(.text-muted)');
+    const items = fixture.nativeElement.querySelectorAll('li.list-group-item.list-group-item-action:not(.search-select-clear)');
     expect(items.length).toBe(1);
     expect(items[0].textContent.trim()).toBe('João Silva');
   });
@@ -121,7 +121,7 @@ describe('SearchSelectComponent', () => {
     fixture.detectChanges();
     let emitted: SearchOption | null | undefined;
     component.selectionChange.subscribe((v: SearchOption | null) => (emitted = v));
-    const clearItem = fixture.nativeElement.querySelector('li.list-group-item.text-muted') as HTMLElement;
+    const clearItem = fixture.nativeElement.querySelector('li.search-select-clear') as HTMLElement;
     clearItem.click();
     fixture.detectChanges();
     expect(emitted).toBeNull();

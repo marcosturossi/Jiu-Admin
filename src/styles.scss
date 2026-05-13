@@ -235,6 +235,29 @@ li {
   color: white;
 }
 
+/* Dark mode list-group styling */
+:root.dark-mode .list-group-item {
+  background-color: var(--brand-white);
+  color: var(--brand-text);
+  border-color: var(--brand-border);
+}
+
+:root.dark-mode .list-group-item-action:hover,
+:root.dark-mode .list-group-item-action:focus {
+  background-color: var(--brand-bg);
+  color: var(--brand-text);
+}
+
+:root.dark-mode .list-group-item.active {
+  background-color: var(--brand-primary);
+  border-color: var(--brand-primary);
+  color: #ffffff;
+}
+
+:root.dark-mode .list-group-flush .list-group-item {
+  border-color: var(--brand-border);
+}
+
 /* Dark mode dropdown styling */
 :root.dark-mode .dropdown-menu {
   background-color: var(--brand-white);
