@@ -1,27 +1,43 @@
 <nav class="sidebar" [class.expanded]="sidebarExpanded()">
   <nav class="sidebar-nav">
-    @for (section of sections; track section.title) {
-      <div class="sidebar-section">
-        @if (sidebarExpanded()) {
-          <span class="sidebar-section-title">{{ section.title }}</span>
-        }
-        @for (item of section.items; track item.route) {
-          <a
-            class="sidebar-link"
-            [class.active]="isActive(item.route)"
-            (click)="navigate(item.route)"
-            [attr.title]="!sidebarExpanded() ? item.label : null"
-            role="button"
-            tabindex="0"
-            (keydown.enter)="navigate(item.route)"
-          >
-            <i [class]="item.icon" class="sidebar-icon"></i>
-            @if (sidebarExpanded()) {
-              <span class="sidebar-label">{{ item.label }}</span>
+    @if (sidebarExpanded()) {
+      @for (section of sections; track section.title) {
+        <div class="sidebar-section">
+          <button class="sidebar-group-header" (click)="toggleSection(section.title)">
+            <span class="sidebar-section-title">{{ section.title }}</span>
+            <i class="bi sidebar-chevron"
+               [class.bi-chevron-down]="isSectionOpen(section.title)"
+               [class.bi-chevron-right]="!isSectionOpen(section.title)">
+            </i>
+          </button>
+          <div class="sidebar-section-items" [class.open]="isSectionOpen(section.title)">
+            @for (item of section.items; track item.route) {
+              <a
+                class="sidebar-link"
+                [class.active]="isActive(item.route)"
+                (click)="navigate(item.route)"
+                role="button"
+                tabindex="0"
+                (keydown.enter)="navigate(item.route)"
+              >
+                <i [class]="item.icon" class="sidebar-icon"></i>
+                <span class="sidebar-label">{{ item.label }}</span>
+              </a>
             }
-          </a>
-        }
-      </div>
+          </div>
+        </div>
+      }
+    } @else {
+      @for (section of sections; track section.title) {
+        <button
+          class="sidebar-link sidebar-group-btn"
+          [class.active]="isSectionActive(section)"
+          (click)="expandAndOpen(section.title)"
+          [attr.title]="section.title"
+        >
+          <i [class]="section.groupIcon" class="sidebar-icon"></i>
+        </button>
+      }
     }
   </nav>
 </nav>

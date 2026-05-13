@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, signal, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import Keycloak from 'keycloak-js';
 import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
@@ -13,7 +13,7 @@ import { ThemeService } from '../../services/theme.service';
   styleUrl: './navbar.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class NavbarComponent implements OnInit {
+export class NavbarComponent implements OnInit, OnDestroy {
   private readonly keycloak       = inject(Keycloak);
   private readonly authService    = inject(AuthServiceService);
   protected readonly themeService = inject(ThemeService);
@@ -21,8 +21,17 @@ export class NavbarComponent implements OnInit {
   protected readonly userName        = signal<string>('');
   protected readonly sidebarExpanded = signal(false);
 
+  private readonly syncHandler = (event: Event) => {
+    this.sidebarExpanded.set((event as CustomEvent).detail.expanded);
+  };
+
   ngOnInit(): void {
     this.userName.set(this.authService.getUsernameFromToken() ?? '');
+    window.addEventListener('sidebar-toggle', this.syncHandler);
+  }
+
+  ngOnDestroy(): void {
+    window.removeEventListener('sidebar-toggle', this.syncHandler);
   }
 
   protected toggleSidebar(): void {

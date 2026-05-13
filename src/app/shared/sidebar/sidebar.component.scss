@@ -28,17 +28,57 @@
   margin-bottom: 0.25rem;
 }
 
-.sidebar-section-title {
-  display: block;
-  padding: 0.75rem 0.5rem 0.35rem;
-  font-size: 0.6875rem;
-  font-weight: 700;
-  letter-spacing: 0.07em;
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.3);
-  white-space: nowrap;
+/* Group header button (expanded mode) */
+.sidebar-group-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0.6rem 0.5rem 0.25rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: background 0.15s ease;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  .sidebar-section-title {
+    display: inline;
+    padding: 0;
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.35);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .sidebar-chevron {
+    font-size: 0.7rem;
+    color: rgba(255, 255, 255, 0.3);
+    flex-shrink: 0;
+    transition: color 0.15s ease;
+  }
+
+  &:hover .sidebar-chevron {
+    color: rgba(255, 255, 255, 0.6);
+  }
+}
+
+/* Collapsible items container (expanded mode) */
+.sidebar-section-items {
   overflow: hidden;
-  text-overflow: ellipsis;
+  max-height: 0;
+  transition: max-height 0.25s ease;
+
+  &.open {
+    max-height: 700px;
+  }
 }
 
 .sidebar-link {
@@ -72,6 +112,13 @@
   justify-content: flex-start;
 }
 
+/* Group icon button (collapsed mode) */
+.sidebar-group-btn {
+  width: 100%;
+  border: none;
+  margin-bottom: 0.1rem;
+}
+
 .sidebar-icon {
   font-size: 1.25rem;
   width: 1.5rem;
@@ -101,5 +148,4 @@
     width: 240px;
   }
 }
-
 

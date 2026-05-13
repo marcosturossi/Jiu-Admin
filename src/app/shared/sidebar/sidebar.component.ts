@@ -1,6 +1,8 @@
 import { ChangeDetectionStrategy, Component, inject, signal, OnInit, OnDestroy } from '@angular/core';
-import { Router, RouterModule } from '@angular/router';
+import { Router, RouterModule, NavigationEnd } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { filter } from 'rxjs/operators';
 
 interface NavItem {
   route: string;
@@ -10,6 +12,7 @@ interface NavItem {
 
 interface NavSection {
   title: string;
+  groupIcon: string;
   items: NavItem[];
 }
 
@@ -24,16 +27,19 @@ interface NavSection {
 export class SidebarComponent implements OnInit, OnDestroy {
   private readonly router = inject(Router);
   protected readonly sidebarExpanded = signal(false);
+  protected readonly openSections = signal<Set<string>>(new Set());
 
   protected readonly sections: NavSection[] = [
     {
       title: 'Principal',
+      groupIcon: 'bi bi-house',
       items: [
         { route: '/system/home', label: 'Dashboard', icon: 'bi bi-house' },
       ]
     },
     {
       title: 'Acadêmico',
+      groupIcon: 'bi bi-mortarboard',
       items: [
         { route: '/system/student-onboarding', label: 'Cadastros', icon: 'bi bi-clipboard-check' },
         { route: '/system/students', label: 'Alunos', icon: 'bi bi-people' },
@@ -46,6 +52,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
     },
     {
       title: 'Financeiro',
+      groupIcon: 'bi bi-wallet2',
       items: [
         { route: '/system/contracts', label: 'Contratos', icon: 'bi bi-file-earmark-text' },
         { route: '/system/monthly-fees', label: 'Mensalidades', icon: 'bi bi-credit-card' },
@@ -56,6 +63,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
     },
     {
       title: 'Comunicação',
+      groupIcon: 'bi bi-chat-dots',
       items: [
         { route: '/system/notices', label: 'Avisos', icon: 'bi bi-bell' },
         { route: '/system/notification', label: 'Notificações', icon: 'bi bi-megaphone' },
@@ -63,6 +71,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
     },
     {
       title: 'Saúde e Segurança',
+      groupIcon: 'bi bi-shield-check',
       items: [
         { route: '/system/medical-clearances', label: 'Atestados Médicos', icon: 'bi bi-heart-pulse' },
         { route: '/system/face-recognition', label: 'Reconhecimento', icon: 'bi bi-person-badge' },
@@ -70,11 +79,19 @@ export class SidebarComponent implements OnInit, OnDestroy {
     },
     {
       title: 'Configurações',
+      groupIcon: 'bi bi-gear',
       items: [
         { route: '/system/academies', label: 'Academias', icon: 'bi bi-building' },
       ]
     },
   ];
+
+  constructor() {
+    this.router.events.pipe(
+      filter(event => event instanceof NavigationEnd),
+      takeUntilDestroyed()
+    ).subscribe(() => this.initOpenSections());
+  }
 
   private toggleHandler = (event: Event) => {
     const customEvent = event as CustomEvent;
@@ -83,17 +100,50 @@ export class SidebarComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     window.addEventListener('sidebar-toggle', this.toggleHandler);
+    this.initOpenSections();
   }
 
   ngOnDestroy(): void {
     window.removeEventListener('sidebar-toggle', this.toggleHandler);
   }
 
-  isActive(route: string): boolean {
+  private initOpenSections(): void {
+    const url = this.router.url;
+    const active = this.sections.find(s => s.items.some(i => url.startsWith(i.route)));
+    this.openSections.update(current => {
+      const next = new Set(current);
+      next.add(active ? active.title : 'Principal');
+      return next;
+    });
+  }
+
+  protected isSectionOpen(title: string): boolean {
+    return this.openSections().has(title);
+  }
+
+  protected toggleSection(title: string): void {
+    this.openSections.update(set => {
+      const next = new Set(set);
+      if (next.has(title)) next.delete(title);
+      else next.add(title);
+      return next;
+    });
+  }
+
+  protected expandAndOpen(title: string): void {
+    this.openSections.update(set => new Set([...set, title]));
+    window.dispatchEvent(new CustomEvent('sidebar-toggle', { detail: { expanded: true } }));
+  }
+
+  protected isSectionActive(section: { items: { route: string }[] }): boolean {
+    return section.items.some(i => this.isActive(i.route));
+  }
+
+  protected isActive(route: string): boolean {
     return this.router.url.startsWith(route);
   }
 
-  navigate(route: string): void {
+  protected navigate(route: string): void {
     this.router.navigate([route]);
   }
 }
