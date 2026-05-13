@@ -44,10 +44,7 @@ export class CreateGraduationComponent {
       next: r => this.belts.set(r.items ?? []),
       error: () => this.ns.showError('Erro ao Carregar Faixas', 'Não foi possível carregar as faixas disponíveis.'),
     });
-    this.studentsService.apiStudentsGet().subscribe({
-      next: r => this.students.set(r.items ?? []),
-      error: () => this.ns.showError('Erro ao Carregar Alunos', 'Não foi possível carregar a lista de alunos.'),
-    });
+    this.loadStudents();
   }
 
   protected close(): void { this.closeEvent.emit(); }
@@ -55,6 +52,17 @@ export class CreateGraduationComponent {
   protected onStudentSelected(opt: SearchOption | null): void {
     this.selectedStudent.set(opt);
     this.form.patchValue({ studentId: opt?.id ?? '' });
+  }
+
+  protected onStudentSearch(term: string): void {
+    this.loadStudents(term);
+  }
+
+  private loadStudents(term = ''): void {
+    this.studentsService.apiStudentsGet(term || undefined, undefined, undefined, undefined, undefined, 1, 100).subscribe({
+      next: r => this.students.set(r.items ?? []),
+      error: () => this.ns.showError('Erro ao Carregar Alunos', 'Não foi possível carregar a lista de alunos.'),
+    });
   }
 
   protected save(): void {

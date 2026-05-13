@@ -1,5 +1,5 @@
 /**
- * BjjClutch Backend API
+ * CarlsonGracie Backend API
  * API for managing students, belts, graduation requirements, notices, frequencies and user authentication with Keycloak
  *
  * Contact: marcosturossi@gmail.com.com
@@ -105,39 +105,37 @@ export class TransactionCategoryService implements TransactionCategoryServiceInt
     }
 
     /**
+     * @param searchTerm 
+     * @param isActive 
      * @param pageNumber 
      * @param pageSize 
-     * @param isActive 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiTransactionCategoryGet(pageNumber?: number, pageSize?: number, isActive?: boolean, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<PaginationTransactionCategoryDTO>;
-    public apiTransactionCategoryGet(pageNumber?: number, pageSize?: number, isActive?: boolean, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<PaginationTransactionCategoryDTO>>;
-    public apiTransactionCategoryGet(pageNumber?: number, pageSize?: number, isActive?: boolean, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<PaginationTransactionCategoryDTO>>;
-    public apiTransactionCategoryGet(pageNumber?: number, pageSize?: number, isActive?: boolean, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public apiTransactionCategoryGet(searchTerm?: string, isActive?: boolean, pageNumber?: number, pageSize?: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<PaginationTransactionCategoryDTO>;
+    public apiTransactionCategoryGet(searchTerm?: string, isActive?: boolean, pageNumber?: number, pageSize?: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<PaginationTransactionCategoryDTO>>;
+    public apiTransactionCategoryGet(searchTerm?: string, isActive?: boolean, pageNumber?: number, pageSize?: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<PaginationTransactionCategoryDTO>>;
+    public apiTransactionCategoryGet(searchTerm?: string, isActive?: boolean, pageNumber?: number, pageSize?: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
 
         let localVarQueryParameters = new HttpParams({encoder: this.encoder});
-        if (pageNumber !== undefined && pageNumber !== null) {
+        if (searchTerm !== undefined && searchTerm !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>pageNumber, 'pageNumber');
-        }
-        if (pageSize !== undefined && pageSize !== null) {
-          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>pageSize, 'pageSize');
+            <any>searchTerm, 'SearchTerm');
         }
         if (isActive !== undefined && isActive !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>isActive, 'isActive');
+            <any>isActive, 'IsActive');
+        }
+        if (pageNumber !== undefined && pageNumber !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>pageNumber, 'PageNumber');
+        }
+        if (pageSize !== undefined && pageSize !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>pageSize, 'PageSize');
         }
 
         let localVarHeaders = this.defaultHeaders;
-
-        let localVarCredential: string | undefined;
-        // authentication (TenantToken) required
-        localVarCredential = this.configuration.lookupCredential('TenantToken');
-        if (localVarCredential) {
-            localVarHeaders = localVarHeaders.set('X-Tenant-Token', localVarCredential);
-        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -203,13 +201,6 @@ export class TransactionCategoryService implements TransactionCategoryServiceInt
 
         let localVarHeaders = this.defaultHeaders;
 
-        let localVarCredential: string | undefined;
-        // authentication (TenantToken) required
-        localVarCredential = this.configuration.lookupCredential('TenantToken');
-        if (localVarCredential) {
-            localVarHeaders = localVarHeaders.set('X-Tenant-Token', localVarCredential);
-        }
-
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
@@ -272,13 +263,6 @@ export class TransactionCategoryService implements TransactionCategoryServiceInt
         }
 
         let localVarHeaders = this.defaultHeaders;
-
-        let localVarCredential: string | undefined;
-        // authentication (TenantToken) required
-        localVarCredential = this.configuration.lookupCredential('TenantToken');
-        if (localVarCredential) {
-            localVarHeaders = localVarHeaders.set('X-Tenant-Token', localVarCredential);
-        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -343,13 +327,6 @@ export class TransactionCategoryService implements TransactionCategoryServiceInt
         }
 
         let localVarHeaders = this.defaultHeaders;
-
-        let localVarCredential: string | undefined;
-        // authentication (TenantToken) required
-        localVarCredential = this.configuration.lookupCredential('TenantToken');
-        if (localVarCredential) {
-            localVarHeaders = localVarHeaders.set('X-Tenant-Token', localVarCredential);
-        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -422,13 +399,6 @@ export class TransactionCategoryService implements TransactionCategoryServiceInt
     public apiTransactionCategoryPost(createTransactionCategoryDTO?: CreateTransactionCategoryDTO, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
 
         let localVarHeaders = this.defaultHeaders;
-
-        let localVarCredential: string | undefined;
-        // authentication (TenantToken) required
-        localVarCredential = this.configuration.lookupCredential('TenantToken');
-        if (localVarCredential) {
-            localVarHeaders = localVarHeaders.set('X-Tenant-Token', localVarCredential);
-        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {

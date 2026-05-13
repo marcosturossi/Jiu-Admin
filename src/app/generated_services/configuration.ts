@@ -86,17 +86,6 @@ export class Configuration {
         else {
             this.credentials = {};
         }
-
-        // init default TenantToken credential
-        if (!this.credentials['TenantToken']) {
-            this.credentials['TenantToken'] = () => {
-                if (this.apiKeys === null || this.apiKeys === undefined) {
-                    return undefined;
-                } else {
-                    return this.apiKeys['TenantToken'] || this.apiKeys['X-Tenant-Token'];
-                }
-            };
-        }
     }
 
     /**

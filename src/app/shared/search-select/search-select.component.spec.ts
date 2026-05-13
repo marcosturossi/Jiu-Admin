@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { SearchSelectComponent } from './search-select.component';
 import { SearchOption } from './search-option';
 
@@ -94,15 +94,25 @@ describe('SearchSelectComponent', () => {
     expect(fixture.nativeElement.querySelector('.modal')).toBeNull();
   });
 
-  it('filters options based on query (case-insensitive)', () => {
+  it('filters options based on query (case-insensitive)', fakeAsync(() => {
     setup();
     (component as any).isOpen.set(true);
-    (component as any).query.set('joão');
+    (component as any).onQueryInput('joão');
+    tick(300);
     fixture.detectChanges();
     const items = fixture.nativeElement.querySelectorAll('li.list-group-item.list-group-item-action:not(.search-select-clear)');
     expect(items.length).toBe(1);
     expect(items[0].textContent.trim()).toBe('João Silva');
-  });
+  }));
+
+  it('emits searchChange when query changes', fakeAsync(() => {
+    setup();
+    let emitted: string | undefined;
+    component.searchChange.subscribe(v => emitted = v);
+    (component as any).onQueryInput('maria');
+    tick(300);
+    expect(emitted).toBe('maria');
+  }));
 
   it('emits selectionChange with the selected option on item click', () => {
     setup();
@@ -147,7 +157,7 @@ describe('SearchSelectComponent', () => {
   it('clears query when modal is closed', () => {
     setup();
     (component as any).isOpen.set(true);
-    (component as any).query.set('joão');
+    (component as any).onQueryInput('joão');
     fixture.detectChanges();
     (component as any).close();
     expect((component as any).query()).toBe('');

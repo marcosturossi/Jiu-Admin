@@ -1,5 +1,5 @@
 /**
- * BjjClutch Backend API
+ * CarlsonGracie Backend API
  * API for managing students, belts, graduation requirements, notices, frequencies and user authentication with Keycloak
  *
  * Contact: marcosturossi@gmail.com.com
@@ -171,13 +171,6 @@ export class StudentsService implements StudentsServiceInterface {
 
         let localVarHeaders = this.defaultHeaders;
 
-        let localVarCredential: string | undefined;
-        // authentication (TenantToken) required
-        localVarCredential = this.configuration.lookupCredential('TenantToken');
-        if (localVarCredential) {
-            localVarHeaders = localVarHeaders.set('X-Tenant-Token', localVarCredential);
-        }
-
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
@@ -275,13 +268,6 @@ export class StudentsService implements StudentsServiceInterface {
 
         let localVarHeaders = this.defaultHeaders;
 
-        let localVarCredential: string | undefined;
-        // authentication (TenantToken) required
-        localVarCredential = this.configuration.lookupCredential('TenantToken');
-        if (localVarCredential) {
-            localVarHeaders = localVarHeaders.set('X-Tenant-Token', localVarCredential);
-        }
-
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
@@ -346,13 +332,6 @@ export class StudentsService implements StudentsServiceInterface {
 
         let localVarHeaders = this.defaultHeaders;
 
-        let localVarCredential: string | undefined;
-        // authentication (TenantToken) required
-        localVarCredential = this.configuration.lookupCredential('TenantToken');
-        if (localVarCredential) {
-            localVarHeaders = localVarHeaders.set('X-Tenant-Token', localVarCredential);
-        }
-
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
@@ -415,13 +394,6 @@ export class StudentsService implements StudentsServiceInterface {
         }
 
         let localVarHeaders = this.defaultHeaders;
-
-        let localVarCredential: string | undefined;
-        // authentication (TenantToken) required
-        localVarCredential = this.configuration.lookupCredential('TenantToken');
-        if (localVarCredential) {
-            localVarHeaders = localVarHeaders.set('X-Tenant-Token', localVarCredential);
-        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -486,13 +458,6 @@ export class StudentsService implements StudentsServiceInterface {
         }
 
         let localVarHeaders = this.defaultHeaders;
-
-        let localVarCredential: string | undefined;
-        // authentication (TenantToken) required
-        localVarCredential = this.configuration.lookupCredential('TenantToken');
-        if (localVarCredential) {
-            localVarHeaders = localVarHeaders.set('X-Tenant-Token', localVarCredential);
-        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -569,13 +534,6 @@ export class StudentsService implements StudentsServiceInterface {
 
         let localVarHeaders = this.defaultHeaders;
 
-        let localVarCredential: string | undefined;
-        // authentication (TenantToken) required
-        localVarCredential = this.configuration.lookupCredential('TenantToken');
-        if (localVarCredential) {
-            localVarHeaders = localVarHeaders.set('X-Tenant-Token', localVarCredential);
-        }
-
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
@@ -638,13 +596,6 @@ export class StudentsService implements StudentsServiceInterface {
         }
 
         let localVarHeaders = this.defaultHeaders;
-
-        let localVarCredential: string | undefined;
-        // authentication (TenantToken) required
-        localVarCredential = this.configuration.lookupCredential('TenantToken');
-        if (localVarCredential) {
-            localVarHeaders = localVarHeaders.set('X-Tenant-Token', localVarCredential);
-        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -709,13 +660,6 @@ export class StudentsService implements StudentsServiceInterface {
         }
 
         let localVarHeaders = this.defaultHeaders;
-
-        let localVarCredential: string | undefined;
-        // authentication (TenantToken) required
-        localVarCredential = this.configuration.lookupCredential('TenantToken');
-        if (localVarCredential) {
-            localVarHeaders = localVarHeaders.set('X-Tenant-Token', localVarCredential);
-        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -810,13 +754,6 @@ export class StudentsService implements StudentsServiceInterface {
 
         let localVarHeaders = this.defaultHeaders;
 
-        let localVarCredential: string | undefined;
-        // authentication (TenantToken) required
-        localVarCredential = this.configuration.lookupCredential('TenantToken');
-        if (localVarCredential) {
-            localVarHeaders = localVarHeaders.set('X-Tenant-Token', localVarCredential);
-        }
-
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
@@ -881,13 +818,6 @@ export class StudentsService implements StudentsServiceInterface {
         }
 
         let localVarHeaders = this.defaultHeaders;
-
-        let localVarCredential: string | undefined;
-        // authentication (TenantToken) required
-        localVarCredential = this.configuration.lookupCredential('TenantToken');
-        if (localVarCredential) {
-            localVarHeaders = localVarHeaders.set('X-Tenant-Token', localVarCredential);
-        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -964,13 +894,6 @@ export class StudentsService implements StudentsServiceInterface {
 
         let localVarHeaders = this.defaultHeaders;
 
-        let localVarCredential: string | undefined;
-        // authentication (TenantToken) required
-        localVarCredential = this.configuration.lookupCredential('TenantToken');
-        if (localVarCredential) {
-            localVarHeaders = localVarHeaders.set('X-Tenant-Token', localVarCredential);
-        }
-
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
@@ -1030,13 +953,6 @@ export class StudentsService implements StudentsServiceInterface {
     public apiStudentsPost(createStudentDTO?: CreateStudentDTO, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
 
         let localVarHeaders = this.defaultHeaders;
-
-        let localVarCredential: string | undefined;
-        // authentication (TenantToken) required
-        localVarCredential = this.configuration.lookupCredential('TenantToken');
-        if (localVarCredential) {
-            localVarHeaders = localVarHeaders.set('X-Tenant-Token', localVarCredential);
-        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -1109,13 +1025,6 @@ export class StudentsService implements StudentsServiceInterface {
     public apiStudentsSearchPost(studentSearchDTO?: StudentSearchDTO, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
 
         let localVarHeaders = this.defaultHeaders;
-
-        let localVarCredential: string | undefined;
-        // authentication (TenantToken) required
-        localVarCredential = this.configuration.lookupCredential('TenantToken');
-        if (localVarCredential) {
-            localVarHeaders = localVarHeaders.set('X-Tenant-Token', localVarCredential);
-        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {

@@ -1,5 +1,5 @@
 /**
- * BjjClutch Backend API
+ * CarlsonGracie Backend API
  * API for managing students, belts, graduation requirements, notices, frequencies and user authentication with Keycloak
  *
  * Contact: marcosturossi@gmail.com.com
@@ -11,6 +11,7 @@
 
 
 export interface FrequencyFilterDTO { 
+    searchTerm?: string | null;
     studentId?: string | null;
     graduationId?: string | null;
     lessonId?: string | null;

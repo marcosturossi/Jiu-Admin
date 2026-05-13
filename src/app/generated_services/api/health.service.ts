@@ -1,5 +1,5 @@
 /**
- * BjjClutch Backend API
+ * CarlsonGracie Backend API
  * API for managing students, belts, graduation requirements, notices, frequencies and user authentication with Keycloak
  *
  * Contact: marcosturossi@gmail.com.com
@@ -103,13 +103,6 @@ export class HealthService implements HealthServiceInterface {
 
         let localVarHeaders = this.defaultHeaders;
 
-        let localVarCredential: string | undefined;
-        // authentication (TenantToken) required
-        localVarCredential = this.configuration.lookupCredential('TenantToken');
-        if (localVarCredential) {
-            localVarHeaders = localVarHeaders.set('X-Tenant-Token', localVarCredential);
-        }
-
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
@@ -168,13 +161,6 @@ export class HealthService implements HealthServiceInterface {
 
         let localVarHeaders = this.defaultHeaders;
 
-        let localVarCredential: string | undefined;
-        // authentication (TenantToken) required
-        localVarCredential = this.configuration.lookupCredential('TenantToken');
-        if (localVarCredential) {
-            localVarHeaders = localVarHeaders.set('X-Tenant-Token', localVarCredential);
-        }
-
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
@@ -232,13 +218,6 @@ export class HealthService implements HealthServiceInterface {
     public healthReadyGet(observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any> {
 
         let localVarHeaders = this.defaultHeaders;
-
-        let localVarCredential: string | undefined;
-        // authentication (TenantToken) required
-        localVarCredential = this.configuration.lookupCredential('TenantToken');
-        if (localVarCredential) {
-            localVarHeaders = localVarHeaders.set('X-Tenant-Token', localVarCredential);
-        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {

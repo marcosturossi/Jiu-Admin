@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, input, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input, OnDestroy, output, signal } from '@angular/core';
 import { SearchOption } from './search-option';
 
 @Component({
@@ -8,7 +8,7 @@ import { SearchOption } from './search-option';
   styleUrl: './search-select.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SearchSelectComponent {
+export class SearchSelectComponent implements OnDestroy {
   readonly options = input.required<SearchOption[]>();
   readonly placeholder = input<string>('Selecione...');
   readonly selected = input<SearchOption | null>(null);
@@ -16,9 +16,11 @@ export class SearchSelectComponent {
   readonly label = input<string>('Selecionar');
 
   readonly selectionChange = output<SearchOption | null>();
+  readonly searchChange = output<string>();
 
   protected readonly isOpen = signal(false);
   protected readonly query = signal('');
+  private searchTimer: ReturnType<typeof setTimeout> | null = null;
 
   protected readonly filteredOptions = computed(() => {
     const q = this.query().toLowerCase().trim();
@@ -33,8 +35,19 @@ export class SearchSelectComponent {
   }
 
   protected close(): void {
-    this.isOpen.set(false);
+    this.clearSearchTimer();
+    this.searchChange.emit('');
     this.query.set('');
+    this.isOpen.set(false);
+  }
+
+  protected onQueryInput(value: string): void {
+    this.clearSearchTimer();
+    this.query.set(value);
+    this.searchTimer = setTimeout(() => {
+      this.searchChange.emit(value);
+      this.searchTimer = null;
+    }, 300);
   }
 
   protected select(opt: SearchOption): void {
@@ -44,5 +57,16 @@ export class SearchSelectComponent {
 
   protected clear(): void {
     this.selectionChange.emit(null);
+  }
+
+  ngOnDestroy(): void {
+    this.clearSearchTimer();
+  }
+
+  private clearSearchTimer(): void {
+    if (this.searchTimer) {
+      clearTimeout(this.searchTimer);
+      this.searchTimer = null;
+    }
   }
 }

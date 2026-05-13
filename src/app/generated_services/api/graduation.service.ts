@@ -1,5 +1,5 @@
 /**
- * BjjClutch Backend API
+ * CarlsonGracie Backend API
  * API for managing students, belts, graduation requirements, notices, frequencies and user authentication with Keycloak
  *
  * Contact: marcosturossi@gmail.com.com
@@ -102,6 +102,7 @@ export class GraduationService implements GraduationServiceInterface {
 
     /**
      * @param beltId 
+     * @param searchTerm 
      * @param studentId 
      * @param beltId2 
      * @param graduationDateFrom 
@@ -111,15 +112,19 @@ export class GraduationService implements GraduationServiceInterface {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiGraduationBeltBeltIdGet(beltId: string, studentId?: string, beltId2?: string, graduationDateFrom?: string, graduationDateTo?: string, pageNumber?: number, pageSize?: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<Array<ShowGraduationDTO>>;
-    public apiGraduationBeltBeltIdGet(beltId: string, studentId?: string, beltId2?: string, graduationDateFrom?: string, graduationDateTo?: string, pageNumber?: number, pageSize?: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<ShowGraduationDTO>>>;
-    public apiGraduationBeltBeltIdGet(beltId: string, studentId?: string, beltId2?: string, graduationDateFrom?: string, graduationDateTo?: string, pageNumber?: number, pageSize?: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<ShowGraduationDTO>>>;
-    public apiGraduationBeltBeltIdGet(beltId: string, studentId?: string, beltId2?: string, graduationDateFrom?: string, graduationDateTo?: string, pageNumber?: number, pageSize?: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public apiGraduationBeltBeltIdGet(beltId: string, searchTerm?: string, studentId?: string, beltId2?: string, graduationDateFrom?: string, graduationDateTo?: string, pageNumber?: number, pageSize?: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<Array<ShowGraduationDTO>>;
+    public apiGraduationBeltBeltIdGet(beltId: string, searchTerm?: string, studentId?: string, beltId2?: string, graduationDateFrom?: string, graduationDateTo?: string, pageNumber?: number, pageSize?: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<ShowGraduationDTO>>>;
+    public apiGraduationBeltBeltIdGet(beltId: string, searchTerm?: string, studentId?: string, beltId2?: string, graduationDateFrom?: string, graduationDateTo?: string, pageNumber?: number, pageSize?: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<ShowGraduationDTO>>>;
+    public apiGraduationBeltBeltIdGet(beltId: string, searchTerm?: string, studentId?: string, beltId2?: string, graduationDateFrom?: string, graduationDateTo?: string, pageNumber?: number, pageSize?: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         if (beltId === null || beltId === undefined) {
             throw new Error('Required parameter beltId was null or undefined when calling apiGraduationBeltBeltIdGet.');
         }
 
         let localVarQueryParameters = new HttpParams({encoder: this.encoder});
+        if (searchTerm !== undefined && searchTerm !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>searchTerm, 'SearchTerm');
+        }
         if (studentId !== undefined && studentId !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
             <any>studentId, 'StudentId');
@@ -146,13 +151,6 @@ export class GraduationService implements GraduationServiceInterface {
         }
 
         let localVarHeaders = this.defaultHeaders;
-
-        let localVarCredential: string | undefined;
-        // authentication (TenantToken) required
-        localVarCredential = this.configuration.lookupCredential('TenantToken');
-        if (localVarCredential) {
-            localVarHeaders = localVarHeaders.set('X-Tenant-Token', localVarCredential);
-        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -206,6 +204,7 @@ export class GraduationService implements GraduationServiceInterface {
     }
 
     /**
+     * @param searchTerm 
      * @param studentId 
      * @param beltId 
      * @param graduationDateFrom 
@@ -215,12 +214,16 @@ export class GraduationService implements GraduationServiceInterface {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiGraduationGet(studentId?: string, beltId?: string, graduationDateFrom?: string, graduationDateTo?: string, pageNumber?: number, pageSize?: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<PaginationGraduationDTO>;
-    public apiGraduationGet(studentId?: string, beltId?: string, graduationDateFrom?: string, graduationDateTo?: string, pageNumber?: number, pageSize?: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<PaginationGraduationDTO>>;
-    public apiGraduationGet(studentId?: string, beltId?: string, graduationDateFrom?: string, graduationDateTo?: string, pageNumber?: number, pageSize?: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<PaginationGraduationDTO>>;
-    public apiGraduationGet(studentId?: string, beltId?: string, graduationDateFrom?: string, graduationDateTo?: string, pageNumber?: number, pageSize?: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public apiGraduationGet(searchTerm?: string, studentId?: string, beltId?: string, graduationDateFrom?: string, graduationDateTo?: string, pageNumber?: number, pageSize?: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<PaginationGraduationDTO>;
+    public apiGraduationGet(searchTerm?: string, studentId?: string, beltId?: string, graduationDateFrom?: string, graduationDateTo?: string, pageNumber?: number, pageSize?: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<PaginationGraduationDTO>>;
+    public apiGraduationGet(searchTerm?: string, studentId?: string, beltId?: string, graduationDateFrom?: string, graduationDateTo?: string, pageNumber?: number, pageSize?: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<PaginationGraduationDTO>>;
+    public apiGraduationGet(searchTerm?: string, studentId?: string, beltId?: string, graduationDateFrom?: string, graduationDateTo?: string, pageNumber?: number, pageSize?: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
 
         let localVarQueryParameters = new HttpParams({encoder: this.encoder});
+        if (searchTerm !== undefined && searchTerm !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>searchTerm, 'SearchTerm');
+        }
         if (studentId !== undefined && studentId !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
             <any>studentId, 'StudentId');
@@ -247,13 +250,6 @@ export class GraduationService implements GraduationServiceInterface {
         }
 
         let localVarHeaders = this.defaultHeaders;
-
-        let localVarCredential: string | undefined;
-        // authentication (TenantToken) required
-        localVarCredential = this.configuration.lookupCredential('TenantToken');
-        if (localVarCredential) {
-            localVarHeaders = localVarHeaders.set('X-Tenant-Token', localVarCredential);
-        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -321,13 +317,6 @@ export class GraduationService implements GraduationServiceInterface {
 
         let localVarHeaders = this.defaultHeaders;
 
-        let localVarCredential: string | undefined;
-        // authentication (TenantToken) required
-        localVarCredential = this.configuration.lookupCredential('TenantToken');
-        if (localVarCredential) {
-            localVarHeaders = localVarHeaders.set('X-Tenant-Token', localVarCredential);
-        }
-
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
@@ -389,13 +378,6 @@ export class GraduationService implements GraduationServiceInterface {
         }
 
         let localVarHeaders = this.defaultHeaders;
-
-        let localVarCredential: string | undefined;
-        // authentication (TenantToken) required
-        localVarCredential = this.configuration.lookupCredential('TenantToken');
-        if (localVarCredential) {
-            localVarHeaders = localVarHeaders.set('X-Tenant-Token', localVarCredential);
-        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -462,13 +444,6 @@ export class GraduationService implements GraduationServiceInterface {
         }
 
         let localVarHeaders = this.defaultHeaders;
-
-        let localVarCredential: string | undefined;
-        // authentication (TenantToken) required
-        localVarCredential = this.configuration.lookupCredential('TenantToken');
-        if (localVarCredential) {
-            localVarHeaders = localVarHeaders.set('X-Tenant-Token', localVarCredential);
-        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -544,13 +519,6 @@ export class GraduationService implements GraduationServiceInterface {
 
         let localVarHeaders = this.defaultHeaders;
 
-        let localVarCredential: string | undefined;
-        // authentication (TenantToken) required
-        localVarCredential = this.configuration.lookupCredential('TenantToken');
-        if (localVarCredential) {
-            localVarHeaders = localVarHeaders.set('X-Tenant-Token', localVarCredential);
-        }
-
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
@@ -615,6 +583,7 @@ export class GraduationService implements GraduationServiceInterface {
 
     /**
      * @param userId 
+     * @param searchTerm 
      * @param studentId 
      * @param beltId 
      * @param graduationDateFrom 
@@ -624,15 +593,19 @@ export class GraduationService implements GraduationServiceInterface {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiGraduationUserUserIdGet(userId: string, studentId?: string, beltId?: string, graduationDateFrom?: string, graduationDateTo?: string, pageNumber?: number, pageSize?: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<Array<ShowGraduationDTO>>;
-    public apiGraduationUserUserIdGet(userId: string, studentId?: string, beltId?: string, graduationDateFrom?: string, graduationDateTo?: string, pageNumber?: number, pageSize?: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<ShowGraduationDTO>>>;
-    public apiGraduationUserUserIdGet(userId: string, studentId?: string, beltId?: string, graduationDateFrom?: string, graduationDateTo?: string, pageNumber?: number, pageSize?: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<ShowGraduationDTO>>>;
-    public apiGraduationUserUserIdGet(userId: string, studentId?: string, beltId?: string, graduationDateFrom?: string, graduationDateTo?: string, pageNumber?: number, pageSize?: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public apiGraduationUserUserIdGet(userId: string, searchTerm?: string, studentId?: string, beltId?: string, graduationDateFrom?: string, graduationDateTo?: string, pageNumber?: number, pageSize?: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<Array<ShowGraduationDTO>>;
+    public apiGraduationUserUserIdGet(userId: string, searchTerm?: string, studentId?: string, beltId?: string, graduationDateFrom?: string, graduationDateTo?: string, pageNumber?: number, pageSize?: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<ShowGraduationDTO>>>;
+    public apiGraduationUserUserIdGet(userId: string, searchTerm?: string, studentId?: string, beltId?: string, graduationDateFrom?: string, graduationDateTo?: string, pageNumber?: number, pageSize?: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<ShowGraduationDTO>>>;
+    public apiGraduationUserUserIdGet(userId: string, searchTerm?: string, studentId?: string, beltId?: string, graduationDateFrom?: string, graduationDateTo?: string, pageNumber?: number, pageSize?: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         if (userId === null || userId === undefined) {
             throw new Error('Required parameter userId was null or undefined when calling apiGraduationUserUserIdGet.');
         }
 
         let localVarQueryParameters = new HttpParams({encoder: this.encoder});
+        if (searchTerm !== undefined && searchTerm !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>searchTerm, 'SearchTerm');
+        }
         if (studentId !== undefined && studentId !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
             <any>studentId, 'StudentId');
@@ -659,13 +632,6 @@ export class GraduationService implements GraduationServiceInterface {
         }
 
         let localVarHeaders = this.defaultHeaders;
-
-        let localVarCredential: string | undefined;
-        // authentication (TenantToken) required
-        localVarCredential = this.configuration.lookupCredential('TenantToken');
-        if (localVarCredential) {
-            localVarHeaders = localVarHeaders.set('X-Tenant-Token', localVarCredential);
-        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {

@@ -10,10 +10,9 @@
  */
 
 
-export interface ShowBeltDTO { 
+export interface PublicAcademyDTO { 
     id?: string;
-    color: string;
-    orderIndex?: number;
-    isForKids?: boolean;
+    name?: string | null;
+    slug?: string | null;
 }
 

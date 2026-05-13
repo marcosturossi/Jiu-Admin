@@ -32,6 +32,7 @@ export class GraduationsComponent {
   protected readonly selected = signal<ShowGraduationDTO | null>(null);
   protected readonly currentPage = signal(1);
   protected readonly pageSize = signal(10);
+  protected readonly filterText = signal('');
 
   constructor() {
     this.subnavService.setTitle('Graduações');
@@ -40,7 +41,7 @@ export class GraduationsComponent {
 
   protected load(): void {
     this.isLoading.set(true);
-    this.graduationService.apiGraduationGet(undefined, undefined, undefined, undefined, this.currentPage(), this.pageSize()).subscribe({
+    this.graduationService.apiGraduationGet(this.filterText() || undefined, undefined, undefined, undefined, undefined, this.currentPage(), this.pageSize()).subscribe({
       next: r => { this.items.set(r); this.isLoading.set(false); },
       error: () => {
         this.isLoading.set(false);
@@ -51,6 +52,7 @@ export class GraduationsComponent {
 
   protected onPageChange(p: number): void { this.currentPage.set(p); this.load(); }
   protected onPageSizeChange(s: number): void { this.pageSize.set(s); this.currentPage.set(1); this.load(); }
+  protected onSearch(term: string): void { this.filterText.set(term); this.currentPage.set(1); this.load(); }
   protected openCreate(): void { this.openedCreate.set(true); }
   protected openEdit(item: ShowGraduationDTO): void { this.selected.set(item); this.openedUpdate.set(true); }
   protected onCreated(): void { this.openedCreate.set(false); this.load(); }

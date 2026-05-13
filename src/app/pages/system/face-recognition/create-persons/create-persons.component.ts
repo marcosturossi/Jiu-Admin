@@ -38,16 +38,7 @@ export class CreatePersonsComponent {
   });
 
   constructor() {
-    this.studentsService.apiStudentsActiveGet().subscribe({
-      next: students => {
-        this.students.set(students);
-        this.studentOptions.set(students.map(s => ({
-          id: s.id ?? '',
-          label: `${s.firstName} ${s.lastName}${s.preferredUsername || s.userName ? ' (' + (s.preferredUsername || s.userName) + ')' : ''}`,
-        })));
-      },
-      error: () => this.ns.showError('Erro ao Carregar Alunos', 'Não foi possível carregar a lista de alunos ativos.')
-    });
+    this.loadStudents();
   }
 
   protected onFilesSelected(event: Event): void {
@@ -112,5 +103,22 @@ export class CreatePersonsComponent {
   protected onStudentSelected(opt: SearchOption | null): void {
     this.selectedStudent.set(opt);
     this.personForm.patchValue({ studentId: opt?.id ?? '' });
+  }
+
+  protected onStudentSearch(term: string): void {
+    this.loadStudents(term);
+  }
+
+  private loadStudents(term = ''): void {
+    this.studentsService.apiStudentsActiveGet(term || undefined, undefined, undefined, undefined, undefined, 1, 100).subscribe({
+      next: students => {
+        this.students.set(students);
+        this.studentOptions.set(students.map(s => ({
+          id: s.id ?? '',
+          label: `${s.firstName} ${s.lastName}${s.preferredUsername || s.userName ? ' (' + (s.preferredUsername || s.userName) + ')' : ''}`,
+        })));
+      },
+      error: () => this.ns.showError('Erro ao Carregar Alunos', 'Não foi possível carregar a lista de alunos ativos.')
+    });
   }
 }

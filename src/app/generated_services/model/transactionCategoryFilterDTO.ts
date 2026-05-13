@@ -10,10 +10,10 @@
  */
 
 
-export interface ShowBeltDTO { 
-    id?: string;
-    color: string;
-    orderIndex?: number;
-    isForKids?: boolean;
+export interface TransactionCategoryFilterDTO { 
+    searchTerm?: string | null;
+    isActive?: boolean | null;
+    pageNumber?: number;
+    pageSize?: number;
 }
 

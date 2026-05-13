@@ -41,27 +41,8 @@ export class CreateContractComponent {
   });
 
   constructor() {
-    this.studentsService.apiStudentsActiveGet().subscribe({
-      next: (students: ShowStudentDTO[]) => {
-        this.studentOptions.set(
-          students.map(s => ({
-            id: s.id!,
-            label: `${s.firstName ?? ''} ${s.lastName ?? ''}`.trim() || s.userName || s.id!,
-          })),
-        );
-      },
-    });
-
-    this.feePlanService.apiFeePlanGet(undefined, undefined, undefined, 1, 100).subscribe({
-      next: result => {
-        this.feePlanOptions.set(
-          (result.items ?? []).map((p: ShowFeePlanDTO) => ({
-            id: p.id!,
-            label: `${p.name ?? ''} — R$ ${p.price?.toFixed(2) ?? '0,00'}`,
-          })),
-        );
-      },
-    });
+    this.loadStudents();
+    this.loadFeePlans();
   }
 
   protected save(): void {
@@ -95,10 +76,44 @@ export class CreateContractComponent {
     this.form.patchValue({ studentId: opt?.id ?? '' });
   }
 
+  protected onStudentSearch(term: string): void {
+    this.loadStudents(term);
+  }
+
   protected onFeePlanSelected(opt: SearchOption | null): void {
     this.selectedFeePlan.set(opt);
     this.form.patchValue({ feePlanId: opt?.id ?? '' });
   }
 
+  protected onFeePlanSearch(term: string): void {
+    this.loadFeePlans(term);
+  }
+
   protected close(): void { this.closeEvent.emit(); }
+
+  private loadStudents(term = ''): void {
+    this.studentsService.apiStudentsActiveGet(term || undefined, undefined, undefined, undefined, undefined, 1, 100).subscribe({
+      next: (students: ShowStudentDTO[]) => {
+        this.studentOptions.set(
+          students.map(s => ({
+            id: s.id!,
+            label: `${s.firstName ?? ''} ${s.lastName ?? ''}`.trim() || s.userName || s.id!,
+          })),
+        );
+      },
+    });
+  }
+
+  private loadFeePlans(term = ''): void {
+    this.feePlanService.apiFeePlanGet(term || undefined, undefined, undefined, 1, 100).subscribe({
+      next: result => {
+        this.feePlanOptions.set(
+          (result.items ?? []).map((p: ShowFeePlanDTO) => ({
+            id: p.id!,
+            label: `${p.name ?? ''} — R$ ${p.price?.toFixed(2) ?? '0,00'}`,
+          })),
+        );
+      },
+    });
+  }
 }

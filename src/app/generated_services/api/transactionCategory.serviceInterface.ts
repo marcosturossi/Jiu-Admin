@@ -1,5 +1,5 @@
 /**
- * BjjClutch Backend API
+ * CarlsonGracie Backend API
  * API for managing students, belts, graduation requirements, notices, frequencies and user authentication with Keycloak
  *
  * Contact: marcosturossi@gmail.com.com
@@ -31,11 +31,12 @@ export interface TransactionCategoryServiceInterface {
     /**
      * 
      * 
+     * @param searchTerm 
+     * @param isActive 
      * @param pageNumber 
      * @param pageSize 
-     * @param isActive 
      */
-    apiTransactionCategoryGet(pageNumber?: number, pageSize?: number, isActive?: boolean, extraHttpRequestParams?: any): Observable<PaginationTransactionCategoryDTO>;
+    apiTransactionCategoryGet(searchTerm?: string, isActive?: boolean, pageNumber?: number, pageSize?: number, extraHttpRequestParams?: any): Observable<PaginationTransactionCategoryDTO>;
 
     /**
      * 

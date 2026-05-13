@@ -1,5 +1,5 @@
 /**
- * BjjClutch Backend API
+ * CarlsonGracie Backend API
  * API for managing students, belts, graduation requirements, notices, frequencies and user authentication with Keycloak
  *
  * Contact: marcosturossi@gmail.com.com
@@ -12,6 +12,7 @@ import { ContractStatus } from './contractStatus';
 
 
 export interface ContractFilterDTO { 
+    searchTerm?: string | null;
     studentId?: string | null;
     feePlanId?: string | null;
     status?: ContractStatus | null;

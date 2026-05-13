@@ -39,7 +39,13 @@ describe('CreateAcademyComponent', () => {
 
   it('should be valid when required fields are filled', () => {
     const form = (component as any).form;
-    form.setValue({ name: 'Academy X', slug: 'academy-x', keycloakRealm: '' });
+    form.setValue({
+      name: 'Academy X',
+      slug: 'academy-x',
+      adminEmail: 'admin@example.com',
+      adminFirstName: 'João',
+      adminLastName: 'Silva',
+    });
     expect(form.valid).toBeTrue();
   });
 
@@ -74,12 +80,20 @@ describe('CreateAcademyComponent', () => {
   it('should call academy service with correct DTO on valid save', () => {
     academyService.apiAdminAcademiesPost.and.returnValue(of({} as any));
     const form = (component as any).form;
-    form.setValue({ name: 'Academy X', slug: 'academy-x', keycloakRealm: 'realm-x' });
+    form.setValue({
+      name: 'Academy X',
+      slug: 'academy-x',
+      adminEmail: 'admin@example.com',
+      adminFirstName: 'João',
+      adminLastName: 'Silva',
+    });
     (component as any).save();
     expect(academyService.apiAdminAcademiesPost).toHaveBeenCalledWith({
       name: 'Academy X',
       slug: 'academy-x',
-      keycloakRealm: 'realm-x',
+      adminEmail: 'admin@example.com',
+      adminFirstName: 'João',
+      adminLastName: 'Silva',
     });
   });
 
@@ -88,7 +102,13 @@ describe('CreateAcademyComponent', () => {
     let emitted = false;
     component.academyCreated.subscribe(() => (emitted = true));
     const form = (component as any).form;
-    form.setValue({ name: 'Academy X', slug: 'academy-x', keycloakRealm: '' });
+    form.setValue({
+      name: 'Academy X',
+      slug: 'academy-x',
+      adminEmail: 'admin@example.com',
+      adminFirstName: 'João',
+      adminLastName: 'Silva',
+    });
     (component as any).save();
     expect(emitted).toBeTrue();
     expect(notificationService.showSuccess).toHaveBeenCalledWith(
@@ -100,20 +120,17 @@ describe('CreateAcademyComponent', () => {
   it('should show error notification on service failure', () => {
     academyService.apiAdminAcademiesPost.and.returnValue(throwError(() => new Error('fail')));
     const form = (component as any).form;
-    form.setValue({ name: 'Academy X', slug: 'academy-x', keycloakRealm: '' });
+    form.setValue({
+      name: 'Academy X',
+      slug: 'academy-x',
+      adminEmail: 'admin@example.com',
+      adminFirstName: 'João',
+      adminLastName: 'Silva',
+    });
     (component as any).save();
     expect(notificationService.showError).toHaveBeenCalledWith(
       'Erro ao Criar',
       'Não foi possível criar a academia. Tente novamente.',
     );
-  });
-
-  it('should treat empty keycloakRealm as null in DTO', () => {
-    academyService.apiAdminAcademiesPost.and.returnValue(of({} as any));
-    const form = (component as any).form;
-    form.setValue({ name: 'Academy X', slug: 'academy-x', keycloakRealm: '' });
-    (component as any).save();
-    const call = academyService.apiAdminAcademiesPost.calls.mostRecent()?.args[0];
-    expect(call?.keycloakRealm).toBeNull();
   });
 });

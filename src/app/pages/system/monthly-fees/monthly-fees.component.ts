@@ -35,6 +35,7 @@ export class MonthlyFeesComponent {
   protected readonly currentPage = signal(1);
   protected readonly pageSize = signal(10);
   protected readonly filterStatus = signal<FeeStatus | undefined>(undefined);
+  protected readonly filterText = signal('');
 
   protected readonly payForm = this.fb.group({
     paidAmount: [null as number | null, [Validators.required, Validators.min(0.01)]],
@@ -58,7 +59,9 @@ export class MonthlyFeesComponent {
   protected load(): void {
     this.isLoading.set(true);
     this.feeService.apiMonthlyFeeGet(
-      undefined, undefined,
+      this.filterText() || undefined,
+      undefined,
+      undefined,
       this.filterStatus(),
       undefined, undefined,
       this.currentPage(), this.pageSize(),
@@ -90,6 +93,7 @@ export class MonthlyFeesComponent {
 
   protected onPageChange(page: number): void { this.currentPage.set(page); this.load(); }
   protected onPageSizeChange(size: number): void { this.pageSize.set(size); this.currentPage.set(1); this.load(); }
+  protected onSearch(term: string): void { this.filterText.set(term); this.currentPage.set(1); this.load(); }
   protected onFilterChange(): void { this.currentPage.set(1); this.load(); }
 
   protected openPay(fee: ShowMonthlyFeeDTO): void {

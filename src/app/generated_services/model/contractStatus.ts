@@ -1,5 +1,5 @@
 /**
- * BjjClutch Backend API
+ * CarlsonGracie Backend API
  * API for managing students, belts, graduation requirements, notices, frequencies and user authentication with Keycloak
  *
  * Contact: marcosturossi@gmail.com.com
@@ -10,12 +10,14 @@
  */
 
 
-export type ContractStatus = 0 | 1 | 2 | 3;
+export type ContractStatus = 0 | 1 | 2 | 3 | 4 | 5;
 
 export const ContractStatus = {
     NUMBER_0: 0 as ContractStatus,
     NUMBER_1: 1 as ContractStatus,
     NUMBER_2: 2 as ContractStatus,
-    NUMBER_3: 3 as ContractStatus
+    NUMBER_3: 3 as ContractStatus,
+    NUMBER_4: 4 as ContractStatus,
+    NUMBER_5: 5 as ContractStatus
 };
 

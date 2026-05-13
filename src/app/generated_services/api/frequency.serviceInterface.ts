@@ -1,5 +1,5 @@
 /**
- * BjjClutch Backend API
+ * CarlsonGracie Backend API
  * API for managing students, belts, graduation requirements, notices, frequencies and user authentication with Keycloak
  *
  * Contact: marcosturossi@gmail.com.com
@@ -33,6 +33,7 @@ export interface FrequencyServiceInterface {
      * 
      * @param startDate 
      * @param endDate 
+     * @param searchTerm 
      * @param studentId 
      * @param graduationId 
      * @param lessonId 
@@ -43,11 +44,12 @@ export interface FrequencyServiceInterface {
      * @param pageNumber 
      * @param pageSize 
      */
-    apiFrequencyDateRangeGet(startDate?: string, endDate?: string, studentId?: string, graduationId?: string, lessonId?: string, createdFrom?: string, createdTo?: string, lessonScheduledFrom?: string, lessonScheduledTo?: string, pageNumber?: number, pageSize?: number, extraHttpRequestParams?: any): Observable<PaginationFrequencyDTO>;
+    apiFrequencyDateRangeGet(startDate?: string, endDate?: string, searchTerm?: string, studentId?: string, graduationId?: string, lessonId?: string, createdFrom?: string, createdTo?: string, lessonScheduledFrom?: string, lessonScheduledTo?: string, pageNumber?: number, pageSize?: number, extraHttpRequestParams?: any): Observable<PaginationFrequencyDTO>;
 
     /**
      * 
      * 
+     * @param searchTerm 
      * @param studentId 
      * @param graduationId 
      * @param lessonId 
@@ -58,12 +60,13 @@ export interface FrequencyServiceInterface {
      * @param pageNumber 
      * @param pageSize 
      */
-    apiFrequencyGet(studentId?: string, graduationId?: string, lessonId?: string, createdFrom?: string, createdTo?: string, lessonScheduledFrom?: string, lessonScheduledTo?: string, pageNumber?: number, pageSize?: number, extraHttpRequestParams?: any): Observable<PaginationFrequencyDTO>;
+    apiFrequencyGet(searchTerm?: string, studentId?: string, graduationId?: string, lessonId?: string, createdFrom?: string, createdTo?: string, lessonScheduledFrom?: string, lessonScheduledTo?: string, pageNumber?: number, pageSize?: number, extraHttpRequestParams?: any): Observable<PaginationFrequencyDTO>;
 
     /**
      * 
      * 
      * @param graduationId 
+     * @param searchTerm 
      * @param studentId 
      * @param graduationId2 
      * @param lessonId 
@@ -74,7 +77,7 @@ export interface FrequencyServiceInterface {
      * @param pageNumber 
      * @param pageSize 
      */
-    apiFrequencyGraduationGraduationIdGet(graduationId: string, studentId?: string, graduationId2?: string, lessonId?: string, createdFrom?: string, createdTo?: string, lessonScheduledFrom?: string, lessonScheduledTo?: string, pageNumber?: number, pageSize?: number, extraHttpRequestParams?: any): Observable<PaginationFrequencyDTO>;
+    apiFrequencyGraduationGraduationIdGet(graduationId: string, searchTerm?: string, studentId?: string, graduationId2?: string, lessonId?: string, createdFrom?: string, createdTo?: string, lessonScheduledFrom?: string, lessonScheduledTo?: string, pageNumber?: number, pageSize?: number, extraHttpRequestParams?: any): Observable<PaginationFrequencyDTO>;
 
     /**
      * 
@@ -116,6 +119,7 @@ export interface FrequencyServiceInterface {
      * 
      * 
      * @param userId 
+     * @param searchTerm 
      * @param studentId 
      * @param graduationId 
      * @param lessonId 
@@ -126,6 +130,6 @@ export interface FrequencyServiceInterface {
      * @param pageNumber 
      * @param pageSize 
      */
-    apiFrequencyUserUserIdGet(userId: string, studentId?: string, graduationId?: string, lessonId?: string, createdFrom?: string, createdTo?: string, lessonScheduledFrom?: string, lessonScheduledTo?: string, pageNumber?: number, pageSize?: number, extraHttpRequestParams?: any): Observable<PaginationFrequencyDTO>;
+    apiFrequencyUserUserIdGet(userId: string, searchTerm?: string, studentId?: string, graduationId?: string, lessonId?: string, createdFrom?: string, createdTo?: string, lessonScheduledFrom?: string, lessonScheduledTo?: string, pageNumber?: number, pageSize?: number, extraHttpRequestParams?: any): Observable<PaginationFrequencyDTO>;
 
 }

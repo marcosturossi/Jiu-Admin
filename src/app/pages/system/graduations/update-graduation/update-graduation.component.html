@@ -6,7 +6,8 @@
       [selected]="selectedStudent()"
       placeholder="Selecione um aluno"
       label="Aluno"
-      (selectionChange)="onStudentSelected($event)" />
+      (selectionChange)="onStudentSelected($event)"
+      (searchChange)="onStudentSearch($event)" />
   </div>
   <div class="mb-3">
     <label for="beltId" class="form-label">Faixa *</label>
@@ -28,4 +29,3 @@
     </button>
   </div>
 </form>
-

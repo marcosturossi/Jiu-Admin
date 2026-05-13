@@ -1,5 +1,5 @@
 /**
- * BjjClutch Backend API
+ * CarlsonGracie Backend API
  * API for managing students, belts, graduation requirements, notices, frequencies and user authentication with Keycloak
  *
  * Contact: marcosturossi@gmail.com.com
@@ -10,10 +10,14 @@
  */
 
 
-export type TransactionType = 0 | 1;
+export type TransactionType = 0 | 1 | 2 | 3 | 4 | 5;
 
 export const TransactionType = {
     NUMBER_0: 0 as TransactionType,
-    NUMBER_1: 1 as TransactionType
+    NUMBER_1: 1 as TransactionType,
+    NUMBER_2: 2 as TransactionType,
+    NUMBER_3: 3 as TransactionType,
+    NUMBER_4: 4 as TransactionType,
+    NUMBER_5: 5 as TransactionType
 };
 

@@ -22,6 +22,7 @@ export class CreateTransactionComponent {
   readonly categories = input.required<ShowTransactionCategoryDTO[]>();
   readonly closeEvent = output<void>();
   readonly transactionCreated = output<void>();
+  readonly categorySearch = output<string>();
 
   protected readonly isSaving = signal(false);
 
@@ -74,5 +75,9 @@ export class CreateTransactionComponent {
   protected onCategorySelected(opt: SearchOption | null): void {
     this.selectedCategory.set(opt);
     this.form.patchValue({ transactionCategoryId: opt?.id ?? null });
+  }
+
+  protected onCategorySearch(term: string): void {
+    this.categorySearch.emit(term);
   }
 }

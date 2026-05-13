@@ -14,9 +14,9 @@ describe('CreateMedicalClearanceComponent', () => {
 
   beforeEach(async () => {
     const clearanceSpy = jasmine.createSpyObj('MedicalClearanceService', ['apiMedicalClearancePost', 'apiMedicalClearanceIdAttachmentPost']);
-    const studentsSpy = jasmine.createSpyObj('StudentsService', ['apiStudentsGet']);
+    const studentsSpy = jasmine.createSpyObj('StudentsService', ['apiStudentsActiveGet']);
     const nsSpy = jasmine.createSpyObj('NotificationService', ['showSuccess', 'showError']);
-    studentsSpy.apiStudentsGet.and.returnValue(of({ items: [{ id: 'stu1', firstName: 'João', lastName: 'Silva' }] }));
+    studentsSpy.apiStudentsActiveGet.and.returnValue(of([{ id: 'stu1', firstName: 'João', lastName: 'Silva' }] as any));
     await TestBed.configureTestingModule({
       imports: [CreateMedicalClearanceComponent],
       providers: [
@@ -36,7 +36,7 @@ describe('CreateMedicalClearanceComponent', () => {
   it('should create', () => { expect(component).toBeTruthy(); });
 
   it('should load students on init', () => {
-    expect(studentsService.apiStudentsGet).toHaveBeenCalled();
+    expect(studentsService.apiStudentsActiveGet).toHaveBeenCalled();
     expect((component as any).students().length).toBe(1);
   });
 

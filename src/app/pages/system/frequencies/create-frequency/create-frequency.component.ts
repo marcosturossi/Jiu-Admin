@@ -53,14 +53,7 @@ export class CreateFrequencyComponent {
       },
       error: () => this.ns.showError('Erro ao Carregar Alunos!', 'Não foi possível carregar a lista de alunos. Tente novamente.')
     });
-
-    this.lessonService.apiLessonActiveGet().subscribe({
-      next: result => {
-        this.lessons.set(result);
-        this.lessonOptions.set(result.map(l => ({ id: l.id ?? '', label: l.title ?? '' })));
-      },
-      error: () => this.ns.showError('Erro ao Carregar Aulas!', 'Não foi possível carregar a lista de aulas. Tente novamente.')
-    });
+    this.loadLessons();
 
     this.personsService.listPersonsApiV1PersonsGet().subscribe({
       next: result => { this.api2Persons = result; },
@@ -185,6 +178,20 @@ export class CreateFrequencyComponent {
   protected onLessonSelected(opt: SearchOption | null): void {
     this.selectedLesson.set(opt);
     this.frequencyForm.patchValue({ lessonId: opt?.id ?? '' });
+  }
+
+  protected onLessonSearch(term: string): void {
+    this.loadLessons(term);
+  }
+
+  private loadLessons(term = ''): void {
+    this.lessonService.apiLessonActiveGet(term || undefined, undefined, undefined, undefined, undefined, undefined, 1, 100).subscribe({
+      next: result => {
+        this.lessons.set(result);
+        this.lessonOptions.set(result.map(l => ({ id: l.id ?? '', label: l.title ?? '' })));
+      },
+      error: () => this.ns.showError('Erro ao Carregar Aulas!', 'Não foi possível carregar a lista de aulas. Tente novamente.')
+    });
   }
 
   protected create(): void {

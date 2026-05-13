@@ -1,6 +1,9 @@
 export * from './academy.service';
 import { AcademyService } from './academy.service';
 export * from './academy.serviceInterface';
+export * from './adminNotification.service';
+import { AdminNotificationService } from './adminNotification.service';
+export * from './adminNotification.serviceInterface';
 export * from './belt.service';
 import { BeltService } from './belt.service';
 export * from './belt.serviceInterface';
@@ -52,4 +55,4 @@ export * from './students.serviceInterface';
 export * from './transactionCategory.service';
 import { TransactionCategoryService } from './transactionCategory.service';
 export * from './transactionCategory.serviceInterface';
-export const APIS = [AcademyService, BeltService, ContractService, DashboardService, FeePlanService, FinancialTransactionService, FrequencyService, GraduationService, GraduationRequirementsService, HealthService, LessonService, MedicalClearanceService, MonthlyFeeService, NoticesService, NotificationService, PublicService, StudentsService, TransactionCategoryService];
+export const APIS = [AcademyService, AdminNotificationService, BeltService, ContractService, DashboardService, FeePlanService, FinancialTransactionService, FrequencyService, GraduationService, GraduationRequirementsService, HealthService, LessonService, MedicalClearanceService, MonthlyFeeService, NoticesService, NotificationService, PublicService, StudentsService, TransactionCategoryService];

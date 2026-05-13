@@ -28,15 +28,10 @@ export class UpdateGraduationComponent {
 
   protected readonly belts = signal<ShowBeltDTO[]>([]);
   protected readonly students = signal<ShowStudentDTO[]>([]);
+  protected readonly selectedStudent = signal<SearchOption | null>(null);
 
   protected readonly studentOptions = computed(() =>
     this.students().map(s => ({ id: s.id!, label: `${s.firstName} ${s.lastName} (${s.email})` }))
-  );
-
-  protected readonly selectedStudentId = signal<string | null>(null);
-
-  protected readonly selectedStudent = computed(() =>
-    this.studentOptions().find(o => o.id === this.selectedStudentId()) ?? null
   );
 
   protected readonly form = this.fb.group({
@@ -50,10 +45,7 @@ export class UpdateGraduationComponent {
       next: r => this.belts.set(r.items ?? []),
       error: () => this.ns.showError('Erro ao Carregar Faixas!', 'Não foi possível carregar a lista de faixas. Tente novamente.'),
     });
-    this.studentsService.apiStudentsGet().subscribe({
-      next: r => this.students.set(r.items ?? []),
-      error: () => this.ns.showError('Erro ao Carregar Alunos!', 'Não foi possível carregar a lista de alunos. Tente novamente.'),
-    });
+    this.loadStudents();
     effect(() => {
       const g = this.graduation();
       this.form.patchValue({
@@ -61,15 +53,26 @@ export class UpdateGraduationComponent {
         beltId: g.beltId,
         graduationDate: g.graduationDate,
       });
-      this.selectedStudentId.set(g.studentId ?? null);
+      this.selectedStudent.set(g.studentId ? { id: g.studentId, label: g.fullName ?? g.studentId } : null);
     });
   }
 
   protected close(): void { this.closeEvent.emit(); }
 
   protected onStudentSelected(opt: SearchOption | null): void {
-    this.selectedStudentId.set(opt?.id ?? null);
+    this.selectedStudent.set(opt);
     this.form.patchValue({ studentId: opt?.id ?? '' });
+  }
+
+  protected onStudentSearch(term: string): void {
+    this.loadStudents(term);
+  }
+
+  private loadStudents(term = ''): void {
+    this.studentsService.apiStudentsGet(term || undefined, undefined, undefined, undefined, undefined, 1, 100).subscribe({
+      next: r => this.students.set(r.items ?? []),
+      error: () => this.ns.showError('Erro ao Carregar Alunos!', 'Não foi possível carregar a lista de alunos. Tente novamente.'),
+    });
   }
 
   protected save(): void {

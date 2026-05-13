@@ -17,26 +17,20 @@ import { HttpClient, HttpHeaders, HttpParams,
 import { CustomHttpParameterCodec }                          from '../encoder';
 import { Observable }                                        from 'rxjs';
 
-// @ts-ignore
-import { ApiAdminAcademiesIdGet404Response } from '../model/apiAdminAcademiesIdGet404Response';
-// @ts-ignore
-import { PublicAcademyDTO } from '../model/publicAcademyDTO';
-// @ts-ignore
-import { ShowRealmInfoDTO } from '../model/showRealmInfoDTO';
 
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
 import { Configuration }                                     from '../configuration';
 import {
-    PublicServiceInterface
-} from './public.serviceInterface';
+    AdminNotificationServiceInterface
+} from './adminNotification.serviceInterface';
 
 
 
 @Injectable({
   providedIn: 'root'
 })
-export class PublicService implements PublicServiceInterface {
+export class AdminNotificationService implements AdminNotificationServiceInterface {
 
     protected basePath = 'http://localhost:8080';
     public defaultHeaders = new HttpHeaders();
@@ -99,19 +93,16 @@ export class PublicService implements PublicServiceInterface {
     }
 
     /**
-     * @param q 
+     * @param offsetDays 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiPublicAcademiesGet(q?: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Array<PublicAcademyDTO>>;
-    public apiPublicAcademiesGet(q?: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<PublicAcademyDTO>>>;
-    public apiPublicAcademiesGet(q?: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<PublicAcademyDTO>>>;
-    public apiPublicAcademiesGet(q?: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
-
-        let localVarQueryParameters = new HttpParams({encoder: this.encoder});
-        if (q !== undefined && q !== null) {
-          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>q, 'q');
+    public apiAdminNotificationSendWeeklyReportOffsetDaysPost(offsetDays: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any>;
+    public apiAdminNotificationSendWeeklyReportOffsetDaysPost(offsetDays: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<any>>;
+    public apiAdminNotificationSendWeeklyReportOffsetDaysPost(offsetDays: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<any>>;
+    public apiAdminNotificationSendWeeklyReportOffsetDaysPost(offsetDays: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any> {
+        if (offsetDays === null || offsetDays === undefined) {
+            throw new Error('Required parameter offsetDays was null or undefined when calling apiAdminNotificationSendWeeklyReportOffsetDaysPost.');
         }
 
         let localVarHeaders = this.defaultHeaders;
@@ -120,7 +111,6 @@ export class PublicService implements PublicServiceInterface {
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                'application/json'
             ];
             localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         }
@@ -150,72 +140,8 @@ export class PublicService implements PublicServiceInterface {
             }
         }
 
-        let localVarPath = `/api/public/academies`;
-        return this.httpClient.request<Array<PublicAcademyDTO>>('get', `${this.configuration.basePath}${localVarPath}`,
-            {
-                context: localVarHttpContext,
-                params: localVarQueryParameters,
-                responseType: <any>responseType_,
-                withCredentials: this.configuration.withCredentials,
-                headers: localVarHeaders,
-                observe: observe,
-                transferCache: localVarTransferCache,
-                reportProgress: reportProgress
-            }
-        );
-    }
-
-    /**
-     * @param slug 
-     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
-     * @param reportProgress flag to report request and response progress.
-     */
-    public apiPublicAcademiesSlugRealmGet(slug: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<ShowRealmInfoDTO>;
-    public apiPublicAcademiesSlugRealmGet(slug: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<ShowRealmInfoDTO>>;
-    public apiPublicAcademiesSlugRealmGet(slug: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<ShowRealmInfoDTO>>;
-    public apiPublicAcademiesSlugRealmGet(slug: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
-        if (slug === null || slug === undefined) {
-            throw new Error('Required parameter slug was null or undefined when calling apiPublicAcademiesSlugRealmGet.');
-        }
-
-        let localVarHeaders = this.defaultHeaders;
-
-        let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
-        if (localVarHttpHeaderAcceptSelected === undefined) {
-            // to determine the Accept header
-            const httpHeaderAccepts: string[] = [
-                'application/json'
-            ];
-            localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
-        }
-        if (localVarHttpHeaderAcceptSelected !== undefined) {
-            localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
-        }
-
-        let localVarHttpContext: HttpContext | undefined = options && options.context;
-        if (localVarHttpContext === undefined) {
-            localVarHttpContext = new HttpContext();
-        }
-
-        let localVarTransferCache: boolean | undefined = options && options.transferCache;
-        if (localVarTransferCache === undefined) {
-            localVarTransferCache = true;
-        }
-
-
-        let responseType_: 'text' | 'json' | 'blob' = 'json';
-        if (localVarHttpHeaderAcceptSelected) {
-            if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
-                responseType_ = 'text';
-            } else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
-                responseType_ = 'json';
-            } else {
-                responseType_ = 'blob';
-            }
-        }
-
-        let localVarPath = `/api/public/academies/${this.configuration.encodeParam({name: "slug", value: slug, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}/realm`;
-        return this.httpClient.request<ShowRealmInfoDTO>('get', `${this.configuration.basePath}${localVarPath}`,
+        let localVarPath = `/api/admin/notification/send-weekly-report/${this.configuration.encodeParam({name: "offsetDays", value: offsetDays, in: "path", style: "simple", explode: false, dataType: "number", dataFormat: "int32"})}`;
+        return this.httpClient.request<any>('post', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 responseType: <any>responseType_,

@@ -1,5 +1,5 @@
 /**
- * BjjClutch Backend API
+ * CarlsonGracie Backend API
  * API for managing students, belts, graduation requirements, notices, frequencies and user authentication with Keycloak
  *
  * Contact: marcosturossi@gmail.com.com
@@ -37,6 +37,7 @@ export interface MonthlyFeeServiceInterface {
     /**
      * 
      * 
+     * @param searchTerm 
      * @param contractId 
      * @param studentId 
      * @param status 
@@ -45,7 +46,7 @@ export interface MonthlyFeeServiceInterface {
      * @param pageNumber 
      * @param pageSize 
      */
-    apiMonthlyFeeGet(contractId?: string, studentId?: string, status?: FeeStatus, dueDateFrom?: string, dueDateTo?: string, pageNumber?: number, pageSize?: number, extraHttpRequestParams?: any): Observable<PaginationMonthlyFeeDTO>;
+    apiMonthlyFeeGet(searchTerm?: string, contractId?: string, studentId?: string, status?: FeeStatus, dueDateFrom?: string, dueDateTo?: string, pageNumber?: number, pageSize?: number, extraHttpRequestParams?: any): Observable<PaginationMonthlyFeeDTO>;
 
     /**
      * 

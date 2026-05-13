@@ -1,5 +1,5 @@
 /**
- * BjjClutch Backend API
+ * CarlsonGracie Backend API
  * API for managing students, belts, graduation requirements, notices, frequencies and user authentication with Keycloak
  *
  * Contact: marcosturossi@gmail.com.com
@@ -147,13 +147,6 @@ export class BeltService implements BeltServiceInterface {
 
         let localVarHeaders = this.defaultHeaders;
 
-        let localVarCredential: string | undefined;
-        // authentication (TenantToken) required
-        localVarCredential = this.configuration.lookupCredential('TenantToken');
-        if (localVarCredential) {
-            localVarHeaders = localVarHeaders.set('X-Tenant-Token', localVarCredential);
-        }
-
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
@@ -218,13 +211,6 @@ export class BeltService implements BeltServiceInterface {
 
         let localVarHeaders = this.defaultHeaders;
 
-        let localVarCredential: string | undefined;
-        // authentication (TenantToken) required
-        localVarCredential = this.configuration.lookupCredential('TenantToken');
-        if (localVarCredential) {
-            localVarHeaders = localVarHeaders.set('X-Tenant-Token', localVarCredential);
-        }
-
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
@@ -287,13 +273,6 @@ export class BeltService implements BeltServiceInterface {
         }
 
         let localVarHeaders = this.defaultHeaders;
-
-        let localVarCredential: string | undefined;
-        // authentication (TenantToken) required
-        localVarCredential = this.configuration.lookupCredential('TenantToken');
-        if (localVarCredential) {
-            localVarHeaders = localVarHeaders.set('X-Tenant-Token', localVarCredential);
-        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -358,13 +337,6 @@ export class BeltService implements BeltServiceInterface {
         }
 
         let localVarHeaders = this.defaultHeaders;
-
-        let localVarCredential: string | undefined;
-        // authentication (TenantToken) required
-        localVarCredential = this.configuration.lookupCredential('TenantToken');
-        if (localVarCredential) {
-            localVarHeaders = localVarHeaders.set('X-Tenant-Token', localVarCredential);
-        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -437,13 +409,6 @@ export class BeltService implements BeltServiceInterface {
     public apiBeltPost(createBeltDTO?: CreateBeltDTO, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
 
         let localVarHeaders = this.defaultHeaders;
-
-        let localVarCredential: string | undefined;
-        // authentication (TenantToken) required
-        localVarCredential = this.configuration.lookupCredential('TenantToken');
-        if (localVarCredential) {
-            localVarHeaders = localVarHeaders.set('X-Tenant-Token', localVarCredential);
-        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {

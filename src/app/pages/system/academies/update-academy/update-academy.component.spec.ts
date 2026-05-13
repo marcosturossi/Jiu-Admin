@@ -10,7 +10,6 @@ const MOCK_ACADEMY: ShowAcademyDTO = {
   id: 'abc-1',
   name: 'Carlson Gracie SP',
   slug: 'carlson-sp',
-  tenantToken: 'tok-abc',
   isActive: true,
   createdAt: '2024-01-15',
 };

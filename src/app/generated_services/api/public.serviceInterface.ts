@@ -1,5 +1,5 @@
 /**
- * BjjClutch Backend API
+ * CarlsonGracie Backend API
  * API for managing students, belts, graduation requirements, notices, frequencies and user authentication with Keycloak
  *
  * Contact: marcosturossi@gmail.com.com
@@ -13,6 +13,7 @@ import { HttpHeaders }                                       from '@angular/comm
 import { Observable }                                        from 'rxjs';
 
 import { ApiAdminAcademiesIdGet404Response } from '../model/models';
+import { PublicAcademyDTO } from '../model/models';
 import { ShowRealmInfoDTO } from '../model/models';
 
 
@@ -23,6 +24,13 @@ import { Configuration }                                     from '../configurat
 export interface PublicServiceInterface {
     defaultHeaders: HttpHeaders;
     configuration: Configuration;
+
+    /**
+     * 
+     * 
+     * @param q 
+     */
+    apiPublicAcademiesGet(q?: string, extraHttpRequestParams?: any): Observable<Array<PublicAcademyDTO>>;
 
     /**
      * 

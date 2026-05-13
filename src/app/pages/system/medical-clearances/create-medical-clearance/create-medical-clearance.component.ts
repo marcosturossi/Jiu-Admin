@@ -44,15 +44,7 @@ export class CreateMedicalClearanceComponent implements OnDestroy {
 
   constructor() {
     this.isLoadingStudents.set(true);
-    this.studentsService.apiStudentsGet(undefined, undefined, undefined, undefined, undefined, 1, 100).subscribe({
-      next: result => {
-        const list = result.items ?? [];
-        this.students.set(list);
-        this.studentOptions.set(list.map(s => ({ id: s.id ?? '', label: `${s.firstName} ${s.lastName}` })));
-        this.isLoadingStudents.set(false);
-      },
-      error: () => { this.isLoadingStudents.set(false); this.ns.showError('Erro ao Carregar Alunos', 'Não foi possível carregar a lista de alunos.'); }
-    });
+    this.loadStudents();
   }
 
   ngOnDestroy(): void { this.clearFilePreview(); }
@@ -62,6 +54,23 @@ export class CreateMedicalClearanceComponent implements OnDestroy {
   protected onStudentSelected(opt: SearchOption | null): void {
     this.selectedStudent.set(opt);
     this.form.patchValue({ studentId: opt?.id ?? '' });
+  }
+
+  protected onStudentSearch(term: string): void {
+    this.loadStudents(term);
+  }
+
+  private loadStudents(term = ''): void {
+    this.isLoadingStudents.set(true);
+    this.studentsService.apiStudentsActiveGet(term || undefined, undefined, undefined, undefined, undefined, 1, 100).subscribe({
+      next: result => {
+        const list = result ?? [];
+        this.students.set(list);
+        this.studentOptions.set(list.map(s => ({ id: s.id ?? '', label: `${s.firstName} ${s.lastName}` })));
+        this.isLoadingStudents.set(false);
+      },
+      error: () => { this.isLoadingStudents.set(false); this.ns.showError('Erro ao Carregar Alunos', 'Não foi possível carregar a lista de alunos.'); }
+    });
   }
 
   protected create(): void {

@@ -23,18 +23,14 @@ export class UpdateTransactionComponent {
   readonly categories = input.required<ShowTransactionCategoryDTO[]>();
   readonly closeEvent = output<void>();
   readonly transactionUpdated = output<void>();
+  readonly categorySearch = output<string>();
 
   protected readonly isSaving = signal(false);
 
   protected readonly categoryOptions = computed(() =>
-    this.categories().map(c => ({ id: c.id!, label: c.name! }))
+   this.categories().map(c => ({ id: c.id!, label: c.name! }))
   );
-
-  protected readonly selectedCategoryId = signal<string | null>(null);
-
-  protected readonly selectedCategory = computed(() =>
-    this.categoryOptions().find(o => o.id === this.selectedCategoryId()) ?? null
-  );
+  protected readonly selectedCategory = signal<SearchOption | null>(null);
 
   protected readonly typeOptions = [
     { label: 'Receita', value: TransactionType.NUMBER_0 },
@@ -61,7 +57,7 @@ export class UpdateTransactionComponent {
         transactionDate: t.transactionDate ? t.transactionDate.substring(0, 10) : '',
         reference: t.reference ?? '',
       });
-      this.selectedCategoryId.set(t.transactionCategoryId ?? null);
+      this.selectedCategory.set(t.transactionCategoryId ? { id: t.transactionCategoryId, label: t.transactionCategoryName ?? t.transactionCategoryId } : null);
     });
   }
 
@@ -92,7 +88,11 @@ export class UpdateTransactionComponent {
   protected close(): void { this.closeEvent.emit(); }
 
   protected onCategorySelected(opt: SearchOption | null): void {
-    this.selectedCategoryId.set(opt?.id ?? null);
+    this.selectedCategory.set(opt);
     this.form.patchValue({ transactionCategoryId: opt?.id ?? null });
+  }
+
+  protected onCategorySearch(term: string): void {
+    this.categorySearch.emit(term);
   }
 }

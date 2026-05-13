@@ -31,14 +31,48 @@
   </div>
 
   <div class="mb-3">
-    <label for="keycloakRealm">Realm Keycloak</label>
+    <label for="adminEmail">E-mail do Administrador *</label>
     <input
       type="text"
       class="form-control"
-      id="keycloakRealm"
-      formControlName="keycloakRealm"
-      placeholder="Ex: carlson-sp"
+      id="adminEmail"
+      formControlName="adminEmail"
+      placeholder="Ex: admin@exemplo.com"
     />
+    @if (form.get('adminEmail')?.errors?.['required'] && form.get('adminEmail')?.touched) {
+      <small class="text-danger">E-mail é obrigatório.</small>
+    }
+    @if (form.get('adminEmail')?.errors?.['email'] && form.get('adminEmail')?.touched) {
+      <small class="text-danger">E-mail inválido.</small>
+    }
+  </div>
+
+  <div class="mb-3">
+    <label for="adminFirstName">Primeiro Nome do Administrador *</label>
+    <input
+      type="text"
+      class="form-control"
+      id="adminFirstName"
+      formControlName="adminFirstName"
+      placeholder="Ex: João"
+    />
+    @if (form.get('adminFirstName')?.invalid && form.get('adminFirstName')?.touched) {
+      <small class="text-danger">Primeiro nome é obrigatório.</small>
+    }
+  </div>
+
+  <div class="mb-3">
+    <label for="adminLastName">Sobrenome do Administrador *</label>
+    <input
+      type="text"
+      class="form-control"
+      id="adminLastName"
+      formControlName="adminLastName"
+      placeholder="Ex: Silva"
+    />
+    @if (form.get('adminLastName')?.invalid && form.get('adminLastName')?.touched) {
+      <small class="text-danger">Sobrenome é obrigatório.</small>
+    }
   </div>
 
   <div class="d-flex gap-2 justify-content-end mt-3">

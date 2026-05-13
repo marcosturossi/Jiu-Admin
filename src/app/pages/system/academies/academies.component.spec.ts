@@ -11,7 +11,6 @@ const MOCK_ACADEMY_1: ShowAcademyDTO = {
   id: 'abc-1',
   name: 'Carlson Gracie SP',
   slug: 'carlson-sp',
-  tenantToken: 'tok-abc-123-xyz',
   isActive: true,
   createdAt: '2024-01-15',
 };
@@ -20,7 +19,6 @@ const MOCK_ACADEMY_2: ShowAcademyDTO = {
   id: 'abc-2',
   name: 'Carlson Gracie RJ',
   slug: 'carlson-rj',
-  tenantToken: null,
   isActive: false,
   createdAt: '2024-02-10',
 };
@@ -180,19 +178,4 @@ describe('AcademiesComponent', () => {
     });
   });
 
-  describe('copyTenantToken', () => {
-    it('should not call clipboard when tenantToken is missing', () => {
-      spyOn(navigator.clipboard, 'writeText');
-      (component as any).copyTenantToken(MOCK_ACADEMY_2);
-      expect(navigator.clipboard.writeText).not.toHaveBeenCalled();
-    });
-
-    it('should copy token to clipboard and show success notification', fakeAsync(() => {
-      spyOn(navigator.clipboard, 'writeText').and.returnValue(Promise.resolve());
-      (component as any).copyTenantToken(MOCK_ACADEMY_1);
-      tick();
-      expect(navigator.clipboard.writeText).toHaveBeenCalledWith(MOCK_ACADEMY_1.tenantToken!);
-      expect(notificationService.showSuccess).toHaveBeenCalled();
-    }));
-  });
 });

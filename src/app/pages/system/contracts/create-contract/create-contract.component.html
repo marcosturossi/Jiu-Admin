@@ -6,7 +6,8 @@
       [selected]="selectedStudent()"
       placeholder="Selecione o aluno"
       label="Aluno"
-      (selectionChange)="onStudentSelected($event)" />
+      (selectionChange)="onStudentSelected($event)"
+      (searchChange)="onStudentSearch($event)" />
   </div>
   <div class="mb-3">
     <label>Plano de Pagamento *</label>
@@ -15,7 +16,8 @@
       [selected]="selectedFeePlan()"
       placeholder="Selecione o plano"
       label="Plano de Pagamento"
-      (selectionChange)="onFeePlanSelected($event)" />
+      (selectionChange)="onFeePlanSelected($event)"
+      (searchChange)="onFeePlanSearch($event)" />
   </div>
   <div class="mb-3">
     <label>Data de Início *</label>

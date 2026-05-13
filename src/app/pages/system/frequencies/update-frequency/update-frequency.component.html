@@ -6,7 +6,8 @@
       [selected]="selectedStudent()"
       placeholder="Selecione um aluno..."
       label="Aluno"
-      (selectionChange)="onStudentSelected($event)" />
+      (selectionChange)="onStudentSelected($event)"
+      (searchChange)="onStudentSearch($event)" />
   </div>
   <div class="d-flex gap-2 justify-content-end mt-3">
     <button class="btn btn-outline-secondary" type="button" (click)="close()">Cancelar</button>

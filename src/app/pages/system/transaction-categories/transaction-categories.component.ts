@@ -32,6 +32,7 @@ export class TransactionCategoriesComponent {
   protected readonly selected = signal<ShowTransactionCategoryDTO | null>(null);
   protected readonly currentPage = signal(1);
   protected readonly pageSize = signal(10);
+  protected readonly filterText = signal('');
 
   constructor() {
     this.subnavService.setTitle('Categorias de Transação');
@@ -40,7 +41,7 @@ export class TransactionCategoriesComponent {
 
   protected load(): void {
     this.isLoading.set(true);
-    this.service.apiTransactionCategoryGet(this.currentPage(), this.pageSize()).subscribe({
+    this.service.apiTransactionCategoryGet(this.filterText() || undefined, undefined, this.currentPage(), this.pageSize()).subscribe({
       next: result => { this.items.set(result); this.isLoading.set(false); },
       error: () => { this.isLoading.set(false); this.notificationService.showError('Erro', 'Não foi possível carregar.'); }
     });
@@ -48,6 +49,7 @@ export class TransactionCategoriesComponent {
 
   protected onPageChange(page: number): void { this.currentPage.set(page); this.load(); }
   protected onPageSizeChange(size: number): void { this.pageSize.set(size); this.currentPage.set(1); this.load(); }
+  protected onSearch(term: string): void { this.filterText.set(term); this.currentPage.set(1); this.load(); }
   protected openCreate(): void { this.openedCreate.set(true); }
   protected openEdit(item: ShowTransactionCategoryDTO): void { this.selected.set(item); this.openedUpdate.set(true); }
   protected onCreated(): void { this.openedCreate.set(false); this.load(); }

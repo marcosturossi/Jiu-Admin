@@ -1,5 +1,5 @@
 /**
- * BjjClutch Backend API
+ * CarlsonGracie Backend API
  * API for managing students, belts, graduation requirements, notices, frequencies and user authentication with Keycloak
  *
  * Contact: marcosturossi@gmail.com.com
@@ -30,6 +30,7 @@ export interface GraduationServiceInterface {
      * 
      * 
      * @param beltId 
+     * @param searchTerm 
      * @param studentId 
      * @param beltId2 
      * @param graduationDateFrom 
@@ -37,11 +38,12 @@ export interface GraduationServiceInterface {
      * @param pageNumber 
      * @param pageSize 
      */
-    apiGraduationBeltBeltIdGet(beltId: string, studentId?: string, beltId2?: string, graduationDateFrom?: string, graduationDateTo?: string, pageNumber?: number, pageSize?: number, extraHttpRequestParams?: any): Observable<Array<ShowGraduationDTO>>;
+    apiGraduationBeltBeltIdGet(beltId: string, searchTerm?: string, studentId?: string, beltId2?: string, graduationDateFrom?: string, graduationDateTo?: string, pageNumber?: number, pageSize?: number, extraHttpRequestParams?: any): Observable<Array<ShowGraduationDTO>>;
 
     /**
      * 
      * 
+     * @param searchTerm 
      * @param studentId 
      * @param beltId 
      * @param graduationDateFrom 
@@ -49,7 +51,7 @@ export interface GraduationServiceInterface {
      * @param pageNumber 
      * @param pageSize 
      */
-    apiGraduationGet(studentId?: string, beltId?: string, graduationDateFrom?: string, graduationDateTo?: string, pageNumber?: number, pageSize?: number, extraHttpRequestParams?: any): Observable<PaginationGraduationDTO>;
+    apiGraduationGet(searchTerm?: string, studentId?: string, beltId?: string, graduationDateFrom?: string, graduationDateTo?: string, pageNumber?: number, pageSize?: number, extraHttpRequestParams?: any): Observable<PaginationGraduationDTO>;
 
     /**
      * 
@@ -84,6 +86,7 @@ export interface GraduationServiceInterface {
      * 
      * 
      * @param userId 
+     * @param searchTerm 
      * @param studentId 
      * @param beltId 
      * @param graduationDateFrom 
@@ -91,6 +94,6 @@ export interface GraduationServiceInterface {
      * @param pageNumber 
      * @param pageSize 
      */
-    apiGraduationUserUserIdGet(userId: string, studentId?: string, beltId?: string, graduationDateFrom?: string, graduationDateTo?: string, pageNumber?: number, pageSize?: number, extraHttpRequestParams?: any): Observable<Array<ShowGraduationDTO>>;
+    apiGraduationUserUserIdGet(userId: string, searchTerm?: string, studentId?: string, beltId?: string, graduationDateFrom?: string, graduationDateTo?: string, pageNumber?: number, pageSize?: number, extraHttpRequestParams?: any): Observable<Array<ShowGraduationDTO>>;
 
 }

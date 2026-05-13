@@ -32,7 +32,6 @@
           <tr>
             <th>Nome</th>
             <th>Slug</th>
-            <th>Token de Tenant</th>
             <th class="text-center">Status</th>
             <th>Criado em</th>
             <th class="text-center" style="width: 8rem">Ações</th>
@@ -40,7 +39,7 @@
         </thead>
         <tbody>
           @if ((items()?.items ?? []).length === 0) {
-            <tr><td colspan="6" class="text-center py-5 text-muted">Nenhum registro encontrado.</td></tr>
+            <tr><td colspan="5" class="text-center py-5 text-muted">Nenhum registro encontrado.</td></tr>
           }
           @for (academy of items()?.items ?? []; track academy.id) {
             <tr>
@@ -49,19 +48,11 @@
                 <code class="slug-code">{{ academy.slug }}</code>
               </td>
               <td>
-                <div class="token-cell">
-                  <span class="token-preview">{{ academy.tenantToken ? (academy.tenantToken | slice:0:16) + '...' : '—' }}</span>
-                  @if (academy.tenantToken) {
-                    <button type="button" class="btn btn-sm btn-outline-secondary" (click)="copyTenantToken(academy)" title="Copiar token">
-                      <i [class]="'bi ' + (copiedId() === academy.id ? 'bi-check-lg' : 'bi-clipboard')"></i>
-                    </button>
-                  }
-                </div>
-              </td>
-              <td class="text-center">
                 <span [class]="'badge ' + (academy.isActive ? 'bg-success' : 'bg-danger')">{{ academy.isActive ? 'Ativa' : 'Inativa' }}</span>
               </td>
-              <td>{{ academy.createdAt | date:'dd/MM/yyyy' }}</td>
+              <td class="text-center">
+                {{ academy.createdAt | date:'dd/MM/yyyy' }}
+              </td>
               <td class="text-center">
                 <button type="button" class="btn btn-sm btn-outline-info" (click)="openEdit(academy)" title="Editar">
                   <i class="bi bi-pencil"></i>

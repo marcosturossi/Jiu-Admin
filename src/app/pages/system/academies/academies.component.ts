@@ -4,7 +4,7 @@ import {
   inject,
   signal,
 } from '@angular/core';
-import { DatePipe, SlicePipe } from '@angular/common';
+import { DatePipe } from '@angular/common';
 import { AcademyService } from '../../../generated_services/api/academy.service';
 import { ShowAcademyDTO } from '../../../generated_services/model/showAcademyDTO';
 import { PaginationAcademyDTO } from '../../../generated_services/model/paginationAcademyDTO';
@@ -19,7 +19,6 @@ import { UpdateAcademyComponent } from './update-academy/update-academy.componen
   standalone: true,
   imports: [
     DatePipe,
-    SlicePipe,
     PaginationComponent,
     CreateAcademyComponent,
     UpdateAcademyComponent,
@@ -41,7 +40,6 @@ export class AcademiesComponent {
   protected readonly currentPage = signal(1);
   protected readonly pageSize = signal(10);
   protected readonly searchName = signal('');
-  protected readonly copiedId = signal<string | null>(null);
 
   constructor() {
     this.subnavService.setTitle('Academias');
@@ -101,15 +99,6 @@ export class AcademiesComponent {
   protected onUpdated(): void {
     this.openedUpdate.set(false);
     this.load();
-  }
-
-  protected copyTenantToken(item: ShowAcademyDTO): void {
-    if (!item.tenantToken) return;
-    navigator.clipboard.writeText(item.tenantToken).then(() => {
-      this.copiedId.set(item.id ?? null);
-      setTimeout(() => this.copiedId.set(null), 2000);
-      this.notificationService.showSuccess('Token Copiado!', 'O token foi copiado para a área de transferência.');
-    });
   }
 
   protected delete(item: ShowAcademyDTO): void {

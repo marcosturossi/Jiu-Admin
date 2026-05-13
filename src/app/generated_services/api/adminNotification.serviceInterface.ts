@@ -18,26 +18,15 @@ import { Configuration }                                     from '../configurat
 
 
 
-export interface HealthServiceInterface {
+export interface AdminNotificationServiceInterface {
     defaultHeaders: HttpHeaders;
     configuration: Configuration;
 
     /**
      * 
      * 
+     * @param offsetDays 
      */
-    healthGet(extraHttpRequestParams?: any): Observable<{}>;
-
-    /**
-     * 
-     * 
-     */
-    healthLiveGet(extraHttpRequestParams?: any): Observable<{}>;
-
-    /**
-     * 
-     * 
-     */
-    healthReadyGet(extraHttpRequestParams?: any): Observable<{}>;
+    apiAdminNotificationSendWeeklyReportOffsetDaysPost(offsetDays: number, extraHttpRequestParams?: any): Observable<{}>;
 
 }

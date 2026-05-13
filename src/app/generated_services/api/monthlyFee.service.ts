@@ -1,5 +1,5 @@
 /**
- * BjjClutch Backend API
+ * CarlsonGracie Backend API
  * API for managing students, belts, graduation requirements, notices, frequencies and user authentication with Keycloak
  *
  * Contact: marcosturossi@gmail.com.com
@@ -117,13 +117,6 @@ export class MonthlyFeeService implements MonthlyFeeServiceInterface {
 
         let localVarHeaders = this.defaultHeaders;
 
-        let localVarCredential: string | undefined;
-        // authentication (TenantToken) required
-        localVarCredential = this.configuration.lookupCredential('TenantToken');
-        if (localVarCredential) {
-            localVarHeaders = localVarHeaders.set('X-Tenant-Token', localVarCredential);
-        }
-
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
@@ -173,6 +166,7 @@ export class MonthlyFeeService implements MonthlyFeeServiceInterface {
     }
 
     /**
+     * @param searchTerm 
      * @param contractId 
      * @param studentId 
      * @param status 
@@ -183,12 +177,16 @@ export class MonthlyFeeService implements MonthlyFeeServiceInterface {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiMonthlyFeeGet(contractId?: string, studentId?: string, status?: FeeStatus, dueDateFrom?: string, dueDateTo?: string, pageNumber?: number, pageSize?: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<PaginationMonthlyFeeDTO>;
-    public apiMonthlyFeeGet(contractId?: string, studentId?: string, status?: FeeStatus, dueDateFrom?: string, dueDateTo?: string, pageNumber?: number, pageSize?: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<PaginationMonthlyFeeDTO>>;
-    public apiMonthlyFeeGet(contractId?: string, studentId?: string, status?: FeeStatus, dueDateFrom?: string, dueDateTo?: string, pageNumber?: number, pageSize?: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<PaginationMonthlyFeeDTO>>;
-    public apiMonthlyFeeGet(contractId?: string, studentId?: string, status?: FeeStatus, dueDateFrom?: string, dueDateTo?: string, pageNumber?: number, pageSize?: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public apiMonthlyFeeGet(searchTerm?: string, contractId?: string, studentId?: string, status?: FeeStatus, dueDateFrom?: string, dueDateTo?: string, pageNumber?: number, pageSize?: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<PaginationMonthlyFeeDTO>;
+    public apiMonthlyFeeGet(searchTerm?: string, contractId?: string, studentId?: string, status?: FeeStatus, dueDateFrom?: string, dueDateTo?: string, pageNumber?: number, pageSize?: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<PaginationMonthlyFeeDTO>>;
+    public apiMonthlyFeeGet(searchTerm?: string, contractId?: string, studentId?: string, status?: FeeStatus, dueDateFrom?: string, dueDateTo?: string, pageNumber?: number, pageSize?: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<PaginationMonthlyFeeDTO>>;
+    public apiMonthlyFeeGet(searchTerm?: string, contractId?: string, studentId?: string, status?: FeeStatus, dueDateFrom?: string, dueDateTo?: string, pageNumber?: number, pageSize?: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
 
         let localVarQueryParameters = new HttpParams({encoder: this.encoder});
+        if (searchTerm !== undefined && searchTerm !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>searchTerm, 'SearchTerm');
+        }
         if (contractId !== undefined && contractId !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
             <any>contractId, 'ContractId');
@@ -219,13 +217,6 @@ export class MonthlyFeeService implements MonthlyFeeServiceInterface {
         }
 
         let localVarHeaders = this.defaultHeaders;
-
-        let localVarCredential: string | undefined;
-        // authentication (TenantToken) required
-        localVarCredential = this.configuration.lookupCredential('TenantToken');
-        if (localVarCredential) {
-            localVarHeaders = localVarHeaders.set('X-Tenant-Token', localVarCredential);
-        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -291,13 +282,6 @@ export class MonthlyFeeService implements MonthlyFeeServiceInterface {
 
         let localVarHeaders = this.defaultHeaders;
 
-        let localVarCredential: string | undefined;
-        // authentication (TenantToken) required
-        localVarCredential = this.configuration.lookupCredential('TenantToken');
-        if (localVarCredential) {
-            localVarHeaders = localVarHeaders.set('X-Tenant-Token', localVarCredential);
-        }
-
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
@@ -361,13 +345,6 @@ export class MonthlyFeeService implements MonthlyFeeServiceInterface {
         }
 
         let localVarHeaders = this.defaultHeaders;
-
-        let localVarCredential: string | undefined;
-        // authentication (TenantToken) required
-        localVarCredential = this.configuration.lookupCredential('TenantToken');
-        if (localVarCredential) {
-            localVarHeaders = localVarHeaders.set('X-Tenant-Token', localVarCredential);
-        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -440,13 +417,6 @@ export class MonthlyFeeService implements MonthlyFeeServiceInterface {
 
         let localVarHeaders = this.defaultHeaders;
 
-        let localVarCredential: string | undefined;
-        // authentication (TenantToken) required
-        localVarCredential = this.configuration.lookupCredential('TenantToken');
-        if (localVarCredential) {
-            localVarHeaders = localVarHeaders.set('X-Tenant-Token', localVarCredential);
-        }
-
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
@@ -509,13 +479,6 @@ export class MonthlyFeeService implements MonthlyFeeServiceInterface {
         }
 
         let localVarHeaders = this.defaultHeaders;
-
-        let localVarCredential: string | undefined;
-        // authentication (TenantToken) required
-        localVarCredential = this.configuration.lookupCredential('TenantToken');
-        if (localVarCredential) {
-            localVarHeaders = localVarHeaders.set('X-Tenant-Token', localVarCredential);
-        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {

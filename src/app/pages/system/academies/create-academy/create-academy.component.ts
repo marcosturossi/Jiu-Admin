@@ -23,7 +23,9 @@ export class CreateAcademyComponent {
   protected readonly form = this.fb.group({
     name: ['', Validators.required],
     slug: ['', [Validators.required, Validators.pattern(/^[a-z0-9-]+$/)]],
-    keycloakRealm: [''],
+    adminEmail: ['', [Validators.required, Validators.email]],
+    adminFirstName: ['', Validators.required],
+    adminLastName: ['', Validators.required],
   });
 
   protected close(): void {
@@ -48,11 +50,13 @@ export class CreateAcademyComponent {
   }
 
   private toDTO(): CreateAcademyDTO {
-    const v = this.form.value;
+    const v = this.form.getRawValue();
     return {
-      name: v.name!,
-      slug: v.slug!,
-      keycloakRealm: v.keycloakRealm || null,
-    } as CreateAcademyDTO;
+      name: v.name ?? '',
+      slug: v.slug ?? '',
+      adminEmail: v.adminEmail ?? '',
+      adminFirstName: v.adminFirstName ?? '',
+      adminLastName: v.adminLastName ?? '',
+    };
   }
 }

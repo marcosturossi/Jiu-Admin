@@ -39,6 +39,7 @@ export class ContractsComponent {
   protected readonly currentPage = signal(1);
   protected readonly pageSize = signal(10);
   protected readonly filterStatus = signal<ContractStatus | undefined>(undefined);
+  protected readonly filterText = signal('');
   protected readonly studentMap = signal<Map<string, string>>(new Map());
 
   protected readonly statusOptions = [
@@ -64,7 +65,9 @@ export class ContractsComponent {
     this.isLoading.set(true);
     this.contractService
       .apiContractGet(
-        undefined, undefined,
+        this.filterText() || undefined,
+        undefined,
+        undefined,
         this.filterStatus(),
         undefined, undefined,
         this.currentPage(), this.pageSize(),
@@ -101,6 +104,7 @@ export class ContractsComponent {
 
   protected onPageChange(page: number): void { this.currentPage.set(page); this.load(); }
   protected onPageSizeChange(size: number): void { this.pageSize.set(size); this.currentPage.set(1); this.load(); }
+  protected onSearch(term: string): void { this.filterText.set(term); this.currentPage.set(1); this.load(); }
   protected openCreate(): void { this.openedCreate.set(true); }
   protected openEdit(item: ShowContractDTO): void { this.selected.set(item); this.openedUpdate.set(true); }
   protected onCreated(): void { this.openedCreate.set(false); this.load(); }

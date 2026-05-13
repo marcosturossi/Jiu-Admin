@@ -51,9 +51,7 @@ export class TransactionsComponent {
   constructor() {
     this.subnavService.setTitle('Transações');
     this.load();
-    this.categoryService.apiTransactionCategoryGet(1, 200, true).subscribe({
-      next: result => this.categories.set(result.items ?? []),
-    });
+    this.loadCategories();
   }
 
   protected load(): void {
@@ -94,10 +92,17 @@ export class TransactionsComponent {
   protected onPageSizeChange(size: number): void { this.pageSize.set(size); this.currentPage.set(1); this.load(); }
   protected onFilterChange(): void { this.currentPage.set(1); this.load(); }
   protected onSearch(term: string): void { this.searchTerm.set(term); this.currentPage.set(1); this.load(); }
+  protected onCategorySearch(term: string): void { this.loadCategories(term); }
   protected openCreate(): void { this.openedCreate.set(true); }
   protected openEdit(item: ShowTransactionDTO): void { this.selected.set(item); this.openedUpdate.set(true); }
   protected onCreated(): void { this.openedCreate.set(false); this.load(); }
   protected onUpdated(): void { this.openedUpdate.set(false); this.load(); }
+
+  private loadCategories(term = ''): void {
+    this.categoryService.apiTransactionCategoryGet(term || undefined, true, 1, 200).subscribe({
+      next: result => this.categories.set(result.items ?? []),
+    });
+  }
 
   protected delete(item: ShowTransactionDTO): void {
     if (!confirm('Tem certeza que deseja excluir esta transação?')) return;
