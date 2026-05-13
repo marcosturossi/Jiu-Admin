@@ -1,21 +1,21 @@
 <form [formGroup]="form" (ngSubmit)="save()">
   <div class="mb-3">
     <label>Aluno *</label>
-    <select class="form-select" formControlName="studentId">
-      <option value="" disabled>Selecione o aluno</option>
-      @for (opt of studentOptions(); track opt.value) {
-        <option [value]="opt.value">{{ opt.label }}</option>
-      }
-    </select>
+    <app-search-select
+      [options]="studentOptions()"
+      [selected]="selectedStudent()"
+      placeholder="Selecione o aluno"
+      label="Aluno"
+      (selectionChange)="onStudentSelected($event)" />
   </div>
   <div class="mb-3">
     <label>Plano de Pagamento *</label>
-    <select class="form-select" formControlName="feePlanId">
-      <option value="" disabled>Selecione o plano</option>
-      @for (opt of feePlanOptions(); track opt.value) {
-        <option [value]="opt.value">{{ opt.label }}</option>
-      }
-    </select>
+    <app-search-select
+      [options]="feePlanOptions()"
+      [selected]="selectedFeePlan()"
+      placeholder="Selecione o plano"
+      label="Plano de Pagamento"
+      (selectionChange)="onFeePlanSelected($event)" />
   </div>
   <div class="mb-3">
     <label>Data de Início *</label>

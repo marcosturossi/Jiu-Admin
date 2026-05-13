@@ -1,12 +1,12 @@
 <form [formGroup]="frequencyForm">
   <div class="mb-3">
     <label for="lessonSelect" class="form-label">Selecione a Aula *</label>
-    <select id="lessonSelect" formControlName="lessonId" class="form-select">
-      <option value="" disabled>Selecione uma aula...</option>
-      @for (opt of lessonOptions(); track opt.value) {
-        <option [value]="opt.value">{{ opt.label }}</option>
-      }
-    </select>
+    <app-search-select
+      [options]="lessonOptions()"
+      [selected]="selectedLesson()"
+      placeholder="Selecione uma aula..."
+      label="Aula"
+      (selectionChange)="onLessonSelected($event)" />
   </div>
 
   <!-- Image Recognition Section -->

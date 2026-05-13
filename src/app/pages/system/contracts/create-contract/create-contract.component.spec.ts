@@ -52,6 +52,7 @@ describe('CreateContractComponent', () => {
     expect((component as any).studentOptions().length).toBe(1);
     expect((component as any).feePlanOptions().length).toBe(1);
     expect((component as any).studentOptions()[0].label).toBe('João Silva');
+    expect((component as any).studentOptions()[0].id).toBe('s1');
   });
 
   it('should mark form touched and not call API when form is invalid', () => {

@@ -5,11 +5,13 @@ import { RegisterMultipleResponse } from '../../../../generated_services/api2/mo
 import { StudentsService } from '../../../../generated_services/api/students.service';
 import { ShowStudentDTO } from '../../../../generated_services/model/showStudentDTO';
 import { NotificationService } from '../../../../services/notification.service';
+import { SearchOption } from '../../../../shared/search-select/search-option';
+import { SearchSelectComponent } from '../../../../shared/search-select/search-select.component';
 
 @Component({
   selector: 'app-create-persons',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, SearchSelectComponent],
   templateUrl: './create-persons.component.html',
   styleUrl: './create-persons.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -24,7 +26,8 @@ export class CreatePersonsComponent {
   private readonly ns = inject(NotificationService);
 
   protected readonly students = signal<ShowStudentDTO[]>([]);
-  protected readonly studentOptions = signal<{ label: string; value: string }[]>([]);
+  protected readonly studentOptions = signal<SearchOption[]>([]);
+  protected readonly selectedStudent = signal<SearchOption | null>(null);
   protected readonly isCreating = signal(false);
   protected readonly selectedFiles = signal<File[]>([]);
   protected readonly previewUrls = signal<string[]>([]);
@@ -39,8 +42,8 @@ export class CreatePersonsComponent {
       next: students => {
         this.students.set(students);
         this.studentOptions.set(students.map(s => ({
+          id: s.id ?? '',
           label: `${s.firstName} ${s.lastName}${s.preferredUsername || s.userName ? ' (' + (s.preferredUsername || s.userName) + ')' : ''}`,
-          value: s.id ?? ''
         })));
       },
       error: () => this.ns.showError('Erro ao Carregar Alunos', 'Não foi possível carregar a lista de alunos ativos.')
@@ -105,4 +108,9 @@ export class CreatePersonsComponent {
   }
 
   protected close(): void { this.closeEvent.emit(); }
+
+  protected onStudentSelected(opt: SearchOption | null): void {
+    this.selectedStudent.set(opt);
+    this.personForm.patchValue({ studentId: opt?.id ?? '' });
+  }
 }

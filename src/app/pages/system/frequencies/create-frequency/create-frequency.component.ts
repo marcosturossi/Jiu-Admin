@@ -7,10 +7,12 @@ import { PersonsService } from '../../../../generated_services/api2/api/persons.
 import { RecognitionResponse } from '../../../../generated_services/api2/model/recognitionResponse';
 import { PersonListResponse } from '../../../../generated_services/api2/model/personListResponse';
 import { NotificationService } from '../../../../services/notification.service';
+import { SearchOption } from '../../../../shared/search-select/search-option';
+import { SearchSelectComponent } from '../../../../shared/search-select/search-select.component';
 
 @Component({
   selector: 'app-create-frequency',
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, SearchSelectComponent],
   templateUrl: './create-frequency.component.html',
   styleUrl: './create-frequency.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -28,7 +30,8 @@ export class CreateFrequencyComponent {
 
   protected readonly students = signal<ShowStudentDTO[]>([]);
   protected readonly lessons = signal<ShowLessonDTO[]>([]);
-  protected readonly lessonOptions = signal<{ label: string; value: string }[]>([]);
+  protected readonly lessonOptions = signal<SearchOption[]>([]);
+  protected readonly selectedLesson = signal<SearchOption | null>(null);
   protected readonly isCreating = signal(false);
   protected readonly isRecognizing = signal(false);
   protected readonly selectedFile = signal<File | null>(null);
@@ -54,7 +57,7 @@ export class CreateFrequencyComponent {
     this.lessonService.apiLessonActiveGet().subscribe({
       next: result => {
         this.lessons.set(result);
-        this.lessonOptions.set(result.map(l => ({ label: l.title ?? '', value: l.id ?? '' })));
+        this.lessonOptions.set(result.map(l => ({ id: l.id ?? '', label: l.title ?? '' })));
       },
       error: () => this.ns.showError('Erro ao Carregar Aulas!', 'Não foi possível carregar a lista de aulas. Tente novamente.')
     });
@@ -178,6 +181,11 @@ export class CreateFrequencyComponent {
   }
 
   protected close(): void { this.closeEvent.emit(); }
+
+  protected onLessonSelected(opt: SearchOption | null): void {
+    this.selectedLesson.set(opt);
+    this.frequencyForm.patchValue({ lessonId: opt?.id ?? '' });
+  }
 
   protected create(): void {
     if (!this.isFormValid() || this.isCreating()) {

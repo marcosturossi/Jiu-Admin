@@ -14,9 +14,9 @@ export const environment = {
   server: 'http://localhost:9080',
   face_api: 'http://localhost:9080/api',
   keycloak: {
-    url: 'http://localhost:8180',
-    realm: 'bjjclutch',
-    clientId: 'bjj-manager',
+    url: 'http://localhost:8082',
+    realm: 'platform-admin',
+    clientId: 'carlsongracie-app',
   },
 }
 

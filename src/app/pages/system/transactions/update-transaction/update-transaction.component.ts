@@ -1,13 +1,15 @@
-import { ChangeDetectionStrategy, Component, effect, inject, input, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, input, output, signal } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { FinancialTransactionService } from '../../../../generated_services/api/financialTransaction.service';
 import { ShowTransactionCategoryDTO, ShowTransactionDTO, TransactionType } from '../../../../generated_services';
 import { NotificationService } from '../../../../services/notification.service';
+import { SearchOption } from '../../../../shared/search-select/search-option';
+import { SearchSelectComponent } from '../../../../shared/search-select/search-select.component';
 
 @Component({
   selector: 'app-update-transaction',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, SearchSelectComponent],
   templateUrl: './update-transaction.component.html',
   styleUrl: './update-transaction.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -23,6 +25,16 @@ export class UpdateTransactionComponent {
   readonly transactionUpdated = output<void>();
 
   protected readonly isSaving = signal(false);
+
+  protected readonly categoryOptions = computed(() =>
+    this.categories().map(c => ({ id: c.id!, label: c.name! }))
+  );
+
+  protected readonly selectedCategoryId = signal<string | null>(null);
+
+  protected readonly selectedCategory = computed(() =>
+    this.categoryOptions().find(o => o.id === this.selectedCategoryId()) ?? null
+  );
 
   protected readonly typeOptions = [
     { label: 'Receita', value: TransactionType.NUMBER_0 },
@@ -49,6 +61,7 @@ export class UpdateTransactionComponent {
         transactionDate: t.transactionDate ? t.transactionDate.substring(0, 10) : '',
         reference: t.reference ?? '',
       });
+      this.selectedCategoryId.set(t.transactionCategoryId ?? null);
     });
   }
 
@@ -77,4 +90,9 @@ export class UpdateTransactionComponent {
   }
 
   protected close(): void { this.closeEvent.emit(); }
+
+  protected onCategorySelected(opt: SearchOption | null): void {
+    this.selectedCategoryId.set(opt?.id ?? null);
+    this.form.patchValue({ transactionCategoryId: opt?.id ?? null });
+  }
 }

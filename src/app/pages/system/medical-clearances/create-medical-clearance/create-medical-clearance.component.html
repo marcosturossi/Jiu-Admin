@@ -4,12 +4,12 @@
     @if (isLoadingStudents()) {
       <small class="hint">Carregando alunos...</small>
     }
-    <select id="studentId" class="form-select" formControlName="studentId">
-      <option value="" disabled>Selecione um aluno</option>
-      @for (opt of studentOptions(); track opt.value) {
-        <option [value]="opt.value">{{ opt.label }}</option>
-      }
-    </select>
+    <app-search-select
+      [options]="studentOptions()"
+      [selected]="selectedStudent()"
+      placeholder="Selecione um aluno"
+      label="Aluno"
+      (selectionChange)="onStudentSelected($event)" />
   </div>
 
   <div class="mb-3">

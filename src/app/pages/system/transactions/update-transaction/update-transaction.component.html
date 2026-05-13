@@ -11,12 +11,12 @@
 
   <div class="mb-3">
     <label for="category">Categoria</label>
-    <select class="form-select" id="category" formControlName="transactionCategoryId">
-      <option value="">Sem categoria</option>
-      @for (opt of categories(); track opt.id) {
-        <option [value]="opt.id">{{ opt.name }}</option>
-      }
-    </select>
+    <app-search-select
+      [options]="categoryOptions()"
+      [selected]="selectedCategory()"
+      placeholder="Sem categoria"
+      label="Categoria"
+      (selectionChange)="onCategorySelected($event)" />
   </div>
 
   <div class="mb-3">

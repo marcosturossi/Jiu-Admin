@@ -5,11 +5,13 @@ import { BeltService } from '../../../../generated_services/api/belt.service';
 import { StudentsService } from '../../../../generated_services/api/students.service';
 import { CreateGraduationDTO, ShowBeltDTO, ShowStudentDTO } from '../../../../generated_services';
 import { NotificationService } from '../../../../services/notification.service';
+import { SearchOption } from '../../../../shared/search-select/search-option';
+import { SearchSelectComponent } from '../../../../shared/search-select/search-select.component';
 
 @Component({
   selector: 'app-create-graduation',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, SearchSelectComponent],
   templateUrl: './create-graduation.component.html',
   styleUrl: './create-graduation.component.scss',
 })
@@ -25,9 +27,10 @@ export class CreateGraduationComponent {
 
   protected readonly belts = signal<ShowBeltDTO[]>([]);
   protected readonly students = signal<ShowStudentDTO[]>([]);
+  protected readonly selectedStudent = signal<SearchOption | null>(null);
 
   protected readonly studentOptions = computed(() =>
-    this.students().map(s => ({ label: `${s.firstName} ${s.lastName} (${s.email})`, id: s.id }))
+    this.students().map(s => ({ id: s.id!, label: `${s.firstName} ${s.lastName} (${s.email})` }))
   );
 
   protected readonly form = this.fb.group({
@@ -48,6 +51,11 @@ export class CreateGraduationComponent {
   }
 
   protected close(): void { this.closeEvent.emit(); }
+
+  protected onStudentSelected(opt: SearchOption | null): void {
+    this.selectedStudent.set(opt);
+    this.form.patchValue({ studentId: opt?.id ?? '' });
+  }
 
   protected save(): void {
     if (this.form.invalid) {

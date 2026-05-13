@@ -5,11 +5,13 @@ import { FeePlanService } from '../../../../generated_services/api/feePlan.servi
 import { StudentsService } from '../../../../generated_services/api/students.service';
 import { ShowStudentDTO, ShowFeePlanDTO } from '../../../../generated_services';
 import { NotificationService } from '../../../../services/notification.service';
+import { SearchOption } from '../../../../shared/search-select/search-option';
+import { SearchSelectComponent } from '../../../../shared/search-select/search-select.component';
 
 @Component({
   selector: 'app-create-contract',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, SearchSelectComponent],
   templateUrl: './create-contract.component.html',
   styleUrl: './create-contract.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -26,8 +28,10 @@ export class CreateContractComponent {
 
   protected readonly isSaving = signal(false);
 
-  protected readonly studentOptions = signal<{ label: string; value: string }[]>([]);
-  protected readonly feePlanOptions = signal<{ label: string; value: string }[]>([]);
+  protected readonly studentOptions = signal<SearchOption[]>([]);
+  protected readonly feePlanOptions = signal<SearchOption[]>([]);
+  protected readonly selectedStudent = signal<SearchOption | null>(null);
+  protected readonly selectedFeePlan = signal<SearchOption | null>(null);
 
   protected readonly form = this.fb.group({
     studentId: ['', Validators.required],
@@ -41,8 +45,8 @@ export class CreateContractComponent {
       next: (students: ShowStudentDTO[]) => {
         this.studentOptions.set(
           students.map(s => ({
+            id: s.id!,
             label: `${s.firstName ?? ''} ${s.lastName ?? ''}`.trim() || s.userName || s.id!,
-            value: s.id!,
           })),
         );
       },
@@ -52,8 +56,8 @@ export class CreateContractComponent {
       next: result => {
         this.feePlanOptions.set(
           (result.items ?? []).map((p: ShowFeePlanDTO) => ({
+            id: p.id!,
             label: `${p.name ?? ''} — R$ ${p.price?.toFixed(2) ?? '0,00'}`,
-            value: p.id!,
           })),
         );
       },
@@ -84,6 +88,16 @@ export class CreateContractComponent {
           this.ns.showError('Erro ao Criar!', 'Não foi possível criar o contrato.');
         },
       });
+  }
+
+  protected onStudentSelected(opt: SearchOption | null): void {
+    this.selectedStudent.set(opt);
+    this.form.patchValue({ studentId: opt?.id ?? '' });
+  }
+
+  protected onFeePlanSelected(opt: SearchOption | null): void {
+    this.selectedFeePlan.set(opt);
+    this.form.patchValue({ feePlanId: opt?.id ?? '' });
   }
 
   protected close(): void { this.closeEvent.emit(); }

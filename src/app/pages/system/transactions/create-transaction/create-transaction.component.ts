@@ -1,13 +1,15 @@
-import { ChangeDetectionStrategy, Component, inject, input, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input, output, signal } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { FinancialTransactionService } from '../../../../generated_services/api/financialTransaction.service';
 import { ShowTransactionCategoryDTO, TransactionType } from '../../../../generated_services';
 import { NotificationService } from '../../../../services/notification.service';
+import { SearchOption } from '../../../../shared/search-select/search-option';
+import { SearchSelectComponent } from '../../../../shared/search-select/search-select.component';
 
 @Component({
   selector: 'app-create-transaction',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, SearchSelectComponent],
   templateUrl: './create-transaction.component.html',
   styleUrl: './create-transaction.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -22,6 +24,12 @@ export class CreateTransactionComponent {
   readonly transactionCreated = output<void>();
 
   protected readonly isSaving = signal(false);
+
+  protected readonly categoryOptions = computed(() =>
+    this.categories().map(c => ({ id: c.id!, label: c.name! }))
+  );
+
+  protected readonly selectedCategory = signal<SearchOption | null>(null);
 
   protected readonly typeOptions = [
     { label: 'Receita', value: TransactionType.NUMBER_0 },
@@ -62,4 +70,9 @@ export class CreateTransactionComponent {
   }
 
   protected close(): void { this.closeEvent.emit(); }
+
+  protected onCategorySelected(opt: SearchOption | null): void {
+    this.selectedCategory.set(opt);
+    this.form.patchValue({ transactionCategoryId: opt?.id ?? null });
+  }
 }

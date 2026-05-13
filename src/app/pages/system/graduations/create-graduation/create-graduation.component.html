@@ -1,12 +1,12 @@
 <form [formGroup]="form">
   <div class="mb-3">
     <label for="studentId" class="form-label">Aluno *</label>
-    <select class="form-select" id="studentId" formControlName="studentId">
-      <option value="" disabled selected>Selecione um aluno</option>
-      @for (opt of studentOptions(); track opt.id) {
-        <option [value]="opt.id">{{ opt.label }}</option>
-      }
-    </select>
+    <app-search-select
+      [options]="studentOptions()"
+      [selected]="selectedStudent()"
+      placeholder="Selecione um aluno"
+      label="Aluno"
+      (selectionChange)="onStudentSelected($event)" />
   </div>
   <div class="mb-3">
     <label for="beltId" class="form-label">Faixa *</label>

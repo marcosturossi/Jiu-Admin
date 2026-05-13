@@ -5,11 +5,13 @@ import { BeltService } from '../../../../generated_services/api/belt.service';
 import { StudentsService } from '../../../../generated_services/api/students.service';
 import { ShowGraduationDTO, ShowBeltDTO, ShowStudentDTO, UpdateGraduationDTO } from '../../../../generated_services';
 import { NotificationService } from '../../../../services/notification.service';
+import { SearchOption } from '../../../../shared/search-select/search-option';
+import { SearchSelectComponent } from '../../../../shared/search-select/search-select.component';
 
 @Component({
   selector: 'app-update-graduation',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, SearchSelectComponent],
   templateUrl: './update-graduation.component.html',
   styleUrl: './update-graduation.component.scss',
 })
@@ -28,7 +30,13 @@ export class UpdateGraduationComponent {
   protected readonly students = signal<ShowStudentDTO[]>([]);
 
   protected readonly studentOptions = computed(() =>
-    this.students().map(s => ({ label: `${s.firstName} ${s.lastName} (${s.email})`, id: s.id }))
+    this.students().map(s => ({ id: s.id!, label: `${s.firstName} ${s.lastName} (${s.email})` }))
+  );
+
+  protected readonly selectedStudentId = signal<string | null>(null);
+
+  protected readonly selectedStudent = computed(() =>
+    this.studentOptions().find(o => o.id === this.selectedStudentId()) ?? null
   );
 
   protected readonly form = this.fb.group({
@@ -53,10 +61,16 @@ export class UpdateGraduationComponent {
         beltId: g.beltId,
         graduationDate: g.graduationDate,
       });
+      this.selectedStudentId.set(g.studentId ?? null);
     });
   }
 
   protected close(): void { this.closeEvent.emit(); }
+
+  protected onStudentSelected(opt: SearchOption | null): void {
+    this.selectedStudentId.set(opt?.id ?? null);
+    this.form.patchValue({ studentId: opt?.id ?? '' });
+  }
 
   protected save(): void {
     if (this.form.invalid) {

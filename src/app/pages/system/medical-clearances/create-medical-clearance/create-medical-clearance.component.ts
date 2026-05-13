@@ -6,10 +6,12 @@ import { CreateMedicalClearanceDTO } from '../../../../generated_services/model/
 import { ShowStudentDTO } from '../../../../generated_services/model/showStudentDTO';
 import { NotificationService } from '../../../../services/notification.service';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { SearchOption } from '../../../../shared/search-select/search-option';
+import { SearchSelectComponent } from '../../../../shared/search-select/search-select.component';
 
 @Component({
   selector: 'app-create-medical-clearance',
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, SearchSelectComponent],
   templateUrl: './create-medical-clearance.component.html',
   styleUrl: './create-medical-clearance.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -25,7 +27,8 @@ export class CreateMedicalClearanceComponent implements OnDestroy {
   private readonly sanitizer = inject(DomSanitizer);
 
   protected readonly students = signal<ShowStudentDTO[]>([]);
-  protected readonly studentOptions = signal<{ label: string; value: string }[]>([]);
+  protected readonly studentOptions = signal<SearchOption[]>([]);
+  protected readonly selectedStudent = signal<SearchOption | null>(null);
   protected readonly isLoadingStudents = signal(false);
   protected readonly selectedFile = signal<File | null>(null);
   protected readonly filePreviewUrl = signal<SafeResourceUrl | null>(null);
@@ -45,7 +48,7 @@ export class CreateMedicalClearanceComponent implements OnDestroy {
       next: result => {
         const list = result.items ?? [];
         this.students.set(list);
-        this.studentOptions.set(list.map(s => ({ label: `${s.firstName} ${s.lastName}`, value: s.id ?? '' })));
+        this.studentOptions.set(list.map(s => ({ id: s.id ?? '', label: `${s.firstName} ${s.lastName}` })));
         this.isLoadingStudents.set(false);
       },
       error: () => { this.isLoadingStudents.set(false); this.ns.showError('Erro ao Carregar Alunos', 'Não foi possível carregar a lista de alunos.'); }
@@ -55,6 +58,11 @@ export class CreateMedicalClearanceComponent implements OnDestroy {
   ngOnDestroy(): void { this.clearFilePreview(); }
 
   protected close(): void { this.closeEvent.emit(); }
+
+  protected onStudentSelected(opt: SearchOption | null): void {
+    this.selectedStudent.set(opt);
+    this.form.patchValue({ studentId: opt?.id ?? '' });
+  }
 
   protected create(): void {
     if (this.form.invalid) {

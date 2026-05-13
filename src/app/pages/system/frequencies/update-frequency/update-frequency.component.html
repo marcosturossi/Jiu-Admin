@@ -1,12 +1,12 @@
 <form [formGroup]="frequencyForm">
   <div class="mb-3">
     <label for="studentSelect" class="form-label">Selecione o Aluno *</label>
-    <select id="studentSelect" formControlName="studentId" class="form-select">
-      <option value="" disabled>Selecione um aluno...</option>
-      @for (opt of studentOptions(); track opt.value) {
-        <option [value]="opt.value">{{ opt.label }}</option>
-      }
-    </select>
+    <app-search-select
+      [options]="studentOptions()"
+      [selected]="selectedStudent()"
+      placeholder="Selecione um aluno..."
+      label="Aluno"
+      (selectionChange)="onStudentSelected($event)" />
   </div>
   <div class="d-flex gap-2 justify-content-end mt-3">
     <button class="btn btn-outline-secondary" type="button" (click)="close()">Cancelar</button>
