@@ -25,6 +25,7 @@ import { TransactionsComponent } from './transactions/transactions.component';
 import { TransactionCategoriesComponent } from './transaction-categories/transaction-categories.component';
 import { AcademiesComponent } from './academies/academies.component';
 import { StudentOnboardingComponent } from './student-onboarding/student-onboarding.component';
+import { FinanceDashboardComponent } from './finance-dashboard/finance-dashboard.component';
 
 export const routes: Routes = [
   {
@@ -46,6 +47,7 @@ export const routes: Routes = [
       { path: 'notices', component: NoticesComponent },
       { path: 'notification', component: NotificationComponent },
       // Financeiro
+      { path: 'finance-dashboard', component: FinanceDashboardComponent },
       { path: 'fee-plans', component: FeePlansComponent },
       { path: 'contracts', component: ContractsComponent },
       { path: 'monthly-fees', component: MonthlyFeesComponent },

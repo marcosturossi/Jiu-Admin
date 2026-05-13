@@ -83,7 +83,7 @@ describe('SidebarComponent', () => {
     it('shows all individual item links (not group buttons)', () => {
       setup('/system/students');
       const links = fixture.nativeElement.querySelectorAll('.sidebar-section-collapsed .sidebar-link');
-      const totalItems = 18; // sum of all items across 6 sections
+      const totalItems = 19; // 6 sections: 1+7+6+2+2+1 (Financeiro now has Dashboard link)
       expect(links.length).toBe(totalItems);
     });
 
