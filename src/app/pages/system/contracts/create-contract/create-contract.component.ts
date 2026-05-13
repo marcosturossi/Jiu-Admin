@@ -67,7 +67,8 @@ export class CreateContractComponent {
     }
 
     const raw = this.form.getRawValue();
-    const startDate = raw.startDate ? (raw.startDate as Date).toISOString().split('T')[0] : undefined;
+    // <input type="date"> always yields a YYYY-MM-DD string, not a Date object.
+    const startDate = raw.startDate ? String(raw.startDate) : undefined;
 
     this.isSaving.set(true);
     this.contractService
