@@ -78,52 +78,48 @@ describe('SidebarComponent', () => {
     });
   });
 
-  describe('expandAndOpen', () => {
-    it('opens the specified section', () => {
-      setup('/system/students');
-      expect((component as any).isSectionOpen('Financeiro')).toBeFalse();
-      (component as any).expandAndOpen('Financeiro');
-      expect((component as any).isSectionOpen('Financeiro')).toBeTrue();
-    });
-
-    it('dispatches sidebar-toggle event with expanded: true', (done) => {
-      setup('/system/students');
-      const handler = (e: Event) => {
-        expect((e as CustomEvent).detail.expanded).toBeTrue();
-        window.removeEventListener('sidebar-toggle', handler);
-        done();
-      };
-      window.addEventListener('sidebar-toggle', handler);
-      (component as any).expandAndOpen('Financeiro');
-    });
-  });
 
   describe('collapsed mode template', () => {
-    it('shows one group button per section', () => {
+    it('shows all individual item links (not group buttons)', () => {
       setup('/system/students');
-      // sidebar starts collapsed
+      const links = fixture.nativeElement.querySelectorAll('.sidebar-section-collapsed .sidebar-link');
+      const totalItems = 18; // sum of all items across 6 sections
+      expect(links.length).toBe(totalItems);
+    });
+
+    it('active item link has active class', () => {
+      setup('/system/students');
+      const links: NodeListOf<HTMLElement> = fixture.nativeElement.querySelectorAll('.sidebar-section-collapsed .sidebar-link');
+      const studentsLink = Array.from(links).find(l => l.getAttribute('title') === 'Alunos');
+      expect(studentsLink?.classList.contains('active')).toBeTrue();
+    });
+
+    it('inactive item links do not have active class', () => {
+      setup('/system/students');
+      const links: NodeListOf<HTMLElement> = fixture.nativeElement.querySelectorAll('.sidebar-section-collapsed .sidebar-link');
+      const contractsLink = Array.from(links).find(l => l.getAttribute('title') === 'Contratos');
+      expect(contractsLink?.classList.contains('active')).toBeFalse();
+    });
+
+    it('does not show section group buttons in collapsed mode', () => {
+      setup('/system/students');
       const buttons = fixture.nativeElement.querySelectorAll('.sidebar-group-btn');
-      expect(buttons.length).toBe(6); // 6 sections defined
+      expect(buttons.length).toBe(0);
     });
 
-    it('group button has active class when a child route is active', () => {
-      setup('/system/students');
-      const buttons: NodeListOf<HTMLElement> = fixture.nativeElement.querySelectorAll('.sidebar-group-btn');
-      const academicoBtn = Array.from(buttons).find(b => b.getAttribute('title') === 'Acadêmico');
-      expect(academicoBtn?.classList.contains('active')).toBeTrue();
-    });
-
-    it('group button does not have active class when no child route is active', () => {
-      setup('/system/students');
-      const buttons: NodeListOf<HTMLElement> = fixture.nativeElement.querySelectorAll('.sidebar-group-btn');
-      const financeiroBtn = Array.from(buttons).find(b => b.getAttribute('title') === 'Financeiro');
-      expect(financeiroBtn?.classList.contains('active')).toBeFalse();
-    });
-
-    it('does not show section headers or items in collapsed mode', () => {
+    it('does not show section headers in collapsed mode', () => {
       setup('/system/students');
       const headers = fixture.nativeElement.querySelectorAll('.sidebar-group-header');
       expect(headers.length).toBe(0);
+    });
+
+    it('clicking an item navigates without expanding the sidebar', () => {
+      setup('/system/students');
+      const links: NodeListOf<HTMLElement> = fixture.nativeElement.querySelectorAll('.sidebar-section-collapsed .sidebar-link');
+      const contractsLink = Array.from(links).find(l => l.getAttribute('title') === 'Contratos') as HTMLElement;
+      contractsLink.click();
+      expect(routerStub.navigate).toHaveBeenCalledWith(['/system/contracts']);
+      expect((component as any).sidebarExpanded()).toBeFalse();
     });
   });
 

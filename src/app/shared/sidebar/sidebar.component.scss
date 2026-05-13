@@ -115,15 +115,29 @@
   }
 }
 
+/* Collapsed mode: brighter icons since there's no label context */
+.sidebar:not(.expanded) .sidebar-link {
+  color: rgba(255, 255, 255, 0.82);
+
+  &:hover {
+    color: var(--brand-sidebar-active-text);
+  }
+}
+
+/* Expanded mode: left-align links with labels */
 .sidebar.expanded .sidebar-link {
   justify-content: flex-start;
 }
 
-/* Group icon button (collapsed mode) */
-.sidebar-group-btn {
-  width: 100%;
-  border: none;
-  margin-bottom: 0.1rem;
+/* Section separator in collapsed mode */
+.sidebar-section-collapsed {
+  padding-bottom: 0.25rem;
+  margin-bottom: 0.25rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+
+  &:last-child {
+    border-bottom: none;
+  }
 }
 
 .sidebar-icon {

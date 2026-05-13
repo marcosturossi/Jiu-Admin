@@ -130,15 +130,6 @@ export class SidebarComponent implements OnInit, OnDestroy {
     });
   }
 
-  protected expandAndOpen(title: string): void {
-    this.openSections.update(set => new Set([...set, title]));
-    window.dispatchEvent(new CustomEvent('sidebar-toggle', { detail: { expanded: true } }));
-  }
-
-  protected isSectionActive(section: { items: { route: string }[] }): boolean {
-    return section.items.some(i => this.isActive(i.route));
-  }
-
   protected isActive(route: string): boolean {
     return this.router.url.startsWith(route);
   }

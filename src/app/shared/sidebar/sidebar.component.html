@@ -29,14 +29,21 @@
       }
     } @else {
       @for (section of sections; track section.title) {
-        <button
-          class="sidebar-link sidebar-group-btn"
-          [class.active]="isSectionActive(section)"
-          (click)="expandAndOpen(section.title)"
-          [attr.title]="section.title"
-        >
-          <i [class]="section.groupIcon" class="sidebar-icon"></i>
-        </button>
+        <div class="sidebar-section-collapsed">
+          @for (item of section.items; track item.route) {
+            <a
+              class="sidebar-link"
+              [class.active]="isActive(item.route)"
+              (click)="navigate(item.route)"
+              [attr.title]="item.label"
+              role="button"
+              tabindex="0"
+              (keydown.enter)="navigate(item.route)"
+            >
+              <i [class]="item.icon" class="sidebar-icon"></i>
+            </a>
+          }
+        </div>
       }
     }
   </nav>
