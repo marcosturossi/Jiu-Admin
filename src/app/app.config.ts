@@ -1,4 +1,4 @@
-import { ApplicationConfig, provideZoneChangeDetection, APP_INITIALIZER } from '@angular/core';
+import { ApplicationConfig, provideZoneChangeDetection, APP_INITIALIZER, LOCALE_ID } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
@@ -30,6 +30,7 @@ export const appConfig: ApplicationConfig = {
       preventDuplicates: true,
     }),
     keycloakProviders,
+    { provide: LOCALE_ID, useValue: 'pt-BR' },
     { provide: BASE_PATH_API1, useValue: environment.server },
     { provide: BASE_PATH_API2, useValue: environment.face_api },
     {
