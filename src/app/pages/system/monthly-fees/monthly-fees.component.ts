@@ -185,8 +185,15 @@ export class MonthlyFeesComponent {
   }
 
   protected downloadReceipt(fee: ShowMonthlyFeeDTO): void {
+    this.selected.set(fee);
     this.isDownloading.set(true);
-    this.feeService.apiMonthlyFeeIdReceiptPdfGet(fee.id!).subscribe({
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    this.feeService.apiMonthlyFeeIdReceiptPdfGet(
+      fee.id!,
+      undefined,
+      undefined,
+      { httpHeaderAccept: 'application/pdf' } as any,
+    ).subscribe({
       next: (blob: Blob) => {
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');

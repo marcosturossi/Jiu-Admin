@@ -23,7 +23,7 @@ describe('MonthlyFeesComponent', () => {
   let subnavService: jasmine.SpyObj<SubnavService>;
 
   beforeEach(async () => {
-    const feeSpy = jasmine.createSpyObj('MonthlyFeeService', ['apiMonthlyFeeGet', 'apiMonthlyFeeIdPayPatch']);
+    const feeSpy = jasmine.createSpyObj('MonthlyFeeService', ['apiMonthlyFeeGet', 'apiMonthlyFeeIdPayPatch', 'apiMonthlyFeeIdReceiptPdfGet']);
     const nsSpy = jasmine.createSpyObj('NotificationService', ['showSuccess', 'showError']);
     const subnavSpy = jasmine.createSpyObj('SubnavService', ['setTitle']);
     feeSpy.apiMonthlyFeeGet.and.returnValue(of(MOCK_PAGINATION));
@@ -135,6 +135,57 @@ describe('MonthlyFeesComponent', () => {
       (component as any).payForm.patchValue({ paidAmount: 150, paidAt: '2024-03-15' });
       (component as any).confirmPay();
       expect(ns.showError).toHaveBeenCalled();
+    });
+  });
+
+  describe('downloadReceipt', () => {
+    const PAID_FEE: ShowMonthlyFeeDTO = { ...MOCK_FEE, id: 'fee2', status: FeeStatus.Paid, dueDate: '2024-03-01' };
+    let mockBlob: Blob;
+    let createObjectURLSpy: jasmine.Spy;
+    let revokeObjectURLSpy: jasmine.Spy;
+    let anchorClickSpy: jasmine.Spy;
+    let anchorElement: HTMLAnchorElement;
+
+    beforeEach(() => {
+      mockBlob = new Blob(['%PDF-1.4'], { type: 'application/pdf' });
+      feeService.apiMonthlyFeeIdReceiptPdfGet.and.returnValue(of(mockBlob as any));
+
+      anchorElement = document.createElement('a');
+      anchorClickSpy = spyOn(anchorElement, 'click');
+      spyOn(document, 'createElement').and.returnValue(anchorElement as any);
+
+      createObjectURLSpy = spyOn(URL, 'createObjectURL').and.returnValue('blob:fake-url');
+      revokeObjectURLSpy = spyOn(URL, 'revokeObjectURL');
+    });
+
+    it('should call service with httpHeaderAccept application/pdf to get blob', () => {
+      (component as any).downloadReceipt(PAID_FEE);
+      expect(feeService.apiMonthlyFeeIdReceiptPdfGet).toHaveBeenCalledWith(
+        PAID_FEE.id!,
+        undefined,
+        undefined,
+        jasmine.objectContaining({ httpHeaderAccept: 'application/pdf' })
+      );
+    });
+
+    it('should set selected fee and trigger download with correct filename', () => {
+      (component as any).downloadReceipt(PAID_FEE);
+      expect((component as any).selected()).toEqual(PAID_FEE);
+      expect(createObjectURLSpy).toHaveBeenCalledWith(mockBlob as any);
+      expect(anchorElement.download).toBe(`recibo-${PAID_FEE.dueDate}.pdf`);
+      expect(anchorClickSpy).toHaveBeenCalled();
+      expect(revokeObjectURLSpy).toHaveBeenCalledWith('blob:fake-url');
+    });
+
+    it('should show error notification if download fails', () => {
+      feeService.apiMonthlyFeeIdReceiptPdfGet.and.returnValue(throwError(() => new Error()));
+      (component as any).downloadReceipt(PAID_FEE);
+      expect(ns.showError).toHaveBeenCalled();
+    });
+
+    it('should reset isDownloading after completion', () => {
+      (component as any).downloadReceipt(PAID_FEE);
+      expect((component as any).isDownloading()).toBeFalse();
     });
   });
 });
