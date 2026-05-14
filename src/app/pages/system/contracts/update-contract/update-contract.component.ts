@@ -51,7 +51,7 @@ export class UpdateContractComponent {
     const raw = this.form.getRawValue();
     this.isSaving.set(true);
     this.contractService
-      .apiContractIdStatusPatch(this.contract().id!, { status: raw.status, notes: raw.notes || null })
+      .apiContractIdStatusPatch(this.contract().id!, { status: +raw.status! as ContractStatus, notes: raw.notes || null })
       .subscribe({
         next: () => {
           this.isSaving.set(false);

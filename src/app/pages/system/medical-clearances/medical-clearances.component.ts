@@ -1,5 +1,7 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { DatePipe } from '@angular/common';
+import { Subject, debounceTime } from 'rxjs';
 import { MedicalClearanceService } from '../../../generated_services/api/medicalClearance.service';
 import { ShowMedicalClearanceDTO } from '../../../generated_services/model/showMedicalClearanceDTO';
 import { CreateMedicalClearanceComponent } from './create-medical-clearance/create-medical-clearance.component';
@@ -20,28 +22,44 @@ export class MedicalClearancesComponent {
   private readonly medicalClearanceService = inject(MedicalClearanceService);
   private readonly subnavService = inject(SubnavService);
   private readonly ns = inject(NotificationService);
+  private readonly destroyRef = inject(DestroyRef);
+
+  private readonly searchSubject = new Subject<string>();
 
   protected readonly isLoading = signal(false);
   protected readonly items = signal<PaginationMedicalClearanceDTO | null>(null);
   protected readonly openedCreate = signal(false);
   protected readonly currentPage = signal(1);
   protected readonly pageSize = signal(10);
+  protected readonly filterText = signal('');
   protected readonly attachmentBlob = signal<Blob | undefined>(undefined);
   protected readonly attachmentMimeType = signal<string | undefined>(undefined);
   protected readonly attachmentDialogVisible = signal(false);
 
   constructor() {
     this.subnavService.setTitle('Atestados Médicos');
+    this.searchSubject.pipe(debounceTime(400), takeUntilDestroyed(this.destroyRef)).subscribe(term => {
+      this.filterText.set(term);
+      this.currentPage.set(1);
+      this.load();
+    });
     this.load();
   }
 
   protected load(): void {
     this.isLoading.set(true);
-    this.medicalClearanceService.apiMedicalClearanceGet(undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, this.currentPage(), this.pageSize()).subscribe({
+    this.medicalClearanceService.apiMedicalClearanceGet(
+      undefined,
+      this.filterText() || undefined,
+      undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined,
+      this.currentPage(), this.pageSize(),
+    ).subscribe({
       next: r => { this.items.set(r); this.isLoading.set(false); },
       error: () => { this.isLoading.set(false); this.ns.showError('Erro de Carregamento', 'Não foi possível carregar a lista de atestados médicos.'); }
     });
   }
+
+  protected onSearch(term: string): void { this.searchSubject.next(term); }
 
   protected onPageChange(p: number): void { this.currentPage.set(p); this.load(); }
   protected onPageSizeChange(s: number): void { this.pageSize.set(s); this.currentPage.set(1); this.load(); }

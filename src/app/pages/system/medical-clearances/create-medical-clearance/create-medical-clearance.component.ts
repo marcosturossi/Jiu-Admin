@@ -137,7 +137,7 @@ export class CreateMedicalClearanceComponent implements OnDestroy {
     const v = this.form.value;
     return {
       studentId: v.studentId,
-      expiresAt: v.expiresAt ? (v.expiresAt as Date).toISOString() : null,
+      expiresAt: v.expiresAt as unknown as string,
       isApproved: v.isApproved,
       isActive: v.isActive
     } as CreateMedicalClearanceDTO;
