@@ -5,7 +5,7 @@ import { Subject, debounceTime, forkJoin, Observable } from 'rxjs';
 import { ContractService } from '../../../../generated_services/api/contract.service';
 import { FeePlanService } from '../../../../generated_services/api/feePlan.service';
 import { StudentsService } from '../../../../generated_services/api/students.service';
-import { ShowStudentDTO, ShowFeePlanDTO } from '../../../../generated_services';
+import { ShowStudentDTO, ShowFeePlanDTO, ShowContractDTO } from '../../../../generated_services';
 import { NotificationService } from '../../../../services/notification.service';
 import { SearchOption } from '../../../../shared/search-select/search-option';
 import { SearchSelectComponent } from '../../../../shared/search-select/search-select.component';
@@ -35,6 +35,8 @@ export class CreateContractComponent {
   protected readonly feePlanOptions = signal<SearchOption[]>([]);
   protected readonly selectedStudent = signal<SearchOption | null>(null);
   protected readonly selectedFeePlan = signal<SearchOption | null>(null);
+  private readonly allFeePlans = signal<ShowFeePlanDTO[]>([]);
+  protected readonly selectedFeePlanData = signal<ShowFeePlanDTO | null>(null);
 
   private readonly studentSearchSubject = new Subject<string>();
   private readonly feePlanSearchSubject = new Subject<string>();
@@ -69,9 +71,13 @@ export class CreateContractComponent {
     this.contractService
       .apiContractPost({ studentId: raw.studentId!, feePlanId: raw.feePlanId!, startDate, notes: raw.notes || null })
       .subscribe({
-        next: () => {
+        next: (result: ShowContractDTO) => {
           this.isSaving.set(false);
-          this.ns.showSuccess('Contrato Criado!', 'Contrato criado com sucesso.');
+          const months = result.feePlanMonthDuration ?? 0;
+          this.ns.showSuccess(
+            'Contrato Criado!',
+            `Contrato criado com sucesso. ${months} mensalidade${months !== 1 ? 's' : ''} gerada${months !== 1 ? 's' : ''} automaticamente.`
+          );
           this.contractCreated.emit();
         },
         error: () => {
@@ -93,6 +99,8 @@ export class CreateContractComponent {
   protected onFeePlanSelected(opt: SearchOption | null): void {
     this.selectedFeePlan.set(opt);
     this.form.patchValue({ feePlanId: opt?.id ?? '' });
+    const plan = opt ? this.allFeePlans().find(p => p.id === opt.id) ?? null : null;
+    this.selectedFeePlanData.set(plan);
   }
 
   protected onFeePlanSearch(term: string): void {
@@ -117,8 +125,10 @@ export class CreateContractComponent {
   private loadFeePlans(term = ''): void {
     this.feePlanService.apiFeePlanGet(term || undefined, undefined, undefined, 1, 100).subscribe({
       next: result => {
+        const plans = result.items ?? [];
+        this.allFeePlans.set(plans);
         this.feePlanOptions.set(
-          (result.items ?? []).map((p: ShowFeePlanDTO) => ({
+          plans.map((p: ShowFeePlanDTO) => ({
             id: p.id!,
             label: `${p.name ?? ''} — R$ ${p.price?.toFixed(2) ?? '0,00'}`,
           })),
