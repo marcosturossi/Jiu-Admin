@@ -76,10 +76,16 @@ export class FinancialSummaryComponent implements OnInit {
         next: (data) => {
           const items = data?.items ?? [];
           const income = items
-            .filter((t) => normalizeTransactionType(t.type) === TransactionType.Income)
+            .filter((t) => {
+              const type = normalizeTransactionType(t.type);
+              return type === TransactionType.Income || type === TransactionType.Credit;
+            })
             .reduce((sum, t) => sum + (t.amount ?? 0), 0);
           const expenses = items
-            .filter((t) => normalizeTransactionType(t.type) === TransactionType.Expense)
+            .filter((t) => {
+              const type = normalizeTransactionType(t.type);
+              return type === TransactionType.Expense || type === TransactionType.Debit;
+            })
             .reduce((sum, t) => sum + (t.amount ?? 0), 0);
           this.totalIncome.set(income);
           this.totalExpenses.set(expenses);

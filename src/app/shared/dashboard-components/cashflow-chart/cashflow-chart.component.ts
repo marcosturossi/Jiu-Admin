@@ -129,8 +129,8 @@ export class CashflowChartComponent implements AfterViewInit, OnDestroy {
             items
               .filter((t) => {
                 const d = new Date(t.transactionDate ?? '');
-                const normalized = normalizeTransactionType(t.type);
-                return normalized === TransactionType.Income && d.getFullYear() === m.year && d.getMonth() === m.month;
+                const type = normalizeTransactionType(t.type);
+                return (type === TransactionType.Income || type === TransactionType.Credit) && d.getFullYear() === m.year && d.getMonth() === m.month;
               })
               .reduce((sum, t) => sum + (t.amount ?? 0), 0)
           );
@@ -138,8 +138,8 @@ export class CashflowChartComponent implements AfterViewInit, OnDestroy {
             items
               .filter((t) => {
                 const d = new Date(t.transactionDate ?? '');
-                const normalized = normalizeTransactionType(t.type);
-                return normalized === TransactionType.Expense && d.getFullYear() === m.year && d.getMonth() === m.month;
+                const type = normalizeTransactionType(t.type);
+                return (type === TransactionType.Expense || type === TransactionType.Debit) && d.getFullYear() === m.year && d.getMonth() === m.month;
               })
               .reduce((sum, t) => sum + (t.amount ?? 0), 0)
           );
