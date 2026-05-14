@@ -62,9 +62,6 @@ export class FinancialSummaryComponent implements OnInit {
       .split('T')[0];
     const dateTo = now.toISOString().split('T')[0];
 
-    console.log('[FinancialSummary] Loading transactions', { dateFrom, dateTo });
-    console.log('[FinancialSummary] TransactionType enum:', TransactionType);
-
     this.transactionService
       .apiFinancialTransactionGet(
         undefined,
@@ -77,24 +74,13 @@ export class FinancialSummaryComponent implements OnInit {
       )
       .subscribe({
         next: (data) => {
-          console.log('[FinancialSummary] API response:', data);
           const items = data?.items ?? [];
-          console.log('[FinancialSummary] Items count:', items.length);
-          if (items.length > 0) {
-            console.log('[FinancialSummary] First item:', items[0]);
-            console.log('[FinancialSummary] Checking type values:');
-            items.forEach((t, idx) => {
-              const normalized = normalizeTransactionType(t.type);
-              console.log(`  Item ${idx}: type=${t.type}, normalized=${normalized}, income match=${normalized === TransactionType.Income}, expense match=${normalized === TransactionType.Expense}`);
-            });
-          }
           const income = items
             .filter((t) => normalizeTransactionType(t.type) === TransactionType.Income)
             .reduce((sum, t) => sum + (t.amount ?? 0), 0);
           const expenses = items
             .filter((t) => normalizeTransactionType(t.type) === TransactionType.Expense)
             .reduce((sum, t) => sum + (t.amount ?? 0), 0);
-          console.log('[FinancialSummary] Calculated:', { income, expenses });
           this.totalIncome.set(income);
           this.totalExpenses.set(expenses);
           this.balance.set(income - expenses);
@@ -108,10 +94,8 @@ export class FinancialSummaryComponent implements OnInit {
   }
 
   private loadOverdueFees(): void {
-    console.log('[FinancialSummary] Loading overdue fees');
     this.monthlyFeeService.apiMonthlyFeeOverdueGet().subscribe({
       next: (fees) => {
-        console.log('[FinancialSummary] Overdue fees response:', fees);
         this.overdueFeeCount.set(fees?.length ?? 0);
         const total = (fees ?? []).reduce(
           (sum, f) => sum + (f.amount ?? 0),

@@ -24,10 +24,8 @@ export class OverdueFeesComponent implements OnInit {
   protected readonly error = signal('');
 
   ngOnInit(): void {
-    console.log('[OverdueFees] Loading overdue fees');
     this.monthlyFeeService.apiMonthlyFeeOverdueGet().subscribe({
       next: (data) => {
-        console.log('[OverdueFees] API response:', data);
         this.fees.set(data ?? []);
         this.loading.set(false);
       },

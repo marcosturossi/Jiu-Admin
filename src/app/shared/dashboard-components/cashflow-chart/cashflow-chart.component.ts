@@ -119,13 +119,10 @@ export class CashflowChartComponent implements AfterViewInit, OnDestroy {
     const dateFrom = new Date(months[0].year, months[0].month, 1).toISOString().split('T')[0];
     const dateTo = now.toISOString().split('T')[0];
 
-    console.log('[CashflowChart] Loading transactions', { dateFrom, dateTo, monthLabels: months.map(m => m.label) });
-
     this.transactionService
       .apiFinancialTransactionGet(undefined, undefined, dateFrom, dateTo, undefined, 1, 2000)
       .subscribe({
         next: (data) => {
-          console.log('[CashflowChart] API response items count:', data?.items?.length ?? 0);
           const items = data?.items ?? [];
           this.monthLabels = months.map((m) => m.label);
           this.incomeByMonth = months.map((m) =>
@@ -146,7 +143,6 @@ export class CashflowChartComponent implements AfterViewInit, OnDestroy {
               })
               .reduce((sum, t) => sum + (t.amount ?? 0), 0)
           );
-          console.log('[CashflowChart] Calculated:', { incomeByMonth: this.incomeByMonth, expensesByMonth: this.expensesByMonth });
           if (this.chart) {
             this.chart.setOption(this.buildOptions());
           }
