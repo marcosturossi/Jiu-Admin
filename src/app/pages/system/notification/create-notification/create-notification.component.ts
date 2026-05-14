@@ -4,6 +4,7 @@ import { NotificationService as ApiNotificationService } from '../../../../gener
 import { CreateNotificationDTO } from '../../../../generated_services/model/createNotificationDTO';
 import { NotificationType } from '../../../../generated_services/model/notificationType';
 import { NotificationService } from '../../../../services/notification.service';
+import { datetimeLocalToIso } from '../../../../utils/date.utils';
 
 @Component({
   selector: 'app-create-notification',
@@ -37,7 +38,7 @@ export class CreateNotificationComponent {
     type: [NotificationType.Info, Validators.required],
     userId: [''],
     isActive: [true],
-    expiresAt: [null as Date | null],
+    expiresAt: [null as string | null],
     actionUrl: [''],
     metadata: ['']
   });
@@ -66,7 +67,7 @@ export class CreateNotificationComponent {
       type: v.type,
       studentIds: v.userId ? [v.userId] : [],
       isActive: v.isActive,
-      expiresAt: v.expiresAt ? (v.expiresAt as Date).toISOString() : null,
+      expiresAt: datetimeLocalToIso(v.expiresAt),
       actionUrl: v.actionUrl || null,
       metadata: v.metadata || null
     } as CreateNotificationDTO;

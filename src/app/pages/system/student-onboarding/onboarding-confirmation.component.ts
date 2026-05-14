@@ -306,7 +306,7 @@ export class OnboardingConfirmationComponent {
 
   protected formatDate(date: string): string {
     if (!date) return '-';
-    return new Date(date).toLocaleDateString('pt-BR');
+    return new Date(date + 'T00:00:00Z').toLocaleDateString('pt-BR', { timeZone: 'UTC' });
   }
 
   protected getBeltName(): string {

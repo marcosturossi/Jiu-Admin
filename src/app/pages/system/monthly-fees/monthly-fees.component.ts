@@ -8,6 +8,7 @@ import { ChargeResult, FeeStatus, PaginationMonthlyFeeDTO, ShowMonthlyFeeDTO } f
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
 import { PaginationComponent } from '../../../shared/pagination/pagination.component';
+import { dateStringToIso, todayDateString } from '../../../utils/date.utils';
 
 @Component({
   selector: 'app-monthly-fees',
@@ -50,7 +51,7 @@ export class MonthlyFeesComponent {
 
   protected readonly payForm = this.fb.group({
     paidAmount: [null as number | null, [Validators.required, Validators.min(0.01)]],
-    paidAt: [new Date().toISOString().substring(0, 10), Validators.required],
+    paidAt: [todayDateString(), Validators.required],
     notes: [''],
   });
 
@@ -114,7 +115,7 @@ export class MonthlyFeesComponent {
 
   protected openPay(fee: ShowMonthlyFeeDTO): void {
     this.selected.set(fee);
-    this.payForm.reset({ paidAmount: fee.amount ?? null, paidAt: new Date().toISOString().substring(0, 10), notes: '' });
+    this.payForm.reset({ paidAmount: fee.amount ?? null, paidAt: todayDateString(), notes: '' });
     this.openedPay.set(true);
   }
 
@@ -124,7 +125,7 @@ export class MonthlyFeesComponent {
     const { paidAmount, paidAt, notes } = this.payForm.value;
     this.feeService.apiMonthlyFeeIdPayPatch(this.selected()!.id!, {
       paidAmount: paidAmount ?? undefined,
-      paidAt: paidAt ?? undefined,
+      paidAt: dateStringToIso(paidAt) ?? undefined,
       notes: notes ?? undefined,
     }).subscribe({
       next: () => {

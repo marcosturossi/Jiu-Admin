@@ -5,6 +5,7 @@ import { ShowNotificationDTO } from '../../../../generated_services/model/showNo
 import { UpdateNotificationDTO } from '../../../../generated_services/model/updateNotificationDTO';
 import { NotificationType } from '../../../../generated_services/model/notificationType';
 import { NotificationService } from '../../../../services/notification.service';
+import { datetimeLocalToIso, isoToDatetimeLocal } from '../../../../utils/date.utils';
 
 @Component({
   selector: 'app-update-notification',
@@ -39,7 +40,7 @@ export class UpdateNotificationComponent {
     type: [NotificationType.Info as NotificationType, Validators.required],
     userId: [''],
     isActive: [true],
-    expiresAt: [null as Date | null],
+    expiresAt: [null as string | null],
     actionUrl: [''],
     metadata: ['']
   });
@@ -53,7 +54,7 @@ export class UpdateNotificationComponent {
           message: n.message,
           type: n.type,
           isActive: n.isActive,
-          expiresAt: n.expiresAt ? new Date(n.expiresAt) : null,
+          expiresAt: isoToDatetimeLocal(n.expiresAt),
           actionUrl: n.actionUrl ?? '',
           metadata: n.metadata ?? ''
         });
@@ -85,7 +86,7 @@ export class UpdateNotificationComponent {
       message: v.message,
       type: v.type,
       isActive: v.isActive,
-      expiresAt: v.expiresAt ? (v.expiresAt as Date).toISOString() : null,
+      expiresAt: datetimeLocalToIso(v.expiresAt),
       actionUrl: v.actionUrl || null,
       metadata: v.metadata || null
     } as UpdateNotificationDTO;

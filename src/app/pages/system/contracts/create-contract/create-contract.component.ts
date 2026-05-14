@@ -44,7 +44,7 @@ export class CreateContractComponent {
   protected readonly form = this.fb.group({
     studentId: ['', Validators.required],
     feePlanId: ['', Validators.required],
-    startDate: [null as Date | null, Validators.required],
+    startDate: [null as string | null, Validators.required],
     notes: [''],
   });
 
@@ -64,8 +64,7 @@ export class CreateContractComponent {
     }
 
     const raw = this.form.getRawValue();
-    // <input type="date"> always yields a YYYY-MM-DD string, not a Date object.
-    const startDate = raw.startDate ? String(raw.startDate) : undefined;
+    const startDate = raw.startDate ?? undefined;
 
     this.isSaving.set(true);
     this.contractService

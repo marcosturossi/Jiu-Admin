@@ -41,7 +41,7 @@ export class CreateMedicalClearanceComponent implements OnDestroy {
 
   protected readonly form = this.fb.group({
     studentId: ['', Validators.required],
-    expiresAt: [null as Date | null, Validators.required],
+    expiresAt: [null as string | null, Validators.required],
     isApproved: [false],
     isActive: [true]
   });
@@ -137,7 +137,7 @@ export class CreateMedicalClearanceComponent implements OnDestroy {
     const v = this.form.value;
     return {
       studentId: v.studentId,
-      expiresAt: v.expiresAt as unknown as string,
+      expiresAt: v.expiresAt ?? '',
       isApproved: v.isApproved,
       isActive: v.isActive
     } as CreateMedicalClearanceDTO;

@@ -26,7 +26,7 @@ export class UpdateStudentComponent {
     phoneNumber: [''],
     firstName: [''],
     lastName: [''],
-    birthDay: [null as Date | null],
+    birthDay: [null as string | null],
     isActive: [true],
     preferredUsername: [''],
   });
@@ -40,7 +40,7 @@ export class UpdateStudentComponent {
         phoneNumber: s.phoneNumber ?? '',
         firstName: s.firstName ?? '',
         lastName: s.lastName ?? '',
-        birthDay: s.birthDay ? new Date(s.birthDay) : null,
+        birthDay: s.birthDay ?? null,
         isActive: s.isActive,
         preferredUsername: s.preferredUsername ?? '',
       });
@@ -69,7 +69,7 @@ export class UpdateStudentComponent {
       phoneNumber: v.phoneNumber || null,
       firstName: v.firstName || null,
       lastName: v.lastName || null,
-      birthDay: v.birthDay instanceof Date ? v.birthDay.toISOString().split('T')[0] : (v.birthDay ?? null),
+      birthDay: v.birthDay ?? null,
       isActive: v.isActive ?? true,
       preferredUsername: v.preferredUsername || null,
     } as UpdateStudentDTO;

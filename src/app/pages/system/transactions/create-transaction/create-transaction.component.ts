@@ -3,6 +3,7 @@ import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { FinancialTransactionService } from '../../../../generated_services/api/financialTransaction.service';
 import { ShowTransactionCategoryDTO, TransactionType } from '../../../../generated_services';
 import { NotificationService } from '../../../../services/notification.service';
+import { todayDateString } from '../../../../utils/date.utils';
 import { SearchOption } from '../../../../shared/search-select/search-option';
 import { SearchSelectComponent } from '../../../../shared/search-select/search-select.component';
 
@@ -46,7 +47,7 @@ export class CreateTransactionComponent {
     transactionCategoryId: [null as string | null],
     description: [''],
     amount: [null as number | null, [Validators.required, Validators.min(0.01)]],
-    transactionDate: [new Date().toISOString().substring(0, 10), Validators.required],
+    transactionDate: [todayDateString(), Validators.required],
     reference: [''],
   });
 

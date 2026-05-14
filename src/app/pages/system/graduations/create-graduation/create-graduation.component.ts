@@ -7,6 +7,7 @@ import { BeltService } from '../../../../generated_services/api/belt.service';
 import { StudentsService } from '../../../../generated_services/api/students.service';
 import { CreateGraduationDTO, ShowBeltDTO, ShowStudentDTO } from '../../../../generated_services';
 import { NotificationService } from '../../../../services/notification.service';
+import { todayDateString } from '../../../../utils/date.utils';
 import { SearchOption } from '../../../../shared/search-select/search-option';
 import { SearchSelectComponent } from '../../../../shared/search-select/search-select.component';
 
@@ -40,7 +41,7 @@ export class CreateGraduationComponent {
   protected readonly form = this.fb.group({
     studentId: ['', Validators.required],
     beltId: ['', Validators.required],
-    graduationDate: [new Date().toISOString().split('T')[0], Validators.required],
+    graduationDate: [todayDateString(), Validators.required],
   });
 
   constructor() {

@@ -46,14 +46,14 @@
           @for (fee of items()?.items ?? []; track fee.id) {
             <tr>
               <td class="student-cell">{{ fee.studentName || '—' }}</td>
-              <td>{{ fee.dueDate | date:'dd/MM/yyyy' }}</td>
+              <td>{{ fee.dueDate | date:'dd/MM/yyyy':'UTC' }}</td>
               <td>{{ fee.amount | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}</td>
               <td>
                 <span [class]="'badge ' + ({'secondary':'bg-secondary','success':'bg-success','danger':'bg-danger','warn':'bg-warning text-dark'})[getStatusSeverity(fee.status)]">
                   {{ getStatusLabel(fee.status) }}
                 </span>
               </td>
-              <td>{{ fee.paidAt ? (fee.paidAt | date:'dd/MM/yyyy') : '—' }}</td>
+              <td>{{ fee.paidAt ? (fee.paidAt | date:'dd/MM/yyyy':'UTC') : '—' }}</td>
               <td>{{ fee.paidAmount != null ? (fee.paidAmount | currency:'BRL':'symbol':'1.2-2':'pt-BR') : '—' }}</td>
               <td class="notes-cell">{{ fee.notes || '—' }}</td>
               <td class="text-center action-cell">

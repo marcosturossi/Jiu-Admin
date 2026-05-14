@@ -54,7 +54,7 @@
               <td [class.amount-income]="isPositiveType(transaction.type)" [class.amount-expense]="isNegativeType(transaction.type)">
                 {{ transaction.amount | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}
               </td>
-              <td>{{ transaction.transactionDate | date:'dd/MM/yyyy' }}</td>
+              <td>{{ transaction.transactionDate | date:'dd/MM/yyyy':'UTC' }}</td>
               <td>{{ transaction.reference || '—' }}</td>
               <td class="text-center">
                 <button type="button" class="btn btn-sm btn-outline-info" (click)="openEdit(transaction)"><i class="bi bi-pencil"></i></button>

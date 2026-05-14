@@ -6,6 +6,7 @@ import { OnboardingBasicFormComponent } from './onboarding-basic-form.component'
 import { OnboardingBeltFormComponent } from './onboarding-belt-form.component';
 import { OnboardingContractFormComponent } from './onboarding-contract-form.component';
 import { OnboardingConfirmationComponent } from './onboarding-confirmation.component';
+import { todayDateString } from '../../../utils/date.utils';
 
 export interface StudentBasicInfo {
   name: string;
@@ -78,13 +79,13 @@ export class StudentOnboardingComponent implements OnInit {
   protected readonly beltInfo = signal<StudentBeltInfo>({
     beltId: '',
     graduationId: '',
-    startDate: new Date().toISOString().split('T')[0],
+    startDate: todayDateString(),
   });
 
   protected readonly contractInfo = signal<StudentContractInfo>({
     contractId: '',
     feePlanId: '',
-    startDate: new Date().toISOString().split('T')[0],
+    startDate: todayDateString(),
   });
 
   protected readonly medicalInfo = signal<StudentMedicalInfo>({
@@ -174,12 +175,12 @@ export class StudentOnboardingComponent implements OnInit {
     this.beltInfo.set({
       beltId: '',
       graduationId: '',
-      startDate: new Date().toISOString().split('T')[0],
+      startDate: todayDateString(),
     });
     this.contractInfo.set({
       contractId: '',
       feePlanId: '',
-      startDate: new Date().toISOString().split('T')[0],
+      startDate: todayDateString(),
     });
     this.medicalInfo.set({
       hasRestrictions: false,

@@ -43,7 +43,7 @@
               <td>{{ student.firstName }} {{ student.lastName }}</td>
               <td><span class="badge bg-secondary">{{ student.currentBelt }}</span></td>
               <td><span class="badge bg-info text-dark">{{ student.totalFrequencies }}</span></td>
-              <td>{{ student.birthDay | date:'dd/MM/yyyy' }}</td>
+              <td>{{ student.birthDay | date:'dd/MM/yyyy':'UTC' }}</td>
               <td>{{ student.lastLoginAt | date:'dd/MM/yyyy HH:mm' }}</td>
               <td class="text-center">
                 <button type="button" class="btn btn-sm btn-outline-info" (click)="openEdit(student)"><i class="bi bi-pencil"></i></button>

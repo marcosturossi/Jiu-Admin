@@ -39,7 +39,7 @@
                 <span [class]="'badge ' + ({'success': 'bg-success', 'warn': 'bg-warning text-dark', 'danger': 'bg-danger', 'secondary': 'bg-secondary', 'info': 'bg-info text-dark'})[getStatusSeverity(clearance)]">{{ getStatusLabel(clearance) }}</span>
               </td>
               <td>
-                {{ clearance.expiresAt | date:'dd/MM/yyyy' }}
+                {{ clearance.expiresAt | date:'dd/MM/yyyy':'UTC' }}
                 @if (clearance.daysUntilExpiry !== undefined && clearance.daysUntilExpiry >= 0) {
                   <small class="text-muted"> ({{ clearance.daysUntilExpiry }} dias)</small>
                 }

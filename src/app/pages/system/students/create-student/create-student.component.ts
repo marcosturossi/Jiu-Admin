@@ -25,7 +25,7 @@ export class CreateStudentComponent {
     phoneNumber: [''],
     firstName: [''],
     lastName: [''],
-    birthDay: [null as Date | null],
+    birthDay: [null as string | null],
     isActive: [true],
     preferredUsername: [''],
   });
@@ -51,7 +51,7 @@ export class CreateStudentComponent {
       phoneNumber: v.phoneNumber || null,
       firstName: v.firstName || null,
       lastName: v.lastName || null,
-      birthDay: v.birthDay instanceof Date ? v.birthDay.toISOString().split('T')[0] : (v.birthDay ?? null),
+      birthDay: v.birthDay ?? null,
       isActive: v.isActive ?? true,
       preferredUsername: v.preferredUsername || null,
     } as CreateStudentDTO;
