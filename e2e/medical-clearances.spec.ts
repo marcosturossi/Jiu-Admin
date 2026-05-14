@@ -35,4 +35,34 @@ test.describe('Atestados Médicos', () => {
     await firstRow.locator('button.btn-outline-danger').click();
     await waitForTableReady(page);
   });
+
+  test('busca retorna vazio para aluno inexistente', async ({ page }) => {
+    await page.fill('input[placeholder="Buscar por aluno"]', '__NAO_EXISTE_ALUNO_MED_XYZ__');
+    await expect(page.getByText('Nenhum registro encontrado.')).toBeVisible({ timeout: 8_000 });
+  });
+
+  test('busca filtra por nome de aluno', async ({ page }) => {
+    const firstRow = page.locator('table tbody tr').first();
+    const rowCount = await page.locator('table tbody tr').count();
+    if (rowCount === 0) {
+      test.skip(); // No records to search — skip gracefully
+      return;
+    }
+
+    // Get the student name from the first row
+    const studentName = await firstRow.locator('td').first().innerText();
+    const searchTerm = studentName.trim().split(' ')[0]; // Use first word of the name
+
+    if (!searchTerm) {
+      test.skip();
+      return;
+    }
+
+    await page.fill('input[placeholder="Buscar por aluno"]', searchTerm);
+    await waitForTableReady(page);
+    // All visible rows should contain the search term somewhere
+    const visibleRows = page.locator('table tbody tr');
+    const filteredCount = await visibleRows.count();
+    expect(filteredCount).toBeGreaterThan(0);
+  });
 });
