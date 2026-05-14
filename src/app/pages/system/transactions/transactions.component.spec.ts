@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { of, throwError } from 'rxjs';
 import { registerLocaleData } from '@angular/common';
 import localePt from '@angular/common/locales/pt';
@@ -113,14 +113,15 @@ describe('TransactionsComponent', () => {
     expect(transactionService.apiFinancialTransactionGet).toHaveBeenCalled();
   });
 
-  it('should update search term and reload on onSearch', () => {
+  it('should update search term and reload on onSearch', fakeAsync(() => {
     (component as any).currentPage.set(2);
     transactionService.apiFinancialTransactionGet.calls.reset();
     (component as any).onSearch('teste');
+    tick(400);
     expect((component as any).searchTerm()).toBe('teste');
     expect((component as any).currentPage()).toBe(1);
     expect(transactionService.apiFinancialTransactionGet).toHaveBeenCalled();
-  });
+  }));
 
   it('should update page and reload on onPageChange', () => {
     transactionService.apiFinancialTransactionGet.calls.reset();
