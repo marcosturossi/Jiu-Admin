@@ -24,12 +24,15 @@ export class OverdueFeesComponent implements OnInit {
   protected readonly error = signal('');
 
   ngOnInit(): void {
+    console.log('[OverdueFees] Loading overdue fees');
     this.monthlyFeeService.apiMonthlyFeeOverdueGet().subscribe({
       next: (data) => {
+        console.log('[OverdueFees] API response:', data);
         this.fees.set(data ?? []);
         this.loading.set(false);
       },
-      error: () => {
+      error: (err) => {
+        console.error('[OverdueFees] API error:', err);
         this.error.set('Não foi possível carregar as mensalidades vencidas.');
         this.loading.set(false);
       },

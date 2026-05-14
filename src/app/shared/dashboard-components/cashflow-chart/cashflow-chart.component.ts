@@ -14,6 +14,28 @@ import { TransactionType } from '../../../generated_services/model/transactionTy
 
 const PT_MONTHS = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
 
+// Map backend values to frontend enum string values
+// The backend might return numeric 0/1 or strings 'Income'/'Expense'
+function normalizeTransactionType(type: any): TransactionType | undefined {
+  // Handle string values
+  if (type === 'Income' || type === TransactionType.Income) return TransactionType.Income;
+  if (type === 'Expense' || type === TransactionType.Expense) return TransactionType.Expense;
+  // Handle numeric values (0 = Income, 1 = Expense from old backend)
+  if (type === 0 || type === '0') return TransactionType.Income;
+  if (type === 1 || type === '1') return TransactionType.Expense;
+  // Handle other string enum values
+  if (type === 'Debit' || type === TransactionType.Debit) return TransactionType.Debit;
+  if (type === 'Credit' || type === TransactionType.Credit) return TransactionType.Credit;
+  if (type === 'Refund' || type === TransactionType.Refund) return TransactionType.Refund;
+  if (type === 'Adjustment' || type === TransactionType.Adjustment) return TransactionType.Adjustment;
+  // Handle numeric values for new enum order (2-5)
+  if (type === 2) return TransactionType.Refund;
+  if (type === 3) return TransactionType.Adjustment;
+  if (type === 4) return TransactionType.Income;
+  if (type === 5) return TransactionType.Expense;
+  return undefined;
+}
+
 @Component({
   selector: 'app-cashflow-chart',
   standalone: true,
@@ -97,17 +119,21 @@ export class CashflowChartComponent implements AfterViewInit, OnDestroy {
     const dateFrom = new Date(months[0].year, months[0].month, 1).toISOString().split('T')[0];
     const dateTo = now.toISOString().split('T')[0];
 
+    console.log('[CashflowChart] Loading transactions', { dateFrom, dateTo, monthLabels: months.map(m => m.label) });
+
     this.transactionService
       .apiFinancialTransactionGet(undefined, undefined, dateFrom, dateTo, undefined, 1, 2000)
       .subscribe({
         next: (data) => {
+          console.log('[CashflowChart] API response items count:', data?.items?.length ?? 0);
           const items = data?.items ?? [];
           this.monthLabels = months.map((m) => m.label);
           this.incomeByMonth = months.map((m) =>
             items
               .filter((t) => {
                 const d = new Date(t.transactionDate ?? '');
-                return t.type === TransactionType.Income && d.getFullYear() === m.year && d.getMonth() === m.month;
+                const normalized = normalizeTransactionType(t.type);
+                return normalized === TransactionType.Income && d.getFullYear() === m.year && d.getMonth() === m.month;
               })
               .reduce((sum, t) => sum + (t.amount ?? 0), 0)
           );
@@ -115,15 +141,19 @@ export class CashflowChartComponent implements AfterViewInit, OnDestroy {
             items
               .filter((t) => {
                 const d = new Date(t.transactionDate ?? '');
-                return t.type === TransactionType.Expense && d.getFullYear() === m.year && d.getMonth() === m.month;
+                const normalized = normalizeTransactionType(t.type);
+                return normalized === TransactionType.Expense && d.getFullYear() === m.year && d.getMonth() === m.month;
               })
               .reduce((sum, t) => sum + (t.amount ?? 0), 0)
           );
+          console.log('[CashflowChart] Calculated:', { incomeByMonth: this.incomeByMonth, expensesByMonth: this.expensesByMonth });
           if (this.chart) {
             this.chart.setOption(this.buildOptions());
           }
         },
-        error: () => {},
+        error: (err) => {
+          console.error('[CashflowChart] API error:', err);
+        },
       });
   }
 
