@@ -1,7 +1,5 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
-import { Subject, debounceTime } from 'rxjs';
 import { MedicalClearanceService } from '../../../generated_services/api/medicalClearance.service';
 import { ShowMedicalClearanceDTO } from '../../../generated_services/model/showMedicalClearanceDTO';
 import { CreateMedicalClearanceComponent } from './create-medical-clearance/create-medical-clearance.component';
@@ -10,10 +8,11 @@ import { NotificationService } from '../../../services/notification.service';
 import { PaginationMedicalClearanceDTO } from '../../../generated_services';
 import { PaginationComponent } from '../../../shared/pagination/pagination.component';
 import { BlobViewerComponent } from '../../../shared/blob-viewer/blob-viewer.component';
+import { FilterComponent } from '../../../shared/filter/filter.component';
 
 @Component({
   selector: 'app-medical-clearances',
-  imports: [DatePipe, CreateMedicalClearanceComponent, PaginationComponent, BlobViewerComponent],
+  imports: [DatePipe, CreateMedicalClearanceComponent, PaginationComponent, BlobViewerComponent, FilterComponent],
   templateUrl: './medical-clearances.component.html',
   styleUrl: './medical-clearances.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -22,9 +21,6 @@ export class MedicalClearancesComponent {
   private readonly medicalClearanceService = inject(MedicalClearanceService);
   private readonly subnavService = inject(SubnavService);
   private readonly ns = inject(NotificationService);
-  private readonly destroyRef = inject(DestroyRef);
-
-  private readonly searchSubject = new Subject<string>();
 
   protected readonly isLoading = signal(false);
   protected readonly items = signal<PaginationMedicalClearanceDTO | null>(null);
@@ -38,11 +34,6 @@ export class MedicalClearancesComponent {
 
   constructor() {
     this.subnavService.setTitle('Atestados Médicos');
-    this.searchSubject.pipe(debounceTime(400), takeUntilDestroyed(this.destroyRef)).subscribe(term => {
-      this.filterText.set(term);
-      this.currentPage.set(1);
-      this.load();
-    });
     this.load();
   }
 
@@ -59,7 +50,8 @@ export class MedicalClearancesComponent {
     });
   }
 
-  protected onSearch(term: string): void { this.searchSubject.next(term); }
+  protected onSearch(term: string): void { this.filterText.set(term); this.currentPage.set(1); this.load(); }
+  protected onSearchReset(): void { this.filterText.set(''); this.currentPage.set(1); this.load(); }
 
   protected onPageChange(p: number): void { this.currentPage.set(p); this.load(); }
   protected onPageSizeChange(s: number): void { this.pageSize.set(s); this.currentPage.set(1); this.load(); }

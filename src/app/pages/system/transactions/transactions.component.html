@@ -1,20 +1,16 @@
 <section class="page-section">
   <div class="page-toolbar">
-    <input
-      type="text"
-      class="form-control"
-      [ngModel]="searchTerm()"
-      (ngModelChange)="onSearch($event)"
-      placeholder="Buscar transação..." />
-    <select
-      class="form-select"
-      [ngModel]="filterType()"
-      (ngModelChange)="filterType.set($event); onFilterChange()">
-      <option value="">Tipo</option>
-      @for (opt of typeOptions; track opt.value) {
-        <option [value]="opt.value">{{ opt.label }}</option>
-      }
-    </select>
+    <app-filter [placeholder]="'Buscar transação'" [value]="searchTerm()" (searchChange)="onSearch($event)" (searchReset)="onSearchReset()">
+      <select
+        class="form-select"
+        [ngModel]="filterType()"
+        (ngModelChange)="filterType.set($event); onFilterChange()">
+        <option value="">Tipo</option>
+        @for (opt of typeOptions; track opt.value) {
+          <option [value]="opt.value">{{ opt.label }}</option>
+        }
+      </select>
+    </app-filter>
     <button type="button" class="btn btn-primary" (click)="openCreate()">
       <i class="bi bi-plus-lg me-1"></i>Nova Transação
     </button>

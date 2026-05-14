@@ -1,7 +1,5 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
-import { Subject, debounceTime } from 'rxjs';
 import { NotificationService as ApiNotificationService } from '../../../generated_services/api/notification.service';
 import { ShowNotificationDTO } from '../../../generated_services/model/showNotificationDTO';
 import { CreateNotificationComponent } from './create-notification/create-notification.component';
@@ -10,11 +8,12 @@ import { NotificationType } from '../../../generated_services/model/notification
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
 import { PaginationNotificationDTO } from '../../../generated_services';
+import { FilterComponent } from '../../../shared/filter/filter.component';
 import { PaginationComponent } from '../../../shared/pagination/pagination.component';
 
 @Component({
   selector: 'app-notification',
-  imports: [DatePipe, CreateNotificationComponent, UpdateNotificationComponent, PaginationComponent],
+  imports: [DatePipe, FilterComponent, CreateNotificationComponent, UpdateNotificationComponent, PaginationComponent],
   templateUrl: './notification.component.html',
   styleUrl: './notification.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -23,9 +22,6 @@ export class NotificationComponent {
   private readonly apiNotificationService = inject(ApiNotificationService);
   private readonly subnavService = inject(SubnavService);
   private readonly ns = inject(NotificationService);
-  private readonly destroyRef = inject(DestroyRef);
-
-  private readonly searchSubject = new Subject<string>();
 
   protected readonly isLoading = signal(false);
   protected readonly items = signal<PaginationNotificationDTO | null>(null);
@@ -38,11 +34,6 @@ export class NotificationComponent {
 
   constructor() {
     this.subnavService.setTitle('Notificações');
-    this.searchSubject.pipe(debounceTime(400), takeUntilDestroyed(this.destroyRef)).subscribe(term => {
-      this.filterText.set(term);
-      this.currentPage.set(1);
-      this.load();
-    });
     this.load();
   }
 
@@ -58,7 +49,8 @@ export class NotificationComponent {
     });
   }
 
-  protected onSearch(term: string): void { this.searchSubject.next(term); }
+  protected onSearch(term: string): void { this.filterText.set(term); this.currentPage.set(1); this.load(); }
+  protected onSearchReset(): void { this.filterText.set(''); this.currentPage.set(1); this.load(); }
 
   protected onPageChange(p: number): void { this.currentPage.set(p); this.load(); }
   protected onPageSizeChange(s: number): void { this.pageSize.set(s); this.currentPage.set(1); this.load(); }

@@ -1,10 +1,9 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { CurrencyPipe } from '@angular/common';
-import { Subject, debounceTime } from 'rxjs';
 import { FeePlanService, PaginationFeePlanDTO, ShowFeePlanDTO } from '../../../generated_services';
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
+import { FilterComponent } from '../../../shared/filter/filter.component';
 import { PaginationComponent } from '../../../shared/pagination/pagination.component';
 import { CreateFeePlanComponent } from './create-fee-plan/create-fee-plan.component';
 import { UpdateFeePlanComponent } from './update-fee-plan/update-fee-plan.component';
@@ -14,6 +13,7 @@ import { UpdateFeePlanComponent } from './update-fee-plan/update-fee-plan.compon
   standalone: true,
   imports: [
     CurrencyPipe,
+    FilterComponent,
     PaginationComponent,
     CreateFeePlanComponent,
     UpdateFeePlanComponent,
@@ -26,8 +26,6 @@ export class FeePlansComponent {
   private readonly service = inject(FeePlanService);
   private readonly subnavService = inject(SubnavService);
   private readonly notificationService = inject(NotificationService);
-  private readonly destroyRef = inject(DestroyRef);
-  private readonly searchSubject = new Subject<string>();
 
   protected readonly isLoading = signal(false);
   protected readonly items = signal<PaginationFeePlanDTO | null>(null);
@@ -40,11 +38,6 @@ export class FeePlansComponent {
 
   constructor() {
     this.subnavService.setTitle('Planos de Mensalidade');
-    this.searchSubject.pipe(debounceTime(400), takeUntilDestroyed(this.destroyRef)).subscribe(term => {
-      this.filterText.set(term);
-      this.currentPage.set(1);
-      this.load();
-    });
     this.load();
   }
 
@@ -58,7 +51,8 @@ export class FeePlansComponent {
 
   protected onPageChange(page: number): void { this.currentPage.set(page); this.load(); }
   protected onPageSizeChange(size: number): void { this.pageSize.set(size); this.currentPage.set(1); this.load(); }
-  protected onSearch(term: string): void { this.searchSubject.next(term); }
+  protected onSearch(term: string): void { this.filterText.set(term); this.currentPage.set(1); this.load(); }
+  protected onSearchReset(): void { this.filterText.set(''); this.currentPage.set(1); this.load(); }
   protected openCreate(): void { this.openedCreate.set(true); }
   protected openEdit(item: ShowFeePlanDTO): void { this.selected.set(item); this.openedUpdate.set(true); }
   protected onCreated(): void { this.openedCreate.set(false); this.load(); }

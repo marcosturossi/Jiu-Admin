@@ -1,13 +1,12 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { DatePipe, CurrencyPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Subject, debounceTime } from 'rxjs';
 import { FinancialTransactionService } from '../../../generated_services/api/financialTransaction.service';
 import { TransactionCategoryService } from '../../../generated_services/api/transactionCategory.service';
 import { PaginationTransactionDTO, ShowTransactionDTO, ShowTransactionCategoryDTO, TransactionType } from '../../../generated_services';
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
+import { FilterComponent } from '../../../shared/filter/filter.component';
 import { PaginationComponent } from '../../../shared/pagination/pagination.component';
 import { CreateTransactionComponent } from './create-transaction/create-transaction.component';
 import { UpdateTransactionComponent } from './update-transaction/update-transaction.component';
@@ -19,6 +18,7 @@ import { UpdateTransactionComponent } from './update-transaction/update-transact
     DatePipe,
     CurrencyPipe,
     FormsModule,
+    FilterComponent,
     PaginationComponent,
     CreateTransactionComponent,
     UpdateTransactionComponent,
@@ -32,8 +32,6 @@ export class TransactionsComponent {
   private readonly categoryService = inject(TransactionCategoryService);
   private readonly subnavService = inject(SubnavService);
   private readonly ns = inject(NotificationService);
-  private readonly destroyRef = inject(DestroyRef);
-  private readonly searchSubject = new Subject<string>();
 
   protected readonly isLoading = signal(false);
   protected readonly items = signal<PaginationTransactionDTO | null>(null);
@@ -58,11 +56,6 @@ export class TransactionsComponent {
 
   constructor() {
     this.subnavService.setTitle('Transações');
-    this.searchSubject.pipe(debounceTime(400), takeUntilDestroyed(this.destroyRef)).subscribe(term => {
-      this.searchTerm.set(term);
-      this.currentPage.set(1);
-      this.load();
-    });
     this.load();
     this.loadCategories();
   }
@@ -118,7 +111,8 @@ export class TransactionsComponent {
   protected onPageChange(page: number): void { this.currentPage.set(page); this.load(); }
   protected onPageSizeChange(size: number): void { this.pageSize.set(size); this.currentPage.set(1); this.load(); }
   protected onFilterChange(): void { this.currentPage.set(1); this.load(); }
-  protected onSearch(term: string): void { this.searchSubject.next(term); }
+  protected onSearch(term: string): void { this.searchTerm.set(term); this.currentPage.set(1); this.load(); }
+  protected onSearchReset(): void { this.searchTerm.set(''); this.currentPage.set(1); this.load(); }
   protected onCategorySearch(term: string): void { this.loadCategories(term); }
   protected openCreate(): void { this.openedCreate.set(true); }
   protected openEdit(item: ShowTransactionDTO): void { this.selected.set(item); this.openedUpdate.set(true); }

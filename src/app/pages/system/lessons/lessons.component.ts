@@ -1,19 +1,19 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
-import { Subject, debounceTime } from 'rxjs';
 import { ShowLessonDTO } from '../../../generated_services/model/showLessonDTO';
 import { LessonService, PaginationLessonDTO } from '../../../generated_services';
 import { CreateLessonComponent } from './create-lesson/create-lesson.component';
 import { UpdateLessonComponent } from './update-lesson/update-lesson.component';
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
+import { FilterComponent } from '../../../shared/filter/filter.component';
 import { PaginationComponent } from '../../../shared/pagination/pagination.component';
 
 @Component({
   selector: 'app-lessons',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    FilterComponent,
     PaginationComponent,
     CreateLessonComponent,
     UpdateLessonComponent,
@@ -26,8 +26,6 @@ export class LessonsComponent {
   private readonly lessonService = inject(LessonService);
   private readonly subnavService = inject(SubnavService);
   private readonly notificationService = inject(NotificationService);
-  private readonly destroyRef = inject(DestroyRef);
-  private readonly searchSubject = new Subject<string>();
 
   protected readonly isLoading = signal(false);
   protected readonly items = signal<PaginationLessonDTO | null>(null);
@@ -40,11 +38,6 @@ export class LessonsComponent {
 
   constructor() {
     this.subnavService.setTitle('Aulas');
-    this.searchSubject.pipe(debounceTime(400), takeUntilDestroyed(this.destroyRef)).subscribe(term => {
-      this.filterText.set(term);
-      this.currentPage.set(1);
-      this.load();
-    });
     this.load();
   }
 
@@ -61,7 +54,8 @@ export class LessonsComponent {
 
   protected onPageChange(p: number): void { this.currentPage.set(p); this.load(); }
   protected onPageSizeChange(s: number): void { this.pageSize.set(s); this.currentPage.set(1); this.load(); }
-  protected onSearch(term: string): void { this.searchSubject.next(term); }
+  protected onSearch(term: string): void { this.filterText.set(term); this.currentPage.set(1); this.load(); }
+  protected onSearchReset(): void { this.filterText.set(''); this.currentPage.set(1); this.load(); }
   protected openCreate(): void { this.openedCreate.set(true); }
   protected openEdit(item: ShowLessonDTO): void { this.selected.set(item); this.openedUpdate.set(true); }
   protected onCreated(): void { this.openedCreate.set(false); this.load(); }

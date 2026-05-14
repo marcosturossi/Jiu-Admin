@@ -1,14 +1,6 @@
 <section class="page-section">
   <div class="page-toolbar">
-    <div class="input-group" style="width: 18rem">
-      <span class="input-group-text"><i class="bi bi-search"></i></span>
-      <input type="text" class="form-control" placeholder="Buscar graduação" [value]="filterText()" (input)="onSearch($any($event.target).value)" />
-      @if (filterText()) {
-        <button type="button" class="btn btn-outline-secondary" (click)="onSearch('')">
-          <i class="bi bi-x-lg"></i>
-        </button>
-      }
-    </div>
+    <app-filter [placeholder]="'Buscar graduação'" [value]="filterText()" (searchChange)="onSearch($event)" (searchReset)="onSearchReset()" />
     <button type="button" class="btn btn-primary" (click)="openCreate()">
       <i class="bi bi-plus-lg me-1"></i>Nova Graduação
     </button>

@@ -1,6 +1,5 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { FilterComponent } from './filter.component';
-import { OperationEnum } from '../interface/filter.interface';
 
 describe('FilterComponent', () => {
   let component: FilterComponent;
@@ -12,44 +11,73 @@ describe('FilterComponent', () => {
     }).compileComponents();
     fixture = TestBed.createComponent(FilterComponent);
     component = fixture.componentInstance;
-    fixture.componentRef.setInput('filterKeys', ['name', 'email']);
     fixture.detectChanges();
   });
 
-  it('should create', () => { expect(component).toBeTruthy(); });
-
-  it('should emit closeFilterEvent when close() is called', () => {
-    let emitted = false;
-    component.closeFilterEvent.subscribe(() => (emitted = true));
-    component.close();
-    expect(emitted).toBeTrue();
+  it('should create', () => {
+    expect(component).toBeTruthy();
   });
 
-  it('should not emit setFilterEvent when save() called with no key selected', () => {
-    let emitted = false;
-    component.setFilterEvent.subscribe(() => (emitted = true));
-    (component as any).selectedFilterKey.set('');
-    component.save();
-    expect(emitted).toBeFalse();
+  it('should use default placeholder "Buscar..."', () => {
+    const input: HTMLInputElement = fixture.nativeElement.querySelector('.filter-bar__input');
+    expect(input.placeholder).toBe('Buscar...');
   });
 
-  it('should emit setFilterEvent and closeFilterEvent when save() called with key set', () => {
-    const events: any[] = [];
-    let closedCount = 0;
-    component.setFilterEvent.subscribe(e => events.push(e));
-    component.closeFilterEvent.subscribe(() => closedCount++);
-    (component as any).selectedFilterKey.set('name');
-    (component as any).value.set('Carlos');
-    (component as any).selectedOperation.set(OperationEnum.like);
-    component.save();
-    expect(events.length).toBe(1);
-    expect(events[0]).toEqual({ key: 'name', operation: OperationEnum.like, value: 'Carlos' });
-    expect(closedCount).toBe(1);
+  it('should reflect custom placeholder input', () => {
+    fixture.componentRef.setInput('placeholder', 'Buscar aluno');
+    fixture.detectChanges();
+    const input: HTMLInputElement = fixture.nativeElement.querySelector('.filter-bar__input');
+    expect(input.placeholder).toBe('Buscar aluno');
   });
 
-  it('should expose OperationEnum values as operations array', () => {
-    const ops = (component as any).operations as string[];
-    expect(ops).toContain(OperationEnum.eq);
-    expect(ops).toContain(OperationEnum.like);
+  it('should not show clear button when inputValue is empty', () => {
+    expect(fixture.nativeElement.querySelector('.filter-bar__clear')).toBeNull();
   });
+
+  it('should show clear button when inputValue is not empty', fakeAsync(() => {
+    const input: HTMLInputElement = fixture.nativeElement.querySelector('.filter-bar__input');
+    input.value = 'hello';
+    input.dispatchEvent(new Event('input'));
+    tick(500);
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('.filter-bar__clear')).not.toBeNull();
+  }));
+
+  it('should emit searchChange after 400ms debounce', fakeAsync(() => {
+    const emitted: string[] = [];
+    component.searchChange.subscribe(v => emitted.push(v));
+
+    const input: HTMLInputElement = fixture.nativeElement.querySelector('.filter-bar__input');
+    input.value = 'test';
+    input.dispatchEvent(new Event('input'));
+    tick(399);
+    expect(emitted.length).toBe(0);
+    tick(1);
+    expect(emitted).toEqual(['test']);
+  }));
+
+  it('should emit searchReset and clear inputValue when clear button clicked', fakeAsync(() => {
+    let resetCount = 0;
+    component.searchReset.subscribe(() => resetCount++);
+
+    const input: HTMLInputElement = fixture.nativeElement.querySelector('.filter-bar__input');
+    input.value = 'abc';
+    input.dispatchEvent(new Event('input'));
+    tick(500);
+    fixture.detectChanges();
+
+    const clearBtn: HTMLButtonElement = fixture.nativeElement.querySelector('.filter-bar__clear');
+    clearBtn.click();
+    fixture.detectChanges();
+
+    expect(resetCount).toBe(1);
+    expect((component as any).inputValue()).toBe('');
+  }));
+
+  it('should sync parent value input to internal inputValue', fakeAsync(() => {
+    fixture.componentRef.setInput('value', 'from parent');
+    tick(0);
+    fixture.detectChanges();
+    expect((component as any).inputValue()).toBe('from parent');
+  }));
 });

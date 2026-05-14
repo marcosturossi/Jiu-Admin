@@ -1,20 +1,13 @@
 <section class="page-section">
   <div class="page-toolbar">
-    <div class="input-group" style="width: 18rem">
-      <span class="input-group-text"><i class="bi bi-search"></i></span>
-      <input type="text" class="form-control" placeholder="Buscar contrato" [value]="filterText()" (input)="onSearch($any($event.target).value)" />
-      @if (filterText()) {
-        <button type="button" class="btn btn-outline-secondary" (click)="onSearch('')">
-          <i class="bi bi-x-lg"></i>
-        </button>
-      }
-    </div>
-    <select class="form-select" style="width:12rem" [ngModel]="filterStatus()" (ngModelChange)="filterStatus.set($event); onFilterChange()">
-      <option value="" disabled>Filtrar por status</option>
-      @for (opt of statusOptions; track opt.value) {
-        <option [value]="opt.value">{{ opt.label }}</option>
-      }
-    </select>
+    <app-filter [placeholder]="'Buscar contrato'" [value]="filterText()" (searchChange)="onSearch($event)" (searchReset)="onSearchReset()">
+      <select class="form-select" style="width:12rem" [ngModel]="filterStatus()" (ngModelChange)="filterStatus.set($event); onFilterChange()">
+        <option value="" disabled>Filtrar por status</option>
+        @for (opt of statusOptions; track opt.value) {
+          <option [value]="opt.value">{{ opt.label }}</option>
+        }
+      </select>
+    </app-filter>
     <button type="button" class="btn btn-primary" (click)="openCreate()"><i class="bi bi-plus-lg me-1"></i>Novo Contrato</button>
   </div>
 

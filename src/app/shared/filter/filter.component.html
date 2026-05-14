@@ -1,36 +1,24 @@
-<div class="filter-panel">
-  <div class="filter-row">
-    <select
-      class="form-select"
-      [ngModel]="selectedFilterKey()"
-      (ngModelChange)="selectedFilterKey.set($event)"
-    >
-      <option value="" disabled>Campo</option>
-      @for (key of filterKeys(); track key) {
-        <option [value]="key">{{ key }}</option>
-      }
-    </select>
-    <select
-      class="form-select"
-      [ngModel]="selectedOperation()"
-      (ngModelChange)="selectedOperation.set($event)"
-    >
-      @for (op of operations; track op) {
-        <option [value]="op">{{ op }}</option>
-      }
-    </select>
+<div class="filter-bar">
+  <div class="filter-bar__search">
+    <span class="filter-bar__icon"><i class="bi bi-search"></i></span>
     <input
       type="text"
-      class="form-control"
-      [ngModel]="value()"
-      (ngModelChange)="value.set($event)"
-      placeholder="Valor"
+      class="filter-bar__input"
+      [placeholder]="placeholder()"
+      [value]="inputValue()"
+      (input)="onInput($any($event.target).value)"
+      aria-label="Buscar"
     />
+    @if (inputValue()) {
+      <button
+        type="button"
+        class="filter-bar__clear"
+        (click)="onClear()"
+        aria-label="Limpar busca"
+      >
+        <i class="bi bi-x-lg"></i>
+      </button>
+    }
   </div>
-  <div class="filter-actions">
-    <button type="button" class="btn btn-outline-secondary" (click)="close()">Cancelar</button>
-    <button type="button" class="btn btn-primary" (click)="save()">
-      <i class="bi bi-funnel me-1"></i>Filtrar
-    </button>
-  </div>
+  <ng-content />
 </div>

@@ -1,12 +1,11 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { DatePipe, CurrencyPipe } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
-import { Subject, debounceTime } from 'rxjs';
 import { MonthlyFeeService } from '../../../generated_services/api/monthlyFee.service';
 import { ChargeResult, FeeStatus, PaginationMonthlyFeeDTO, ShowMonthlyFeeDTO } from '../../../generated_services';
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
+import { FilterComponent } from '../../../shared/filter/filter.component';
 import { PaginationComponent } from '../../../shared/pagination/pagination.component';
 import { dateStringToIso, todayDateString } from '../../../utils/date.utils';
 
@@ -18,6 +17,7 @@ import { dateStringToIso, todayDateString } from '../../../utils/date.utils';
     CurrencyPipe,
     FormsModule,
     ReactiveFormsModule,
+    FilterComponent,
     PaginationComponent,
   ],
   templateUrl: './monthly-fees.component.html',
@@ -29,9 +29,7 @@ export class MonthlyFeesComponent {
   private readonly subnavService = inject(SubnavService);
   private readonly ns = inject(NotificationService);
   private readonly fb = inject(FormBuilder);
-  private readonly destroyRef = inject(DestroyRef);
 
-  private readonly searchSubject = new Subject<string>();
 
   protected readonly isLoading = signal(false);
   protected readonly isPaying = signal(false);
@@ -65,11 +63,6 @@ export class MonthlyFeesComponent {
 
   constructor() {
     this.subnavService.setTitle('Mensalidades');
-    this.searchSubject.pipe(debounceTime(400), takeUntilDestroyed(this.destroyRef)).subscribe(term => {
-      this.filterText.set(term);
-      this.currentPage.set(1);
-      this.load();
-    });
     this.load();
   }
 
@@ -110,7 +103,8 @@ export class MonthlyFeesComponent {
 
   protected onPageChange(page: number): void { this.currentPage.set(page); this.load(); }
   protected onPageSizeChange(size: number): void { this.pageSize.set(size); this.currentPage.set(1); this.load(); }
-  protected onSearch(term: string): void { this.searchSubject.next(term); }
+  protected onSearch(term: string): void { this.filterText.set(term); this.currentPage.set(1); this.load(); }
+  protected onSearchReset(): void { this.filterText.set(''); this.currentPage.set(1); this.load(); }
   protected onFilterChange(): void { this.currentPage.set(1); this.load(); }
 
   protected openPay(fee: ShowMonthlyFeeDTO): void {

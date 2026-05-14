@@ -1,11 +1,10 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
-import { Subject, debounceTime } from 'rxjs';
 import { NoticesService } from '../../../generated_services/api/notices.service';
 import { ShowNoticesDTO } from '../../../generated_services/model/showNoticesDTO';
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
+import { FilterComponent } from '../../../shared/filter/filter.component';
 import { CreateNoticeComponent } from './create-notice/create-notice.component';
 import { UpdateNoticeComponent } from './update-notice/update-notice.component';
 
@@ -13,6 +12,7 @@ import { UpdateNoticeComponent } from './update-notice/update-notice.component';
   selector: 'app-notices',
   imports: [
     DatePipe,
+    FilterComponent,
     CreateNoticeComponent,
     UpdateNoticeComponent,
   ],
@@ -24,9 +24,7 @@ export class NoticesComponent {
   private readonly noticesService = inject(NoticesService);
   private readonly subnavService = inject(SubnavService);
   private readonly notificationService = inject(NotificationService);
-  private readonly destroyRef = inject(DestroyRef);
 
-  private readonly searchSubject = new Subject<string>();
 
   protected readonly isLoading = signal(false);
   protected readonly items = signal<ShowNoticesDTO[]>([]);
@@ -37,10 +35,6 @@ export class NoticesComponent {
 
   constructor() {
     this.subnavService.setTitle('Avisos');
-    this.searchSubject.pipe(debounceTime(400), takeUntilDestroyed(this.destroyRef)).subscribe(term => {
-      this.filterText.set(term);
-      this.load();
-    });
     this.load();
   }
 
@@ -52,7 +46,8 @@ export class NoticesComponent {
     });
   }
 
-  protected onSearch(term: string): void { this.searchSubject.next(term); }
+  protected onSearch(term: string): void { this.filterText.set(term); this.load(); }
+  protected onSearchReset(): void { this.filterText.set(''); this.load(); }
 
   protected openCreate(): void { this.openedCreate.set(true); }
   protected openEdit(item: ShowNoticesDTO): void { this.selected.set(item); this.openedUpdate.set(true); }
