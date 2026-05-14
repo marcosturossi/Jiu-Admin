@@ -13,11 +13,11 @@
 export interface ShowFrequencyDTO { 
     id?: string;
     createdAt?: string;
-    studentId?: string;
     studentName?: string | null;
     graduationId?: string;
-    lessonId?: string;
     lessonTitle?: string | null;
     lessonScheduledDate?: string;
+    studentId: string;
+    lessonId: string;
 }
 

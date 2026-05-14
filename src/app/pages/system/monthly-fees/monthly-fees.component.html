@@ -57,12 +57,12 @@
               <td>{{ fee.paidAmount != null ? (fee.paidAmount | currency:'BRL':'symbol':'1.2-2':'pt-BR') : '—' }}</td>
               <td class="notes-cell">{{ fee.notes || '—' }}</td>
               <td class="text-center action-cell">
-                @if (fee.status !== FeeStatus.NUMBER_1) {
+                @if (fee.status !== FeeStatus.Paid) {
                   <button type="button" class="btn btn-sm btn-outline-success me-1" title="Registrar Pagamento" (click)="openPay(fee)">
                     <i class="bi bi-currency-dollar"></i>
                   </button>
                 }
-                @if (fee.status !== FeeStatus.NUMBER_1 && fee.status !== FeeStatus.NUMBER_3) {
+                @if (fee.status !== FeeStatus.Paid && fee.status !== FeeStatus.Cancelled) {
                   @if (fee.pixCopyPaste) {
                     <button type="button" class="btn btn-sm btn-outline-primary me-1" title="Ver PIX" (click)="openPix(fee)">
                       <i class="bi bi-qr-code"></i>
@@ -77,7 +77,7 @@
                     </button>
                   }
                 }
-                @if (fee.status === FeeStatus.NUMBER_1) {
+                @if (fee.status === FeeStatus.Paid) {
                   <button type="button" class="btn btn-sm btn-outline-secondary" title="Baixar Recibo" (click)="downloadReceipt(fee)" [disabled]="isDownloading()">
                     @if (isDownloading() && selected()?.id === fee.id) {
                       <span class="spinner-border spinner-border-sm" role="status"></span>

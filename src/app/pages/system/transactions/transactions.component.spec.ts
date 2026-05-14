@@ -12,7 +12,7 @@ import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
 import { PaginationTransactionDTO, ShowTransactionDTO, ShowTransactionCategoryDTO, TransactionType } from '../../../generated_services';
 
-const MOCK_TRANSACTION: ShowTransactionDTO = { id: 't1', description: 'Mensalidade março', amount: 150, type: TransactionType.NUMBER_0, transactionCategoryId: 'cat1' };
+const MOCK_TRANSACTION: ShowTransactionDTO = { id: 't1', description: 'Mensalidade março', amount: 150, type: TransactionType.Debit, transactionCategoryId: 'cat1' };
 const MOCK_PAGINATION: PaginationTransactionDTO = { items: [MOCK_TRANSACTION], totalCount: 1, pageNumber: 1, pageSize: 10, totalPages: 1 };
 const MOCK_CATEGORIES: ShowTransactionCategoryDTO[] = [{ id: 'cat1', name: 'Mensalidades' }];
 const MOCK_CATEGORY_PAGINATION = { items: MOCK_CATEGORIES, totalCount: 1, pageNumber: 1, pageSize: 200, totalPages: 1 };
@@ -141,8 +141,12 @@ describe('TransactionsComponent', () => {
 
   describe('getTypeLabel', () => {
     it('should return correct labels for each type', () => {
-      expect((component as any).getTypeLabel(TransactionType.NUMBER_0)).toBe('Receita');
-      expect((component as any).getTypeLabel(TransactionType.NUMBER_1)).toBe('Despesa');
+      expect((component as any).getTypeLabel(TransactionType.Debit)).toBe('Débito');
+      expect((component as any).getTypeLabel(TransactionType.Credit)).toBe('Crédito');
+      expect((component as any).getTypeLabel(TransactionType.Refund)).toBe('Reembolso');
+      expect((component as any).getTypeLabel(TransactionType.Adjustment)).toBe('Ajuste');
+      expect((component as any).getTypeLabel(TransactionType.Income)).toBe('Receita');
+      expect((component as any).getTypeLabel(TransactionType.Expense)).toBe('Despesa');
       expect((component as any).getTypeLabel(undefined)).toBe('—');
     });
   });

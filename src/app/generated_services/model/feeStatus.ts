@@ -10,12 +10,12 @@
  */
 
 
-export type FeeStatus = 0 | 1 | 2 | 3;
+export type FeeStatus = 'Pending' | 'Paid' | 'Overdue' | 'Cancelled';
 
 export const FeeStatus = {
-    NUMBER_0: 0 as FeeStatus,
-    NUMBER_1: 1 as FeeStatus,
-    NUMBER_2: 2 as FeeStatus,
-    NUMBER_3: 3 as FeeStatus
+    Pending: 'Pending' as FeeStatus,
+    Paid: 'Paid' as FeeStatus,
+    Overdue: 'Overdue' as FeeStatus,
+    Cancelled: 'Cancelled' as FeeStatus
 };
 

@@ -48,8 +48,12 @@ export class TransactionsComponent {
 
   protected readonly typeOptions = [
     { label: 'Todos', value: undefined },
-    { label: 'Receita', value: TransactionType.NUMBER_0 },
-    { label: 'Despesa', value: TransactionType.NUMBER_1 },
+    { label: 'Débito', value: TransactionType.Debit },
+    { label: 'Crédito', value: TransactionType.Credit },
+    { label: 'Reembolso', value: TransactionType.Refund },
+    { label: 'Ajuste', value: TransactionType.Adjustment },
+    { label: 'Receita', value: TransactionType.Income },
+    { label: 'Despesa', value: TransactionType.Expense },
   ];
 
   constructor() {
@@ -78,18 +82,32 @@ export class TransactionsComponent {
 
   protected getTypeSeverity(type?: TransactionType): 'success' | 'danger' | 'secondary' {
     switch (type) {
-      case TransactionType.NUMBER_0: return 'success';
-      case TransactionType.NUMBER_1: return 'danger';
+      case TransactionType.Credit:
+      case TransactionType.Income: return 'success';
+      case TransactionType.Debit:
+      case TransactionType.Expense: return 'danger';
       default: return 'secondary';
     }
   }
 
   protected getTypeLabel(type?: TransactionType): string {
     switch (type) {
-      case TransactionType.NUMBER_0: return 'Receita';
-      case TransactionType.NUMBER_1: return 'Despesa';
+      case TransactionType.Debit: return 'Débito';
+      case TransactionType.Credit: return 'Crédito';
+      case TransactionType.Refund: return 'Reembolso';
+      case TransactionType.Adjustment: return 'Ajuste';
+      case TransactionType.Income: return 'Receita';
+      case TransactionType.Expense: return 'Despesa';
       default: return '—';
     }
+  }
+
+  protected isPositiveType(type?: TransactionType): boolean {
+    return type === TransactionType.Credit || type === TransactionType.Income;
+  }
+
+  protected isNegativeType(type?: TransactionType): boolean {
+    return type === TransactionType.Debit || type === TransactionType.Expense;
   }
 
   protected getCategoryName(id?: string | null): string {

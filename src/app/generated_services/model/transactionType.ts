@@ -10,14 +10,14 @@
  */
 
 
-export type TransactionType = 0 | 1 | 2 | 3 | 4 | 5;
+export type TransactionType = 'Debit' | 'Credit' | 'Refund' | 'Adjustment' | 'Income' | 'Expense';
 
 export const TransactionType = {
-    NUMBER_0: 0 as TransactionType,
-    NUMBER_1: 1 as TransactionType,
-    NUMBER_2: 2 as TransactionType,
-    NUMBER_3: 3 as TransactionType,
-    NUMBER_4: 4 as TransactionType,
-    NUMBER_5: 5 as TransactionType
+    Debit: 'Debit' as TransactionType,
+    Credit: 'Credit' as TransactionType,
+    Refund: 'Refund' as TransactionType,
+    Adjustment: 'Adjustment' as TransactionType,
+    Income: 'Income' as TransactionType,
+    Expense: 'Expense' as TransactionType
 };
 

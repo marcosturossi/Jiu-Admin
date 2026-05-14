@@ -51,7 +51,7 @@
               </td>
               <td>{{ getCategoryName(transaction.transactionCategoryId) }}</td>
               <td class="desc-cell">{{ transaction.description || '—' }}</td>
-              <td [class.amount-income]="transaction.type === 0" [class.amount-expense]="transaction.type === 1">
+              <td [class.amount-income]="isPositiveType(transaction.type)" [class.amount-expense]="isNegativeType(transaction.type)">
                 {{ transaction.amount | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}
               </td>
               <td>{{ transaction.transactionDate | date:'dd/MM/yyyy' }}</td>

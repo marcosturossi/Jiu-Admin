@@ -33,8 +33,12 @@ export class UpdateTransactionComponent {
   protected readonly selectedCategory = signal<SearchOption | null>(null);
 
   protected readonly typeOptions = [
-    { label: 'Receita', value: TransactionType.NUMBER_0 },
-    { label: 'Despesa', value: TransactionType.NUMBER_1 },
+    { label: 'Débito', value: TransactionType.Debit },
+    { label: 'Crédito', value: TransactionType.Credit },
+    { label: 'Reembolso', value: TransactionType.Refund },
+    { label: 'Ajuste', value: TransactionType.Adjustment },
+    { label: 'Receita', value: TransactionType.Income },
+    { label: 'Despesa', value: TransactionType.Expense },
   ];
 
   protected readonly form = this.fb.group({
@@ -66,7 +70,7 @@ export class UpdateTransactionComponent {
     this.isSaving.set(true);
     const v = this.form.value;
     this.transactionService.apiFinancialTransactionIdPut(this.transaction().id!, {
-      type: v.type != null ? +v.type as TransactionType : null,
+      type: v.type ?? null,
       transactionCategoryId: v.transactionCategoryId ?? null,
       description: v.description || null,
       amount: v.amount ?? null,

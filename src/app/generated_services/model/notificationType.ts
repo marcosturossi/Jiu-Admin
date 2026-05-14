@@ -10,16 +10,16 @@
  */
 
 
-export type NotificationType = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7;
+export type NotificationType = 'Info' | 'Success' | 'Warning' | 'Error' | 'Graduation' | 'Lesson' | 'Payment' | 'System';
 
 export const NotificationType = {
-    NUMBER_0: 0 as NotificationType,
-    NUMBER_1: 1 as NotificationType,
-    NUMBER_2: 2 as NotificationType,
-    NUMBER_3: 3 as NotificationType,
-    NUMBER_4: 4 as NotificationType,
-    NUMBER_5: 5 as NotificationType,
-    NUMBER_6: 6 as NotificationType,
-    NUMBER_7: 7 as NotificationType
+    Info: 'Info' as NotificationType,
+    Success: 'Success' as NotificationType,
+    Warning: 'Warning' as NotificationType,
+    Error: 'Error' as NotificationType,
+    Graduation: 'Graduation' as NotificationType,
+    Lesson: 'Lesson' as NotificationType,
+    Payment: 'Payment' as NotificationType,
+    System: 'System' as NotificationType
 };
 

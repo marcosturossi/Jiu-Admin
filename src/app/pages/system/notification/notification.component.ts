@@ -77,14 +77,14 @@ export class NotificationComponent {
 
   protected getNotificationTypeText(type: NotificationType): string {
     switch (type) {
-      case NotificationType.NUMBER_0: return 'Informação';
-      case NotificationType.NUMBER_1: return 'Aviso';
-      case NotificationType.NUMBER_2: return 'Erro';
-      case NotificationType.NUMBER_3: return 'Sucesso';
-      case NotificationType.NUMBER_4: return 'Sistema';
-      case NotificationType.NUMBER_5: return 'Graduação';
-      case NotificationType.NUMBER_6: return 'Frequência';
-      case NotificationType.NUMBER_7: return 'Geral';
+      case NotificationType.Info: return 'Informação';
+      case NotificationType.Success: return 'Sucesso';
+      case NotificationType.Warning: return 'Aviso';
+      case NotificationType.Error: return 'Erro';
+      case NotificationType.Graduation: return 'Graduação';
+      case NotificationType.Lesson: return 'Aula';
+      case NotificationType.Payment: return 'Pagamento';
+      case NotificationType.System: return 'Sistema';
       default: return 'Desconhecido';
     }
   }

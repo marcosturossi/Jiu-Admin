@@ -35,7 +35,7 @@ describe('CreateNotificationComponent', () => {
   });
 
   it('should be valid when required fields are filled', () => {
-    (component as any).form.patchValue({ title: 'Aviso', message: 'Mensagem importante', type: NotificationType.NUMBER_0 });
+    (component as any).form.patchValue({ title: 'Aviso', message: 'Mensagem importante', type: NotificationType.Info });
     expect((component as any).form.valid).toBeTrue();
   });
 
@@ -54,7 +54,7 @@ describe('CreateNotificationComponent', () => {
 
   it('should call apiNotificationPost on valid create', () => {
     apiService.apiNotificationPost.and.returnValue(of({} as any));
-    (component as any).form.patchValue({ title: 'Aviso', message: 'Mensagem', type: NotificationType.NUMBER_0 });
+    (component as any).form.patchValue({ title: 'Aviso', message: 'Mensagem', type: NotificationType.Info });
     (component as any).create();
     expect(apiService.apiNotificationPost).toHaveBeenCalled();
   });
@@ -63,7 +63,7 @@ describe('CreateNotificationComponent', () => {
     apiService.apiNotificationPost.and.returnValue(of({} as any));
     let emitted = false;
     component.notificationCreated.subscribe(() => (emitted = true));
-    (component as any).form.patchValue({ title: 'Aviso', message: 'Mensagem', type: NotificationType.NUMBER_0 });
+    (component as any).form.patchValue({ title: 'Aviso', message: 'Mensagem', type: NotificationType.Info });
     (component as any).create();
     expect(emitted).toBeTrue();
     expect(ns.showSuccess).toHaveBeenCalled();
@@ -71,7 +71,7 @@ describe('CreateNotificationComponent', () => {
 
   it('should show error notification on service failure', () => {
     apiService.apiNotificationPost.and.returnValue(throwError(() => new Error()));
-    (component as any).form.patchValue({ title: 'Aviso', message: 'Mensagem', type: NotificationType.NUMBER_0 });
+    (component as any).form.patchValue({ title: 'Aviso', message: 'Mensagem', type: NotificationType.Info });
     (component as any).create();
     expect(ns.showError).toHaveBeenCalledWith('Erro ao Criar Notificação!', jasmine.any(String));
   });

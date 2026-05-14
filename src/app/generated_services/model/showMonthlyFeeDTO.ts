@@ -26,6 +26,7 @@ export interface ShowMonthlyFeeDTO {
     pixQrCodeBase64?: string | null;
     pixCopyPaste?: string | null;
     invoiceUrl?: string | null;
+    createdAt?: string;
 }
 export namespace ShowMonthlyFeeDTO {
 }

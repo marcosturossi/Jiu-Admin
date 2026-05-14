@@ -23,20 +23,20 @@ export class UpdateNotificationComponent {
   private readonly ns = inject(NotificationService);
 
   protected readonly notificationTypes = [
-    { label: 'Informação', value: NotificationType.NUMBER_0 },
-    { label: 'Aviso', value: NotificationType.NUMBER_1 },
-    { label: 'Erro', value: NotificationType.NUMBER_2 },
-    { label: 'Sucesso', value: NotificationType.NUMBER_3 },
-    { label: 'Sistema', value: NotificationType.NUMBER_4 },
-    { label: 'Graduação', value: NotificationType.NUMBER_5 },
-    { label: 'Frequência', value: NotificationType.NUMBER_6 },
-    { label: 'Geral', value: NotificationType.NUMBER_7 }
+    { label: 'Informação', value: NotificationType.Info },
+    { label: 'Sucesso', value: NotificationType.Success },
+    { label: 'Aviso', value: NotificationType.Warning },
+    { label: 'Erro', value: NotificationType.Error },
+    { label: 'Graduação', value: NotificationType.Graduation },
+    { label: 'Aula', value: NotificationType.Lesson },
+    { label: 'Pagamento', value: NotificationType.Payment },
+    { label: 'Sistema', value: NotificationType.System }
   ];
 
   protected readonly form = this.fb.group({
     title: ['', Validators.required],
     message: ['', Validators.required],
-    type: [NotificationType.NUMBER_0 as NotificationType, Validators.required],
+    type: [NotificationType.Info as NotificationType, Validators.required],
     userId: [''],
     isActive: [true],
     expiresAt: [null as Date | null],

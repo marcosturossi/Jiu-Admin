@@ -7,9 +7,9 @@ import { TransactionType } from '../../../generated_services/model/transactionTy
 
 const MOCK_TRANSACTIONS = {
   items: [
-    { id: '1', type: TransactionType.NUMBER_0, amount: 1000, transactionDate: new Date().toISOString() },
-    { id: '2', type: TransactionType.NUMBER_0, amount: 500, transactionDate: new Date().toISOString() },
-    { id: '3', type: TransactionType.NUMBER_1, amount: 200, transactionDate: new Date().toISOString() },
+    { id: '1', type: TransactionType.Income, amount: 1000, transactionDate: new Date().toISOString() },
+    { id: '2', type: TransactionType.Income, amount: 500, transactionDate: new Date().toISOString() },
+    { id: '3', type: TransactionType.Expense, amount: 200, transactionDate: new Date().toISOString() },
   ],
   totalItems: 3, totalPages: 1, pageNumber: 1, pageSize: 1000,
 } as any;
@@ -46,11 +46,11 @@ describe('FinancialSummaryComponent', () => {
 
   it('should create', () => expect(component).toBeTruthy());
 
-  it('should compute totalIncome from type=0 transactions', () => {
+  it('should compute totalIncome from income transactions', () => {
     expect((component as any).totalIncome()).toBe(1500);
   });
 
-  it('should compute totalExpenses from type=1 transactions', () => {
+  it('should compute totalExpenses from expense transactions', () => {
     expect((component as any).totalExpenses()).toBe(200);
   });
 

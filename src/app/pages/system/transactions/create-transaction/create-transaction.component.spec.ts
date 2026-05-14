@@ -40,29 +40,27 @@ describe('CreateTransactionComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('sends type as a number (not string) — regression for HTML select string coercion', () => {
+  it('preserves string enum values selected in the form', () => {
     transactionSpy.apiFinancialTransactionPost.and.returnValue(of({} as any));
     const form = (component as any).form;
-    // Simulate what Angular does when the user selects an option via a native <select>:
-    // the DOM value is always a string, so form gets "1" instead of 1
     form.patchValue({
-      type: '1' as any,  // string "1" as Angular would read from DOM
+      type: TransactionType.Credit,
       amount: 100,
       transactionDate: '2024-06-15',
     });
     (component as any).save();
     const args = transactionSpy.apiFinancialTransactionPost.calls.mostRecent().args[0]!;
-    expect(typeof args.type).toBe('number');
-    expect(args.type).toBe(1);
+    expect(typeof args.type).toBe('string');
+    expect(args.type).toBe(TransactionType.Credit);
   });
 
-  it('sends type 0 (number) for Receita', () => {
+  it('sends Income for Receita', () => {
     transactionSpy.apiFinancialTransactionPost.and.returnValue(of({} as any));
     const form = (component as any).form;
-    form.patchValue({ type: '0' as any, amount: 50, transactionDate: '2024-06-15' });
+    form.patchValue({ type: TransactionType.Income, amount: 50, transactionDate: '2024-06-15' });
     (component as any).save();
     const args = transactionSpy.apiFinancialTransactionPost.calls.mostRecent().args[0]!;
-    expect(args.type).toBe(0);
+    expect(args.type).toBe(TransactionType.Income);
   });
 
   it('does not submit when form is invalid', () => {

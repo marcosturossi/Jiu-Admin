@@ -8,7 +8,7 @@ import { PaginationNotificationDTO } from '../../../generated_services';
 import { ShowNotificationDTO } from '../../../generated_services/model/showNotificationDTO';
 import { NotificationType } from '../../../generated_services/model/notificationType';
 
-const MOCK_NOTIFICATION: ShowNotificationDTO = { id: 'notif-1', title: 'Aviso', message: 'Mensagem', type: NotificationType.NUMBER_0, isActive: true };
+const MOCK_NOTIFICATION: ShowNotificationDTO = { id: 'notif-1', title: 'Aviso', message: 'Mensagem', type: NotificationType.Info, isActive: true };
 const MOCK_PAGINATION: PaginationNotificationDTO = { items: [MOCK_NOTIFICATION], totalCount: 1, pageNumber: 1, pageSize: 10, totalPages: 1 };
 
 describe('NotificationComponent', () => {

@@ -54,10 +54,10 @@ export class FinancialSummaryComponent implements OnInit {
         next: (data) => {
           const items = data?.items ?? [];
           const income = items
-            .filter((t) => t.type === TransactionType.NUMBER_0)
+            .filter((t) => t.type === TransactionType.Income)
             .reduce((sum, t) => sum + (t.amount ?? 0), 0);
           const expenses = items
-            .filter((t) => t.type === TransactionType.NUMBER_1)
+            .filter((t) => t.type === TransactionType.Expense)
             .reduce((sum, t) => sum + (t.amount ?? 0), 0);
           this.totalIncome.set(income);
           this.totalExpenses.set(expenses);

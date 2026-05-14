@@ -13,7 +13,7 @@ import { NotificationService } from '../../../services/notification.service';
 import { PaginationContractDTO, ShowContractDTO, ContractStatus } from '../../../generated_services';
 import { ShowStudentDTO } from '../../../generated_services/model/showStudentDTO';
 
-const MOCK_CONTRACT: ShowContractDTO = { id: 'c1', studentId: 'student-1', feePlanName: 'Plano Mensal', monthlyAmount: 150, status: ContractStatus.NUMBER_0 };
+const MOCK_CONTRACT: ShowContractDTO = { id: 'c1', studentId: 'student-1', feePlanName: 'Plano Mensal', monthlyAmount: 150, status: ContractStatus.Active };
 const MOCK_PAGINATION: PaginationContractDTO = { items: [MOCK_CONTRACT], totalCount: 1, pageNumber: 1, pageSize: 10, totalPages: 1 };
 const MOCK_STUDENTS: ShowStudentDTO[] = [{ id: 'student-1', userName: 'joao', email: 'joao@test.com', firstName: 'João', lastName: 'Silva' }];
 
@@ -131,10 +131,12 @@ describe('ContractsComponent', () => {
 
   describe('getStatusLabel', () => {
     it('should return correct labels for each status', () => {
-      expect((component as any).getStatusLabel(ContractStatus.NUMBER_0)).toBe('Ativo');
-      expect((component as any).getStatusLabel(ContractStatus.NUMBER_1)).toBe('Suspenso');
-      expect((component as any).getStatusLabel(ContractStatus.NUMBER_2)).toBe('Cancelado');
-      expect((component as any).getStatusLabel(ContractStatus.NUMBER_3)).toBe('Concluído');
+      expect((component as any).getStatusLabel(ContractStatus.Active)).toBe('Ativo');
+      expect((component as any).getStatusLabel(ContractStatus.Inactive)).toBe('Inativo');
+      expect((component as any).getStatusLabel(ContractStatus.Suspended)).toBe('Suspenso');
+      expect((component as any).getStatusLabel(ContractStatus.Terminated)).toBe('Encerrado');
+      expect((component as any).getStatusLabel(ContractStatus.Cancelled)).toBe('Cancelado');
+      expect((component as any).getStatusLabel(ContractStatus.Expired)).toBe('Expirado');
       expect((component as any).getStatusLabel(undefined)).toBe('—');
     });
   });

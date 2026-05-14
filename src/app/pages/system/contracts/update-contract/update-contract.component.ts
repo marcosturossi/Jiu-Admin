@@ -24,21 +24,23 @@ export class UpdateContractComponent {
   protected readonly isSaving = signal(false);
 
   protected readonly statusOptions = [
-    { label: 'Ativo', value: ContractStatus.NUMBER_0 },
-    { label: 'Suspenso', value: ContractStatus.NUMBER_1 },
-    { label: 'Cancelado', value: ContractStatus.NUMBER_2 },
-    { label: 'Concluído', value: ContractStatus.NUMBER_3 },
+    { label: 'Ativo', value: ContractStatus.Active },
+    { label: 'Inativo', value: ContractStatus.Inactive },
+    { label: 'Suspenso', value: ContractStatus.Suspended },
+    { label: 'Encerrado', value: ContractStatus.Terminated },
+    { label: 'Cancelado', value: ContractStatus.Cancelled },
+    { label: 'Expirado', value: ContractStatus.Expired },
   ];
 
   protected readonly form = this.fb.group({
-    status: [ContractStatus.NUMBER_0 as ContractStatus, Validators.required],
+    status: [ContractStatus.Active as ContractStatus, Validators.required],
     notes: [''],
   });
 
   constructor() {
     effect(() => {
       const c = this.contract();
-      this.form.patchValue({ status: c.status ?? ContractStatus.NUMBER_0, notes: c.notes ?? '' });
+      this.form.patchValue({ status: c.status ?? ContractStatus.Active, notes: c.notes ?? '' });
     });
   }
 
@@ -51,7 +53,7 @@ export class UpdateContractComponent {
     const raw = this.form.getRawValue();
     this.isSaving.set(true);
     this.contractService
-      .apiContractIdStatusPatch(this.contract().id!, { status: +raw.status! as ContractStatus, notes: raw.notes || null })
+      .apiContractIdStatusPatch(this.contract().id!, { status: raw.status!, notes: raw.notes || null })
       .subscribe({
         next: () => {
           this.isSaving.set(false);

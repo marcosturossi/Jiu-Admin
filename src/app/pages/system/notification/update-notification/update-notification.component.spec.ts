@@ -7,7 +7,7 @@ import { ShowNotificationDTO } from '../../../../generated_services/model/showNo
 import { NotificationType } from '../../../../generated_services/model/notificationType';
 import { NotificationService } from '../../../../services/notification.service';
 
-const MOCK_NOTIFICATION: ShowNotificationDTO = { id: 'notif1', title: 'Aviso', message: 'Mensagem', type: NotificationType.NUMBER_0, isActive: true };
+const MOCK_NOTIFICATION: ShowNotificationDTO = { id: 'notif1', title: 'Aviso', message: 'Mensagem', type: NotificationType.Info, isActive: true };
 
 describe('UpdateNotificationComponent', () => {
   let component: UpdateNotificationComponent;

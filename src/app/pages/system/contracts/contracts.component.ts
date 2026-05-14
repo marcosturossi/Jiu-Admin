@@ -48,10 +48,12 @@ export class ContractsComponent {
 
   protected readonly statusOptions = [
     { label: 'Todos', value: undefined },
-    { label: 'Ativo', value: ContractStatus.NUMBER_0 },
-    { label: 'Suspenso', value: ContractStatus.NUMBER_1 },
-    { label: 'Cancelado', value: ContractStatus.NUMBER_2 },
-    { label: 'Concluído', value: ContractStatus.NUMBER_3 },
+    { label: 'Ativo', value: ContractStatus.Active },
+    { label: 'Inativo', value: ContractStatus.Inactive },
+    { label: 'Suspenso', value: ContractStatus.Suspended },
+    { label: 'Encerrado', value: ContractStatus.Terminated },
+    { label: 'Cancelado', value: ContractStatus.Cancelled },
+    { label: 'Expirado', value: ContractStatus.Expired },
   ];
 
   constructor() {
@@ -89,20 +91,24 @@ export class ContractsComponent {
 
   protected getStatusSeverity(status?: ContractStatus): 'success' | 'warn' | 'danger' | 'info' | 'secondary' {
     switch (status) {
-      case ContractStatus.NUMBER_0: return 'success';
-      case ContractStatus.NUMBER_1: return 'warn';
-      case ContractStatus.NUMBER_2: return 'danger';
-      case ContractStatus.NUMBER_3: return 'info';
+      case ContractStatus.Active: return 'success';
+      case ContractStatus.Inactive:
+      case ContractStatus.Expired: return 'secondary';
+      case ContractStatus.Suspended: return 'warn';
+      case ContractStatus.Terminated: return 'info';
+      case ContractStatus.Cancelled: return 'danger';
       default: return 'secondary';
     }
   }
 
   protected getStatusLabel(status?: ContractStatus): string {
     switch (status) {
-      case ContractStatus.NUMBER_0: return 'Ativo';
-      case ContractStatus.NUMBER_1: return 'Suspenso';
-      case ContractStatus.NUMBER_2: return 'Cancelado';
-      case ContractStatus.NUMBER_3: return 'Concluído';
+      case ContractStatus.Active: return 'Ativo';
+      case ContractStatus.Inactive: return 'Inativo';
+      case ContractStatus.Suspended: return 'Suspenso';
+      case ContractStatus.Terminated: return 'Encerrado';
+      case ContractStatus.Cancelled: return 'Cancelado';
+      case ContractStatus.Expired: return 'Expirado';
       default: return '—';
     }
   }

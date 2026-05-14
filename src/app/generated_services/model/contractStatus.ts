@@ -10,14 +10,14 @@
  */
 
 
-export type ContractStatus = 0 | 1 | 2 | 3 | 4 | 5;
+export type ContractStatus = 'Active' | 'Inactive' | 'Suspended' | 'Terminated' | 'Cancelled' | 'Expired';
 
 export const ContractStatus = {
-    NUMBER_0: 0 as ContractStatus,
-    NUMBER_1: 1 as ContractStatus,
-    NUMBER_2: 2 as ContractStatus,
-    NUMBER_3: 3 as ContractStatus,
-    NUMBER_4: 4 as ContractStatus,
-    NUMBER_5: 5 as ContractStatus
+    Active: 'Active' as ContractStatus,
+    Inactive: 'Inactive' as ContractStatus,
+    Suspended: 'Suspended' as ContractStatus,
+    Terminated: 'Terminated' as ContractStatus,
+    Cancelled: 'Cancelled' as ContractStatus,
+    Expired: 'Expired' as ContractStatus
 };
 

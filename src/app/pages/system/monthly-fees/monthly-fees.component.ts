@@ -56,10 +56,10 @@ export class MonthlyFeesComponent {
 
   protected readonly statusOptions = [
     { label: 'Todos', value: undefined },
-    { label: 'Pendente', value: FeeStatus.NUMBER_0 },
-    { label: 'Pago', value: FeeStatus.NUMBER_1 },
-    { label: 'Atrasado', value: FeeStatus.NUMBER_2 },
-    { label: 'Cancelado', value: FeeStatus.NUMBER_3 },
+    { label: 'Pendente', value: FeeStatus.Pending },
+    { label: 'Pago', value: FeeStatus.Paid },
+    { label: 'Atrasado', value: FeeStatus.Overdue },
+    { label: 'Cancelado', value: FeeStatus.Cancelled },
   ];
 
   constructor() {
@@ -89,20 +89,20 @@ export class MonthlyFeesComponent {
 
   protected getStatusSeverity(status?: FeeStatus): 'secondary' | 'success' | 'danger' | 'warn' {
     switch (status) {
-      case FeeStatus.NUMBER_0: return 'secondary';
-      case FeeStatus.NUMBER_1: return 'success';
-      case FeeStatus.NUMBER_2: return 'danger';
-      case FeeStatus.NUMBER_3: return 'warn';
+      case FeeStatus.Pending: return 'secondary';
+      case FeeStatus.Paid: return 'success';
+      case FeeStatus.Overdue: return 'danger';
+      case FeeStatus.Cancelled: return 'warn';
       default: return 'secondary';
     }
   }
 
   protected getStatusLabel(status?: FeeStatus): string {
     switch (status) {
-      case FeeStatus.NUMBER_0: return 'Pendente';
-      case FeeStatus.NUMBER_1: return 'Pago';
-      case FeeStatus.NUMBER_2: return 'Atrasado';
-      case FeeStatus.NUMBER_3: return 'Cancelado';
+      case FeeStatus.Pending: return 'Pendente';
+      case FeeStatus.Paid: return 'Pago';
+      case FeeStatus.Overdue: return 'Atrasado';
+      case FeeStatus.Cancelled: return 'Cancelado';
       default: return '—';
     }
   }

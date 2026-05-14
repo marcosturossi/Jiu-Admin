@@ -12,7 +12,7 @@ import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
 import { FeeStatus, PaginationMonthlyFeeDTO, ShowMonthlyFeeDTO } from '../../../generated_services';
 
-const MOCK_FEE: ShowMonthlyFeeDTO = { id: 'fee1', contractId: 'c1', studentId: 's1', amount: 150, status: FeeStatus.NUMBER_0, dueDate: '2024-03-01' };
+const MOCK_FEE: ShowMonthlyFeeDTO = { id: 'fee1', contractId: 'c1', studentId: 's1', amount: 150, status: FeeStatus.Pending, dueDate: '2024-03-01' };
 const MOCK_PAGINATION: PaginationMonthlyFeeDTO = { items: [MOCK_FEE], totalCount: 1, pageNumber: 1, pageSize: 10, totalPages: 1 };
 
 describe('MonthlyFeesComponent', () => {
@@ -100,10 +100,10 @@ describe('MonthlyFeesComponent', () => {
 
   describe('getStatusLabel', () => {
     it('should return correct labels for each status', () => {
-      expect((component as any).getStatusLabel(FeeStatus.NUMBER_0)).toBe('Pendente');
-      expect((component as any).getStatusLabel(FeeStatus.NUMBER_1)).toBe('Pago');
-      expect((component as any).getStatusLabel(FeeStatus.NUMBER_2)).toBe('Atrasado');
-      expect((component as any).getStatusLabel(FeeStatus.NUMBER_3)).toBe('Cancelado');
+      expect((component as any).getStatusLabel(FeeStatus.Pending)).toBe('Pendente');
+      expect((component as any).getStatusLabel(FeeStatus.Paid)).toBe('Pago');
+      expect((component as any).getStatusLabel(FeeStatus.Overdue)).toBe('Atrasado');
+      expect((component as any).getStatusLabel(FeeStatus.Cancelled)).toBe('Cancelado');
       expect((component as any).getStatusLabel(undefined)).toBe('—');
     });
   });
