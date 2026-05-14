@@ -1,8 +1,9 @@
-import { ChangeDetectionStrategy, Component, inject, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, output, signal } from '@angular/core';
 import { FrequencyService, StudentsService, ShowStudentDTO, ShowLessonDTO, LessonService } from '../../../../generated_services';
 import { FormBuilder, FormArray, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CreateFrequencyDTO } from '../../../../generated_services/model/createFrequencyDTO';
-import { forkJoin, Observable } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Subject, debounceTime, forkJoin, Observable } from 'rxjs';
 import { PersonsService } from '../../../../generated_services/api2/api/persons.service';
 import { RecognitionResponse } from '../../../../generated_services/api2/model/recognitionResponse';
 import { PersonListResponse } from '../../../../generated_services/api2/model/personListResponse';
@@ -27,6 +28,7 @@ export class CreateFrequencyComponent {
   private readonly fb = inject(FormBuilder);
   private readonly personsService = inject(PersonsService);
   private readonly ns = inject(NotificationService);
+  private readonly destroyRef = inject(DestroyRef);
 
   protected readonly students = signal<ShowStudentDTO[]>([]);
   protected readonly lessons = signal<ShowLessonDTO[]>([]);
@@ -39,6 +41,7 @@ export class CreateFrequencyComponent {
   protected readonly recognizedStudentIds = signal<string[]>([]);
 
   private api2Persons: PersonListResponse | null = null;
+  private readonly lessonSearchSubject = new Subject<string>();
 
   protected readonly frequencyForm = this.fb.group({
     lessonId: ['', Validators.required],
@@ -46,6 +49,8 @@ export class CreateFrequencyComponent {
   });
 
   constructor() {
+    this.lessonSearchSubject.pipe(debounceTime(400), takeUntilDestroyed(this.destroyRef))
+      .subscribe(term => this.loadLessons(term));
     this.studentsService.apiStudentsActiveGet().subscribe({
       next: result => {
         this.students.set(result);
@@ -181,7 +186,7 @@ export class CreateFrequencyComponent {
   }
 
   protected onLessonSearch(term: string): void {
-    this.loadLessons(term);
+    this.lessonSearchSubject.next(term);
   }
 
   private loadLessons(term = ''): void {

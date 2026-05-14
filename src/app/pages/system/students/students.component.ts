@@ -1,5 +1,7 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { DatePipe } from '@angular/common';
+import { Subject, debounceTime } from 'rxjs';
 import { StudentsService } from '../../../generated_services/api/students.service';
 import { ShowStudentDTO } from '../../../generated_services/model/showStudentDTO';
 import { PaginationStudentDTO } from '../../../generated_services/model/paginationStudentDTO';
@@ -25,6 +27,8 @@ export class StudentsComponent {
   private readonly studentsService = inject(StudentsService);
   private readonly subnavService = inject(SubnavService);
   private readonly notificationService = inject(NotificationService);
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly searchSubject = new Subject<string>();
 
   protected readonly isLoading = signal(false);
   protected readonly items = signal<PaginationStudentDTO | null>(null);
@@ -37,6 +41,11 @@ export class StudentsComponent {
 
   constructor() {
     this.subnavService.setTitle('Estudantes');
+    this.searchSubject.pipe(debounceTime(400), takeUntilDestroyed(this.destroyRef)).subscribe(term => {
+      this.filterText.set(term);
+      this.currentPage.set(1);
+      this.load();
+    });
     this.load();
   }
 
@@ -50,7 +59,7 @@ export class StudentsComponent {
 
   protected onPageChange(page: number): void { this.currentPage.set(page); this.load(); }
   protected onPageSizeChange(size: number): void { this.pageSize.set(size); this.currentPage.set(1); this.load(); }
-  protected onSearch(term: string): void { this.filterText.set(term); this.currentPage.set(1); this.load(); }
+  protected onSearch(term: string): void { this.searchSubject.next(term); }
   protected openCreate(): void { this.openedCreate.set(true); }
   protected openEdit(item: ShowStudentDTO): void { this.selected.set(item); this.openedUpdate.set(true); }
   protected onCreated(): void { this.openedCreate.set(false); this.load(); }

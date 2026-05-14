@@ -1,8 +1,10 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { DatePipe, CurrencyPipe } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
+import { Subject, debounceTime } from 'rxjs';
 import { MonthlyFeeService } from '../../../generated_services/api/monthlyFee.service';
-import { FeeStatus, PaginationMonthlyFeeDTO, ShowMonthlyFeeDTO } from '../../../generated_services';
+import { ChargeResult, FeeStatus, PaginationMonthlyFeeDTO, ShowMonthlyFeeDTO } from '../../../generated_services';
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
 import { PaginationComponent } from '../../../shared/pagination/pagination.component';
@@ -26,16 +28,25 @@ export class MonthlyFeesComponent {
   private readonly subnavService = inject(SubnavService);
   private readonly ns = inject(NotificationService);
   private readonly fb = inject(FormBuilder);
+  private readonly destroyRef = inject(DestroyRef);
+
+  private readonly searchSubject = new Subject<string>();
 
   protected readonly isLoading = signal(false);
   protected readonly isPaying = signal(false);
+  protected readonly isCharging = signal(false);
+  protected readonly isDownloading = signal(false);
   protected readonly items = signal<PaginationMonthlyFeeDTO | null>(null);
   protected readonly openedPay = signal(false);
+  protected readonly openedPix = signal(false);
   protected readonly selected = signal<ShowMonthlyFeeDTO | null>(null);
+  protected readonly pixResult = signal<ChargeResult | null>(null);
   protected readonly currentPage = signal(1);
   protected readonly pageSize = signal(10);
   protected readonly filterStatus = signal<FeeStatus | undefined>(undefined);
   protected readonly filterText = signal('');
+
+  protected readonly FeeStatus = FeeStatus;
 
   protected readonly payForm = this.fb.group({
     paidAmount: [null as number | null, [Validators.required, Validators.min(0.01)]],
@@ -53,6 +64,11 @@ export class MonthlyFeesComponent {
 
   constructor() {
     this.subnavService.setTitle('Mensalidades');
+    this.searchSubject.pipe(debounceTime(400), takeUntilDestroyed(this.destroyRef)).subscribe(term => {
+      this.filterText.set(term);
+      this.currentPage.set(1);
+      this.load();
+    });
     this.load();
   }
 
@@ -93,7 +109,7 @@ export class MonthlyFeesComponent {
 
   protected onPageChange(page: number): void { this.currentPage.set(page); this.load(); }
   protected onPageSizeChange(size: number): void { this.pageSize.set(size); this.currentPage.set(1); this.load(); }
-  protected onSearch(term: string): void { this.filterText.set(term); this.currentPage.set(1); this.load(); }
+  protected onSearch(term: string): void { this.searchSubject.next(term); }
   protected onFilterChange(): void { this.currentPage.set(1); this.load(); }
 
   protected openPay(fee: ShowMonthlyFeeDTO): void {
@@ -121,6 +137,52 @@ export class MonthlyFeesComponent {
         this.isPaying.set(false);
       },
       complete: () => this.isPaying.set(false),
+    });
+  }
+
+  protected openPix(fee: ShowMonthlyFeeDTO): void {
+    this.selected.set(fee);
+    if (fee.pixQrCodeBase64 || fee.pixCopyPaste) {
+      this.pixResult.set({ chargeId: fee.externalChargeId, pixQrCodeBase64: fee.pixQrCodeBase64, pixCopyPaste: fee.pixCopyPaste, invoiceUrl: fee.invoiceUrl });
+      this.openedPix.set(true);
+    } else {
+      this.generatePix(fee);
+    }
+  }
+
+  private generatePix(fee: ShowMonthlyFeeDTO): void {
+    this.isCharging.set(true);
+    this.feeService.apiMonthlyFeeIdChargePost(fee.id!).subscribe({
+      next: result => {
+        this.pixResult.set(result);
+        this.openedPix.set(true);
+        this.load();
+      },
+      error: () => this.ns.showError('Erro', 'Não foi possível gerar a cobrança PIX.'),
+      complete: () => this.isCharging.set(false),
+    });
+  }
+
+  protected copyPixCode(): void {
+    const code = this.pixResult()?.pixCopyPaste;
+    if (code) {
+      navigator.clipboard.writeText(code).then(() => this.ns.showSuccess('Copiado!', 'Código PIX copiado para a área de transferência.'));
+    }
+  }
+
+  protected downloadReceipt(fee: ShowMonthlyFeeDTO): void {
+    this.isDownloading.set(true);
+    this.feeService.apiMonthlyFeeIdReceiptPdfGet(fee.id!).subscribe({
+      next: (blob: Blob) => {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `recibo-${fee.dueDate ?? 'mensalidade'}.pdf`;
+        a.click();
+        URL.revokeObjectURL(url);
+      },
+      error: () => this.ns.showError('Erro', 'Não foi possível baixar o recibo.'),
+      complete: () => this.isDownloading.set(false),
     });
   }
 }

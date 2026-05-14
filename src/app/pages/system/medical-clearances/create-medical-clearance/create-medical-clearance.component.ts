@@ -1,7 +1,9 @@
-import { ChangeDetectionStrategy, Component, inject, output, signal, OnDestroy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, output, signal, OnDestroy } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MedicalClearanceService } from '../../../../generated_services/api/medicalClearance.service';
 import { StudentsService } from '../../../../generated_services/api/students.service';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Subject, debounceTime } from 'rxjs';
 import { CreateMedicalClearanceDTO } from '../../../../generated_services/model/createMedicalClearanceDTO';
 import { ShowStudentDTO } from '../../../../generated_services/model/showStudentDTO';
 import { NotificationService } from '../../../../services/notification.service';
@@ -25,6 +27,7 @@ export class CreateMedicalClearanceComponent implements OnDestroy {
   private readonly fb = inject(FormBuilder);
   private readonly ns = inject(NotificationService);
   private readonly sanitizer = inject(DomSanitizer);
+  private readonly destroyRef = inject(DestroyRef);
 
   protected readonly students = signal<ShowStudentDTO[]>([]);
   protected readonly studentOptions = signal<SearchOption[]>([]);
@@ -34,6 +37,7 @@ export class CreateMedicalClearanceComponent implements OnDestroy {
   protected readonly filePreviewUrl = signal<SafeResourceUrl | null>(null);
   protected readonly filePreviewLink = signal<string | null>(null);
   protected readonly filePreviewType = signal<'image' | 'pdf' | 'other' | null>(null);
+  private readonly studentSearchSubject = new Subject<string>();
 
   protected readonly form = this.fb.group({
     studentId: ['', Validators.required],
@@ -43,6 +47,8 @@ export class CreateMedicalClearanceComponent implements OnDestroy {
   });
 
   constructor() {
+    this.studentSearchSubject.pipe(debounceTime(400), takeUntilDestroyed(this.destroyRef))
+      .subscribe(term => this.loadStudents(term));
     this.isLoadingStudents.set(true);
     this.loadStudents();
   }
@@ -57,7 +63,7 @@ export class CreateMedicalClearanceComponent implements OnDestroy {
   }
 
   protected onStudentSearch(term: string): void {
-    this.loadStudents(term);
+    this.studentSearchSubject.next(term);
   }
 
   private loadStudents(term = ''): void {

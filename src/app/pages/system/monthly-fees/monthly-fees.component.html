@@ -29,21 +29,23 @@
       <table class="table table-hover table-sm align-middle">
         <thead class="table-light">
           <tr>
+            <th>Aluno</th>
             <th>Vencimento</th>
             <th>Valor</th>
             <th>Status</th>
             <th>Pago em</th>
             <th>Valor Pago</th>
             <th>Observações</th>
-            <th class="text-center" style="width: 7rem">Ações</th>
+            <th class="text-center" style="width: 10rem">Ações</th>
           </tr>
         </thead>
         <tbody>
           @if ((items()?.items ?? []).length === 0) {
-            <tr><td colspan="7" class="text-center py-5 text-muted">Nenhuma mensalidade encontrada.</td></tr>
+            <tr><td colspan="8" class="text-center py-5 text-muted">Nenhuma mensalidade encontrada.</td></tr>
           }
           @for (fee of items()?.items ?? []; track fee.id) {
             <tr>
+              <td class="student-cell">{{ fee.studentName || '—' }}</td>
               <td>{{ fee.dueDate | date:'dd/MM/yyyy' }}</td>
               <td>{{ fee.amount | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}</td>
               <td>
@@ -54,10 +56,34 @@
               <td>{{ fee.paidAt ? (fee.paidAt | date:'dd/MM/yyyy') : '—' }}</td>
               <td>{{ fee.paidAmount != null ? (fee.paidAmount | currency:'BRL':'symbol':'1.2-2':'pt-BR') : '—' }}</td>
               <td class="notes-cell">{{ fee.notes || '—' }}</td>
-              <td class="text-center">
-                @if (fee.status !== 1) {
-                  <button type="button" class="btn btn-sm btn-outline-success" title="Registrar Pagamento" (click)="openPay(fee)">
+              <td class="text-center action-cell">
+                @if (fee.status !== FeeStatus.NUMBER_1) {
+                  <button type="button" class="btn btn-sm btn-outline-success me-1" title="Registrar Pagamento" (click)="openPay(fee)">
                     <i class="bi bi-currency-dollar"></i>
+                  </button>
+                }
+                @if (fee.status !== FeeStatus.NUMBER_1 && fee.status !== FeeStatus.NUMBER_3) {
+                  @if (fee.pixCopyPaste) {
+                    <button type="button" class="btn btn-sm btn-outline-primary me-1" title="Ver PIX" (click)="openPix(fee)">
+                      <i class="bi bi-qr-code"></i>
+                    </button>
+                  } @else {
+                    <button type="button" class="btn btn-sm btn-outline-secondary me-1" title="Gerar PIX" (click)="openPix(fee)" [disabled]="isCharging()">
+                      @if (isCharging() && selected()?.id === fee.id) {
+                        <span class="spinner-border spinner-border-sm" role="status"></span>
+                      } @else {
+                        <i class="bi bi-qr-code-scan"></i>
+                      }
+                    </button>
+                  }
+                }
+                @if (fee.status === FeeStatus.NUMBER_1) {
+                  <button type="button" class="btn btn-sm btn-outline-secondary" title="Baixar Recibo" (click)="downloadReceipt(fee)" [disabled]="isDownloading()">
+                    @if (isDownloading() && selected()?.id === fee.id) {
+                      <span class="spinner-border spinner-border-sm" role="status"></span>
+                    } @else {
+                      <i class="bi bi-file-earmark-pdf"></i>
+                    }
                   </button>
                 }
               </td>
@@ -108,6 +134,47 @@
               </button>
             </div>
           </form>
+        </div>
+      </div>
+    </div>
+  </div>
+}
+
+@if (openedPix()) {
+  <div class="modal-backdrop-custom" (click)="openedPix.set(false)"></div>
+  <div class="modal show d-block" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title"><i class="bi bi-qr-code me-2"></i>Cobrança PIX</h5>
+          <button type="button" class="btn-close" (click)="openedPix.set(false)" aria-label="Fechar"></button>
+        </div>
+        <div class="modal-body text-center">
+          @if (pixResult()?.pixQrCodeBase64) {
+            <img
+              [src]="'data:image/png;base64,' + pixResult()!.pixQrCodeBase64"
+              alt="QR Code PIX"
+              class="pix-qrcode mb-3" />
+          }
+          @if (pixResult()?.pixCopyPaste) {
+            <div class="input-group mb-3">
+              <input type="text" class="form-control form-control-sm" readonly [value]="pixResult()!.pixCopyPaste!" />
+              <button type="button" class="btn btn-outline-primary" title="Copiar código PIX" (click)="copyPixCode()">
+                <i class="bi bi-clipboard"></i> Copiar
+              </button>
+            </div>
+          }
+          @if (pixResult()?.invoiceUrl) {
+            <a [href]="pixResult()!.invoiceUrl!" target="_blank" class="btn btn-sm btn-outline-secondary">
+              <i class="bi bi-box-arrow-up-right me-1"></i>Ver fatura completa
+            </a>
+          }
+          @if (!pixResult()?.pixQrCodeBase64 && !pixResult()?.pixCopyPaste) {
+            <p class="text-muted">Dados do PIX não disponíveis.</p>
+          }
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-secondary" (click)="openedPix.set(false)">Fechar</button>
         </div>
       </div>
     </div>

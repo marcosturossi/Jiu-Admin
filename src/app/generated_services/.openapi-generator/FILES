@@ -3,8 +3,14 @@ README.md
 api.module.ts
 api/academy.service.ts
 api/academy.serviceInterface.ts
+api/adminContract.service.ts
+api/adminContract.serviceInterface.ts
+api/adminMonthlyFee.service.ts
+api/adminMonthlyFee.serviceInterface.ts
 api/adminNotification.service.ts
 api/adminNotification.serviceInterface.ts
+api/adminStudent.service.ts
+api/adminStudent.serviceInterface.ts
 api/api.ts
 api/belt.service.ts
 api/belt.serviceInterface.ts
@@ -58,6 +64,9 @@ model/baseNoticesDTO.ts
 model/baseNotificationDTO.ts
 model/baseStudentDTO.ts
 model/beltFilterDTO.ts
+model/birthdayGreetingsResultDTO.ts
+model/chargeResult.ts
+model/chargeStatus.ts
 model/contractFilterDTO.ts
 model/contractStatus.ts
 model/createAcademyDTO.ts
@@ -78,6 +87,7 @@ model/feePlanFilterDTO.ts
 model/feeStatus.ts
 model/financialSummaryDTO.ts
 model/frequencyFilterDTO.ts
+model/generateMonthlyFeesResultDTO.ts
 model/graduationFilterDTO.ts
 model/httpValidationProblemDetails.ts
 model/lessonFilterDTO.ts
@@ -109,6 +119,7 @@ model/payMonthlyFeeDTO.ts
 model/photoResponseDTO.ts
 model/problemDetails.ts
 model/publicAcademyDTO.ts
+model/renewalWarningsResultDTO.ts
 model/series.ts
 model/showAcademyDTO.ts
 model/showAcademyDTOPaginationDTO.ts

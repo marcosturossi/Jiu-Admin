@@ -1,7 +1,8 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { DatePipe } from '@angular/common';
-import { GraduationService } from '../../../generated_services/api/graduation.service';
-import { PaginationGraduationDTO, ShowGraduationDTO } from '../../../generated_services';
+import { Subject, debounceTime } from 'rxjs';
+import { GraduationService, PaginationGraduationDTO, ShowGraduationDTO } from '../../../generated_services';
 import { CreateGraduationComponent } from './create-graduation/create-graduation.component';
 import { UpdateGraduationComponent } from './update-graduation/update-graduation.component';
 import { SubnavService } from '../../../services/subnav.service';
@@ -24,6 +25,8 @@ export class GraduationsComponent {
   private readonly graduationService = inject(GraduationService);
   private readonly subnavService = inject(SubnavService);
   private readonly notificationService = inject(NotificationService);
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly searchSubject = new Subject<string>();
 
   protected readonly isLoading = signal(false);
   protected readonly items = signal<PaginationGraduationDTO | null>(null);
@@ -36,6 +39,11 @@ export class GraduationsComponent {
 
   constructor() {
     this.subnavService.setTitle('Graduações');
+    this.searchSubject.pipe(debounceTime(400), takeUntilDestroyed(this.destroyRef)).subscribe(term => {
+      this.filterText.set(term);
+      this.currentPage.set(1);
+      this.load();
+    });
     this.load();
   }
 
@@ -52,7 +60,7 @@ export class GraduationsComponent {
 
   protected onPageChange(p: number): void { this.currentPage.set(p); this.load(); }
   protected onPageSizeChange(s: number): void { this.pageSize.set(s); this.currentPage.set(1); this.load(); }
-  protected onSearch(term: string): void { this.filterText.set(term); this.currentPage.set(1); this.load(); }
+  protected onSearch(term: string): void { this.searchSubject.next(term); }
   protected openCreate(): void { this.openedCreate.set(true); }
   protected openEdit(item: ShowGraduationDTO): void { this.selected.set(item); this.openedUpdate.set(true); }
   protected onCreated(): void { this.openedCreate.set(false); this.load(); }

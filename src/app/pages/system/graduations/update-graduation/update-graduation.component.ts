@@ -1,5 +1,7 @@
-import { ChangeDetectionStrategy, Component, computed, effect, inject, input, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, computed, effect, inject, input, output, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
+import { Subject, debounceTime } from 'rxjs';
 import { GraduationService } from '../../../../generated_services/api/graduation.service';
 import { BeltService } from '../../../../generated_services/api/belt.service';
 import { StudentsService } from '../../../../generated_services/api/students.service';
@@ -25,10 +27,12 @@ export class UpdateGraduationComponent {
   private readonly studentsService = inject(StudentsService);
   private readonly ns = inject(NotificationService);
   private readonly fb = inject(FormBuilder);
+  private readonly destroyRef = inject(DestroyRef);
 
   protected readonly belts = signal<ShowBeltDTO[]>([]);
   protected readonly students = signal<ShowStudentDTO[]>([]);
   protected readonly selectedStudent = signal<SearchOption | null>(null);
+  private readonly studentSearchSubject = new Subject<string>();
 
   protected readonly studentOptions = computed(() =>
     this.students().map(s => ({ id: s.id!, label: `${s.firstName} ${s.lastName} (${s.email})` }))
@@ -41,6 +45,8 @@ export class UpdateGraduationComponent {
   });
 
   constructor() {
+    this.studentSearchSubject.pipe(debounceTime(400), takeUntilDestroyed(this.destroyRef))
+      .subscribe(term => this.loadStudents(term));
     this.beltService.apiBeltGet().subscribe({
       next: r => this.belts.set(r.items ?? []),
       error: () => this.ns.showError('Erro ao Carregar Faixas!', 'Não foi possível carregar a lista de faixas. Tente novamente.'),
@@ -65,12 +71,11 @@ export class UpdateGraduationComponent {
   }
 
   protected onStudentSearch(term: string): void {
-    this.loadStudents(term);
+    this.studentSearchSubject.next(term);
   }
 
   private loadStudents(term = ''): void {
     this.studentsService.apiStudentsGet(term || undefined, undefined, undefined, undefined, undefined, 1, 100).subscribe({
-      next: r => this.students.set(r.items ?? []),
       error: () => this.ns.showError('Erro ao Carregar Alunos!', 'Não foi possível carregar a lista de alunos. Tente novamente.'),
     });
   }

@@ -12,10 +12,29 @@
 }
 
 .notes-cell {
-  max-width: 14rem;
+  max-width: 12rem;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.student-cell {
+  max-width: 12rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.action-cell {
+  white-space: nowrap;
+}
+
+.pix-qrcode {
+  max-width: 220px;
+  width: 100%;
+  border-radius: 0.5rem;
+  border: 1px solid #dee2e6;
+  padding: 0.5rem;
 }
 
 .pay-form {

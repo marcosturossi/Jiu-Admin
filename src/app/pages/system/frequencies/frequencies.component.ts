@@ -1,5 +1,7 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { DatePipe } from '@angular/common';
+import { Subject, debounceTime } from 'rxjs';
 import { FrequencyService, PaginationFrequencyDTO, ShowFrequencyDTO } from '../../../generated_services';
 import { CreateFrequencyComponent } from './create-frequency/create-frequency.component';
 import { UpdateFrequencyComponent } from './update-frequency/update-frequency.component';
@@ -18,6 +20,8 @@ export class FrequenciesComponent {
   private readonly frequencyService = inject(FrequencyService);
   private readonly subnavService = inject(SubnavService);
   private readonly ns = inject(NotificationService);
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly searchSubject = new Subject<string>();
 
   protected readonly isLoading = signal(false);
   protected readonly items = signal<PaginationFrequencyDTO | null>(null);
@@ -30,6 +34,11 @@ export class FrequenciesComponent {
 
   constructor() {
     this.subnavService.setTitle('Frequências');
+    this.searchSubject.pipe(debounceTime(400), takeUntilDestroyed(this.destroyRef)).subscribe(term => {
+      this.filterText.set(term);
+      this.currentPage.set(1);
+      this.load();
+    });
     this.load();
   }
 
@@ -46,7 +55,7 @@ export class FrequenciesComponent {
 
   protected onPageChange(p: number): void { this.currentPage.set(p); this.load(); }
   protected onPageSizeChange(s: number): void { this.pageSize.set(s); this.currentPage.set(1); this.load(); }
-  protected onSearch(term: string): void { this.filterText.set(term); this.currentPage.set(1); this.load(); }
+  protected onSearch(term: string): void { this.searchSubject.next(term); }
   protected openCreate(): void { this.openedCreate.set(true); }
   protected openEdit(item: ShowFrequencyDTO): void { this.selected.set(item); this.openedUpdate.set(true); }
   protected onCreated(): void { this.openedCreate.set(false); this.load(); }

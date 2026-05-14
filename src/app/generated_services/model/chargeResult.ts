@@ -8,26 +8,13 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { FeeStatus } from './feeStatus';
 
 
-export interface ShowMonthlyFeeDTO { 
-    id?: string;
-    contractId?: string;
-    studentId?: string;
-    studentName?: string | null;
-    dueDate?: string;
-    amount?: number;
-    status?: FeeStatus;
-    paidAt?: string | null;
-    paidAmount?: number | null;
-    notes?: string | null;
-    externalChargeId?: string | null;
+export interface ChargeResult { 
+    chargeId?: string | null;
     pixQrCodeBase64?: string | null;
     pixCopyPaste?: string | null;
     invoiceUrl?: string | null;
+    status?: string | null;
 }
-export namespace ShowMonthlyFeeDTO {
-}
-
 

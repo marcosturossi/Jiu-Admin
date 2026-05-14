@@ -1,5 +1,7 @@
-import { ChangeDetectionStrategy, Component, effect, inject, input, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, effect, inject, input, output, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Subject, debounceTime } from 'rxjs';
 import { FrequencyService, StudentsService, PaginationStudentDTO } from '../../../../generated_services';
 import { ShowFrequencyDTO, UpdateFrequencyDTO } from '../../../../generated_services';
 import { NotificationService } from '../../../../services/notification.service';
@@ -22,15 +24,19 @@ export class UpdateFrequencyComponent {
   private readonly studentsService = inject(StudentsService);
   private readonly fb = inject(FormBuilder);
   private readonly ns = inject(NotificationService);
+  private readonly destroyRef = inject(DestroyRef);
 
   protected readonly studentOptions = signal<SearchOption[]>([]);
   protected readonly selectedStudent = signal<SearchOption | null>(null);
+  private readonly studentSearchSubject = new Subject<string>();
 
   protected readonly frequencyForm = this.fb.group({
     studentId: ['', Validators.required]
   });
 
   constructor() {
+    this.studentSearchSubject.pipe(debounceTime(400), takeUntilDestroyed(this.destroyRef))
+      .subscribe(term => this.loadStudents(term));
     effect(() => {
       const freq = this.frequency();
       if (freq) {
@@ -50,7 +56,7 @@ export class UpdateFrequencyComponent {
   }
 
   protected onStudentSearch(term: string): void {
-    this.loadStudents(term);
+    this.studentSearchSubject.next(term);
   }
 
   private loadStudents(term = ''): void {

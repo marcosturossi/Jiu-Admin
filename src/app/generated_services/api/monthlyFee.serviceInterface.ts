@@ -13,6 +13,9 @@ import { HttpHeaders }                                       from '@angular/comm
 import { Observable }                                        from 'rxjs';
 
 import { ApiAdminAcademiesIdGet404Response } from '../model/models';
+import { ApiMedicalClearanceIdAttachmentGet200Response } from '../model/models';
+import { ChargeResult } from '../model/models';
+import { ChargeStatus } from '../model/models';
 import { FeeStatus } from '../model/models';
 import { PaginationMonthlyFeeDTO } from '../model/models';
 import { PayMonthlyFeeDTO } from '../model/models';
@@ -53,6 +56,20 @@ export interface MonthlyFeeServiceInterface {
      * 
      * @param id 
      */
+    apiMonthlyFeeIdChargePost(id: string, extraHttpRequestParams?: any): Observable<ChargeResult>;
+
+    /**
+     * 
+     * 
+     * @param id 
+     */
+    apiMonthlyFeeIdChargeStatusGet(id: string, extraHttpRequestParams?: any): Observable<ChargeStatus>;
+
+    /**
+     * 
+     * 
+     * @param id 
+     */
     apiMonthlyFeeIdGet(id: string, extraHttpRequestParams?: any): Observable<ShowMonthlyFeeDTO>;
 
     /**
@@ -62,6 +79,13 @@ export interface MonthlyFeeServiceInterface {
      * @param payMonthlyFeeDTO 
      */
     apiMonthlyFeeIdPayPatch(id: string, payMonthlyFeeDTO?: PayMonthlyFeeDTO, extraHttpRequestParams?: any): Observable<ShowMonthlyFeeDTO>;
+
+    /**
+     * 
+     * 
+     * @param id 
+     */
+    apiMonthlyFeeIdReceiptPdfGet(id: string, extraHttpRequestParams?: any): Observable<ApiMedicalClearanceIdAttachmentGet200Response>;
 
     /**
      * 

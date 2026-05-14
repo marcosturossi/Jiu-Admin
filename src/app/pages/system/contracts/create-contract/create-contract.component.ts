@@ -1,5 +1,7 @@
-import { ChangeDetectionStrategy, Component, inject, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, output, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Subject, debounceTime, forkJoin, Observable } from 'rxjs';
 import { ContractService } from '../../../../generated_services/api/contract.service';
 import { FeePlanService } from '../../../../generated_services/api/feePlan.service';
 import { StudentsService } from '../../../../generated_services/api/students.service';
@@ -22,6 +24,7 @@ export class CreateContractComponent {
   private readonly feePlanService = inject(FeePlanService);
   private readonly studentsService = inject(StudentsService);
   private readonly ns = inject(NotificationService);
+  private readonly destroyRef = inject(DestroyRef);
 
   readonly closeEvent = output<void>();
   readonly contractCreated = output<void>();
@@ -33,6 +36,9 @@ export class CreateContractComponent {
   protected readonly selectedStudent = signal<SearchOption | null>(null);
   protected readonly selectedFeePlan = signal<SearchOption | null>(null);
 
+  private readonly studentSearchSubject = new Subject<string>();
+  private readonly feePlanSearchSubject = new Subject<string>();
+
   protected readonly form = this.fb.group({
     studentId: ['', Validators.required],
     feePlanId: ['', Validators.required],
@@ -41,6 +47,10 @@ export class CreateContractComponent {
   });
 
   constructor() {
+    this.studentSearchSubject.pipe(debounceTime(400), takeUntilDestroyed(this.destroyRef))
+      .subscribe(term => this.loadStudents(term));
+    this.feePlanSearchSubject.pipe(debounceTime(400), takeUntilDestroyed(this.destroyRef))
+      .subscribe(term => this.loadFeePlans(term));
     this.loadStudents();
     this.loadFeePlans();
   }
@@ -77,7 +87,7 @@ export class CreateContractComponent {
   }
 
   protected onStudentSearch(term: string): void {
-    this.loadStudents(term);
+    this.studentSearchSubject.next(term);
   }
 
   protected onFeePlanSelected(opt: SearchOption | null): void {
@@ -86,7 +96,7 @@ export class CreateContractComponent {
   }
 
   protected onFeePlanSearch(term: string): void {
-    this.loadFeePlans(term);
+    this.feePlanSearchSubject.next(term);
   }
 
   protected close(): void { this.closeEvent.emit(); }
