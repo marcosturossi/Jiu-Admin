@@ -1,5 +1,7 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { DatePipe } from '@angular/common';
+import { Subject, debounceTime } from 'rxjs';
 import { NoticesService } from '../../../generated_services/api/notices.service';
 import { ShowNoticesDTO } from '../../../generated_services/model/showNoticesDTO';
 import { SubnavService } from '../../../services/subnav.service';
@@ -22,25 +24,35 @@ export class NoticesComponent {
   private readonly noticesService = inject(NoticesService);
   private readonly subnavService = inject(SubnavService);
   private readonly notificationService = inject(NotificationService);
+  private readonly destroyRef = inject(DestroyRef);
+
+  private readonly searchSubject = new Subject<string>();
 
   protected readonly isLoading = signal(false);
   protected readonly items = signal<ShowNoticesDTO[]>([]);
   protected readonly openedCreate = signal(false);
   protected readonly openedUpdate = signal(false);
   protected readonly selected = signal<ShowNoticesDTO | null>(null);
+  protected readonly filterText = signal('');
 
   constructor() {
     this.subnavService.setTitle('Avisos');
+    this.searchSubject.pipe(debounceTime(400), takeUntilDestroyed(this.destroyRef)).subscribe(term => {
+      this.filterText.set(term);
+      this.load();
+    });
     this.load();
   }
 
   protected load(): void {
     this.isLoading.set(true);
-    this.noticesService.apiNoticesGet().subscribe({
+    this.noticesService.apiNoticesGet(this.filterText() || undefined).subscribe({
       next: result => { this.items.set(result); this.isLoading.set(false); },
       error: () => { this.isLoading.set(false); this.notificationService.showError('Erro ao Carregar Avisos!', 'Não foi possível carregar a lista de avisos. Tente novamente.'); }
     });
   }
+
+  protected onSearch(term: string): void { this.searchSubject.next(term); }
 
   protected openCreate(): void { this.openedCreate.set(true); }
   protected openEdit(item: ShowNoticesDTO): void { this.selected.set(item); this.openedUpdate.set(true); }

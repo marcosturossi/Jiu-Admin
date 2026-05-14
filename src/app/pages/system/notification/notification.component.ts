@@ -1,5 +1,7 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { DatePipe } from '@angular/common';
+import { Subject, debounceTime } from 'rxjs';
 import { NotificationService as ApiNotificationService } from '../../../generated_services/api/notification.service';
 import { ShowNotificationDTO } from '../../../generated_services/model/showNotificationDTO';
 import { CreateNotificationComponent } from './create-notification/create-notification.component';
@@ -21,6 +23,9 @@ export class NotificationComponent {
   private readonly apiNotificationService = inject(ApiNotificationService);
   private readonly subnavService = inject(SubnavService);
   private readonly ns = inject(NotificationService);
+  private readonly destroyRef = inject(DestroyRef);
+
+  private readonly searchSubject = new Subject<string>();
 
   protected readonly isLoading = signal(false);
   protected readonly items = signal<PaginationNotificationDTO | null>(null);
@@ -29,19 +34,31 @@ export class NotificationComponent {
   protected readonly selected = signal<ShowNotificationDTO | null>(null);
   protected readonly currentPage = signal(1);
   protected readonly pageSize = signal(10);
+  protected readonly filterText = signal('');
 
   constructor() {
     this.subnavService.setTitle('Notificações');
+    this.searchSubject.pipe(debounceTime(400), takeUntilDestroyed(this.destroyRef)).subscribe(term => {
+      this.filterText.set(term);
+      this.currentPage.set(1);
+      this.load();
+    });
     this.load();
   }
 
   protected load(): void {
     this.isLoading.set(true);
-    this.apiNotificationService.apiNotificationGet(undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, this.currentPage(), this.pageSize()).subscribe({
+    this.apiNotificationService.apiNotificationGet(
+      this.filterText() || undefined,
+      undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined,
+      this.currentPage(), this.pageSize(),
+    ).subscribe({
       next: r => { this.items.set(r); this.isLoading.set(false); },
       error: () => { this.isLoading.set(false); this.ns.showError('Erro ao Carregar Notificações!', 'Não foi possível carregar a lista de notificações. Tente novamente.'); }
     });
   }
+
+  protected onSearch(term: string): void { this.searchSubject.next(term); }
 
   protected onPageChange(p: number): void { this.currentPage.set(p); this.load(); }
   protected onPageSizeChange(s: number): void { this.pageSize.set(s); this.currentPage.set(1); this.load(); }
