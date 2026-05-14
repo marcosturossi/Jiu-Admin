@@ -1,13 +1,6 @@
 <section class="page-section">
   <div class="page-toolbar">
-    <app-filter [placeholder]="'Buscar contrato'" [value]="filterText()" (searchChange)="onSearch($event)" (searchReset)="onSearchReset()">
-      <select class="form-select" style="width:12rem" [ngModel]="filterStatus()" (ngModelChange)="filterStatus.set($event); onFilterChange()">
-        <option value="" disabled>Filtrar por status</option>
-        @for (opt of statusOptions; track opt.value) {
-          <option [value]="opt.value">{{ opt.label }}</option>
-        }
-      </select>
-    </app-filter>
+    <app-filter [placeholder]="'Buscar contrato'" [fields]="filterFields" (filterChange)="onFilterChange($event)" />
     <button type="button" class="btn btn-primary" (click)="openCreate()"><i class="bi bi-plus-lg me-1"></i>Novo Contrato</button>
   </div>
 

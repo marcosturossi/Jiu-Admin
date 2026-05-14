@@ -1,12 +1,12 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { DatePipe, CurrencyPipe } from '@angular/common';
-import { FormsModule } from '@angular/forms';
 import { ContractService } from '../../../generated_services/api/contract.service';
 import { StudentsService } from '../../../generated_services/api/students.service';
 import { ShowContractDTO, PaginationContractDTO, ContractStatus } from '../../../generated_services';
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
 import { FilterComponent } from '../../../shared/filter/filter.component';
+import { FilterField, FilterOutput } from '../../../shared/filter/filter.types';
 import { PaginationComponent } from '../../../shared/pagination/pagination.component';
 import { CreateContractComponent } from './create-contract/create-contract.component';
 import { UpdateContractComponent } from './update-contract/update-contract.component';
@@ -17,7 +17,6 @@ import { UpdateContractComponent } from './update-contract/update-contract.compo
   imports: [
     DatePipe,
     CurrencyPipe,
-    FormsModule,
     FilterComponent,
     PaginationComponent,
     CreateContractComponent,
@@ -44,14 +43,20 @@ export class ContractsComponent {
   protected readonly filterText = signal('');
   protected readonly studentMap = signal<Map<string, string>>(new Map());
 
-  protected readonly statusOptions = [
-    { label: 'Todos', value: undefined },
-    { label: 'Ativo', value: ContractStatus.Active },
-    { label: 'Inativo', value: ContractStatus.Inactive },
-    { label: 'Suspenso', value: ContractStatus.Suspended },
-    { label: 'Encerrado', value: ContractStatus.Terminated },
-    { label: 'Cancelado', value: ContractStatus.Cancelled },
-    { label: 'Expirado', value: ContractStatus.Expired },
+  protected readonly filterFields: FilterField[] = [
+    {
+      key: 'status',
+      label: 'Status',
+      type: 'select',
+      options: [
+        { value: String(ContractStatus.Active), label: 'Ativo' },
+        { value: String(ContractStatus.Inactive), label: 'Inativo' },
+        { value: String(ContractStatus.Suspended), label: 'Suspenso' },
+        { value: String(ContractStatus.Terminated), label: 'Encerrado' },
+        { value: String(ContractStatus.Cancelled), label: 'Cancelado' },
+        { value: String(ContractStatus.Expired), label: 'Expirado' },
+      ],
+    },
   ];
 
   constructor() {
@@ -112,13 +117,17 @@ export class ContractsComponent {
 
   protected onPageChange(page: number): void { this.currentPage.set(page); this.load(); }
   protected onPageSizeChange(size: number): void { this.pageSize.set(size); this.currentPage.set(1); this.load(); }
-  protected onSearch(term: string): void { this.filterText.set(term); this.currentPage.set(1); this.load(); }
-  protected onSearchReset(): void { this.filterText.set(''); this.currentPage.set(1); this.load(); }
+  protected onFilterChange(output: FilterOutput): void {
+    this.filterText.set(output.text);
+    const statusCond = output.conditions.find(c => c.field.key === 'status');
+    this.filterStatus.set(statusCond ? Number(statusCond.value) as unknown as ContractStatus : undefined);
+    this.currentPage.set(1);
+    this.load();
+  }
   protected openCreate(): void { this.openedCreate.set(true); }
   protected openEdit(item: ShowContractDTO): void { this.selected.set(item); this.openedUpdate.set(true); }
   protected onCreated(): void { this.openedCreate.set(false); this.load(); }
   protected onUpdated(): void { this.openedUpdate.set(false); this.load(); }
-  protected onFilterChange(): void { this.currentPage.set(1); this.load(); }
 
   protected delete(item: ShowContractDTO): void {
     if (!confirm('Tem certeza que deseja excluir este contrato?')) return;

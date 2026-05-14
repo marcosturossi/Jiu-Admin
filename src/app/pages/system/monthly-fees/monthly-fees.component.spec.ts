@@ -84,7 +84,7 @@ describe('MonthlyFeesComponent', () => {
   it('should reset to page 1 and reload on onFilterChange', () => {
     (component as any).currentPage.set(3);
     feeService.apiMonthlyFeeGet.calls.reset();
-    (component as any).onFilterChange();
+    (component as any).onFilterChange({ text: '', conditions: [] });
     expect((component as any).currentPage()).toBe(1);
     expect(feeService.apiMonthlyFeeGet).toHaveBeenCalled();
   });

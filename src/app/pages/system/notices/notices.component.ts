@@ -5,6 +5,7 @@ import { ShowNoticesDTO } from '../../../generated_services/model/showNoticesDTO
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
 import { FilterComponent } from '../../../shared/filter/filter.component';
+import { FilterOutput } from '../../../shared/filter/filter.types';
 import { CreateNoticeComponent } from './create-notice/create-notice.component';
 import { UpdateNoticeComponent } from './update-notice/update-notice.component';
 
@@ -46,8 +47,7 @@ export class NoticesComponent {
     });
   }
 
-  protected onSearch(term: string): void { this.filterText.set(term); this.load(); }
-  protected onSearchReset(): void { this.filterText.set(''); this.load(); }
+  protected onFilterChange(output: FilterOutput): void { this.filterText.set(output.text); this.load(); }
 
   protected openCreate(): void { this.openedCreate.set(true); }
   protected openEdit(item: ShowNoticesDTO): void { this.selected.set(item); this.openedUpdate.set(true); }

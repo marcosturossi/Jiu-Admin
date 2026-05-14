@@ -1,12 +1,12 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { DatePipe, CurrencyPipe } from '@angular/common';
-import { FormsModule } from '@angular/forms';
 import { FinancialTransactionService } from '../../../generated_services/api/financialTransaction.service';
 import { TransactionCategoryService } from '../../../generated_services/api/transactionCategory.service';
 import { PaginationTransactionDTO, ShowTransactionDTO, ShowTransactionCategoryDTO, TransactionType } from '../../../generated_services';
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
 import { FilterComponent } from '../../../shared/filter/filter.component';
+import { FilterField, FilterOutput } from '../../../shared/filter/filter.types';
 import { PaginationComponent } from '../../../shared/pagination/pagination.component';
 import { CreateTransactionComponent } from './create-transaction/create-transaction.component';
 import { UpdateTransactionComponent } from './update-transaction/update-transaction.component';
@@ -17,7 +17,6 @@ import { UpdateTransactionComponent } from './update-transaction/update-transact
   imports: [
     DatePipe,
     CurrencyPipe,
-    FormsModule,
     FilterComponent,
     PaginationComponent,
     CreateTransactionComponent,
@@ -44,14 +43,20 @@ export class TransactionsComponent {
   protected readonly searchTerm = signal('');
   protected readonly categories = signal<ShowTransactionCategoryDTO[]>([]);
 
-  protected readonly typeOptions = [
-    { label: 'Todos', value: undefined },
-    { label: 'Débito', value: TransactionType.Debit },
-    { label: 'Crédito', value: TransactionType.Credit },
-    { label: 'Reembolso', value: TransactionType.Refund },
-    { label: 'Ajuste', value: TransactionType.Adjustment },
-    { label: 'Receita', value: TransactionType.Income },
-    { label: 'Despesa', value: TransactionType.Expense },
+  protected readonly filterFields: FilterField[] = [
+    {
+      key: 'type',
+      label: 'Tipo',
+      type: 'select',
+      options: [
+        { value: String(TransactionType.Debit), label: 'Débito' },
+        { value: String(TransactionType.Credit), label: 'Crédito' },
+        { value: String(TransactionType.Refund), label: 'Reembolso' },
+        { value: String(TransactionType.Adjustment), label: 'Ajuste' },
+        { value: String(TransactionType.Income), label: 'Receita' },
+        { value: String(TransactionType.Expense), label: 'Despesa' },
+      ],
+    },
   ];
 
   constructor() {
@@ -110,9 +115,13 @@ export class TransactionsComponent {
 
   protected onPageChange(page: number): void { this.currentPage.set(page); this.load(); }
   protected onPageSizeChange(size: number): void { this.pageSize.set(size); this.currentPage.set(1); this.load(); }
-  protected onFilterChange(): void { this.currentPage.set(1); this.load(); }
-  protected onSearch(term: string): void { this.searchTerm.set(term); this.currentPage.set(1); this.load(); }
-  protected onSearchReset(): void { this.searchTerm.set(''); this.currentPage.set(1); this.load(); }
+  protected onFilterChange(output: FilterOutput): void {
+    this.searchTerm.set(output.text);
+    const typeCond = output.conditions.find(c => c.field.key === 'type');
+    this.filterType.set(typeCond ? Number(typeCond.value) as unknown as TransactionType : undefined);
+    this.currentPage.set(1);
+    this.load();
+  }
   protected onCategorySearch(term: string): void { this.loadCategories(term); }
   protected openCreate(): void { this.openedCreate.set(true); }
   protected openEdit(item: ShowTransactionDTO): void { this.selected.set(item); this.openedUpdate.set(true); }

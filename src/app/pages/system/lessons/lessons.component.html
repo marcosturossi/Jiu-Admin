@@ -1,6 +1,6 @@
 <section class="page-section">
   <div class="page-toolbar">
-    <app-filter [placeholder]="'Buscar aula'" [value]="filterText()" (searchChange)="onSearch($event)" (searchReset)="onSearchReset()" />
+    <app-filter [placeholder]="'Buscar aula'" (filterChange)="onFilterChange($event)" />
     <button type="button" class="btn btn-primary" (click)="openCreate()">
       <i class="bi bi-plus-lg me-1"></i>Nova Aula
     </button>

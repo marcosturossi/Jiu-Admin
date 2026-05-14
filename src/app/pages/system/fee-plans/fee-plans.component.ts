@@ -4,6 +4,7 @@ import { FeePlanService, PaginationFeePlanDTO, ShowFeePlanDTO } from '../../../g
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
 import { FilterComponent } from '../../../shared/filter/filter.component';
+import { FilterOutput } from '../../../shared/filter/filter.types';
 import { PaginationComponent } from '../../../shared/pagination/pagination.component';
 import { CreateFeePlanComponent } from './create-fee-plan/create-fee-plan.component';
 import { UpdateFeePlanComponent } from './update-fee-plan/update-fee-plan.component';
@@ -51,8 +52,7 @@ export class FeePlansComponent {
 
   protected onPageChange(page: number): void { this.currentPage.set(page); this.load(); }
   protected onPageSizeChange(size: number): void { this.pageSize.set(size); this.currentPage.set(1); this.load(); }
-  protected onSearch(term: string): void { this.filterText.set(term); this.currentPage.set(1); this.load(); }
-  protected onSearchReset(): void { this.filterText.set(''); this.currentPage.set(1); this.load(); }
+  protected onFilterChange(output: FilterOutput): void { this.filterText.set(output.text); this.currentPage.set(1); this.load(); }
   protected openCreate(): void { this.openedCreate.set(true); }
   protected openEdit(item: ShowFeePlanDTO): void { this.selected.set(item); this.openedUpdate.set(true); }
   protected onCreated(): void { this.openedCreate.set(false); this.load(); }

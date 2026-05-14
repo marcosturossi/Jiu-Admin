@@ -6,6 +6,7 @@ import { ChargeResult, FeeStatus, PaginationMonthlyFeeDTO, ShowMonthlyFeeDTO } f
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
 import { FilterComponent } from '../../../shared/filter/filter.component';
+import { FilterField, FilterOutput } from '../../../shared/filter/filter.types';
 import { PaginationComponent } from '../../../shared/pagination/pagination.component';
 import { dateStringToIso, todayDateString } from '../../../utils/date.utils';
 
@@ -61,6 +62,20 @@ export class MonthlyFeesComponent {
     { label: 'Cancelado', value: FeeStatus.Cancelled },
   ];
 
+  protected readonly filterFields: FilterField[] = [
+    {
+      key: 'status',
+      label: 'Status',
+      type: 'select',
+      options: [
+        { value: String(FeeStatus.Pending), label: 'Pendente' },
+        { value: String(FeeStatus.Paid), label: 'Pago' },
+        { value: String(FeeStatus.Overdue), label: 'Atrasado' },
+        { value: String(FeeStatus.Cancelled), label: 'Cancelado' },
+      ],
+    },
+  ];
+
   constructor() {
     this.subnavService.setTitle('Mensalidades');
     this.load();
@@ -103,9 +118,13 @@ export class MonthlyFeesComponent {
 
   protected onPageChange(page: number): void { this.currentPage.set(page); this.load(); }
   protected onPageSizeChange(size: number): void { this.pageSize.set(size); this.currentPage.set(1); this.load(); }
-  protected onSearch(term: string): void { this.filterText.set(term); this.currentPage.set(1); this.load(); }
-  protected onSearchReset(): void { this.filterText.set(''); this.currentPage.set(1); this.load(); }
-  protected onFilterChange(): void { this.currentPage.set(1); this.load(); }
+  protected onFilterChange(output: FilterOutput): void {
+    this.filterText.set(output.text);
+    const statusCond = output.conditions.find(c => c.field.key === 'status');
+    this.filterStatus.set(statusCond ? Number(statusCond.value) as unknown as FeeStatus : undefined);
+    this.currentPage.set(1);
+    this.load();
+  }
 
   protected openPay(fee: ShowMonthlyFeeDTO): void {
     this.selected.set(fee);

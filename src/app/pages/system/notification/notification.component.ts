@@ -9,6 +9,7 @@ import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
 import { PaginationNotificationDTO } from '../../../generated_services';
 import { FilterComponent } from '../../../shared/filter/filter.component';
+import { FilterOutput } from '../../../shared/filter/filter.types';
 import { PaginationComponent } from '../../../shared/pagination/pagination.component';
 
 @Component({
@@ -49,8 +50,7 @@ export class NotificationComponent {
     });
   }
 
-  protected onSearch(term: string): void { this.filterText.set(term); this.currentPage.set(1); this.load(); }
-  protected onSearchReset(): void { this.filterText.set(''); this.currentPage.set(1); this.load(); }
+  protected onFilterChange(output: FilterOutput): void { this.filterText.set(output.text); this.currentPage.set(1); this.load(); }
 
   protected onPageChange(p: number): void { this.currentPage.set(p); this.load(); }
   protected onPageSizeChange(s: number): void { this.pageSize.set(s); this.currentPage.set(1); this.load(); }

@@ -1,16 +1,6 @@
 <section class="page-section">
   <div class="page-toolbar">
-    <app-filter [placeholder]="'Buscar mensalidade'" [value]="filterText()" (searchChange)="onSearch($event)" (searchReset)="onSearchReset()">
-      <select
-        class="form-select"
-        [ngModel]="filterStatus()"
-        (ngModelChange)="filterStatus.set($event); onFilterChange()">
-        <option value="">Filtrar por status</option>
-        @for (opt of statusOptions; track opt.value) {
-          <option [value]="opt.value">{{ opt.label }}</option>
-        }
-      </select>
-    </app-filter>
+    <app-filter [placeholder]="'Buscar mensalidade'" [fields]="filterFields" (filterChange)="onFilterChange($event)" />
   </div>
 
   @if (isLoading()) {
