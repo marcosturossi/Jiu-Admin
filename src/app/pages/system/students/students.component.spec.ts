@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { HttpHeaders, HttpResponse } from '@angular/common/http';
 import { of, throwError } from 'rxjs';
 import { StudentsComponent } from './students.component';
 import { StudentsService } from '../../../generated_services/api/students.service';
@@ -7,8 +8,11 @@ import { NotificationService } from '../../../services/notification.service';
 import { ShowStudentDTO } from '../../../generated_services/model/showStudentDTO';
 
 const MOCK_STUDENT: ShowStudentDTO = { id: 's1', userName: 'joao.silva', email: 'joao@test.com', firstName: 'João', lastName: 'Silva', isActive: true };
-const MOCK_ODATA_RESPONSE = { '@odata.count': 1, value: [MOCK_STUDENT] };
-const MOCK_PAGE = { items: [MOCK_STUDENT], totalCount: 1, totalPages: 1 };
+const MOCK_ODATA_RESPONSE = new HttpResponse({
+  body: { value: [MOCK_STUDENT] },
+  headers: new HttpHeaders({ '@odata.count': '25' }),
+});
+const MOCK_PAGE = { items: [MOCK_STUDENT], totalCount: 25, totalPages: 3 };
 
 describe('StudentsComponent', () => {
   let component: StudentsComponent;

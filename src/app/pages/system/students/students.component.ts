@@ -58,8 +58,8 @@ export class StudentsComponent {
     this.isLoading.set(true);
     const skip = (this.currentPage() - 1) * this.pageSize();
     const filter = this.filterQuery();
-    this.studentsService.apiStudentsGet(filter, undefined, String(this.pageSize()), String(skip), 'true').subscribe({
-      next: (body: any) => { this.items.set(parseODataPage<ShowStudentDTO>(body, this.pageSize())); this.isLoading.set(false); },
+    this.studentsService.apiStudentsGet(filter, undefined, String(this.pageSize()), String(skip), 'true', undefined, 'response').subscribe({
+      next: (response: any) => { this.items.set(parseODataPage<ShowStudentDTO>(response, this.pageSize())); this.isLoading.set(false); },
       error: () => { this.isLoading.set(false); this.notificationService.showError('Erro de Carregamento', 'Não foi possível carregar a lista de alunos.'); }
     });
   }

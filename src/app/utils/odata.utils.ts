@@ -6,9 +6,23 @@ export interface ODataPage<T> {
   totalPages: number;
 }
 
+function readCountFromHeaders(headers: any): number | undefined {
+  if (!headers) return undefined;
+  const raw =
+    headers.get?.('@odata.count') ??
+    headers.get?.('odata.count') ??
+    headers.get?.('x-total-count') ??
+    headers.get?.('X-Total-Count');
+  const parsed = Number(raw);
+  return Number.isFinite(parsed) ? parsed : undefined;
+}
+
 export function parseODataPage<T>(body: any, pageSize: number): ODataPage<T> {
-  const items: T[] = Array.isArray(body) ? body : (body?.value ?? []);
-  const totalCount: number = body?.['@odata.count'] ?? items.length;
+  const responseBody = body?.body ?? body;
+  const items: T[] = Array.isArray(responseBody) ? responseBody : (responseBody?.value ?? []);
+  const headerCount = readCountFromHeaders(body?.headers);
+  const bodyCount = responseBody?.['@odata.count'] ?? responseBody?.['odata.count'];
+  const totalCount: number = headerCount ?? bodyCount ?? items.length;
   const totalPages = pageSize > 0 ? Math.ceil(totalCount / pageSize) : 1;
   return { items, totalCount, totalPages };
 }
