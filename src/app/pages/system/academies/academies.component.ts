@@ -7,7 +7,7 @@ import {
 import { DatePipe } from '@angular/common';
 import { AcademyService } from '../../../generated_services/api/academy.service';
 import { ShowAcademyDTO } from '../../../generated_services/model/showAcademyDTO';
-import { ODataPage, parseODataPage } from '../../../utils/odata.utils';
+import { ODataPage, buildClientPage, parseODataPage } from '../../../utils/odata.utils';
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
 import { PaginationComponent } from '../../../shared/pagination/pagination.component';
@@ -34,6 +34,7 @@ export class AcademiesComponent {
 
   protected readonly isLoading = signal(false);
   protected readonly items = signal<ODataPage<ShowAcademyDTO> | null>(null);
+  protected readonly allItems = signal<ShowAcademyDTO[]>([]);
   protected readonly openedCreate = signal(false);
   protected readonly openedUpdate = signal(false);
   protected readonly selected = signal<ShowAcademyDTO | null>(null);
@@ -50,22 +51,15 @@ export class AcademiesComponent {
     this.isLoading.set(true);
     const name = this.searchName().trim() || undefined;
     const filter = name ? `contains(name,'${name.replace(/'/g, "''")}')` : undefined;
-    const skip = (this.currentPage() - 1) * this.pageSize();
-    this.academyService
-      .apiAdminAcademiesGet(filter, undefined, String(this.pageSize()), String(skip), 'true')
-      .subscribe({
-        next: (body: any) => {
-          this.items.set(parseODataPage<ShowAcademyDTO>(body, this.pageSize()));
-          this.isLoading.set(false);
-        },
-        error: () => {
-          this.isLoading.set(false);
-          this.notificationService.showError(
-            'Erro de Carregamento',
-            'Não foi possível carregar a lista de academias.',
-          );
-        },
-      });
+    this.academyService.apiAdminAcademiesGet(filter, undefined, '200', '0', 'true').subscribe({
+      next: (body: any) => {
+        const page = parseODataPage<ShowAcademyDTO>(body, 200);
+        this.allItems.set(page.items);
+        this.refreshPage();
+        this.isLoading.set(false);
+      },
+      error: () => { this.isLoading.set(false); this.notificationService.showError('Erro de Carregamento', 'Não foi possível carregar a lista de academias.'); }
+    });
   }
 
   protected onSearch(): void {
@@ -73,15 +67,21 @@ export class AcademiesComponent {
     this.load();
   }
 
+  private refreshPage(): void {
+    const page = buildClientPage(this.allItems(), this.currentPage(), this.pageSize());
+    this.currentPage.set(page.currentPage);
+    this.items.set(page);
+  }
+
   protected onPageChange(page: number): void {
     this.currentPage.set(page);
-    this.load();
+    this.refreshPage();
   }
 
   protected onPageSizeChange(size: number): void {
     this.pageSize.set(size);
     this.currentPage.set(1);
-    this.load();
+    this.refreshPage();
   }
 
   protected openCreate(): void {

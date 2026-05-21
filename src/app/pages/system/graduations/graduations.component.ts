@@ -8,7 +8,7 @@ import { NotificationService } from '../../../services/notification.service';
 import { FilterComponent } from '../../../shared/filter/filter.component';
 import { FilterOutput } from '../../../shared/filter/filter.types';
 import { PaginationComponent } from '../../../shared/pagination/pagination.component';
-import { ODataPage, parseODataPage } from '../../../utils/odata.utils';
+import { ODataPage, buildClientPage, parseODataPage } from '../../../utils/odata.utils';
 
 @Component({
   selector: 'app-graduations',
@@ -30,6 +30,7 @@ export class GraduationsComponent {
 
   protected readonly isLoading = signal(false);
   protected readonly items = signal<ODataPage<ShowGraduationDTO> | null>(null);
+  protected readonly allItems = signal<ShowGraduationDTO[]>([]);
   protected readonly openedCreate = signal(false);
   protected readonly openedUpdate = signal(false);
   protected readonly selected = signal<ShowGraduationDTO | null>(null);
@@ -44,19 +45,26 @@ export class GraduationsComponent {
 
   protected load(): void {
     this.isLoading.set(true);
-    const skip = (this.currentPage() - 1) * this.pageSize();
     const filter = this.filterQuery();
-    this.graduationService.apiGraduationGet(filter, undefined, String(this.pageSize()), String(skip), 'true').subscribe({
-      next: (body: any) => { this.items.set(parseODataPage<ShowGraduationDTO>(body, this.pageSize())); this.isLoading.set(false); },
-      error: () => {
+    this.graduationService.apiGraduationGet(filter, undefined, '200', '0', 'true').subscribe({
+      next: (body: any) => {
+        const page = parseODataPage<ShowGraduationDTO>(body, 200);
+        this.allItems.set(page.items);
+        this.refreshPage();
         this.isLoading.set(false);
-        this.notificationService.showError('Erro ao Carregar Graduações!', 'Não foi possível carregar a lista de graduações. Tente novamente.');
       },
+      error: () => { this.isLoading.set(false); this.notificationService.showError('Erro ao Carregar Graduações!', 'Não foi possível carregar a lista de graduações. Tente novamente.'); }
     });
   }
 
-  protected onPageChange(p: number): void { this.currentPage.set(p); this.load(); }
-  protected onPageSizeChange(s: number): void { this.pageSize.set(s); this.currentPage.set(1); this.load(); }
+  private refreshPage(): void {
+    const page = buildClientPage(this.allItems(), this.currentPage(), this.pageSize());
+    this.currentPage.set(page.currentPage);
+    this.items.set(page);
+  }
+
+  protected onPageChange(p: number): void { this.currentPage.set(p); this.refreshPage(); }
+  protected onPageSizeChange(s: number): void { this.pageSize.set(s); this.currentPage.set(1); this.refreshPage(); }
   protected onFilterChange(output: FilterOutput): void { this.filterQuery.set(output.odataFilter); this.currentPage.set(1); this.load(); }
   protected openCreate(): void { this.openedCreate.set(true); }
   protected openEdit(item: ShowGraduationDTO): void { this.selected.set(item); this.openedUpdate.set(true); }

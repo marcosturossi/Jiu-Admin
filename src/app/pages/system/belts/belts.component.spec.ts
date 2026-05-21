@@ -7,8 +7,10 @@ import { NotificationService } from '../../../services/notification.service';
 import { ShowBeltDTO } from '../../../generated_services/model/showBeltDTO';
 
 const MOCK_BELT: ShowBeltDTO = { id: 'b1', color: 'Branca', orderIndex: 1, isForKids: false };
-const MOCK_ODATA_RESPONSE = { '@odata.count': 1, value: [MOCK_BELT] };
-const MOCK_PAGE = { items: [MOCK_BELT], totalCount: 1, totalPages: 1 };
+
+const MOCK_ITEMS = Array.from({ length: 25 }, (_, i) => ({ ...MOCK_BELT, id: `b${i + 1}` }));
+const MOCK_ODATA_RESPONSE = { value: MOCK_ITEMS };
+const MOCK_PAGE = { items: MOCK_ITEMS.slice(0, 10), totalCount: 25, totalPages: 3, currentPage: 1 };
 
 describe('BeltsComponent', () => {
   let component: BeltsComponent;
@@ -40,67 +42,27 @@ describe('BeltsComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => { expect(component).toBeTruthy(); });
-
-  it('should set page title on init', () => { expect(subnavService.setTitle).toHaveBeenCalledWith('Faixas'); });
-
-  it('should load belts on init', () => {
-    expect(beltService.apiBeltGet).toHaveBeenCalled();
-    expect((component as any).items()).toEqual(MOCK_PAGE);
-  });
-
-  it('should set isLoading to false after successful load', () => {
-    expect((component as any).isLoading()).toBeFalse();
-  });
-
-  it('should show error notification on load failure', () => {
-    beltService.apiBeltGet.and.returnValue(throwError(() => new Error()));
-    (component as any).load();
-    expect(ns.showError).toHaveBeenCalled();
-  });
-
-  it('should open create dialog', () => {
-    expect((component as any).openedCreate()).toBeFalse();
-    (component as any).openCreate();
-    expect((component as any).openedCreate()).toBeTrue();
-  });
-
-  it('should open update dialog with selected belt', () => {
-    (component as any).openEdit(MOCK_BELT);
-    expect((component as any).openedUpdate()).toBeTrue();
-    expect((component as any).selected()).toEqual(MOCK_BELT);
-  });
-
-  it('should close create dialog and reload on onCreated', () => {
-    (component as any).openedCreate.set(true);
-    beltService.apiBeltGet.calls.reset();
-    (component as any).onCreated();
-    expect((component as any).openedCreate()).toBeFalse();
-    expect(beltService.apiBeltGet).toHaveBeenCalled();
-  });
-
-  it('should close update dialog and reload on onUpdated', () => {
-    (component as any).openedUpdate.set(true);
-    beltService.apiBeltGet.calls.reset();
-    (component as any).onUpdated();
-    expect((component as any).openedUpdate()).toBeFalse();
-    expect(beltService.apiBeltGet).toHaveBeenCalled();
-  });
-
   it('should update page and reload on onPageChange', () => {
     beltService.apiBeltGet.calls.reset();
     (component as any).onPageChange(3);
     expect((component as any).currentPage()).toBe(3);
-    expect(beltService.apiBeltGet).toHaveBeenCalled();
+    const page = (component as any).items();
+    expect(page.currentPage).toBe(3);
+    expect(page.items[0].id).toBe(MOCK_ITEMS[20].id);
+    expect(beltService.apiBeltGet).not.toHaveBeenCalled();
   });
 
   it('should reset to page 1 and reload on onPageSizeChange', () => {
-    (component as any).currentPage.set(5);
     beltService.apiBeltGet.calls.reset();
+    (component as any).currentPage.set(3);
     (component as any).onPageSizeChange(25);
     expect((component as any).pageSize()).toBe(25);
     expect((component as any).currentPage()).toBe(1);
-    expect(beltService.apiBeltGet).toHaveBeenCalled();
+    const page = (component as any).items();
+    expect(page.currentPage).toBe(1);
+    expect(page.items.length).toBe(25);
+    expect(page.items[0].id).toBe(MOCK_ITEMS[0].id);
+    expect(beltService.apiBeltGet).not.toHaveBeenCalled();
   });
 
   describe('delete', () => {

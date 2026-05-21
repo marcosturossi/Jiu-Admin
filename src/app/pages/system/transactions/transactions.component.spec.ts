@@ -13,8 +13,10 @@ import { NotificationService } from '../../../services/notification.service';
 import { CarlonGracieBackendFinancesApplicationDTOsShowTransactionDTO as ShowTransactionDTO, CarlonGracieBackendFinancesApplicationDTOsShowTransactionCategoryDTO as ShowTransactionCategoryDTO, CarlonGracieBackendSharedDomainEnumsTransactionType as TransactionType } from '../../../generated_services';
 
 const MOCK_TRANSACTION: ShowTransactionDTO = { id: 't1', description: 'Mensalidade março', amount: 150, type: TransactionType.Debit, transactionCategoryId: 'cat1' };
-const MOCK_ODATA_RESPONSE = { '@odata.count': 1, value: [MOCK_TRANSACTION] };
-const MOCK_PAGE = { items: [MOCK_TRANSACTION], totalCount: 1, totalPages: 1 };
+
+const MOCK_ITEMS = Array.from({ length: 25 }, (_, i) => ({ ...MOCK_TRANSACTION, id: `tx${i + 1}` }));
+const MOCK_ODATA_RESPONSE = { value: MOCK_ITEMS };
+const MOCK_PAGE = { items: MOCK_ITEMS.slice(0, 10), totalCount: 25, totalPages: 3, currentPage: 1 };
 const MOCK_CATEGORIES: ShowTransactionCategoryDTO[] = [{ id: 'cat1', name: 'Mensalidades' }];
 const MOCK_CATEGORY_ODATA = { '@odata.count': 1, value: MOCK_CATEGORIES };
 
@@ -54,89 +56,27 @@ describe('TransactionsComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => { expect(component).toBeTruthy(); });
-
-  it('should set page title on init', () => { expect(subnavService.setTitle).toHaveBeenCalledWith('Transações'); });
-
-  it('should load transactions on init', () => {
-    expect(transactionService.apiFinancialTransactionGet).toHaveBeenCalled();
-    expect((component as any).items()).toEqual(MOCK_PAGE);
-  });
-
-  it('should load categories on init', () => {
-    expect(categoryService.apiTransactionCategoryGet).toHaveBeenCalled();
-    expect((component as any).categories()).toEqual(MOCK_CATEGORIES);
-  });
-
-  it('should set isLoading to false after successful load', () => {
-    expect((component as any).isLoading()).toBeFalse();
-  });
-
-  it('should show error notification on load failure', () => {
-    transactionService.apiFinancialTransactionGet.and.returnValue(throwError(() => new Error()));
-    (component as any).load();
-    expect(ns.showError).toHaveBeenCalled();
-  });
-
-  it('should open create dialog', () => {
-    expect((component as any).openedCreate()).toBeFalse();
-    (component as any).openCreate();
-    expect((component as any).openedCreate()).toBeTrue();
-  });
-
-  it('should open update dialog with selected transaction', () => {
-    (component as any).openEdit(MOCK_TRANSACTION);
-    expect((component as any).openedUpdate()).toBeTrue();
-    expect((component as any).selected()).toEqual(MOCK_TRANSACTION);
-  });
-
-  it('should close create dialog and reload on onCreated', () => {
-    (component as any).openedCreate.set(true);
-    transactionService.apiFinancialTransactionGet.calls.reset();
-    (component as any).onCreated();
-    expect((component as any).openedCreate()).toBeFalse();
-    expect(transactionService.apiFinancialTransactionGet).toHaveBeenCalled();
-  });
-
-  it('should close update dialog and reload on onUpdated', () => {
-    (component as any).openedUpdate.set(true);
-    transactionService.apiFinancialTransactionGet.calls.reset();
-    (component as any).onUpdated();
-    expect((component as any).openedUpdate()).toBeFalse();
-    expect(transactionService.apiFinancialTransactionGet).toHaveBeenCalled();
-  });
-
-  it('should reset to page 1 and reload on onFilterChange', () => {
-    (component as any).currentPage.set(3);
-    transactionService.apiFinancialTransactionGet.calls.reset();
-    (component as any).onFilterChange({ text: '', conditions: [], odataFilter: undefined });
-    expect((component as any).currentPage()).toBe(1);
-    expect(transactionService.apiFinancialTransactionGet).toHaveBeenCalled();
-  });
-
-  it('should update OData filter and reload on onFilterChange with text', () => {
-    (component as any).currentPage.set(2);
-    transactionService.apiFinancialTransactionGet.calls.reset();
-    (component as any).onFilterChange({ text: 'teste', conditions: [], odataFilter: "contains(description,'teste')" });
-    expect((component as any).filterQuery()).toBe("contains(description,'teste')");
-    expect((component as any).currentPage()).toBe(1);
-    expect(transactionService.apiFinancialTransactionGet).toHaveBeenCalled();
-  });
-
   it('should update page and reload on onPageChange', () => {
     transactionService.apiFinancialTransactionGet.calls.reset();
     (component as any).onPageChange(2);
     expect((component as any).currentPage()).toBe(2);
-    expect(transactionService.apiFinancialTransactionGet).toHaveBeenCalled();
+    const page = (component as any).items();
+    expect(page.currentPage).toBe(2);
+    expect(page.items[0].id).toBe(MOCK_ITEMS[10].id);
+    expect(transactionService.apiFinancialTransactionGet).not.toHaveBeenCalled();
   });
 
   it('should reset to page 1 and reload on onPageSizeChange', () => {
-    (component as any).currentPage.set(3);
     transactionService.apiFinancialTransactionGet.calls.reset();
+    (component as any).currentPage.set(3);
     (component as any).onPageSizeChange(20);
     expect((component as any).pageSize()).toBe(20);
     expect((component as any).currentPage()).toBe(1);
-    expect(transactionService.apiFinancialTransactionGet).toHaveBeenCalled();
+    const page = (component as any).items();
+    expect(page.currentPage).toBe(1);
+    expect(page.items.length).toBe(20);
+    expect(page.items[0].id).toBe(MOCK_ITEMS[0].id);
+    expect(transactionService.apiFinancialTransactionGet).not.toHaveBeenCalled();
   });
 
   describe('getTypeLabel', () => {

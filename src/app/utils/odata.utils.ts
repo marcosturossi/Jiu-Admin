@@ -6,6 +6,10 @@ export interface ODataPage<T> {
   totalPages: number;
 }
 
+export interface ClientPage<T> extends ODataPage<T> {
+  currentPage: number;
+}
+
 function readCountFromHeaders(headers: any): number | undefined {
   if (!headers) return undefined;
   const raw =
@@ -25,6 +29,20 @@ export function parseODataPage<T>(body: any, pageSize: number): ODataPage<T> {
   const totalCount: number = headerCount ?? bodyCount ?? items.length;
   const totalPages = pageSize > 0 ? Math.ceil(totalCount / pageSize) : 1;
   return { items, totalCount, totalPages };
+}
+
+export function buildClientPage<T>(items: T[], currentPage: number, pageSize: number): ClientPage<T> {
+  const normalizedPageSize = Math.max(1, pageSize);
+  const totalCount = items.length;
+  const totalPages = totalCount > 0 ? Math.ceil(totalCount / normalizedPageSize) : 1;
+  const currentPageNormalized = Math.min(Math.max(currentPage, 1), totalPages);
+  const start = (currentPageNormalized - 1) * normalizedPageSize;
+  return {
+    items: items.slice(start, start + normalizedPageSize),
+    totalCount,
+    totalPages,
+    currentPage: currentPageNormalized,
+  };
 }
 
 export function buildODataFilter(

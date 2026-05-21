@@ -9,7 +9,7 @@ import { FilterComponent } from '../../../shared/filter/filter.component';
 import { FilterField, FilterOutput } from '../../../shared/filter/filter.types';
 import { PaginationComponent } from '../../../shared/pagination/pagination.component';
 import { dateStringToIso, todayDateString } from '../../../utils/date.utils';
-import { ODataPage, parseODataPage } from '../../../utils/odata.utils';
+import { ODataPage, buildClientPage, parseODataPage } from '../../../utils/odata.utils';
 
 @Component({
   selector: 'app-monthly-fees',
@@ -38,6 +38,7 @@ export class MonthlyFeesComponent {
   protected readonly isCharging = signal(false);
   protected readonly isDownloading = signal(false);
   protected readonly items = signal<ODataPage<ShowMonthlyFeeDTO> | null>(null);
+  protected readonly allItems = signal<ShowMonthlyFeeDTO[]>([]);
   protected readonly openedPay = signal(false);
   protected readonly openedPix = signal(false);
   protected readonly selected = signal<ShowMonthlyFeeDTO | null>(null);
@@ -83,11 +84,15 @@ export class MonthlyFeesComponent {
 
   protected load(): void {
     this.isLoading.set(true);
-    const skip = (this.currentPage() - 1) * this.pageSize();
     const filter = this.filterQuery();
-    this.feeService.apiMonthlyFeeGet(filter, undefined, String(this.pageSize()), String(skip), 'true').subscribe({
-      next: (body: any) => { this.items.set(parseODataPage<ShowMonthlyFeeDTO>(body, this.pageSize())); this.isLoading.set(false); },
-      error: () => { this.isLoading.set(false); this.ns.showError('Erro', 'Não foi possível carregar as mensalidades.'); },
+    this.feeService.apiMonthlyFeeGet(filter, undefined, '200', '0', 'true').subscribe({
+      next: (body: any) => {
+        const page = parseODataPage<ShowMonthlyFeeDTO>(body, 200);
+        this.allItems.set(page.items);
+        this.refreshPage();
+        this.isLoading.set(false);
+      },
+      error: () => { this.isLoading.set(false); this.ns.showError('Erro', 'Não foi possível carregar as mensalidades.'); }
     });
   }
 
@@ -111,8 +116,14 @@ export class MonthlyFeesComponent {
     }
   }
 
-  protected onPageChange(page: number): void { this.currentPage.set(page); this.load(); }
-  protected onPageSizeChange(size: number): void { this.pageSize.set(size); this.currentPage.set(1); this.load(); }
+  private refreshPage(): void {
+    const page = buildClientPage(this.allItems(), this.currentPage(), this.pageSize());
+    this.currentPage.set(page.currentPage);
+    this.items.set(page);
+  }
+
+  protected onPageChange(page: number): void { this.currentPage.set(page); this.refreshPage(); }
+  protected onPageSizeChange(size: number): void { this.pageSize.set(size); this.currentPage.set(1); this.refreshPage(); }
   protected onFilterChange(output: FilterOutput): void { this.filterQuery.set(output.odataFilter); this.currentPage.set(1); this.load(); }
 
   protected openPay(fee: ShowMonthlyFeeDTO): void {

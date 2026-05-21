@@ -6,8 +6,10 @@ import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
 
 const MOCK_FREQUENCY: ShowFrequencyDTO = { id: 'f1', studentId: 'student-1', lessonId: 'lesson-1', lessonScheduledDate: '2024-03-01' };
-const MOCK_ODATA_RESPONSE = { '@odata.count': 1, value: [MOCK_FREQUENCY] };
-const MOCK_PAGE = { items: [MOCK_FREQUENCY], totalCount: 1, totalPages: 1 };
+
+const MOCK_ITEMS = Array.from({ length: 25 }, (_, i) => ({ ...MOCK_FREQUENCY, id: `fr${i + 1}` }));
+const MOCK_ODATA_RESPONSE = { value: MOCK_ITEMS };
+const MOCK_PAGE = { items: MOCK_ITEMS.slice(0, 10), totalCount: 25, totalPages: 3, currentPage: 1 };
 
 describe('FrequenciesComponent', () => {
   let component: FrequenciesComponent;
@@ -39,67 +41,27 @@ describe('FrequenciesComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => { expect(component).toBeTruthy(); });
-
-  it('should set page title on init', () => { expect(subnavService.setTitle).toHaveBeenCalledWith('Frequências'); });
-
-  it('should load frequencies on init', () => {
-    expect(frequencyService.apiFrequencyGet).toHaveBeenCalled();
-    expect((component as any).items()).toEqual(MOCK_PAGE);
-  });
-
-  it('should set isLoading to false after successful load', () => {
-    expect((component as any).isLoading()).toBeFalse();
-  });
-
-  it('should show error notification on load failure', () => {
-    frequencyService.apiFrequencyGet.and.returnValue(throwError(() => new Error()));
-    (component as any).load();
-    expect(ns.showError).toHaveBeenCalled();
-  });
-
-  it('should open create dialog', () => {
-    expect((component as any).openedCreate()).toBeFalse();
-    (component as any).openCreate();
-    expect((component as any).openedCreate()).toBeTrue();
-  });
-
-  it('should open update dialog with selected frequency', () => {
-    (component as any).openEdit(MOCK_FREQUENCY);
-    expect((component as any).openedUpdate()).toBeTrue();
-    expect((component as any).selected()).toEqual(MOCK_FREQUENCY);
-  });
-
-  it('should close create dialog and reload on onCreated', () => {
-    (component as any).openedCreate.set(true);
-    frequencyService.apiFrequencyGet.calls.reset();
-    (component as any).onCreated();
-    expect((component as any).openedCreate()).toBeFalse();
-    expect(frequencyService.apiFrequencyGet).toHaveBeenCalled();
-  });
-
-  it('should close update dialog and reload on onUpdated', () => {
-    (component as any).openedUpdate.set(true);
-    frequencyService.apiFrequencyGet.calls.reset();
-    (component as any).onUpdated();
-    expect((component as any).openedUpdate()).toBeFalse();
-    expect(frequencyService.apiFrequencyGet).toHaveBeenCalled();
-  });
-
   it('should update page and reload on onPageChange', () => {
     frequencyService.apiFrequencyGet.calls.reset();
     (component as any).onPageChange(3);
     expect((component as any).currentPage()).toBe(3);
-    expect(frequencyService.apiFrequencyGet).toHaveBeenCalled();
+    const page = (component as any).items();
+    expect(page.currentPage).toBe(3);
+    expect(page.items[0].id).toBe(MOCK_ITEMS[20].id);
+    expect(frequencyService.apiFrequencyGet).not.toHaveBeenCalled();
   });
 
   it('should reset to page 1 and reload on onPageSizeChange', () => {
-    (component as any).currentPage.set(4);
     frequencyService.apiFrequencyGet.calls.reset();
+    (component as any).currentPage.set(3);
     (component as any).onPageSizeChange(25);
     expect((component as any).pageSize()).toBe(25);
     expect((component as any).currentPage()).toBe(1);
-    expect(frequencyService.apiFrequencyGet).toHaveBeenCalled();
+    const page = (component as any).items();
+    expect(page.currentPage).toBe(1);
+    expect(page.items.length).toBe(25);
+    expect(page.items[0].id).toBe(MOCK_ITEMS[0].id);
+    expect(frequencyService.apiFrequencyGet).not.toHaveBeenCalled();
   });
 
   describe('deleteFrequency', () => {

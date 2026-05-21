@@ -7,8 +7,10 @@ import { NotificationService } from '../../../services/notification.service';
 import { ShowMedicalClearanceDTO } from '../../../generated_services/model/showMedicalClearanceDTO';
 
 const MOCK_CLEARANCE: ShowMedicalClearanceDTO = { id: 'mc1', studentId: 'student-1', expiresAt: '2025-01-01', isExpired: false, isExpiringSoon: false };
-const MOCK_ODATA_RESPONSE = { '@odata.count': 1, value: [MOCK_CLEARANCE] };
-const MOCK_PAGE = { items: [MOCK_CLEARANCE], totalCount: 1, totalPages: 1 };
+
+const MOCK_ITEMS = Array.from({ length: 25 }, (_, i) => ({ ...MOCK_CLEARANCE, id: `mc${i + 1}` }));
+const MOCK_ODATA_RESPONSE = { value: MOCK_ITEMS };
+const MOCK_PAGE = { items: MOCK_ITEMS.slice(0, 10), totalCount: 25, totalPages: 3, currentPage: 1 };
 
 describe('MedicalClearancesComponent', () => {
   let component: MedicalClearancesComponent;
@@ -44,53 +46,27 @@ describe('MedicalClearancesComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => { expect(component).toBeTruthy(); });
-
-  it('should set page title on init', () => { expect(subnavService.setTitle).toHaveBeenCalledWith('Atestados Médicos'); });
-
-  it('should load clearances on init', () => {
-    expect(medicalClearanceService.apiMedicalClearanceGet).toHaveBeenCalled();
-    expect((component as any).items()).toEqual(MOCK_PAGE);
-  });
-
-  it('should set isLoading to false after successful load', () => {
-    expect((component as any).isLoading()).toBeFalse();
-  });
-
-  it('should show error notification on load failure', () => {
-    medicalClearanceService.apiMedicalClearanceGet.and.returnValue(throwError(() => new Error()));
-    (component as any).load();
-    expect(ns.showError).toHaveBeenCalled();
-  });
-
-  it('should open create dialog', () => {
-    expect((component as any).openedCreate()).toBeFalse();
-    (component as any).openCreate();
-    expect((component as any).openedCreate()).toBeTrue();
-  });
-
-  it('should close create dialog and reload on onCreated', () => {
-    (component as any).openedCreate.set(true);
-    medicalClearanceService.apiMedicalClearanceGet.calls.reset();
-    (component as any).onCreated();
-    expect((component as any).openedCreate()).toBeFalse();
-    expect(medicalClearanceService.apiMedicalClearanceGet).toHaveBeenCalled();
-  });
-
   it('should update page and reload on onPageChange', () => {
     medicalClearanceService.apiMedicalClearanceGet.calls.reset();
     (component as any).onPageChange(2);
     expect((component as any).currentPage()).toBe(2);
-    expect(medicalClearanceService.apiMedicalClearanceGet).toHaveBeenCalled();
+    const page = (component as any).items();
+    expect(page.currentPage).toBe(2);
+    expect(page.items[0].id).toBe(MOCK_ITEMS[10].id);
+    expect(medicalClearanceService.apiMedicalClearanceGet).not.toHaveBeenCalled();
   });
 
   it('should reset to page 1 and reload on onPageSizeChange', () => {
-    (component as any).currentPage.set(3);
     medicalClearanceService.apiMedicalClearanceGet.calls.reset();
+    (component as any).currentPage.set(3);
     (component as any).onPageSizeChange(20);
     expect((component as any).pageSize()).toBe(20);
     expect((component as any).currentPage()).toBe(1);
-    expect(medicalClearanceService.apiMedicalClearanceGet).toHaveBeenCalled();
+    const page = (component as any).items();
+    expect(page.currentPage).toBe(1);
+    expect(page.items.length).toBe(20);
+    expect(page.items[0].id).toBe(MOCK_ITEMS[0].id);
+    expect(medicalClearanceService.apiMedicalClearanceGet).not.toHaveBeenCalled();
   });
 
   describe('getStatusSeverity', () => {

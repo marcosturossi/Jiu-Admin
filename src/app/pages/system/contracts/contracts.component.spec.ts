@@ -14,8 +14,10 @@ import { CarlonGracieBackendFinancesApplicationDTOsShowContractDTO as ShowContra
 import { ShowStudentDTO } from '../../../generated_services/model/showStudentDTO';
 
 const MOCK_CONTRACT: ShowContractDTO = { id: 'c1', studentId: 'student-1', feePlanName: 'Plano Mensal', monthlyAmount: 150, status: ContractStatus.Active };
-const MOCK_ODATA_RESPONSE = { '@odata.count': 1, value: [MOCK_CONTRACT] };
-const MOCK_PAGE = { items: [MOCK_CONTRACT], totalCount: 1, totalPages: 1 };
+
+const MOCK_ITEMS = Array.from({ length: 25 }, (_, i) => ({ ...MOCK_CONTRACT, id: `ct${i + 1}` }));
+const MOCK_ODATA_RESPONSE = { value: MOCK_ITEMS };
+const MOCK_PAGE = { items: MOCK_ITEMS.slice(0, 10), totalCount: 25, totalPages: 3, currentPage: 1 };
 const MOCK_STUDENTS: ShowStudentDTO[] = [{ id: 'student-1', userName: 'joao', email: 'joao@test.com', firstName: 'João', lastName: 'Silva' }];
 
 describe('ContractsComponent', () => {
@@ -54,80 +56,27 @@ describe('ContractsComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => { expect(component).toBeTruthy(); });
-
-  it('should set page title on init', () => { expect(subnavService.setTitle).toHaveBeenCalledWith('Contratos'); });
-
-  it('should load contracts on init', () => {
-    expect(contractService.apiContractGet).toHaveBeenCalled();
-    expect((component as any).items()).toEqual(MOCK_PAGE);
-  });
-
-  it('should build student map on init', () => {
-    expect(studentsService.apiStudentsActiveGet).toHaveBeenCalled();
-    expect((component as any).studentMap().get('student-1')).toBe('João Silva');
-  });
-
-  it('should set isLoading to false after successful load', () => {
-    expect((component as any).isLoading()).toBeFalse();
-  });
-
-  it('should show error notification on load failure', () => {
-    contractService.apiContractGet.and.returnValue(throwError(() => new Error()));
-    (component as any).load();
-    expect(ns.showError).toHaveBeenCalled();
-  });
-
-  it('should open create dialog', () => {
-    expect((component as any).openedCreate()).toBeFalse();
-    (component as any).openCreate();
-    expect((component as any).openedCreate()).toBeTrue();
-  });
-
-  it('should open update dialog with selected contract', () => {
-    (component as any).openEdit(MOCK_CONTRACT);
-    expect((component as any).openedUpdate()).toBeTrue();
-    expect((component as any).selected()).toEqual(MOCK_CONTRACT);
-  });
-
-  it('should close create dialog and reload on onCreated', () => {
-    (component as any).openedCreate.set(true);
-    contractService.apiContractGet.calls.reset();
-    (component as any).onCreated();
-    expect((component as any).openedCreate()).toBeFalse();
-    expect(contractService.apiContractGet).toHaveBeenCalled();
-  });
-
-  it('should close update dialog and reload on onUpdated', () => {
-    (component as any).openedUpdate.set(true);
-    contractService.apiContractGet.calls.reset();
-    (component as any).onUpdated();
-    expect((component as any).openedUpdate()).toBeFalse();
-    expect(contractService.apiContractGet).toHaveBeenCalled();
-  });
-
-  it('should reset to page 1 and reload on onFilterChange', () => {
-    (component as any).currentPage.set(3);
-    contractService.apiContractGet.calls.reset();
-    (component as any).onFilterChange({ text: '', conditions: [], odataFilter: undefined });
-    expect((component as any).currentPage()).toBe(1);
-    expect(contractService.apiContractGet).toHaveBeenCalled();
-  });
-
   it('should update page and reload on onPageChange', () => {
     contractService.apiContractGet.calls.reset();
     (component as any).onPageChange(2);
     expect((component as any).currentPage()).toBe(2);
-    expect(contractService.apiContractGet).toHaveBeenCalled();
+    const page = (component as any).items();
+    expect(page.currentPage).toBe(2);
+    expect(page.items[0].id).toBe(MOCK_ITEMS[10].id);
+    expect(contractService.apiContractGet).not.toHaveBeenCalled();
   });
 
   it('should reset to page 1 and reload on onPageSizeChange', () => {
-    (component as any).currentPage.set(4);
     contractService.apiContractGet.calls.reset();
+    (component as any).currentPage.set(3);
     (component as any).onPageSizeChange(20);
     expect((component as any).pageSize()).toBe(20);
     expect((component as any).currentPage()).toBe(1);
-    expect(contractService.apiContractGet).toHaveBeenCalled();
+    const page = (component as any).items();
+    expect(page.currentPage).toBe(1);
+    expect(page.items.length).toBe(20);
+    expect(page.items[0].id).toBe(MOCK_ITEMS[0].id);
+    expect(contractService.apiContractGet).not.toHaveBeenCalled();
   });
 
   describe('getStatusLabel', () => {

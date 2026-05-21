@@ -10,7 +10,7 @@ import { FilterField, FilterOutput } from '../../../shared/filter/filter.types';
 import { PaginationComponent } from '../../../shared/pagination/pagination.component';
 import { CreateContractComponent } from './create-contract/create-contract.component';
 import { UpdateContractComponent } from './update-contract/update-contract.component';
-import { ODataPage, parseODataPage } from '../../../utils/odata.utils';
+import { ODataPage, buildClientPage, parseODataPage } from '../../../utils/odata.utils';
 
 @Component({
   selector: 'app-contracts',
@@ -35,6 +35,7 @@ export class ContractsComponent {
 
   protected readonly isLoading = signal(false);
   protected readonly items = signal<ODataPage<ShowContractDTO> | null>(null);
+  protected readonly allItems = signal<ShowContractDTO[]>([]);
   protected readonly openedCreate = signal(false);
   protected readonly openedUpdate = signal(false);
   protected readonly selected = signal<ShowContractDTO | null>(null);
@@ -72,14 +73,16 @@ export class ContractsComponent {
 
   protected load(): void {
     this.isLoading.set(true);
-    const skip = (this.currentPage() - 1) * this.pageSize();
     const filter = this.filterQuery();
-    this.contractService
-      .apiContractGet(filter, undefined, String(this.pageSize()), String(skip), 'true')
-      .subscribe({
-        next: (body: any) => { this.items.set(parseODataPage<ShowContractDTO>(body, this.pageSize())); this.isLoading.set(false); },
-        error: () => { this.isLoading.set(false); this.ns.showError('Erro', 'Não foi possível carregar os contratos.'); },
-      });
+    this.contractService.apiContractGet(filter, undefined, '200', '0', 'true').subscribe({
+      next: (body: any) => {
+        const page = parseODataPage<ShowContractDTO>(body, 200);
+        this.allItems.set(page.items);
+        this.refreshPage();
+        this.isLoading.set(false);
+      },
+      error: () => { this.isLoading.set(false); this.ns.showError('Erro', 'Não foi possível carregar os contratos.'); }
+    });
   }
 
   protected getStatusSeverity(status?: ContractStatus): 'success' | 'warn' | 'danger' | 'info' | 'secondary' {
@@ -110,8 +113,14 @@ export class ContractsComponent {
     return id ? (this.studentMap().get(id) ?? id) : '—';
   }
 
-  protected onPageChange(page: number): void { this.currentPage.set(page); this.load(); }
-  protected onPageSizeChange(size: number): void { this.pageSize.set(size); this.currentPage.set(1); this.load(); }
+  private refreshPage(): void {
+    const page = buildClientPage(this.allItems(), this.currentPage(), this.pageSize());
+    this.currentPage.set(page.currentPage);
+    this.items.set(page);
+  }
+
+  protected onPageChange(page: number): void { this.currentPage.set(page); this.refreshPage(); }
+  protected onPageSizeChange(size: number): void { this.pageSize.set(size); this.currentPage.set(1); this.refreshPage(); }
   protected onFilterChange(output: FilterOutput): void { this.filterQuery.set(output.odataFilter); this.currentPage.set(1); this.load(); }
   protected openCreate(): void { this.openedCreate.set(true); }
   protected openEdit(item: ShowContractDTO): void { this.selected.set(item); this.openedUpdate.set(true); }

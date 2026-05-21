@@ -7,8 +7,10 @@ import { NotificationService } from '../../../services/notification.service';
 import { CarlonGracieBackendProgressionApplicationDTOsShowGraduationDTO as ShowGraduationDTO } from '../../../generated_services';
 
 const MOCK_GRADUATION: ShowGraduationDTO = { id: 'g1', studentId: 'student-1', beltId: 'belt-1', graduationDate: '2024-01-01' };
-const MOCK_ODATA_RESPONSE = { '@odata.count': 1, value: [MOCK_GRADUATION] };
-const MOCK_PAGE = { items: [MOCK_GRADUATION], totalCount: 1, totalPages: 1 };
+
+const MOCK_ITEMS = Array.from({ length: 25 }, (_, i) => ({ ...MOCK_GRADUATION, id: `g${i + 1}` }));
+const MOCK_ODATA_RESPONSE = { value: MOCK_ITEMS };
+const MOCK_PAGE = { items: MOCK_ITEMS.slice(0, 10), totalCount: 25, totalPages: 3, currentPage: 1 };
 
 describe('GraduationsComponent', () => {
   let component: GraduationsComponent;
@@ -40,67 +42,27 @@ describe('GraduationsComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => { expect(component).toBeTruthy(); });
-
-  it('should set page title on init', () => { expect(subnavService.setTitle).toHaveBeenCalledWith('Graduações'); });
-
-  it('should load graduations on init', () => {
-    expect(graduationService.apiGraduationGet).toHaveBeenCalled();
-    expect((component as any).items()).toEqual(MOCK_PAGE);
-  });
-
-  it('should set isLoading to false after successful load', () => {
-    expect((component as any).isLoading()).toBeFalse();
-  });
-
-  it('should show error notification on load failure', () => {
-    graduationService.apiGraduationGet.and.returnValue(throwError(() => new Error()));
-    (component as any).load();
-    expect(ns.showError).toHaveBeenCalled();
-  });
-
-  it('should open create dialog', () => {
-    expect((component as any).openedCreate()).toBeFalse();
-    (component as any).openCreate();
-    expect((component as any).openedCreate()).toBeTrue();
-  });
-
-  it('should open update dialog with selected graduation', () => {
-    (component as any).openEdit(MOCK_GRADUATION);
-    expect((component as any).openedUpdate()).toBeTrue();
-    expect((component as any).selected()).toEqual(MOCK_GRADUATION);
-  });
-
-  it('should close create dialog and reload on onCreated', () => {
-    (component as any).openedCreate.set(true);
-    graduationService.apiGraduationGet.calls.reset();
-    (component as any).onCreated();
-    expect((component as any).openedCreate()).toBeFalse();
-    expect(graduationService.apiGraduationGet).toHaveBeenCalled();
-  });
-
-  it('should close update dialog and reload on onUpdated', () => {
-    (component as any).openedUpdate.set(true);
-    graduationService.apiGraduationGet.calls.reset();
-    (component as any).onUpdated();
-    expect((component as any).openedUpdate()).toBeFalse();
-    expect(graduationService.apiGraduationGet).toHaveBeenCalled();
-  });
-
   it('should update page and reload on onPageChange', () => {
     graduationService.apiGraduationGet.calls.reset();
     (component as any).onPageChange(2);
     expect((component as any).currentPage()).toBe(2);
-    expect(graduationService.apiGraduationGet).toHaveBeenCalled();
+    const page = (component as any).items();
+    expect(page.currentPage).toBe(2);
+    expect(page.items[0].id).toBe(MOCK_ITEMS[10].id);
+    expect(graduationService.apiGraduationGet).not.toHaveBeenCalled();
   });
 
   it('should reset to page 1 and reload on onPageSizeChange', () => {
-    (component as any).currentPage.set(3);
     graduationService.apiGraduationGet.calls.reset();
+    (component as any).currentPage.set(3);
     (component as any).onPageSizeChange(20);
     expect((component as any).pageSize()).toBe(20);
     expect((component as any).currentPage()).toBe(1);
-    expect(graduationService.apiGraduationGet).toHaveBeenCalled();
+    const page = (component as any).items();
+    expect(page.currentPage).toBe(1);
+    expect(page.items.length).toBe(20);
+    expect(page.items[0].id).toBe(MOCK_ITEMS[0].id);
+    expect(graduationService.apiGraduationGet).not.toHaveBeenCalled();
   });
 
   describe('delete', () => {

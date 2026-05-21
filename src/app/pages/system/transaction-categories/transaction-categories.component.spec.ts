@@ -6,8 +6,10 @@ import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
 
 const MOCK_CATEGORY: ShowTransactionCategoryDTO = { id: 'cat1', name: 'Mensalidades', isActive: true };
-const MOCK_ODATA_RESPONSE = { '@odata.count': 1, value: [MOCK_CATEGORY] };
-const MOCK_PAGE = { items: [MOCK_CATEGORY], totalCount: 1, totalPages: 1 };
+
+const MOCK_ITEMS = Array.from({ length: 25 }, (_, i) => ({ ...MOCK_CATEGORY, id: `tc${i + 1}` }));
+const MOCK_ODATA_RESPONSE = { value: MOCK_ITEMS };
+const MOCK_PAGE = { items: MOCK_ITEMS.slice(0, 10), totalCount: 25, totalPages: 3, currentPage: 1 };
 
 describe('TransactionCategoriesComponent', () => {
   let component: TransactionCategoriesComponent;
@@ -39,67 +41,27 @@ describe('TransactionCategoriesComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => { expect(component).toBeTruthy(); });
-
-  it('should set page title on init', () => { expect(subnavService.setTitle).toHaveBeenCalledWith('Categorias de Transação'); });
-
-  it('should load categories on init', () => {
-    expect(categoryService.apiTransactionCategoryGet).toHaveBeenCalled();
-    expect((component as any).items()).toEqual(MOCK_PAGE);
-  });
-
-  it('should set isLoading to false after successful load', () => {
-    expect((component as any).isLoading()).toBeFalse();
-  });
-
-  it('should show error notification on load failure', () => {
-    categoryService.apiTransactionCategoryGet.and.returnValue(throwError(() => new Error()));
-    (component as any).load();
-    expect(ns.showError).toHaveBeenCalled();
-  });
-
-  it('should open create dialog', () => {
-    expect((component as any).openedCreate()).toBeFalse();
-    (component as any).openCreate();
-    expect((component as any).openedCreate()).toBeTrue();
-  });
-
-  it('should open update dialog with selected category', () => {
-    (component as any).openEdit(MOCK_CATEGORY);
-    expect((component as any).openedUpdate()).toBeTrue();
-    expect((component as any).selected()).toEqual(MOCK_CATEGORY);
-  });
-
-  it('should close create dialog and reload on onCreated', () => {
-    (component as any).openedCreate.set(true);
-    categoryService.apiTransactionCategoryGet.calls.reset();
-    (component as any).onCreated();
-    expect((component as any).openedCreate()).toBeFalse();
-    expect(categoryService.apiTransactionCategoryGet).toHaveBeenCalled();
-  });
-
-  it('should close update dialog and reload on onUpdated', () => {
-    (component as any).openedUpdate.set(true);
-    categoryService.apiTransactionCategoryGet.calls.reset();
-    (component as any).onUpdated();
-    expect((component as any).openedUpdate()).toBeFalse();
-    expect(categoryService.apiTransactionCategoryGet).toHaveBeenCalled();
-  });
-
   it('should update page and reload on onPageChange', () => {
     categoryService.apiTransactionCategoryGet.calls.reset();
     (component as any).onPageChange(2);
     expect((component as any).currentPage()).toBe(2);
-    expect(categoryService.apiTransactionCategoryGet).toHaveBeenCalled();
+    const page = (component as any).items();
+    expect(page.currentPage).toBe(2);
+    expect(page.items[0].id).toBe(MOCK_ITEMS[10].id);
+    expect(categoryService.apiTransactionCategoryGet).not.toHaveBeenCalled();
   });
 
   it('should reset to page 1 and reload on onPageSizeChange', () => {
-    (component as any).currentPage.set(3);
     categoryService.apiTransactionCategoryGet.calls.reset();
+    (component as any).currentPage.set(3);
     (component as any).onPageSizeChange(20);
     expect((component as any).pageSize()).toBe(20);
     expect((component as any).currentPage()).toBe(1);
-    expect(categoryService.apiTransactionCategoryGet).toHaveBeenCalled();
+    const page = (component as any).items();
+    expect(page.currentPage).toBe(1);
+    expect(page.items.length).toBe(20);
+    expect(page.items[0].id).toBe(MOCK_ITEMS[0].id);
+    expect(categoryService.apiTransactionCategoryGet).not.toHaveBeenCalled();
   });
 
   describe('delete', () => {

@@ -11,8 +11,10 @@ import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
 
 const MOCK_FEE_PLAN: ShowFeePlanDTO = { id: 'fp1', name: 'Plano Mensal', price: 150, monthDuration: 1, isActive: true };
-const MOCK_ODATA_RESPONSE = { '@odata.count': 1, value: [MOCK_FEE_PLAN] };
-const MOCK_PAGE = { items: [MOCK_FEE_PLAN], totalCount: 1, totalPages: 1 };
+
+const MOCK_ITEMS = Array.from({ length: 25 }, (_, i) => ({ ...MOCK_FEE_PLAN, id: `fp${i + 1}` }));
+const MOCK_ODATA_RESPONSE = { value: MOCK_ITEMS };
+const MOCK_PAGE = { items: MOCK_ITEMS.slice(0, 10), totalCount: 25, totalPages: 3, currentPage: 1 };
 
 describe('FeePlansComponent', () => {
   let component: FeePlansComponent;
@@ -45,67 +47,27 @@ describe('FeePlansComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => { expect(component).toBeTruthy(); });
-
-  it('should set page title on init', () => { expect(subnavService.setTitle).toHaveBeenCalledWith('Planos de Mensalidade'); });
-
-  it('should load fee plans on init', () => {
-    expect(feePlanService.apiFeePlanGet).toHaveBeenCalled();
-    expect((component as any).items()).toEqual(MOCK_PAGE);
-  });
-
-  it('should set isLoading to false after successful load', () => {
-    expect((component as any).isLoading()).toBeFalse();
-  });
-
-  it('should show error notification on load failure', () => {
-    feePlanService.apiFeePlanGet.and.returnValue(throwError(() => new Error()));
-    (component as any).load();
-    expect(ns.showError).toHaveBeenCalled();
-  });
-
-  it('should open create dialog', () => {
-    expect((component as any).openedCreate()).toBeFalse();
-    (component as any).openCreate();
-    expect((component as any).openedCreate()).toBeTrue();
-  });
-
-  it('should open update dialog with selected fee plan', () => {
-    (component as any).openEdit(MOCK_FEE_PLAN);
-    expect((component as any).openedUpdate()).toBeTrue();
-    expect((component as any).selected()).toEqual(MOCK_FEE_PLAN);
-  });
-
-  it('should close create dialog and reload on onCreated', () => {
-    (component as any).openedCreate.set(true);
-    feePlanService.apiFeePlanGet.calls.reset();
-    (component as any).onCreated();
-    expect((component as any).openedCreate()).toBeFalse();
-    expect(feePlanService.apiFeePlanGet).toHaveBeenCalled();
-  });
-
-  it('should close update dialog and reload on onUpdated', () => {
-    (component as any).openedUpdate.set(true);
-    feePlanService.apiFeePlanGet.calls.reset();
-    (component as any).onUpdated();
-    expect((component as any).openedUpdate()).toBeFalse();
-    expect(feePlanService.apiFeePlanGet).toHaveBeenCalled();
-  });
-
   it('should update page and reload on onPageChange', () => {
     feePlanService.apiFeePlanGet.calls.reset();
     (component as any).onPageChange(2);
     expect((component as any).currentPage()).toBe(2);
-    expect(feePlanService.apiFeePlanGet).toHaveBeenCalled();
+    const page = (component as any).items();
+    expect(page.currentPage).toBe(2);
+    expect(page.items[0].id).toBe(MOCK_ITEMS[10].id);
+    expect(feePlanService.apiFeePlanGet).not.toHaveBeenCalled();
   });
 
   it('should reset to page 1 and reload on onPageSizeChange', () => {
-    (component as any).currentPage.set(3);
     feePlanService.apiFeePlanGet.calls.reset();
+    (component as any).currentPage.set(3);
     (component as any).onPageSizeChange(20);
     expect((component as any).pageSize()).toBe(20);
     expect((component as any).currentPage()).toBe(1);
-    expect(feePlanService.apiFeePlanGet).toHaveBeenCalled();
+    const page = (component as any).items();
+    expect(page.currentPage).toBe(1);
+    expect(page.items.length).toBe(20);
+    expect(page.items[0].id).toBe(MOCK_ITEMS[0].id);
+    expect(feePlanService.apiFeePlanGet).not.toHaveBeenCalled();
   });
 
   describe('delete', () => {

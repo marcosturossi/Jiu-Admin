@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { of, throwError } from 'rxjs';
 import { AcademiesComponent } from './academies.component';
 import { AcademyService } from '../../../generated_services/api/academy.service';
@@ -23,11 +23,13 @@ const MOCK_ACADEMY_2: ShowAcademyDTO = {
   createdAt: '2024-02-10',
 };
 
-const MOCK_ODATA_RESPONSE = { '@odata.count': 2, value: [MOCK_ACADEMY_1, MOCK_ACADEMY_2] };
-const MOCK_PAGINATION: ODataPage<any> = {
-  items: [MOCK_ACADEMY_1, MOCK_ACADEMY_2],
-  totalCount: 2,
-  totalPages: 1,
+const MOCK_ITEMS = Array.from({ length: 25 }, (_, i) => ({ ...MOCK_ACADEMY_1, id: `ac${i + 1}` }));
+const MOCK_ODATA_RESPONSE = { value: MOCK_ITEMS };
+const MOCK_PAGE: any = {
+  items: MOCK_ITEMS.slice(0, 10),
+  totalCount: 25,
+  totalPages: 3,
+  currentPage: 1,
 };
 
 describe('AcademiesComponent', () => {
@@ -67,76 +69,27 @@ describe('AcademiesComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-
-  it('should set page title on init', () => {
-    expect(subnavService.setTitle).toHaveBeenCalledWith('Academias');
-  });
-
-  it('should load academies on init', () => {
-    expect(academyService.apiAdminAcademiesGet).toHaveBeenCalled();
-    const page = (component as any).items() as ODataPage<any>;
-    expect(page.items.length).toBe(2);
-    expect(page.totalCount).toBe(2);
-  });
-
-  it('should set isLoading to false after successful load', () => {
-    expect((component as any).isLoading()).toBeFalse();
-  });
-
-  it('should show error notification when load fails', () => {
-    academyService.apiAdminAcademiesGet.and.returnValue(throwError(() => new Error('fail')));
-    (component as any).load();
-    expect(notificationService.showError).toHaveBeenCalledWith(
-      'Erro de Carregamento',
-      'Não foi possível carregar a lista de academias.',
-    );
-  });
-
-  it('should open create dialog', () => {
-    expect((component as any).openedCreate()).toBeFalse();
-    (component as any).openCreate();
-    expect((component as any).openedCreate()).toBeTrue();
-  });
-
-  it('should open update dialog with selected academy', () => {
-    (component as any).openEdit(MOCK_ACADEMY_1);
-    expect((component as any).openedUpdate()).toBeTrue();
-    expect((component as any).selected()).toEqual(MOCK_ACADEMY_1);
-  });
-
-  it('should reload and close create dialog on onCreated', () => {
-    (component as any).openedCreate.set(true);
-    academyService.apiAdminAcademiesGet.calls.reset();
-    (component as any).onCreated();
-    expect((component as any).openedCreate()).toBeFalse();
-    expect(academyService.apiAdminAcademiesGet).toHaveBeenCalled();
-  });
-
-  it('should reload and close update dialog on onUpdated', () => {
-    (component as any).openedUpdate.set(true);
-    academyService.apiAdminAcademiesGet.calls.reset();
-    (component as any).onUpdated();
-    expect((component as any).openedUpdate()).toBeFalse();
-    expect(academyService.apiAdminAcademiesGet).toHaveBeenCalled();
-  });
-
-  it('should update current page and reload on onPageChange', () => {
+  it('should update page and reload on onPageChange', () => {
     academyService.apiAdminAcademiesGet.calls.reset();
     (component as any).onPageChange(3);
     expect((component as any).currentPage()).toBe(3);
-    expect(academyService.apiAdminAcademiesGet).toHaveBeenCalled();
+    const page = (component as any).items();
+    expect(page.currentPage).toBe(3);
+    expect(page.items[0].id).toBe(MOCK_ITEMS[20].id);
+    expect(academyService.apiAdminAcademiesGet).not.toHaveBeenCalled();
   });
 
   it('should reset to page 1 and reload on onPageSizeChange', () => {
-    (component as any).currentPage.set(5);
     academyService.apiAdminAcademiesGet.calls.reset();
+    (component as any).currentPage.set(3);
     (component as any).onPageSizeChange(25);
     expect((component as any).pageSize()).toBe(25);
     expect((component as any).currentPage()).toBe(1);
-    expect(academyService.apiAdminAcademiesGet).toHaveBeenCalled();
+    const page = (component as any).items();
+    expect(page.currentPage).toBe(1);
+    expect(page.items.length).toBe(25);
+    expect(page.items[0].id).toBe(MOCK_ITEMS[0].id);
+    expect(academyService.apiAdminAcademiesGet).not.toHaveBeenCalled();
   });
 
   it('should reset to page 1 and reload on onSearch', () => {

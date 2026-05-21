@@ -5,7 +5,7 @@ import { NotificationService } from '../../../services/notification.service';
 import { PaginationComponent } from '../../../shared/pagination/pagination.component';
 import { CreateBeltComponent } from './create-belt/create-belt.component';
 import { UpdateBeltComponent } from './update-belt/update-belt.component';
-import { ODataPage, parseODataPage } from '../../../utils/odata.utils';
+import { ODataPage, buildClientPage, parseODataPage } from '../../../utils/odata.utils';
 
 @Component({
   selector: 'app-belts',
@@ -25,6 +25,7 @@ export class BeltsComponent {
 
   protected readonly isLoading = signal(false);
   protected readonly items = signal<ODataPage<ShowBeltDTO> | null>(null);
+  protected readonly allItems = signal<ShowBeltDTO[]>([]);
   protected readonly openedCreate = signal(false);
   protected readonly openedUpdate = signal(false);
   protected readonly selected = signal<ShowBeltDTO | null>(null);
@@ -38,15 +39,25 @@ export class BeltsComponent {
 
   protected load(): void {
     this.isLoading.set(true);
-    const skip = (this.currentPage() - 1) * this.pageSize();
-    this.beltService.apiBeltGet(undefined, undefined, String(this.pageSize()), String(skip), 'true').subscribe({
-      next: (body: any) => { this.items.set(parseODataPage<ShowBeltDTO>(body, this.pageSize())); this.isLoading.set(false); },
+    this.beltService.apiBeltGet(undefined, undefined, '200', '0', 'true').subscribe({
+      next: (body: any) => {
+        const page = parseODataPage<ShowBeltDTO>(body, 200);
+        this.allItems.set(page.items);
+        this.refreshPage();
+        this.isLoading.set(false);
+      },
       error: () => { this.isLoading.set(false); this.notificationService.showError('Erro de Carregamento', 'Não foi possível carregar a lista de faixas.'); }
     });
   }
 
-  protected onPageChange(page: number): void { this.currentPage.set(page); this.load(); }
-  protected onPageSizeChange(size: number): void { this.pageSize.set(size); this.currentPage.set(1); this.load(); }
+  private refreshPage(): void {
+    const page = buildClientPage(this.allItems(), this.currentPage(), this.pageSize());
+    this.currentPage.set(page.currentPage);
+    this.items.set(page);
+  }
+
+  protected onPageChange(page: number): void { this.currentPage.set(page); this.refreshPage(); }
+  protected onPageSizeChange(size: number): void { this.pageSize.set(size); this.currentPage.set(1); this.refreshPage(); }
   protected openCreate(): void { this.openedCreate.set(true); }
   protected openEdit(item: ShowBeltDTO): void { this.selected.set(item); this.openedUpdate.set(true); }
   protected onCreated(): void { this.openedCreate.set(false); this.load(); }

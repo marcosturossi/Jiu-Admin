@@ -9,7 +9,7 @@ import { NotificationService } from '../../../services/notification.service';
 import { FilterComponent } from '../../../shared/filter/filter.component';
 import { FilterOutput } from '../../../shared/filter/filter.types';
 import { PaginationComponent } from '../../../shared/pagination/pagination.component';
-import { ODataPage, parseODataPage } from '../../../utils/odata.utils';
+import { ODataPage, buildClientPage, parseODataPage } from '../../../utils/odata.utils';
 
 @Component({
   selector: 'app-lessons',
@@ -31,6 +31,7 @@ export class LessonsComponent {
 
   protected readonly isLoading = signal(false);
   protected readonly items = signal<ODataPage<ShowLessonDTO> | null>(null);
+  protected readonly allItems = signal<ShowLessonDTO[]>([]);
   protected readonly openedCreate = signal(false);
   protected readonly openedUpdate = signal(false);
   protected readonly selected = signal<ShowLessonDTO | null>(null);
@@ -45,19 +46,26 @@ export class LessonsComponent {
 
   protected load(): void {
     this.isLoading.set(true);
-    const skip = (this.currentPage() - 1) * this.pageSize();
     const filter = this.filterQuery();
-    this.lessonService.apiLessonGet(filter, undefined, String(this.pageSize()), String(skip), 'true').subscribe({
-      next: (body: any) => { this.items.set(parseODataPage<ShowLessonDTO>(body, this.pageSize())); this.isLoading.set(false); },
-      error: () => {
+    this.lessonService.apiLessonGet(filter, undefined, '200', '0', 'true').subscribe({
+      next: (body: any) => {
+        const page = parseODataPage<ShowLessonDTO>(body, 200);
+        this.allItems.set(page.items);
+        this.refreshPage();
         this.isLoading.set(false);
-        this.notificationService.showError('Erro ao Carregar Aulas!', 'Não foi possível carregar a lista de aulas. Tente novamente.');
       },
+      error: () => { this.isLoading.set(false); this.notificationService.showError('Erro ao Carregar Aulas!', 'Não foi possível carregar a lista de aulas. Tente novamente.'); }
     });
   }
 
-  protected onPageChange(p: number): void { this.currentPage.set(p); this.load(); }
-  protected onPageSizeChange(s: number): void { this.pageSize.set(s); this.currentPage.set(1); this.load(); }
+  private refreshPage(): void {
+    const page = buildClientPage(this.allItems(), this.currentPage(), this.pageSize());
+    this.currentPage.set(page.currentPage);
+    this.items.set(page);
+  }
+
+  protected onPageChange(p: number): void { this.currentPage.set(p); this.refreshPage(); }
+  protected onPageSizeChange(s: number): void { this.pageSize.set(s); this.currentPage.set(1); this.refreshPage(); }
   protected onFilterChange(output: FilterOutput): void { this.filterQuery.set(output.odataFilter); this.currentPage.set(1); this.load(); }
   protected openCreate(): void { this.openedCreate.set(true); }
   protected openEdit(item: ShowLessonDTO): void { this.selected.set(item); this.openedUpdate.set(true); }
