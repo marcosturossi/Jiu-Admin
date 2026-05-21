@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { HttpHeaders, HttpResponse } from '@angular/common/http';
 import { of, throwError } from 'rxjs';
 import { StudentsComponent } from './students.component';
 import { StudentsService } from '../../../generated_services/api/students.service';
@@ -7,12 +6,17 @@ import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
 import { ShowStudentDTO } from '../../../generated_services/model/showStudentDTO';
 
-const MOCK_STUDENT: ShowStudentDTO = { id: 's1', userName: 'joao.silva', email: 'joao@test.com', firstName: 'João', lastName: 'Silva', isActive: true };
-const MOCK_ODATA_RESPONSE = new HttpResponse({
-  body: { value: [MOCK_STUDENT] },
-  headers: new HttpHeaders({ '@odata.count': '25' }),
-});
-const MOCK_PAGE = { items: [MOCK_STUDENT], totalCount: 25, totalPages: 3 };
+const MOCK_STUDENTS: ShowStudentDTO[] = Array.from({ length: 25 }, (_, i) => ({
+  id: `s${i + 1}`,
+  userName: `user${i + 1}`,
+  email: `user${i + 1}@test.com`,
+  firstName: `Nome${i + 1}`,
+  lastName: `Sobrenome${i + 1}`,
+  isActive: true,
+}));
+const MOCK_STUDENT = MOCK_STUDENTS[0];
+const MOCK_ODATA_RESPONSE = { value: MOCK_STUDENTS };
+const MOCK_PAGE = { items: MOCK_STUDENTS.slice(0, 10), totalCount: 25, totalPages: 3 };
 
 describe('StudentsComponent', () => {
   let component: StudentsComponent;
@@ -92,19 +96,17 @@ describe('StudentsComponent', () => {
   });
 
   it('should update page and reload on onPageChange', () => {
-    studentsService.apiStudentsGet.calls.reset();
     (component as any).onPageChange(2);
     expect((component as any).currentPage()).toBe(2);
-    expect(studentsService.apiStudentsGet).toHaveBeenCalled();
+    expect((component as any).items().items[0].id).toBe('s11');
   });
 
   it('should reset to page 1 and reload on onPageSizeChange', () => {
     (component as any).currentPage.set(3);
-    studentsService.apiStudentsGet.calls.reset();
     (component as any).onPageSizeChange(20);
     expect((component as any).pageSize()).toBe(20);
     expect((component as any).currentPage()).toBe(1);
-    expect(studentsService.apiStudentsGet).toHaveBeenCalled();
+    expect((component as any).items().items.length).toBe(20);
   });
 
   it('should build a status filter on onFilterChange', () => {

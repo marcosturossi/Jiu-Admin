@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { StudentsService } from '../../../generated_services/api/students.service';
 import { ShowStudentDTO } from '../../../generated_services/model/showStudentDTO';
@@ -31,6 +31,7 @@ export class StudentsComponent {
 
   protected readonly isLoading = signal(false);
   protected readonly items = signal<ODataPage<ShowStudentDTO> | null>(null);
+  private readonly allStudents = signal<ShowStudentDTO[]>([]);
   protected readonly openedCreate = signal(false);
   protected readonly openedUpdate = signal(false);
   protected readonly selected = signal<ShowStudentDTO | null>(null);
@@ -56,16 +57,20 @@ export class StudentsComponent {
 
   protected load(): void {
     this.isLoading.set(true);
-    const skip = (this.currentPage() - 1) * this.pageSize();
     const filter = this.filterQuery();
-    this.studentsService.apiStudentsGet(filter, undefined, String(this.pageSize()), String(skip), 'true', undefined, 'response').subscribe({
-      next: (response: any) => { this.items.set(parseODataPage<ShowStudentDTO>(response, this.pageSize())); this.isLoading.set(false); },
+    this.studentsService.apiStudentsGet(filter, undefined, '200', '0', 'true').subscribe({
+      next: (body: any) => {
+        const page = parseODataPage<ShowStudentDTO>(body, 200);
+        this.allStudents.set(page.items);
+        this.refreshPage();
+        this.isLoading.set(false);
+      },
       error: () => { this.isLoading.set(false); this.notificationService.showError('Erro de Carregamento', 'Não foi possível carregar a lista de alunos.'); }
     });
   }
 
-  protected onPageChange(page: number): void { this.currentPage.set(page); this.load(); }
-  protected onPageSizeChange(size: number): void { this.pageSize.set(size); this.currentPage.set(1); this.load(); }
+  protected onPageChange(page: number): void { this.currentPage.set(page); this.refreshPage(); }
+  protected onPageSizeChange(size: number): void { this.pageSize.set(size); this.currentPage.set(1); this.refreshPage(); }
   protected onFilterChange(output: FilterOutput): void { this.filterQuery.set(output.odataFilter); this.currentPage.set(1); this.load(); }
   protected openCreate(): void { this.openedCreate.set(true); }
   protected openEdit(item: ShowStudentDTO): void { this.selected.set(item); this.openedUpdate.set(true); }
@@ -77,6 +82,17 @@ export class StudentsComponent {
     this.studentsService.apiStudentsIdDelete(item.id!).subscribe({
       next: () => { this.notificationService.showSuccess('Aluno Excluído', `O aluno ${item.firstName} ${item.lastName} foi excluído com sucesso.`); this.load(); },
       error: () => { this.notificationService.showError('Erro ao Excluir', 'Não foi possível excluir o aluno. Tente novamente.'); }
+    });
+  }
+
+  private refreshPage(): void {
+    const all = this.allStudents();
+    const start = (this.currentPage() - 1) * this.pageSize();
+    const items = all.slice(start, start + this.pageSize());
+    this.items.set({
+      items,
+      totalCount: all.length,
+      totalPages: all.length > 0 ? Math.ceil(all.length / this.pageSize()) : 1,
     });
   }
 }
