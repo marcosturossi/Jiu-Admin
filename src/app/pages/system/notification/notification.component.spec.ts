@@ -4,9 +4,9 @@ import { NotificationComponent } from './notification.component';
 import { NotificationService as ApiNotificationService } from '../../../generated_services/api/notification.service';
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
-import { PaginationNotificationDTO } from '../../../generated_services';
-import { ShowNotificationDTO } from '../../../generated_services/model/showNotificationDTO';
-import { NotificationType } from '../../../generated_services/model/notificationType';
+import { CarlonGracieBackendCommunicationsApplicationDTOsPaginationNotificationDto as PaginationNotificationDTO } from '../../../generated_services';
+import { CarlonGracieBackendCommunicationsApplicationDTOsShowNotificationDto as ShowNotificationDTO } from '../../../generated_services/model/carlonGracieBackendCommunicationsApplicationDTOsShowNotificationDto';
+import { CarlonGracieBackendCommunicationsDomainNotificationType as NotificationType } from '../../../generated_services/model/carlonGracieBackendCommunicationsDomainNotificationType';
 
 const MOCK_NOTIFICATION: ShowNotificationDTO = { id: 'notif-1', title: 'Aviso', message: 'Mensagem', type: NotificationType.Info, isActive: true };
 const MOCK_PAGINATION: PaginationNotificationDTO = { items: [MOCK_NOTIFICATION], totalCount: 1, pageNumber: 1, pageSize: 10, totalPages: 1 };

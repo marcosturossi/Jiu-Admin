@@ -1,10 +1,11 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
-import { BeltService, ShowBeltDTO, PaginationBeltDTO } from '../../../generated_services';
+import { BeltService, CarlonGracieBackendProgressionApplicationDTOsShowBeltDTO as ShowBeltDTO } from '../../../generated_services';
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
 import { PaginationComponent } from '../../../shared/pagination/pagination.component';
 import { CreateBeltComponent } from './create-belt/create-belt.component';
 import { UpdateBeltComponent } from './update-belt/update-belt.component';
+import { ODataPage, parseODataPage } from '../../../utils/odata.utils';
 
 @Component({
   selector: 'app-belts',
@@ -23,7 +24,7 @@ export class BeltsComponent {
   private readonly notificationService = inject(NotificationService);
 
   protected readonly isLoading = signal(false);
-  protected readonly items = signal<PaginationBeltDTO | null>(null);
+  protected readonly items = signal<ODataPage<ShowBeltDTO> | null>(null);
   protected readonly openedCreate = signal(false);
   protected readonly openedUpdate = signal(false);
   protected readonly selected = signal<ShowBeltDTO | null>(null);
@@ -37,8 +38,9 @@ export class BeltsComponent {
 
   protected load(): void {
     this.isLoading.set(true);
-    this.beltService.apiBeltGet(undefined, undefined, undefined, undefined, this.currentPage(), this.pageSize()).subscribe({
-      next: result => { this.items.set(result); this.isLoading.set(false); },
+    const skip = (this.currentPage() - 1) * this.pageSize();
+    this.beltService.apiBeltGet(undefined, undefined, String(this.pageSize()), String(skip), 'true').subscribe({
+      next: (body: any) => { this.items.set(parseODataPage<ShowBeltDTO>(body, this.pageSize())); this.isLoading.set(false); },
       error: () => { this.isLoading.set(false); this.notificationService.showError('Erro de Carregamento', 'Não foi possível carregar a lista de faixas.'); }
     });
   }

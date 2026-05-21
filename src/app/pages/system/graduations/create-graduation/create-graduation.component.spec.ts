@@ -19,8 +19,8 @@ describe('CreateGraduationComponent', () => {
     const beltSpy = jasmine.createSpyObj('BeltService', ['apiBeltGet']);
     const studentsSpy = jasmine.createSpyObj('StudentsService', ['apiStudentsGet']);
     const nsSpy = jasmine.createSpyObj('NotificationService', ['showSuccess', 'showError']);
-    beltSpy.apiBeltGet.and.returnValue(of({ items: [{ id: 'belt1', color: 'Azul' }] }));
-    studentsSpy.apiStudentsGet.and.returnValue(of({ items: [{ id: 'stu1', firstName: 'João', lastName: 'Silva', email: 'j@test.com' }] }));
+    beltSpy.apiBeltGet.and.returnValue(of([{ id: 'belt1', color: 'Azul' }]));
+    studentsSpy.apiStudentsGet.and.returnValue(of([{ id: 'stu1', firstName: 'João', lastName: 'Silva', email: 'j@test.com' }]));
     await TestBed.configureTestingModule({
       imports: [CreateGraduationComponent],
       providers: [

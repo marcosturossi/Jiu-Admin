@@ -5,7 +5,7 @@ import { Subject, debounceTime } from 'rxjs';
 import { GraduationService } from '../../../../generated_services/api/graduation.service';
 import { BeltService } from '../../../../generated_services/api/belt.service';
 import { StudentsService } from '../../../../generated_services/api/students.service';
-import { CreateGraduationDTO, ShowBeltDTO, ShowStudentDTO } from '../../../../generated_services';
+import { CarlonGracieBackendProgressionApplicationDTOsCreateGraduationDTO as CreateGraduationDTO, CarlonGracieBackendProgressionApplicationDTOsShowBeltDTO as ShowBeltDTO, CarlonGracieBackendStudentsApplicationDTOsShowStudentDTO as ShowStudentDTO } from '../../../../generated_services';
 import { NotificationService } from '../../../../services/notification.service';
 import { todayDateString } from '../../../../utils/date.utils';
 import { SearchOption } from '../../../../shared/search-select/search-option';
@@ -48,8 +48,8 @@ export class CreateGraduationComponent {
     this.studentSearchSubject.pipe(debounceTime(400), takeUntilDestroyed(this.destroyRef))
       .subscribe(term => this.loadStudents(term));
     this.beltService.apiBeltGet().subscribe({
-      next: r => this.belts.set(r.items ?? []),
-      error: () => this.ns.showError('Erro ao Carregar Faixas', 'Não foi possível carregar as faixas disponíveis.'),
+      next: r => this.belts.set(r ?? []),
+      error: () => this.ns.showError('Erro ao Carregar Faixas', 'Não foi possível carregar a lista de faixas.'),
     });
     this.loadStudents();
   }
@@ -66,8 +66,8 @@ export class CreateGraduationComponent {
   }
 
   private loadStudents(term = ''): void {
-    this.studentsService.apiStudentsGet(term || undefined, undefined, undefined, undefined, undefined, 1, 100).subscribe({
-      next: r => this.students.set(r.items ?? []),
+    this.studentsService.apiStudentsGet(term || undefined, undefined, '100').subscribe({
+      next: r => this.students.set(r ?? []),
       error: () => this.ns.showError('Erro ao Carregar Alunos', 'Não foi possível carregar a lista de alunos.'),
     });
   }

@@ -13,9 +13,9 @@ import { HttpHeaders }                                       from '@angular/comm
 import { Observable }                                        from 'rxjs';
 
 import { ApiAdminAcademiesIdGet404Response } from '../model/models';
-import { CreateGraduationRequirementsDTO } from '../model/models';
-import { ShowGraduationRequirementsDTO } from '../model/models';
-import { UpdateGraduationRequirementsDTO } from '../model/models';
+import { CarlonGracieBackendProgressionApplicationDTOsCreateGraduationRequirementDTO } from '../model/models';
+import { CarlonGracieBackendProgressionApplicationDTOsShowGraduationRequirementDTO } from '../model/models';
+import { CarlonGracieBackendProgressionApplicationDTOsUpdateGraduationRequirementDTO } from '../model/models';
 
 
 import { Configuration }                                     from '../configuration';
@@ -31,13 +31,19 @@ export interface GraduationRequirementsServiceInterface {
      * 
      * @param beltId 
      */
-    apiGraduationRequirementsByBeltBeltIdGet(beltId: string, extraHttpRequestParams?: any): Observable<Array<ShowGraduationRequirementsDTO>>;
+    apiGraduationRequirementsByBeltBeltIdGet(beltId: string, extraHttpRequestParams?: any): Observable<Array<CarlonGracieBackendProgressionApplicationDTOsShowGraduationRequirementDTO>>;
 
     /**
      * 
      * 
+     * @param $filter OData filter expression. Examples: contains(name,\&#39;John\&#39;) | status eq \&#39;Active\&#39; | amount gt 100 | createdAt ge 2024-01-01T00:00:00Z
+     * @param $orderby Sort expression. Examples: name asc | createdAt desc | name asc,amount desc
+     * @param $top Page size — number of records to return (default: 20, max: 200). Use with $skip for pagination.
+     * @param $skip Records to skip. Use ($pageNumber - 1) * $top. Example: page 3 with size 20 → $skip&#x3D;40
+     * @param $count Set to \&#39;true\&#39; to include total record count in response as @odata.count
+     * @param $select Return only specific fields. Example: $select&#x3D;id,name,createdAt
      */
-    apiGraduationRequirementsGet(extraHttpRequestParams?: any): Observable<Array<ShowGraduationRequirementsDTO>>;
+    apiGraduationRequirementsGet($filter?: string, $orderby?: string, $top?: string, $skip?: string, $count?: string, $select?: string, extraHttpRequestParams?: any): Observable<Array<CarlonGracieBackendProgressionApplicationDTOsShowGraduationRequirementDTO>>;
 
     /**
      * 
@@ -51,21 +57,21 @@ export interface GraduationRequirementsServiceInterface {
      * 
      * @param id 
      */
-    apiGraduationRequirementsIdGet(id: string, extraHttpRequestParams?: any): Observable<ShowGraduationRequirementsDTO>;
+    apiGraduationRequirementsIdGet(id: string, extraHttpRequestParams?: any): Observable<CarlonGracieBackendProgressionApplicationDTOsShowGraduationRequirementDTO>;
 
     /**
      * 
      * 
      * @param id 
-     * @param updateGraduationRequirementsDTO 
+     * @param carlonGracieBackendProgressionApplicationDTOsUpdateGraduationRequirementDTO 
      */
-    apiGraduationRequirementsIdPut(id: string, updateGraduationRequirementsDTO?: UpdateGraduationRequirementsDTO, extraHttpRequestParams?: any): Observable<ShowGraduationRequirementsDTO>;
+    apiGraduationRequirementsIdPut(id: string, carlonGracieBackendProgressionApplicationDTOsUpdateGraduationRequirementDTO?: CarlonGracieBackendProgressionApplicationDTOsUpdateGraduationRequirementDTO, extraHttpRequestParams?: any): Observable<CarlonGracieBackendProgressionApplicationDTOsShowGraduationRequirementDTO>;
 
     /**
      * 
      * 
-     * @param createGraduationRequirementsDTO 
+     * @param carlonGracieBackendProgressionApplicationDTOsCreateGraduationRequirementDTO 
      */
-    apiGraduationRequirementsPost(createGraduationRequirementsDTO?: CreateGraduationRequirementsDTO, extraHttpRequestParams?: any): Observable<ShowGraduationRequirementsDTO>;
+    apiGraduationRequirementsPost(carlonGracieBackendProgressionApplicationDTOsCreateGraduationRequirementDTO?: CarlonGracieBackendProgressionApplicationDTOsCreateGraduationRequirementDTO, extraHttpRequestParams?: any): Observable<CarlonGracieBackendProgressionApplicationDTOsShowGraduationRequirementDTO>;
 
 }

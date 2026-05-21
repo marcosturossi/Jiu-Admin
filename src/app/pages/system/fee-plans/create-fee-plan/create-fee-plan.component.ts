@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject, output } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
-import { FeePlanService, CreateFeePlanDTO } from '../../../../generated_services';
+import { FeePlanService, CarlonGracieBackendFinancesApplicationDTOsCreateFeePlanDTO as CreateFeePlanDTO } from '../../../../generated_services';
 import { NotificationService } from '../../../../services/notification.service';
 
 @Component({

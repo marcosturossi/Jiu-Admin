@@ -2,13 +2,14 @@ import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/cor
 import { DatePipe, CurrencyPipe } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { MonthlyFeeService } from '../../../generated_services/api/monthlyFee.service';
-import { ChargeResult, FeeStatus, PaginationMonthlyFeeDTO, ShowMonthlyFeeDTO } from '../../../generated_services';
+import { CarlonGracieBackendApplicationInterfacesInfrastructureChargeResult as ChargeResult, CarlonGracieBackendSharedDomainEnumsFeeStatus as FeeStatus, CarlonGracieBackendFinancesApplicationDTOsShowMonthlyFeeDTO as ShowMonthlyFeeDTO } from '../../../generated_services';
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
 import { FilterComponent } from '../../../shared/filter/filter.component';
 import { FilterField, FilterOutput } from '../../../shared/filter/filter.types';
 import { PaginationComponent } from '../../../shared/pagination/pagination.component';
 import { dateStringToIso, todayDateString } from '../../../utils/date.utils';
+import { ODataPage, parseODataPage, buildODataFilter } from '../../../utils/odata.utils';
 
 @Component({
   selector: 'app-monthly-fees',
@@ -36,14 +37,14 @@ export class MonthlyFeesComponent {
   protected readonly isPaying = signal(false);
   protected readonly isCharging = signal(false);
   protected readonly isDownloading = signal(false);
-  protected readonly items = signal<PaginationMonthlyFeeDTO | null>(null);
+  protected readonly items = signal<ODataPage<ShowMonthlyFeeDTO> | null>(null);
   protected readonly openedPay = signal(false);
   protected readonly openedPix = signal(false);
   protected readonly selected = signal<ShowMonthlyFeeDTO | null>(null);
   protected readonly pixResult = signal<ChargeResult | null>(null);
   protected readonly currentPage = signal(1);
   protected readonly pageSize = signal(10);
-  protected readonly filterStatus = signal<FeeStatus | undefined>(undefined);
+  protected readonly filterStatus = signal<string | undefined>(undefined);
   protected readonly filterText = signal('');
 
   protected readonly FeeStatus = FeeStatus;
@@ -83,15 +84,14 @@ export class MonthlyFeesComponent {
 
   protected load(): void {
     this.isLoading.set(true);
-    this.feeService.apiMonthlyFeeGet(
-      this.filterText() || undefined,
-      undefined,
-      undefined,
-      this.filterStatus(),
-      undefined, undefined,
-      this.currentPage(), this.pageSize(),
-    ).subscribe({
-      next: result => { this.items.set(result); this.isLoading.set(false); },
+    const skip = (this.currentPage() - 1) * this.pageSize();
+    let filter = buildODataFilter(this.filterText(), ['studentName']);
+    if (this.filterStatus()) {
+      const enumFilter = `status eq '${this.filterStatus()}'`;
+      filter = filter ? `${filter} and ${enumFilter}` : enumFilter;
+    }
+    this.feeService.apiMonthlyFeeGet(filter, undefined, String(this.pageSize()), String(skip), 'true').subscribe({
+      next: (body: any) => { this.items.set(parseODataPage<ShowMonthlyFeeDTO>(body, this.pageSize())); this.isLoading.set(false); },
       error: () => { this.isLoading.set(false); this.ns.showError('Erro', 'Não foi possível carregar as mensalidades.'); },
     });
   }
@@ -121,7 +121,7 @@ export class MonthlyFeesComponent {
   protected onFilterChange(output: FilterOutput): void {
     this.filterText.set(output.text);
     const statusCond = output.conditions.find(c => c.field.key === 'status');
-    this.filterStatus.set(statusCond ? Number(statusCond.value) as unknown as FeeStatus : undefined);
+    this.filterStatus.set(statusCond?.value ?? undefined);
     this.currentPage.set(1);
     this.load();
   }

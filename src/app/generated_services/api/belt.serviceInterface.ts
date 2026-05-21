@@ -13,11 +13,10 @@ import { HttpHeaders }                                       from '@angular/comm
 import { Observable }                                        from 'rxjs';
 
 import { ApiAdminAcademiesIdGet404Response } from '../model/models';
-import { CreateBeltDTO } from '../model/models';
-import { PaginationBeltDTO } from '../model/models';
-import { ShowBeltDTO } from '../model/models';
-import { UpdateBeltDTO } from '../model/models';
-import { ValidationProblemDetails } from '../model/models';
+import { CarlonGracieBackendProgressionApplicationDTOsCreateBeltDTO } from '../model/models';
+import { CarlonGracieBackendProgressionApplicationDTOsShowBeltDTO } from '../model/models';
+import { CarlonGracieBackendProgressionApplicationDTOsUpdateBeltDTO } from '../model/models';
+import { MicrosoftAspNetCoreMvcValidationProblemDetails } from '../model/models';
 
 
 import { Configuration }                                     from '../configuration';
@@ -31,14 +30,14 @@ export interface BeltServiceInterface {
     /**
      * 
      * 
-     * @param color 
-     * @param isForKids 
-     * @param orderIndexFrom 
-     * @param orderIndexTo 
-     * @param pageNumber 
-     * @param pageSize 
+     * @param $filter OData filter expression. Examples: contains(name,\&#39;John\&#39;) | status eq \&#39;Active\&#39; | amount gt 100 | createdAt ge 2024-01-01T00:00:00Z
+     * @param $orderby Sort expression. Examples: name asc | createdAt desc | name asc,amount desc
+     * @param $top Page size — number of records to return (default: 20, max: 200). Use with $skip for pagination.
+     * @param $skip Records to skip. Use ($pageNumber - 1) * $top. Example: page 3 with size 20 → $skip&#x3D;40
+     * @param $count Set to \&#39;true\&#39; to include total record count in response as @odata.count
+     * @param $select Return only specific fields. Example: $select&#x3D;id,name,createdAt
      */
-    apiBeltGet(color?: string, isForKids?: boolean, orderIndexFrom?: number, orderIndexTo?: number, pageNumber?: number, pageSize?: number, extraHttpRequestParams?: any): Observable<PaginationBeltDTO>;
+    apiBeltGet($filter?: string, $orderby?: string, $top?: string, $skip?: string, $count?: string, $select?: string, extraHttpRequestParams?: any): Observable<Array<CarlonGracieBackendProgressionApplicationDTOsShowBeltDTO>>;
 
     /**
      * 
@@ -52,21 +51,21 @@ export interface BeltServiceInterface {
      * 
      * @param id 
      */
-    apiBeltIdGet(id: string, extraHttpRequestParams?: any): Observable<ShowBeltDTO>;
+    apiBeltIdGet(id: string, extraHttpRequestParams?: any): Observable<CarlonGracieBackendProgressionApplicationDTOsShowBeltDTO>;
 
     /**
      * 
      * 
      * @param id 
-     * @param updateBeltDTO 
+     * @param carlonGracieBackendProgressionApplicationDTOsUpdateBeltDTO 
      */
-    apiBeltIdPut(id: string, updateBeltDTO?: UpdateBeltDTO, extraHttpRequestParams?: any): Observable<ShowBeltDTO>;
+    apiBeltIdPut(id: string, carlonGracieBackendProgressionApplicationDTOsUpdateBeltDTO?: CarlonGracieBackendProgressionApplicationDTOsUpdateBeltDTO, extraHttpRequestParams?: any): Observable<CarlonGracieBackendProgressionApplicationDTOsShowBeltDTO>;
 
     /**
      * 
      * 
-     * @param createBeltDTO 
+     * @param carlonGracieBackendProgressionApplicationDTOsCreateBeltDTO 
      */
-    apiBeltPost(createBeltDTO?: CreateBeltDTO, extraHttpRequestParams?: any): Observable<ShowBeltDTO>;
+    apiBeltPost(carlonGracieBackendProgressionApplicationDTOsCreateBeltDTO?: CarlonGracieBackendProgressionApplicationDTOsCreateBeltDTO, extraHttpRequestParams?: any): Observable<CarlonGracieBackendProgressionApplicationDTOsShowBeltDTO>;
 
 }

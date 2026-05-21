@@ -6,12 +6,13 @@ import { LOCALE_ID } from '@angular/core';
 import { FeePlansComponent } from './fee-plans.component';
 
 registerLocaleData(localePt, 'pt-BR');
-import { FeePlanService, PaginationFeePlanDTO, ShowFeePlanDTO } from '../../../generated_services';
+import { FeePlanService, CarlonGracieBackendFinancesApplicationDTOsShowFeePlanDTO as ShowFeePlanDTO } from '../../../generated_services';
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
 
 const MOCK_FEE_PLAN: ShowFeePlanDTO = { id: 'fp1', name: 'Plano Mensal', price: 150, monthDuration: 1, isActive: true };
-const MOCK_PAGINATION: PaginationFeePlanDTO = { items: [MOCK_FEE_PLAN], totalCount: 1, pageNumber: 1, pageSize: 10, totalPages: 1 };
+const MOCK_ODATA_RESPONSE = { '@odata.count': 1, value: [MOCK_FEE_PLAN] };
+const MOCK_PAGE = { items: [MOCK_FEE_PLAN], totalCount: 1, totalPages: 1 };
 
 describe('FeePlansComponent', () => {
   let component: FeePlansComponent;
@@ -24,7 +25,7 @@ describe('FeePlansComponent', () => {
     const feePlanSpy = jasmine.createSpyObj('FeePlanService', ['apiFeePlanGet', 'apiFeePlanIdDelete']);
     const nsSpy = jasmine.createSpyObj('NotificationService', ['showSuccess', 'showError']);
     const subnavSpy = jasmine.createSpyObj('SubnavService', ['setTitle']);
-    feePlanSpy.apiFeePlanGet.and.returnValue(of(MOCK_PAGINATION));
+    feePlanSpy.apiFeePlanGet.and.returnValue(of(MOCK_ODATA_RESPONSE));
 
     await TestBed.configureTestingModule({
       imports: [FeePlansComponent],
@@ -50,7 +51,7 @@ describe('FeePlansComponent', () => {
 
   it('should load fee plans on init', () => {
     expect(feePlanService.apiFeePlanGet).toHaveBeenCalled();
-    expect((component as any).items()).toEqual(MOCK_PAGINATION);
+    expect((component as any).items()).toEqual(MOCK_PAGE);
   });
 
   it('should set isLoading to false after successful load', () => {

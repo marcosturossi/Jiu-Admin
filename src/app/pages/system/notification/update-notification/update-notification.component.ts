@@ -1,9 +1,9 @@
 import { ChangeDetectionStrategy, Component, inject, input, output, effect } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NotificationService as ApiNotificationService } from '../../../../generated_services/api/notification.service';
-import { ShowNotificationDTO } from '../../../../generated_services/model/showNotificationDTO';
+import { CarlonGracieBackendCommunicationsApplicationDTOsShowNotificationDto as ShowNotificationDTO } from '../../../../generated_services/model/carlonGracieBackendCommunicationsApplicationDTOsShowNotificationDto';
 import { UpdateNotificationDTO } from '../../../../generated_services/model/updateNotificationDTO';
-import { NotificationType } from '../../../../generated_services/model/notificationType';
+import { CarlonGracieBackendCommunicationsDomainNotificationType as NotificationType } from '../../../../generated_services/model/carlonGracieBackendCommunicationsDomainNotificationType';
 import { NotificationService } from '../../../../services/notification.service';
 import { datetimeLocalToIso, isoToDatetimeLocal } from '../../../../utils/date.utils';
 
@@ -55,8 +55,8 @@ export class UpdateNotificationComponent {
           type: n.type,
           isActive: n.isActive,
           expiresAt: isoToDatetimeLocal(n.expiresAt),
-          actionUrl: n.actionUrl ?? '',
-          metadata: n.metadata ?? ''
+          actionUrl: (n as any).actionUrl ?? '',
+          metadata: (n as any).metadata ?? ''
         });
       }
     });

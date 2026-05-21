@@ -1,7 +1,8 @@
 import { ChangeDetectionStrategy, Component, effect, inject, input, output } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { NoticesService } from '../../../../generated_services/api/notices.service';
-import { ShowNoticesDTO, UpdateNoticesDTO } from '../../../../generated_services/model/models';
+import { ShowNoticesDTO } from '../../../../generated_services/model/showNoticesDTO';
+import { UpdateNoticesDTO } from '../../../../generated_services/model/updateNoticesDTO';
 import { NotificationService } from '../../../../services/notification.service';
 
 @Component({

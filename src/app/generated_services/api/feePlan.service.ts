@@ -20,15 +20,13 @@ import { Observable }                                        from 'rxjs';
 // @ts-ignore
 import { ApiAdminAcademiesIdGet404Response } from '../model/apiAdminAcademiesIdGet404Response';
 // @ts-ignore
-import { CreateFeePlanDTO } from '../model/createFeePlanDTO';
+import { CarlonGracieBackendFinancesApplicationDTOsCreateFeePlanDTO } from '../model/carlonGracieBackendFinancesApplicationDTOsCreateFeePlanDTO';
 // @ts-ignore
-import { PaginationFeePlanDTO } from '../model/paginationFeePlanDTO';
+import { CarlonGracieBackendFinancesApplicationDTOsShowFeePlanDTO } from '../model/carlonGracieBackendFinancesApplicationDTOsShowFeePlanDTO';
 // @ts-ignore
-import { ShowFeePlanDTO } from '../model/showFeePlanDTO';
+import { CarlonGracieBackendFinancesApplicationDTOsUpdateFeePlanDTO } from '../model/carlonGracieBackendFinancesApplicationDTOsUpdateFeePlanDTO';
 // @ts-ignore
-import { UpdateFeePlanDTO } from '../model/updateFeePlanDTO';
-// @ts-ignore
-import { ValidationProblemDetails } from '../model/validationProblemDetails';
+import { MicrosoftAspNetCoreMvcValidationProblemDetails } from '../model/microsoftAspNetCoreMvcValidationProblemDetails';
 
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
@@ -105,39 +103,44 @@ export class FeePlanService implements FeePlanServiceInterface {
     }
 
     /**
-     * @param name 
-     * @param isActive 
-     * @param monthDuration 
-     * @param pageNumber 
-     * @param pageSize 
+     * @param $filter OData filter expression. Examples: contains(name,\&#39;John\&#39;) | status eq \&#39;Active\&#39; | amount gt 100 | createdAt ge 2024-01-01T00:00:00Z
+     * @param $orderby Sort expression. Examples: name asc | createdAt desc | name asc,amount desc
+     * @param $top Page size — number of records to return (default: 20, max: 200). Use with $skip for pagination.
+     * @param $skip Records to skip. Use ($pageNumber - 1) * $top. Example: page 3 with size 20 → $skip&#x3D;40
+     * @param $count Set to \&#39;true\&#39; to include total record count in response as @odata.count
+     * @param $select Return only specific fields. Example: $select&#x3D;id,name,createdAt
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiFeePlanGet(name?: string, isActive?: boolean, monthDuration?: number, pageNumber?: number, pageSize?: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<PaginationFeePlanDTO>;
-    public apiFeePlanGet(name?: string, isActive?: boolean, monthDuration?: number, pageNumber?: number, pageSize?: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<PaginationFeePlanDTO>>;
-    public apiFeePlanGet(name?: string, isActive?: boolean, monthDuration?: number, pageNumber?: number, pageSize?: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<PaginationFeePlanDTO>>;
-    public apiFeePlanGet(name?: string, isActive?: boolean, monthDuration?: number, pageNumber?: number, pageSize?: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public apiFeePlanGet($filter?: string, $orderby?: string, $top?: string, $skip?: string, $count?: string, $select?: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Array<CarlonGracieBackendFinancesApplicationDTOsShowFeePlanDTO>>;
+    public apiFeePlanGet($filter?: string, $orderby?: string, $top?: string, $skip?: string, $count?: string, $select?: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<CarlonGracieBackendFinancesApplicationDTOsShowFeePlanDTO>>>;
+    public apiFeePlanGet($filter?: string, $orderby?: string, $top?: string, $skip?: string, $count?: string, $select?: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<CarlonGracieBackendFinancesApplicationDTOsShowFeePlanDTO>>>;
+    public apiFeePlanGet($filter?: string, $orderby?: string, $top?: string, $skip?: string, $count?: string, $select?: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
 
         let localVarQueryParameters = new HttpParams({encoder: this.encoder});
-        if (name !== undefined && name !== null) {
+        if ($filter !== undefined && $filter !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>name, 'Name');
+            <any>$filter, '$filter');
         }
-        if (isActive !== undefined && isActive !== null) {
+        if ($orderby !== undefined && $orderby !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>isActive, 'IsActive');
+            <any>$orderby, '$orderby');
         }
-        if (monthDuration !== undefined && monthDuration !== null) {
+        if ($top !== undefined && $top !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>monthDuration, 'MonthDuration');
+            <any>$top, '$top');
         }
-        if (pageNumber !== undefined && pageNumber !== null) {
+        if ($skip !== undefined && $skip !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>pageNumber, 'PageNumber');
+            <any>$skip, '$skip');
         }
-        if (pageSize !== undefined && pageSize !== null) {
+        if ($count !== undefined && $count !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>pageSize, 'PageSize');
+            <any>$count, '$count');
+        }
+        if ($select !== undefined && $select !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>$select, '$select');
         }
 
         let localVarHeaders = this.defaultHeaders;
@@ -177,7 +180,7 @@ export class FeePlanService implements FeePlanServiceInterface {
         }
 
         let localVarPath = `/api/FeePlan`;
-        return this.httpClient.request<PaginationFeePlanDTO>('get', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<Array<CarlonGracieBackendFinancesApplicationDTOsShowFeePlanDTO>>('get', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 params: localVarQueryParameters,
@@ -259,9 +262,9 @@ export class FeePlanService implements FeePlanServiceInterface {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiFeePlanIdGet(id: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<ShowFeePlanDTO>;
-    public apiFeePlanIdGet(id: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<ShowFeePlanDTO>>;
-    public apiFeePlanIdGet(id: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<ShowFeePlanDTO>>;
+    public apiFeePlanIdGet(id: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<CarlonGracieBackendFinancesApplicationDTOsShowFeePlanDTO>;
+    public apiFeePlanIdGet(id: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<CarlonGracieBackendFinancesApplicationDTOsShowFeePlanDTO>>;
+    public apiFeePlanIdGet(id: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<CarlonGracieBackendFinancesApplicationDTOsShowFeePlanDTO>>;
     public apiFeePlanIdGet(id: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         if (id === null || id === undefined) {
             throw new Error('Required parameter id was null or undefined when calling apiFeePlanIdGet.');
@@ -304,7 +307,7 @@ export class FeePlanService implements FeePlanServiceInterface {
         }
 
         let localVarPath = `/api/FeePlan/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: "uuid"})}`;
-        return this.httpClient.request<ShowFeePlanDTO>('get', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<CarlonGracieBackendFinancesApplicationDTOsShowFeePlanDTO>('get', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 responseType: <any>responseType_,
@@ -319,14 +322,14 @@ export class FeePlanService implements FeePlanServiceInterface {
 
     /**
      * @param id 
-     * @param updateFeePlanDTO 
+     * @param carlonGracieBackendFinancesApplicationDTOsUpdateFeePlanDTO 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiFeePlanIdPut(id: string, updateFeePlanDTO?: UpdateFeePlanDTO, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<ShowFeePlanDTO>;
-    public apiFeePlanIdPut(id: string, updateFeePlanDTO?: UpdateFeePlanDTO, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<ShowFeePlanDTO>>;
-    public apiFeePlanIdPut(id: string, updateFeePlanDTO?: UpdateFeePlanDTO, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<ShowFeePlanDTO>>;
-    public apiFeePlanIdPut(id: string, updateFeePlanDTO?: UpdateFeePlanDTO, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public apiFeePlanIdPut(id: string, carlonGracieBackendFinancesApplicationDTOsUpdateFeePlanDTO?: CarlonGracieBackendFinancesApplicationDTOsUpdateFeePlanDTO, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<CarlonGracieBackendFinancesApplicationDTOsShowFeePlanDTO>;
+    public apiFeePlanIdPut(id: string, carlonGracieBackendFinancesApplicationDTOsUpdateFeePlanDTO?: CarlonGracieBackendFinancesApplicationDTOsUpdateFeePlanDTO, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<CarlonGracieBackendFinancesApplicationDTOsShowFeePlanDTO>>;
+    public apiFeePlanIdPut(id: string, carlonGracieBackendFinancesApplicationDTOsUpdateFeePlanDTO?: CarlonGracieBackendFinancesApplicationDTOsUpdateFeePlanDTO, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<CarlonGracieBackendFinancesApplicationDTOsShowFeePlanDTO>>;
+    public apiFeePlanIdPut(id: string, carlonGracieBackendFinancesApplicationDTOsUpdateFeePlanDTO?: CarlonGracieBackendFinancesApplicationDTOsUpdateFeePlanDTO, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         if (id === null || id === undefined) {
             throw new Error('Required parameter id was null or undefined when calling apiFeePlanIdPut.');
         }
@@ -358,7 +361,44 @@ export class FeePlanService implements FeePlanServiceInterface {
 
         // to determine the Content-Type header
         const consumes: string[] = [
+            'application/json;odata.metadata=minimal;odata.streaming=true',
+            'application/json;odata.metadata=minimal;odata.streaming=false',
+            'application/json;odata.metadata=minimal',
+            'application/json;odata.metadata=full;odata.streaming=true',
+            'application/json;odata.metadata=full;odata.streaming=false',
+            'application/json;odata.metadata=full',
+            'application/json;odata.metadata=none;odata.streaming=true',
+            'application/json;odata.metadata=none;odata.streaming=false',
+            'application/json;odata.metadata=none',
+            'application/json;odata.streaming=true',
+            'application/json;odata.streaming=false',
             'application/json',
+            'application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=false',
+            'application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=true',
+            'application/json;odata.metadata=minimal;odata.streaming=false;IEEE754Compatible=false',
+            'application/json;odata.metadata=minimal;odata.streaming=false;IEEE754Compatible=true',
+            'application/json;odata.metadata=minimal;IEEE754Compatible=false',
+            'application/json;odata.metadata=minimal;IEEE754Compatible=true',
+            'application/json;odata.metadata=full;odata.streaming=true;IEEE754Compatible=false',
+            'application/json;odata.metadata=full;odata.streaming=true;IEEE754Compatible=true',
+            'application/json;odata.metadata=full;odata.streaming=false;IEEE754Compatible=false',
+            'application/json;odata.metadata=full;odata.streaming=false;IEEE754Compatible=true',
+            'application/json;odata.metadata=full;IEEE754Compatible=false',
+            'application/json;odata.metadata=full;IEEE754Compatible=true',
+            'application/json;odata.metadata=none;odata.streaming=true;IEEE754Compatible=false',
+            'application/json;odata.metadata=none;odata.streaming=true;IEEE754Compatible=true',
+            'application/json;odata.metadata=none;odata.streaming=false;IEEE754Compatible=true',
+            'application/json;odata.metadata=none;odata.streaming=false;IEEE754Compatible=false',
+            'application/json;odata.metadata=none;IEEE754Compatible=false',
+            'application/json;odata.metadata=none;IEEE754Compatible=true',
+            'application/json;odata.streaming=true;IEEE754Compatible=false',
+            'application/json;odata.streaming=true;IEEE754Compatible=true',
+            'application/json;odata.streaming=false;IEEE754Compatible=false',
+            'application/json;odata.streaming=false;IEEE754Compatible=true',
+            'application/json;IEEE754Compatible=false',
+            'application/json;IEEE754Compatible=true',
+            'application/xml',
+            'text/plain',
             'text/json',
             'application/*+json'
         ];
@@ -379,10 +419,10 @@ export class FeePlanService implements FeePlanServiceInterface {
         }
 
         let localVarPath = `/api/FeePlan/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: "uuid"})}`;
-        return this.httpClient.request<ShowFeePlanDTO>('put', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<CarlonGracieBackendFinancesApplicationDTOsShowFeePlanDTO>('put', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
-                body: updateFeePlanDTO,
+                body: carlonGracieBackendFinancesApplicationDTOsUpdateFeePlanDTO,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,
@@ -394,14 +434,14 @@ export class FeePlanService implements FeePlanServiceInterface {
     }
 
     /**
-     * @param createFeePlanDTO 
+     * @param carlonGracieBackendFinancesApplicationDTOsCreateFeePlanDTO 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiFeePlanPost(createFeePlanDTO?: CreateFeePlanDTO, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<ShowFeePlanDTO>;
-    public apiFeePlanPost(createFeePlanDTO?: CreateFeePlanDTO, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<ShowFeePlanDTO>>;
-    public apiFeePlanPost(createFeePlanDTO?: CreateFeePlanDTO, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<ShowFeePlanDTO>>;
-    public apiFeePlanPost(createFeePlanDTO?: CreateFeePlanDTO, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public apiFeePlanPost(carlonGracieBackendFinancesApplicationDTOsCreateFeePlanDTO?: CarlonGracieBackendFinancesApplicationDTOsCreateFeePlanDTO, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<CarlonGracieBackendFinancesApplicationDTOsShowFeePlanDTO>;
+    public apiFeePlanPost(carlonGracieBackendFinancesApplicationDTOsCreateFeePlanDTO?: CarlonGracieBackendFinancesApplicationDTOsCreateFeePlanDTO, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<CarlonGracieBackendFinancesApplicationDTOsShowFeePlanDTO>>;
+    public apiFeePlanPost(carlonGracieBackendFinancesApplicationDTOsCreateFeePlanDTO?: CarlonGracieBackendFinancesApplicationDTOsCreateFeePlanDTO, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<CarlonGracieBackendFinancesApplicationDTOsShowFeePlanDTO>>;
+    public apiFeePlanPost(carlonGracieBackendFinancesApplicationDTOsCreateFeePlanDTO?: CarlonGracieBackendFinancesApplicationDTOsCreateFeePlanDTO, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
 
         let localVarHeaders = this.defaultHeaders;
 
@@ -430,7 +470,44 @@ export class FeePlanService implements FeePlanServiceInterface {
 
         // to determine the Content-Type header
         const consumes: string[] = [
+            'application/json;odata.metadata=minimal;odata.streaming=true',
+            'application/json;odata.metadata=minimal;odata.streaming=false',
+            'application/json;odata.metadata=minimal',
+            'application/json;odata.metadata=full;odata.streaming=true',
+            'application/json;odata.metadata=full;odata.streaming=false',
+            'application/json;odata.metadata=full',
+            'application/json;odata.metadata=none;odata.streaming=true',
+            'application/json;odata.metadata=none;odata.streaming=false',
+            'application/json;odata.metadata=none',
+            'application/json;odata.streaming=true',
+            'application/json;odata.streaming=false',
             'application/json',
+            'application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=false',
+            'application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=true',
+            'application/json;odata.metadata=minimal;odata.streaming=false;IEEE754Compatible=false',
+            'application/json;odata.metadata=minimal;odata.streaming=false;IEEE754Compatible=true',
+            'application/json;odata.metadata=minimal;IEEE754Compatible=false',
+            'application/json;odata.metadata=minimal;IEEE754Compatible=true',
+            'application/json;odata.metadata=full;odata.streaming=true;IEEE754Compatible=false',
+            'application/json;odata.metadata=full;odata.streaming=true;IEEE754Compatible=true',
+            'application/json;odata.metadata=full;odata.streaming=false;IEEE754Compatible=false',
+            'application/json;odata.metadata=full;odata.streaming=false;IEEE754Compatible=true',
+            'application/json;odata.metadata=full;IEEE754Compatible=false',
+            'application/json;odata.metadata=full;IEEE754Compatible=true',
+            'application/json;odata.metadata=none;odata.streaming=true;IEEE754Compatible=false',
+            'application/json;odata.metadata=none;odata.streaming=true;IEEE754Compatible=true',
+            'application/json;odata.metadata=none;odata.streaming=false;IEEE754Compatible=true',
+            'application/json;odata.metadata=none;odata.streaming=false;IEEE754Compatible=false',
+            'application/json;odata.metadata=none;IEEE754Compatible=false',
+            'application/json;odata.metadata=none;IEEE754Compatible=true',
+            'application/json;odata.streaming=true;IEEE754Compatible=false',
+            'application/json;odata.streaming=true;IEEE754Compatible=true',
+            'application/json;odata.streaming=false;IEEE754Compatible=false',
+            'application/json;odata.streaming=false;IEEE754Compatible=true',
+            'application/json;IEEE754Compatible=false',
+            'application/json;IEEE754Compatible=true',
+            'application/xml',
+            'text/plain',
             'text/json',
             'application/*+json'
         ];
@@ -451,10 +528,10 @@ export class FeePlanService implements FeePlanServiceInterface {
         }
 
         let localVarPath = `/api/FeePlan`;
-        return this.httpClient.request<ShowFeePlanDTO>('post', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<CarlonGracieBackendFinancesApplicationDTOsShowFeePlanDTO>('post', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
-                body: createFeePlanDTO,
+                body: carlonGracieBackendFinancesApplicationDTOsCreateFeePlanDTO,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,

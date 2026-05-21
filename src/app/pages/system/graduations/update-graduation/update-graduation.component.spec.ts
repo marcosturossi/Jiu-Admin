@@ -5,7 +5,7 @@ import { UpdateGraduationComponent } from './update-graduation.component';
 import { GraduationService } from '../../../../generated_services/api/graduation.service';
 import { BeltService } from '../../../../generated_services/api/belt.service';
 import { StudentsService } from '../../../../generated_services/api/students.service';
-import { ShowGraduationDTO } from '../../../../generated_services';
+import { CarlonGracieBackendProgressionApplicationDTOsShowGraduationDTO as ShowGraduationDTO } from '../../../../generated_services';
 import { NotificationService } from '../../../../services/notification.service';
 
 const MOCK_GRADUATION: ShowGraduationDTO = { id: 'g1', studentId: 'stu1', beltId: 'belt1', graduationDate: '2024-03-01' };
@@ -22,8 +22,8 @@ describe('UpdateGraduationComponent', () => {
     const beltSpy = jasmine.createSpyObj('BeltService', ['apiBeltGet']);
     const studentsSpy = jasmine.createSpyObj('StudentsService', ['apiStudentsGet']);
     const nsSpy = jasmine.createSpyObj('NotificationService', ['showSuccess', 'showError']);
-    beltSpy.apiBeltGet.and.returnValue(of({ items: [{ id: 'belt1', color: 'Azul' }] }));
-    studentsSpy.apiStudentsGet.and.returnValue(of({ items: [{ id: 'stu1', firstName: 'João', lastName: 'Silva' }] }));
+    beltSpy.apiBeltGet.and.returnValue(of([{ id: 'belt1', color: 'Azul' }]));
+    studentsSpy.apiStudentsGet.and.returnValue(of([{ id: 'stu1', firstName: 'João', lastName: 'Silva' }]));
     await TestBed.configureTestingModule({
       imports: [UpdateGraduationComponent],
       providers: [

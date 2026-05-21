@@ -2,12 +2,12 @@ import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/cor
 import { DatePipe } from '@angular/common';
 import { StudentsService } from '../../../generated_services/api/students.service';
 import { ShowStudentDTO } from '../../../generated_services/model/showStudentDTO';
-import { PaginationStudentDTO } from '../../../generated_services/model/paginationStudentDTO';
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
 import { FilterComponent } from '../../../shared/filter/filter.component';
 import { FilterOutput } from '../../../shared/filter/filter.types';
 import { PaginationComponent } from '../../../shared/pagination/pagination.component';
+import { ODataPage, parseODataPage, buildODataFilter } from '../../../utils/odata.utils';
 import { CreateStudentComponent } from './create-student/create-student.component';
 import { UpdateStudentComponent } from './update-student/update-student.component';
 
@@ -30,7 +30,7 @@ export class StudentsComponent {
   private readonly notificationService = inject(NotificationService);
 
   protected readonly isLoading = signal(false);
-  protected readonly items = signal<PaginationStudentDTO | null>(null);
+  protected readonly items = signal<ODataPage<ShowStudentDTO> | null>(null);
   protected readonly openedCreate = signal(false);
   protected readonly openedUpdate = signal(false);
   protected readonly selected = signal<ShowStudentDTO | null>(null);
@@ -45,8 +45,10 @@ export class StudentsComponent {
 
   protected load(): void {
     this.isLoading.set(true);
-    this.studentsService.apiStudentsGet(this.filterText() || undefined, undefined, undefined, undefined, undefined, this.currentPage(), this.pageSize()).subscribe({
-      next: result => { this.items.set(result); this.isLoading.set(false); },
+    const skip = (this.currentPage() - 1) * this.pageSize();
+    const filter = buildODataFilter(this.filterText(), ['firstName', 'lastName']);
+    this.studentsService.apiStudentsGet(filter, undefined, String(this.pageSize()), String(skip), 'true').subscribe({
+      next: (body: any) => { this.items.set(parseODataPage<ShowStudentDTO>(body, this.pageSize())); this.isLoading.set(false); },
       error: () => { this.isLoading.set(false); this.notificationService.showError('Erro de Carregamento', 'Não foi possível carregar a lista de alunos.'); }
     });
   }

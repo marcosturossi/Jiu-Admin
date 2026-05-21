@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { of, throwError } from 'rxjs';
 import { ComponentRef } from '@angular/core';
 import { UpdateFrequencyComponent } from './update-frequency.component';
-import { FrequencyService, StudentsService, ShowFrequencyDTO } from '../../../../generated_services';
+import { FrequencyService, StudentsService, CarlonGracieBackendAttendanceApplicationDTOsShowFrequencyDTO as ShowFrequencyDTO } from '../../../../generated_services';
 import { NotificationService } from '../../../../services/notification.service';
 
 const MOCK_FREQUENCY: ShowFrequencyDTO = { id: 'f1', studentId: 'stu1', lessonId: 'l1', lessonScheduledDate: '2024-03-01T08:00:00Z' };
@@ -18,7 +18,7 @@ describe('UpdateFrequencyComponent', () => {
     const freqSpy = jasmine.createSpyObj('FrequencyService', ['apiFrequencyIdPut']);
     const studentsSpy = jasmine.createSpyObj('StudentsService', ['apiStudentsGet']);
     const nsSpy = jasmine.createSpyObj('NotificationService', ['showSuccess', 'showError']);
-    studentsSpy.apiStudentsGet.and.returnValue(of({ items: [{ id: 'stu1', firstName: 'João', lastName: 'Silva' }] }));
+    studentsSpy.apiStudentsGet.and.returnValue(of([{ id: 'stu1', firstName: 'João', lastName: 'Silva' }]));
     await TestBed.configureTestingModule({
       imports: [UpdateFrequencyComponent],
       providers: [

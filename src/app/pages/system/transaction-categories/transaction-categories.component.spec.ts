@@ -1,12 +1,13 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { of, throwError } from 'rxjs';
 import { TransactionCategoriesComponent } from './transaction-categories.component';
-import { TransactionCategoryService, PaginationTransactionCategoryDTO, ShowTransactionCategoryDTO } from '../../../generated_services';
+import { TransactionCategoryService, CarlonGracieBackendFinancesApplicationDTOsShowTransactionCategoryDTO as ShowTransactionCategoryDTO } from '../../../generated_services';
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
 
 const MOCK_CATEGORY: ShowTransactionCategoryDTO = { id: 'cat1', name: 'Mensalidades', isActive: true };
-const MOCK_PAGINATION: PaginationTransactionCategoryDTO = { items: [MOCK_CATEGORY], totalCount: 1, pageNumber: 1, pageSize: 10, totalPages: 1 };
+const MOCK_ODATA_RESPONSE = { '@odata.count': 1, value: [MOCK_CATEGORY] };
+const MOCK_PAGE = { items: [MOCK_CATEGORY], totalCount: 1, totalPages: 1 };
 
 describe('TransactionCategoriesComponent', () => {
   let component: TransactionCategoriesComponent;
@@ -19,7 +20,7 @@ describe('TransactionCategoriesComponent', () => {
     const categorySpy = jasmine.createSpyObj('TransactionCategoryService', ['apiTransactionCategoryGet', 'apiTransactionCategoryIdDelete']);
     const nsSpy = jasmine.createSpyObj('NotificationService', ['showSuccess', 'showError']);
     const subnavSpy = jasmine.createSpyObj('SubnavService', ['setTitle']);
-    categorySpy.apiTransactionCategoryGet.and.returnValue(of(MOCK_PAGINATION));
+    categorySpy.apiTransactionCategoryGet.and.returnValue(of(MOCK_ODATA_RESPONSE));
 
     await TestBed.configureTestingModule({
       imports: [TransactionCategoriesComponent],
@@ -44,7 +45,7 @@ describe('TransactionCategoriesComponent', () => {
 
   it('should load categories on init', () => {
     expect(categoryService.apiTransactionCategoryGet).toHaveBeenCalled();
-    expect((component as any).items()).toEqual(MOCK_PAGINATION);
+    expect((component as any).items()).toEqual(MOCK_PAGE);
   });
 
   it('should set isLoading to false after successful load', () => {

@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
-import { GraduationRequirementsService, ShowGraduationRequirementsDTO } from '../../../generated_services';
+import { GraduationRequirementsService, CarlonGracieBackendProgressionApplicationDTOsShowGraduationRequirementDTO as ShowGraduationRequirementsDTO } from '../../../generated_services';
 import { CreateGraduationRequirementComponent } from './create-graduation-requirement/create-graduation-requirement.component';
 import { UpdateGraduationRequirementComponent } from './update-graduation-requirement/update-graduation-requirement.component';
 import { SubnavService } from '../../../services/subnav.service';

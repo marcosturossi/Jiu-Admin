@@ -10,11 +10,12 @@ import { ContractService } from '../../../generated_services/api/contract.servic
 import { StudentsService } from '../../../generated_services/api/students.service';
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
-import { PaginationContractDTO, ShowContractDTO, ContractStatus } from '../../../generated_services';
+import { CarlonGracieBackendFinancesApplicationDTOsShowContractDTO as ShowContractDTO, CarlonGracieBackendSharedDomainEnumsContractStatus as ContractStatus } from '../../../generated_services';
 import { ShowStudentDTO } from '../../../generated_services/model/showStudentDTO';
 
 const MOCK_CONTRACT: ShowContractDTO = { id: 'c1', studentId: 'student-1', feePlanName: 'Plano Mensal', monthlyAmount: 150, status: ContractStatus.Active };
-const MOCK_PAGINATION: PaginationContractDTO = { items: [MOCK_CONTRACT], totalCount: 1, pageNumber: 1, pageSize: 10, totalPages: 1 };
+const MOCK_ODATA_RESPONSE = { '@odata.count': 1, value: [MOCK_CONTRACT] };
+const MOCK_PAGE = { items: [MOCK_CONTRACT], totalCount: 1, totalPages: 1 };
 const MOCK_STUDENTS: ShowStudentDTO[] = [{ id: 'student-1', userName: 'joao', email: 'joao@test.com', firstName: 'João', lastName: 'Silva' }];
 
 describe('ContractsComponent', () => {
@@ -30,7 +31,7 @@ describe('ContractsComponent', () => {
     const studentsSpy = jasmine.createSpyObj('StudentsService', ['apiStudentsActiveGet']);
     const nsSpy = jasmine.createSpyObj('NotificationService', ['showSuccess', 'showError']);
     const subnavSpy = jasmine.createSpyObj('SubnavService', ['setTitle']);
-    contractSpy.apiContractGet.and.returnValue(of(MOCK_PAGINATION));
+    contractSpy.apiContractGet.and.returnValue(of(MOCK_ODATA_RESPONSE));
     studentsSpy.apiStudentsActiveGet.and.returnValue(of(MOCK_STUDENTS));
 
     await TestBed.configureTestingModule({
@@ -59,7 +60,7 @@ describe('ContractsComponent', () => {
 
   it('should load contracts on init', () => {
     expect(contractService.apiContractGet).toHaveBeenCalled();
-    expect((component as any).items()).toEqual(MOCK_PAGINATION);
+    expect((component as any).items()).toEqual(MOCK_PAGE);
   });
 
   it('should build student map on init', () => {

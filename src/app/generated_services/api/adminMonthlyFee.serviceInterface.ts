@@ -12,7 +12,7 @@ import { HttpHeaders }                                       from '@angular/comm
 
 import { Observable }                                        from 'rxjs';
 
-import { GenerateMonthlyFeesResultDTO } from '../model/models';
+import { CarlonGracieBackendControllersGenerateMonthlyFeesResultDTO } from '../model/models';
 
 
 import { Configuration }                                     from '../configuration';
@@ -29,6 +29,6 @@ export interface AdminMonthlyFeeServiceInterface {
      * @param year 
      * @param month 
      */
-    apiAdminMonthlyFeesGeneratePost(year?: number, month?: number, extraHttpRequestParams?: any): Observable<GenerateMonthlyFeesResultDTO>;
+    apiAdminMonthlyFeesGeneratePost(year?: number, month?: number, extraHttpRequestParams?: any): Observable<CarlonGracieBackendControllersGenerateMonthlyFeesResultDTO>;
 
 }

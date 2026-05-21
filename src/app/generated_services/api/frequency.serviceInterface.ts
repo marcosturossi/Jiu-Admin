@@ -13,11 +13,12 @@ import { HttpHeaders }                                       from '@angular/comm
 import { Observable }                                        from 'rxjs';
 
 import { ApiAdminAcademiesIdGet404Response } from '../model/models';
-import { CreateFrequencyDTO } from '../model/models';
-import { PaginationFrequencyDTO } from '../model/models';
-import { ShowFrequencyDTO } from '../model/models';
-import { ShowFrequencyUntilNextGraduation } from '../model/models';
-import { UpdateFrequencyDTO } from '../model/models';
+import { CarlonGracieBackendAttendanceApplicationDTOsCreateFrequencyDTO } from '../model/models';
+import { CarlonGracieBackendAttendanceApplicationDTOsShowFrequencyDTO } from '../model/models';
+import { CarlonGracieBackendAttendanceApplicationDTOsUpdateFrequencyDTO } from '../model/models';
+import { CarlonGracieBackendDTOsPaginationFrequencyDTO } from '../model/models';
+import { CarlonGracieBackendDTOsShowFrequencyDTO } from '../model/models';
+import { CarlonGracieBackendDTOsShowFrequencyUntilNextGraduation } from '../model/models';
 
 
 import { Configuration }                                     from '../configuration';
@@ -44,23 +45,19 @@ export interface FrequencyServiceInterface {
      * @param pageNumber 
      * @param pageSize 
      */
-    apiFrequencyDateRangeGet(startDate?: string, endDate?: string, searchTerm?: string, studentId?: string, graduationId?: string, lessonId?: string, createdFrom?: string, createdTo?: string, lessonScheduledFrom?: string, lessonScheduledTo?: string, pageNumber?: number, pageSize?: number, extraHttpRequestParams?: any): Observable<PaginationFrequencyDTO>;
+    apiFrequencyDateRangeGet(startDate?: string, endDate?: string, searchTerm?: string, studentId?: string, graduationId?: string, lessonId?: string, createdFrom?: string, createdTo?: string, lessonScheduledFrom?: string, lessonScheduledTo?: string, pageNumber?: number, pageSize?: number, extraHttpRequestParams?: any): Observable<CarlonGracieBackendDTOsPaginationFrequencyDTO>;
 
     /**
      * 
      * 
-     * @param searchTerm 
-     * @param studentId 
-     * @param graduationId 
-     * @param lessonId 
-     * @param createdFrom 
-     * @param createdTo 
-     * @param lessonScheduledFrom 
-     * @param lessonScheduledTo 
-     * @param pageNumber 
-     * @param pageSize 
+     * @param $filter OData filter expression. Examples: contains(name,\&#39;John\&#39;) | status eq \&#39;Active\&#39; | amount gt 100 | createdAt ge 2024-01-01T00:00:00Z
+     * @param $orderby Sort expression. Examples: name asc | createdAt desc | name asc,amount desc
+     * @param $top Page size — number of records to return (default: 20, max: 200). Use with $skip for pagination.
+     * @param $skip Records to skip. Use ($pageNumber - 1) * $top. Example: page 3 with size 20 → $skip&#x3D;40
+     * @param $count Set to \&#39;true\&#39; to include total record count in response as @odata.count
+     * @param $select Return only specific fields. Example: $select&#x3D;id,name,createdAt
      */
-    apiFrequencyGet(searchTerm?: string, studentId?: string, graduationId?: string, lessonId?: string, createdFrom?: string, createdTo?: string, lessonScheduledFrom?: string, lessonScheduledTo?: string, pageNumber?: number, pageSize?: number, extraHttpRequestParams?: any): Observable<PaginationFrequencyDTO>;
+    apiFrequencyGet($filter?: string, $orderby?: string, $top?: string, $skip?: string, $count?: string, $select?: string, extraHttpRequestParams?: any): Observable<Array<CarlonGracieBackendAttendanceApplicationDTOsShowFrequencyDTO>>;
 
     /**
      * 
@@ -77,7 +74,7 @@ export interface FrequencyServiceInterface {
      * @param pageNumber 
      * @param pageSize 
      */
-    apiFrequencyGraduationGraduationIdGet(graduationId: string, searchTerm?: string, studentId?: string, graduationId2?: string, lessonId?: string, createdFrom?: string, createdTo?: string, lessonScheduledFrom?: string, lessonScheduledTo?: string, pageNumber?: number, pageSize?: number, extraHttpRequestParams?: any): Observable<PaginationFrequencyDTO>;
+    apiFrequencyGraduationGraduationIdGet(graduationId: string, searchTerm?: string, studentId?: string, graduationId2?: string, lessonId?: string, createdFrom?: string, createdTo?: string, lessonScheduledFrom?: string, lessonScheduledTo?: string, pageNumber?: number, pageSize?: number, extraHttpRequestParams?: any): Observable<CarlonGracieBackendDTOsPaginationFrequencyDTO>;
 
     /**
      * 
@@ -91,29 +88,29 @@ export interface FrequencyServiceInterface {
      * 
      * @param id 
      */
-    apiFrequencyIdGet(id: string, extraHttpRequestParams?: any): Observable<ShowFrequencyDTO>;
+    apiFrequencyIdGet(id: string, extraHttpRequestParams?: any): Observable<CarlonGracieBackendAttendanceApplicationDTOsShowFrequencyDTO>;
 
     /**
      * 
      * 
      * @param id 
-     * @param updateFrequencyDTO 
+     * @param carlonGracieBackendAttendanceApplicationDTOsUpdateFrequencyDTO 
      */
-    apiFrequencyIdPut(id: string, updateFrequencyDTO?: UpdateFrequencyDTO, extraHttpRequestParams?: any): Observable<ShowFrequencyDTO>;
+    apiFrequencyIdPut(id: string, carlonGracieBackendAttendanceApplicationDTOsUpdateFrequencyDTO?: CarlonGracieBackendAttendanceApplicationDTOsUpdateFrequencyDTO, extraHttpRequestParams?: any): Observable<CarlonGracieBackendAttendanceApplicationDTOsShowFrequencyDTO>;
 
     /**
      * 
      * 
      * @param studentId 
      */
-    apiFrequencyNextGraduationRequirementsStudentIdGet(studentId: string, extraHttpRequestParams?: any): Observable<ShowFrequencyUntilNextGraduation>;
+    apiFrequencyNextGraduationRequirementsStudentIdGet(studentId: string, extraHttpRequestParams?: any): Observable<CarlonGracieBackendDTOsShowFrequencyUntilNextGraduation>;
 
     /**
      * 
      * 
-     * @param createFrequencyDTO 
+     * @param carlonGracieBackendAttendanceApplicationDTOsCreateFrequencyDTO 
      */
-    apiFrequencyPost(createFrequencyDTO?: CreateFrequencyDTO, extraHttpRequestParams?: any): Observable<ShowFrequencyDTO>;
+    apiFrequencyPost(carlonGracieBackendAttendanceApplicationDTOsCreateFrequencyDTO?: CarlonGracieBackendAttendanceApplicationDTOsCreateFrequencyDTO, extraHttpRequestParams?: any): Observable<CarlonGracieBackendAttendanceApplicationDTOsShowFrequencyDTO>;
 
     /**
      * 
@@ -130,6 +127,6 @@ export interface FrequencyServiceInterface {
      * @param pageNumber 
      * @param pageSize 
      */
-    apiFrequencyUserUserIdGet(userId: string, searchTerm?: string, studentId?: string, graduationId?: string, lessonId?: string, createdFrom?: string, createdTo?: string, lessonScheduledFrom?: string, lessonScheduledTo?: string, pageNumber?: number, pageSize?: number, extraHttpRequestParams?: any): Observable<PaginationFrequencyDTO>;
+    apiFrequencyUserUserIdGet(userId: string, searchTerm?: string, studentId?: string, graduationId?: string, lessonId?: string, createdFrom?: string, createdTo?: string, lessonScheduledFrom?: string, lessonScheduledTo?: string, pageNumber?: number, pageSize?: number, extraHttpRequestParams?: any): Observable<Array<CarlonGracieBackendDTOsShowFrequencyDTO>>;
 
 }

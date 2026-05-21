@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject, output, signal } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
-import { GraduationRequirementsService, BeltService, ShowBeltDTO } from '../../../../generated_services';
+import { GraduationRequirementsService, BeltService, CarlonGracieBackendProgressionApplicationDTOsShowBeltDTO as ShowBeltDTO } from '../../../../generated_services';
 import { CreateGraduationRequirementsDTO } from '../../../../generated_services/model/createGraduationRequirementsDTO';
 import { NotificationService } from '../../../../services/notification.service';
 
@@ -30,7 +30,7 @@ export class CreateGraduationRequirementComponent {
 
   constructor() {
     this.beltService.apiBeltGet().subscribe({
-      next: r => this.belts.set(r.items ?? []),
+      next: r => this.belts.set(r ?? []),
       error: () => this.ns.showError('Erro ao Carregar Faixas!', 'Não foi possível carregar a lista de faixas. Tente novamente.'),
     });
   }

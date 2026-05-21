@@ -6,12 +6,12 @@ import { MonthlyFeeService } from '../../../generated_services/api/monthlyFee.se
 import { TransactionType } from '../../../generated_services/model/transactionType';
 
 const MOCK_TRANSACTIONS = {
-  items: [
+  value: [
     { id: '1', type: TransactionType.Income, amount: 1000, transactionDate: new Date().toISOString() },
     { id: '2', type: TransactionType.Income, amount: 500, transactionDate: new Date().toISOString() },
     { id: '3', type: TransactionType.Expense, amount: 200, transactionDate: new Date().toISOString() },
   ],
-  totalItems: 3, totalPages: 1, pageNumber: 1, pageSize: 1000,
+  '@odata.count': 3,
 } as any;
 
 const MOCK_OVERDUE = [

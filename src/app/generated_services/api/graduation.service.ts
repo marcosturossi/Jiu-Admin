@@ -18,13 +18,13 @@ import { CustomHttpParameterCodec }                          from '../encoder';
 import { Observable }                                        from 'rxjs';
 
 // @ts-ignore
-import { CreateGraduationDTO } from '../model/createGraduationDTO';
+import { CarlonGracieBackendDTOsShowGraduationDTO } from '../model/carlonGracieBackendDTOsShowGraduationDTO';
 // @ts-ignore
-import { PaginationGraduationDTO } from '../model/paginationGraduationDTO';
+import { CarlonGracieBackendProgressionApplicationDTOsCreateGraduationDTO } from '../model/carlonGracieBackendProgressionApplicationDTOsCreateGraduationDTO';
 // @ts-ignore
-import { ShowGraduationDTO } from '../model/showGraduationDTO';
+import { CarlonGracieBackendProgressionApplicationDTOsShowGraduationDTO } from '../model/carlonGracieBackendProgressionApplicationDTOsShowGraduationDTO';
 // @ts-ignore
-import { UpdateGraduationDTO } from '../model/updateGraduationDTO';
+import { CarlonGracieBackendProgressionApplicationDTOsUpdateGraduationDTO } from '../model/carlonGracieBackendProgressionApplicationDTOsUpdateGraduationDTO';
 
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
@@ -112,10 +112,10 @@ export class GraduationService implements GraduationServiceInterface {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiGraduationBeltBeltIdGet(beltId: string, searchTerm?: string, studentId?: string, beltId2?: string, graduationDateFrom?: string, graduationDateTo?: string, pageNumber?: number, pageSize?: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<Array<ShowGraduationDTO>>;
-    public apiGraduationBeltBeltIdGet(beltId: string, searchTerm?: string, studentId?: string, beltId2?: string, graduationDateFrom?: string, graduationDateTo?: string, pageNumber?: number, pageSize?: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<ShowGraduationDTO>>>;
-    public apiGraduationBeltBeltIdGet(beltId: string, searchTerm?: string, studentId?: string, beltId2?: string, graduationDateFrom?: string, graduationDateTo?: string, pageNumber?: number, pageSize?: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<ShowGraduationDTO>>>;
-    public apiGraduationBeltBeltIdGet(beltId: string, searchTerm?: string, studentId?: string, beltId2?: string, graduationDateFrom?: string, graduationDateTo?: string, pageNumber?: number, pageSize?: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public apiGraduationBeltBeltIdGet(beltId: string, searchTerm?: string, studentId?: string, beltId2?: string, graduationDateFrom?: string, graduationDateTo?: string, pageNumber?: number, pageSize?: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json;odata.metadata=minimal;odata.streaming=true' | 'application/json;odata.metadata=minimal;odata.streaming=false' | 'application/json;odata.metadata=minimal' | 'application/json;odata.metadata=full;odata.streaming=true' | 'application/json;odata.metadata=full;odata.streaming=false' | 'application/json;odata.metadata=full' | 'application/json;odata.metadata=none;odata.streaming=true' | 'application/json;odata.metadata=none;odata.streaming=false' | 'application/json;odata.metadata=none' | 'application/json;odata.streaming=true' | 'application/json;odata.streaming=false' | 'application/json' | 'application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=false' | 'application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=true' | 'application/json;odata.metadata=minimal;odata.streaming=false;IEEE754Compatible=false' | 'application/json;odata.metadata=minimal;odata.streaming=false;IEEE754Compatible=true' | 'application/json;odata.metadata=minimal;IEEE754Compatible=false' | 'application/json;odata.metadata=minimal;IEEE754Compatible=true' | 'application/json;odata.metadata=full;odata.streaming=true;IEEE754Compatible=false' | 'application/json;odata.metadata=full;odata.streaming=true;IEEE754Compatible=true' | 'application/json;odata.metadata=full;odata.streaming=false;IEEE754Compatible=false' | 'application/json;odata.metadata=full;odata.streaming=false;IEEE754Compatible=true' | 'application/json;odata.metadata=full;IEEE754Compatible=false' | 'application/json;odata.metadata=full;IEEE754Compatible=true' | 'application/json;odata.metadata=none;odata.streaming=true;IEEE754Compatible=false' | 'application/json;odata.metadata=none;odata.streaming=true;IEEE754Compatible=true' | 'application/json;odata.metadata=none;odata.streaming=false;IEEE754Compatible=true' | 'application/json;odata.metadata=none;odata.streaming=false;IEEE754Compatible=false' | 'application/json;odata.metadata=none;IEEE754Compatible=false' | 'application/json;odata.metadata=none;IEEE754Compatible=true' | 'application/json;odata.streaming=true;IEEE754Compatible=false' | 'application/json;odata.streaming=true;IEEE754Compatible=true' | 'application/json;odata.streaming=false;IEEE754Compatible=false' | 'application/json;odata.streaming=false;IEEE754Compatible=true' | 'application/json;IEEE754Compatible=false' | 'application/json;IEEE754Compatible=true' | 'application/xml' | 'text/plain' | 'application/octet-stream' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<Array<CarlonGracieBackendDTOsShowGraduationDTO>>;
+    public apiGraduationBeltBeltIdGet(beltId: string, searchTerm?: string, studentId?: string, beltId2?: string, graduationDateFrom?: string, graduationDateTo?: string, pageNumber?: number, pageSize?: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json;odata.metadata=minimal;odata.streaming=true' | 'application/json;odata.metadata=minimal;odata.streaming=false' | 'application/json;odata.metadata=minimal' | 'application/json;odata.metadata=full;odata.streaming=true' | 'application/json;odata.metadata=full;odata.streaming=false' | 'application/json;odata.metadata=full' | 'application/json;odata.metadata=none;odata.streaming=true' | 'application/json;odata.metadata=none;odata.streaming=false' | 'application/json;odata.metadata=none' | 'application/json;odata.streaming=true' | 'application/json;odata.streaming=false' | 'application/json' | 'application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=false' | 'application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=true' | 'application/json;odata.metadata=minimal;odata.streaming=false;IEEE754Compatible=false' | 'application/json;odata.metadata=minimal;odata.streaming=false;IEEE754Compatible=true' | 'application/json;odata.metadata=minimal;IEEE754Compatible=false' | 'application/json;odata.metadata=minimal;IEEE754Compatible=true' | 'application/json;odata.metadata=full;odata.streaming=true;IEEE754Compatible=false' | 'application/json;odata.metadata=full;odata.streaming=true;IEEE754Compatible=true' | 'application/json;odata.metadata=full;odata.streaming=false;IEEE754Compatible=false' | 'application/json;odata.metadata=full;odata.streaming=false;IEEE754Compatible=true' | 'application/json;odata.metadata=full;IEEE754Compatible=false' | 'application/json;odata.metadata=full;IEEE754Compatible=true' | 'application/json;odata.metadata=none;odata.streaming=true;IEEE754Compatible=false' | 'application/json;odata.metadata=none;odata.streaming=true;IEEE754Compatible=true' | 'application/json;odata.metadata=none;odata.streaming=false;IEEE754Compatible=true' | 'application/json;odata.metadata=none;odata.streaming=false;IEEE754Compatible=false' | 'application/json;odata.metadata=none;IEEE754Compatible=false' | 'application/json;odata.metadata=none;IEEE754Compatible=true' | 'application/json;odata.streaming=true;IEEE754Compatible=false' | 'application/json;odata.streaming=true;IEEE754Compatible=true' | 'application/json;odata.streaming=false;IEEE754Compatible=false' | 'application/json;odata.streaming=false;IEEE754Compatible=true' | 'application/json;IEEE754Compatible=false' | 'application/json;IEEE754Compatible=true' | 'application/xml' | 'text/plain' | 'application/octet-stream' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<CarlonGracieBackendDTOsShowGraduationDTO>>>;
+    public apiGraduationBeltBeltIdGet(beltId: string, searchTerm?: string, studentId?: string, beltId2?: string, graduationDateFrom?: string, graduationDateTo?: string, pageNumber?: number, pageSize?: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json;odata.metadata=minimal;odata.streaming=true' | 'application/json;odata.metadata=minimal;odata.streaming=false' | 'application/json;odata.metadata=minimal' | 'application/json;odata.metadata=full;odata.streaming=true' | 'application/json;odata.metadata=full;odata.streaming=false' | 'application/json;odata.metadata=full' | 'application/json;odata.metadata=none;odata.streaming=true' | 'application/json;odata.metadata=none;odata.streaming=false' | 'application/json;odata.metadata=none' | 'application/json;odata.streaming=true' | 'application/json;odata.streaming=false' | 'application/json' | 'application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=false' | 'application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=true' | 'application/json;odata.metadata=minimal;odata.streaming=false;IEEE754Compatible=false' | 'application/json;odata.metadata=minimal;odata.streaming=false;IEEE754Compatible=true' | 'application/json;odata.metadata=minimal;IEEE754Compatible=false' | 'application/json;odata.metadata=minimal;IEEE754Compatible=true' | 'application/json;odata.metadata=full;odata.streaming=true;IEEE754Compatible=false' | 'application/json;odata.metadata=full;odata.streaming=true;IEEE754Compatible=true' | 'application/json;odata.metadata=full;odata.streaming=false;IEEE754Compatible=false' | 'application/json;odata.metadata=full;odata.streaming=false;IEEE754Compatible=true' | 'application/json;odata.metadata=full;IEEE754Compatible=false' | 'application/json;odata.metadata=full;IEEE754Compatible=true' | 'application/json;odata.metadata=none;odata.streaming=true;IEEE754Compatible=false' | 'application/json;odata.metadata=none;odata.streaming=true;IEEE754Compatible=true' | 'application/json;odata.metadata=none;odata.streaming=false;IEEE754Compatible=true' | 'application/json;odata.metadata=none;odata.streaming=false;IEEE754Compatible=false' | 'application/json;odata.metadata=none;IEEE754Compatible=false' | 'application/json;odata.metadata=none;IEEE754Compatible=true' | 'application/json;odata.streaming=true;IEEE754Compatible=false' | 'application/json;odata.streaming=true;IEEE754Compatible=true' | 'application/json;odata.streaming=false;IEEE754Compatible=false' | 'application/json;odata.streaming=false;IEEE754Compatible=true' | 'application/json;IEEE754Compatible=false' | 'application/json;IEEE754Compatible=true' | 'application/xml' | 'text/plain' | 'application/octet-stream' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<CarlonGracieBackendDTOsShowGraduationDTO>>>;
+    public apiGraduationBeltBeltIdGet(beltId: string, searchTerm?: string, studentId?: string, beltId2?: string, graduationDateFrom?: string, graduationDateTo?: string, pageNumber?: number, pageSize?: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json;odata.metadata=minimal;odata.streaming=true' | 'application/json;odata.metadata=minimal;odata.streaming=false' | 'application/json;odata.metadata=minimal' | 'application/json;odata.metadata=full;odata.streaming=true' | 'application/json;odata.metadata=full;odata.streaming=false' | 'application/json;odata.metadata=full' | 'application/json;odata.metadata=none;odata.streaming=true' | 'application/json;odata.metadata=none;odata.streaming=false' | 'application/json;odata.metadata=none' | 'application/json;odata.streaming=true' | 'application/json;odata.streaming=false' | 'application/json' | 'application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=false' | 'application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=true' | 'application/json;odata.metadata=minimal;odata.streaming=false;IEEE754Compatible=false' | 'application/json;odata.metadata=minimal;odata.streaming=false;IEEE754Compatible=true' | 'application/json;odata.metadata=minimal;IEEE754Compatible=false' | 'application/json;odata.metadata=minimal;IEEE754Compatible=true' | 'application/json;odata.metadata=full;odata.streaming=true;IEEE754Compatible=false' | 'application/json;odata.metadata=full;odata.streaming=true;IEEE754Compatible=true' | 'application/json;odata.metadata=full;odata.streaming=false;IEEE754Compatible=false' | 'application/json;odata.metadata=full;odata.streaming=false;IEEE754Compatible=true' | 'application/json;odata.metadata=full;IEEE754Compatible=false' | 'application/json;odata.metadata=full;IEEE754Compatible=true' | 'application/json;odata.metadata=none;odata.streaming=true;IEEE754Compatible=false' | 'application/json;odata.metadata=none;odata.streaming=true;IEEE754Compatible=true' | 'application/json;odata.metadata=none;odata.streaming=false;IEEE754Compatible=true' | 'application/json;odata.metadata=none;odata.streaming=false;IEEE754Compatible=false' | 'application/json;odata.metadata=none;IEEE754Compatible=false' | 'application/json;odata.metadata=none;IEEE754Compatible=true' | 'application/json;odata.streaming=true;IEEE754Compatible=false' | 'application/json;odata.streaming=true;IEEE754Compatible=true' | 'application/json;odata.streaming=false;IEEE754Compatible=false' | 'application/json;odata.streaming=false;IEEE754Compatible=true' | 'application/json;IEEE754Compatible=false' | 'application/json;IEEE754Compatible=true' | 'application/xml' | 'text/plain' | 'application/octet-stream' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         if (beltId === null || beltId === undefined) {
             throw new Error('Required parameter beltId was null or undefined when calling apiGraduationBeltBeltIdGet.');
         }
@@ -156,8 +156,45 @@ export class GraduationService implements GraduationServiceInterface {
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                'text/plain',
+                'application/json;odata.metadata=minimal;odata.streaming=true',
+                'application/json;odata.metadata=minimal;odata.streaming=false',
+                'application/json;odata.metadata=minimal',
+                'application/json;odata.metadata=full;odata.streaming=true',
+                'application/json;odata.metadata=full;odata.streaming=false',
+                'application/json;odata.metadata=full',
+                'application/json;odata.metadata=none;odata.streaming=true',
+                'application/json;odata.metadata=none;odata.streaming=false',
+                'application/json;odata.metadata=none',
+                'application/json;odata.streaming=true',
+                'application/json;odata.streaming=false',
                 'application/json',
+                'application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=false',
+                'application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=true',
+                'application/json;odata.metadata=minimal;odata.streaming=false;IEEE754Compatible=false',
+                'application/json;odata.metadata=minimal;odata.streaming=false;IEEE754Compatible=true',
+                'application/json;odata.metadata=minimal;IEEE754Compatible=false',
+                'application/json;odata.metadata=minimal;IEEE754Compatible=true',
+                'application/json;odata.metadata=full;odata.streaming=true;IEEE754Compatible=false',
+                'application/json;odata.metadata=full;odata.streaming=true;IEEE754Compatible=true',
+                'application/json;odata.metadata=full;odata.streaming=false;IEEE754Compatible=false',
+                'application/json;odata.metadata=full;odata.streaming=false;IEEE754Compatible=true',
+                'application/json;odata.metadata=full;IEEE754Compatible=false',
+                'application/json;odata.metadata=full;IEEE754Compatible=true',
+                'application/json;odata.metadata=none;odata.streaming=true;IEEE754Compatible=false',
+                'application/json;odata.metadata=none;odata.streaming=true;IEEE754Compatible=true',
+                'application/json;odata.metadata=none;odata.streaming=false;IEEE754Compatible=true',
+                'application/json;odata.metadata=none;odata.streaming=false;IEEE754Compatible=false',
+                'application/json;odata.metadata=none;IEEE754Compatible=false',
+                'application/json;odata.metadata=none;IEEE754Compatible=true',
+                'application/json;odata.streaming=true;IEEE754Compatible=false',
+                'application/json;odata.streaming=true;IEEE754Compatible=true',
+                'application/json;odata.streaming=false;IEEE754Compatible=false',
+                'application/json;odata.streaming=false;IEEE754Compatible=true',
+                'application/json;IEEE754Compatible=false',
+                'application/json;IEEE754Compatible=true',
+                'application/xml',
+                'text/plain',
+                'application/octet-stream',
                 'text/json'
             ];
             localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
@@ -189,7 +226,7 @@ export class GraduationService implements GraduationServiceInterface {
         }
 
         let localVarPath = `/api/Graduation/belt/${this.configuration.encodeParam({name: "beltId", value: beltId, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: "uuid"})}`;
-        return this.httpClient.request<Array<ShowGraduationDTO>>('get', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<Array<CarlonGracieBackendDTOsShowGraduationDTO>>('get', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 params: localVarQueryParameters,
@@ -204,49 +241,44 @@ export class GraduationService implements GraduationServiceInterface {
     }
 
     /**
-     * @param searchTerm 
-     * @param studentId 
-     * @param beltId 
-     * @param graduationDateFrom 
-     * @param graduationDateTo 
-     * @param pageNumber 
-     * @param pageSize 
+     * @param $filter OData filter expression. Examples: contains(name,\&#39;John\&#39;) | status eq \&#39;Active\&#39; | amount gt 100 | createdAt ge 2024-01-01T00:00:00Z
+     * @param $orderby Sort expression. Examples: name asc | createdAt desc | name asc,amount desc
+     * @param $top Page size — number of records to return (default: 20, max: 200). Use with $skip for pagination.
+     * @param $skip Records to skip. Use ($pageNumber - 1) * $top. Example: page 3 with size 20 → $skip&#x3D;40
+     * @param $count Set to \&#39;true\&#39; to include total record count in response as @odata.count
+     * @param $select Return only specific fields. Example: $select&#x3D;id,name,createdAt
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiGraduationGet(searchTerm?: string, studentId?: string, beltId?: string, graduationDateFrom?: string, graduationDateTo?: string, pageNumber?: number, pageSize?: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<PaginationGraduationDTO>;
-    public apiGraduationGet(searchTerm?: string, studentId?: string, beltId?: string, graduationDateFrom?: string, graduationDateTo?: string, pageNumber?: number, pageSize?: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<PaginationGraduationDTO>>;
-    public apiGraduationGet(searchTerm?: string, studentId?: string, beltId?: string, graduationDateFrom?: string, graduationDateTo?: string, pageNumber?: number, pageSize?: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<PaginationGraduationDTO>>;
-    public apiGraduationGet(searchTerm?: string, studentId?: string, beltId?: string, graduationDateFrom?: string, graduationDateTo?: string, pageNumber?: number, pageSize?: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public apiGraduationGet($filter?: string, $orderby?: string, $top?: string, $skip?: string, $count?: string, $select?: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json;odata.metadata=minimal;odata.streaming=true' | 'application/json;odata.metadata=minimal;odata.streaming=false' | 'application/json;odata.metadata=minimal' | 'application/json;odata.metadata=full;odata.streaming=true' | 'application/json;odata.metadata=full;odata.streaming=false' | 'application/json;odata.metadata=full' | 'application/json;odata.metadata=none;odata.streaming=true' | 'application/json;odata.metadata=none;odata.streaming=false' | 'application/json;odata.metadata=none' | 'application/json;odata.streaming=true' | 'application/json;odata.streaming=false' | 'application/json' | 'application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=false' | 'application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=true' | 'application/json;odata.metadata=minimal;odata.streaming=false;IEEE754Compatible=false' | 'application/json;odata.metadata=minimal;odata.streaming=false;IEEE754Compatible=true' | 'application/json;odata.metadata=minimal;IEEE754Compatible=false' | 'application/json;odata.metadata=minimal;IEEE754Compatible=true' | 'application/json;odata.metadata=full;odata.streaming=true;IEEE754Compatible=false' | 'application/json;odata.metadata=full;odata.streaming=true;IEEE754Compatible=true' | 'application/json;odata.metadata=full;odata.streaming=false;IEEE754Compatible=false' | 'application/json;odata.metadata=full;odata.streaming=false;IEEE754Compatible=true' | 'application/json;odata.metadata=full;IEEE754Compatible=false' | 'application/json;odata.metadata=full;IEEE754Compatible=true' | 'application/json;odata.metadata=none;odata.streaming=true;IEEE754Compatible=false' | 'application/json;odata.metadata=none;odata.streaming=true;IEEE754Compatible=true' | 'application/json;odata.metadata=none;odata.streaming=false;IEEE754Compatible=true' | 'application/json;odata.metadata=none;odata.streaming=false;IEEE754Compatible=false' | 'application/json;odata.metadata=none;IEEE754Compatible=false' | 'application/json;odata.metadata=none;IEEE754Compatible=true' | 'application/json;odata.streaming=true;IEEE754Compatible=false' | 'application/json;odata.streaming=true;IEEE754Compatible=true' | 'application/json;odata.streaming=false;IEEE754Compatible=false' | 'application/json;odata.streaming=false;IEEE754Compatible=true' | 'application/json;IEEE754Compatible=false' | 'application/json;IEEE754Compatible=true' | 'application/xml' | 'text/plain' | 'application/octet-stream' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<Array<CarlonGracieBackendProgressionApplicationDTOsShowGraduationDTO>>;
+    public apiGraduationGet($filter?: string, $orderby?: string, $top?: string, $skip?: string, $count?: string, $select?: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json;odata.metadata=minimal;odata.streaming=true' | 'application/json;odata.metadata=minimal;odata.streaming=false' | 'application/json;odata.metadata=minimal' | 'application/json;odata.metadata=full;odata.streaming=true' | 'application/json;odata.metadata=full;odata.streaming=false' | 'application/json;odata.metadata=full' | 'application/json;odata.metadata=none;odata.streaming=true' | 'application/json;odata.metadata=none;odata.streaming=false' | 'application/json;odata.metadata=none' | 'application/json;odata.streaming=true' | 'application/json;odata.streaming=false' | 'application/json' | 'application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=false' | 'application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=true' | 'application/json;odata.metadata=minimal;odata.streaming=false;IEEE754Compatible=false' | 'application/json;odata.metadata=minimal;odata.streaming=false;IEEE754Compatible=true' | 'application/json;odata.metadata=minimal;IEEE754Compatible=false' | 'application/json;odata.metadata=minimal;IEEE754Compatible=true' | 'application/json;odata.metadata=full;odata.streaming=true;IEEE754Compatible=false' | 'application/json;odata.metadata=full;odata.streaming=true;IEEE754Compatible=true' | 'application/json;odata.metadata=full;odata.streaming=false;IEEE754Compatible=false' | 'application/json;odata.metadata=full;odata.streaming=false;IEEE754Compatible=true' | 'application/json;odata.metadata=full;IEEE754Compatible=false' | 'application/json;odata.metadata=full;IEEE754Compatible=true' | 'application/json;odata.metadata=none;odata.streaming=true;IEEE754Compatible=false' | 'application/json;odata.metadata=none;odata.streaming=true;IEEE754Compatible=true' | 'application/json;odata.metadata=none;odata.streaming=false;IEEE754Compatible=true' | 'application/json;odata.metadata=none;odata.streaming=false;IEEE754Compatible=false' | 'application/json;odata.metadata=none;IEEE754Compatible=false' | 'application/json;odata.metadata=none;IEEE754Compatible=true' | 'application/json;odata.streaming=true;IEEE754Compatible=false' | 'application/json;odata.streaming=true;IEEE754Compatible=true' | 'application/json;odata.streaming=false;IEEE754Compatible=false' | 'application/json;odata.streaming=false;IEEE754Compatible=true' | 'application/json;IEEE754Compatible=false' | 'application/json;IEEE754Compatible=true' | 'application/xml' | 'text/plain' | 'application/octet-stream' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<CarlonGracieBackendProgressionApplicationDTOsShowGraduationDTO>>>;
+    public apiGraduationGet($filter?: string, $orderby?: string, $top?: string, $skip?: string, $count?: string, $select?: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json;odata.metadata=minimal;odata.streaming=true' | 'application/json;odata.metadata=minimal;odata.streaming=false' | 'application/json;odata.metadata=minimal' | 'application/json;odata.metadata=full;odata.streaming=true' | 'application/json;odata.metadata=full;odata.streaming=false' | 'application/json;odata.metadata=full' | 'application/json;odata.metadata=none;odata.streaming=true' | 'application/json;odata.metadata=none;odata.streaming=false' | 'application/json;odata.metadata=none' | 'application/json;odata.streaming=true' | 'application/json;odata.streaming=false' | 'application/json' | 'application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=false' | 'application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=true' | 'application/json;odata.metadata=minimal;odata.streaming=false;IEEE754Compatible=false' | 'application/json;odata.metadata=minimal;odata.streaming=false;IEEE754Compatible=true' | 'application/json;odata.metadata=minimal;IEEE754Compatible=false' | 'application/json;odata.metadata=minimal;IEEE754Compatible=true' | 'application/json;odata.metadata=full;odata.streaming=true;IEEE754Compatible=false' | 'application/json;odata.metadata=full;odata.streaming=true;IEEE754Compatible=true' | 'application/json;odata.metadata=full;odata.streaming=false;IEEE754Compatible=false' | 'application/json;odata.metadata=full;odata.streaming=false;IEEE754Compatible=true' | 'application/json;odata.metadata=full;IEEE754Compatible=false' | 'application/json;odata.metadata=full;IEEE754Compatible=true' | 'application/json;odata.metadata=none;odata.streaming=true;IEEE754Compatible=false' | 'application/json;odata.metadata=none;odata.streaming=true;IEEE754Compatible=true' | 'application/json;odata.metadata=none;odata.streaming=false;IEEE754Compatible=true' | 'application/json;odata.metadata=none;odata.streaming=false;IEEE754Compatible=false' | 'application/json;odata.metadata=none;IEEE754Compatible=false' | 'application/json;odata.metadata=none;IEEE754Compatible=true' | 'application/json;odata.streaming=true;IEEE754Compatible=false' | 'application/json;odata.streaming=true;IEEE754Compatible=true' | 'application/json;odata.streaming=false;IEEE754Compatible=false' | 'application/json;odata.streaming=false;IEEE754Compatible=true' | 'application/json;IEEE754Compatible=false' | 'application/json;IEEE754Compatible=true' | 'application/xml' | 'text/plain' | 'application/octet-stream' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<CarlonGracieBackendProgressionApplicationDTOsShowGraduationDTO>>>;
+    public apiGraduationGet($filter?: string, $orderby?: string, $top?: string, $skip?: string, $count?: string, $select?: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json;odata.metadata=minimal;odata.streaming=true' | 'application/json;odata.metadata=minimal;odata.streaming=false' | 'application/json;odata.metadata=minimal' | 'application/json;odata.metadata=full;odata.streaming=true' | 'application/json;odata.metadata=full;odata.streaming=false' | 'application/json;odata.metadata=full' | 'application/json;odata.metadata=none;odata.streaming=true' | 'application/json;odata.metadata=none;odata.streaming=false' | 'application/json;odata.metadata=none' | 'application/json;odata.streaming=true' | 'application/json;odata.streaming=false' | 'application/json' | 'application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=false' | 'application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=true' | 'application/json;odata.metadata=minimal;odata.streaming=false;IEEE754Compatible=false' | 'application/json;odata.metadata=minimal;odata.streaming=false;IEEE754Compatible=true' | 'application/json;odata.metadata=minimal;IEEE754Compatible=false' | 'application/json;odata.metadata=minimal;IEEE754Compatible=true' | 'application/json;odata.metadata=full;odata.streaming=true;IEEE754Compatible=false' | 'application/json;odata.metadata=full;odata.streaming=true;IEEE754Compatible=true' | 'application/json;odata.metadata=full;odata.streaming=false;IEEE754Compatible=false' | 'application/json;odata.metadata=full;odata.streaming=false;IEEE754Compatible=true' | 'application/json;odata.metadata=full;IEEE754Compatible=false' | 'application/json;odata.metadata=full;IEEE754Compatible=true' | 'application/json;odata.metadata=none;odata.streaming=true;IEEE754Compatible=false' | 'application/json;odata.metadata=none;odata.streaming=true;IEEE754Compatible=true' | 'application/json;odata.metadata=none;odata.streaming=false;IEEE754Compatible=true' | 'application/json;odata.metadata=none;odata.streaming=false;IEEE754Compatible=false' | 'application/json;odata.metadata=none;IEEE754Compatible=false' | 'application/json;odata.metadata=none;IEEE754Compatible=true' | 'application/json;odata.streaming=true;IEEE754Compatible=false' | 'application/json;odata.streaming=true;IEEE754Compatible=true' | 'application/json;odata.streaming=false;IEEE754Compatible=false' | 'application/json;odata.streaming=false;IEEE754Compatible=true' | 'application/json;IEEE754Compatible=false' | 'application/json;IEEE754Compatible=true' | 'application/xml' | 'text/plain' | 'application/octet-stream' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
 
         let localVarQueryParameters = new HttpParams({encoder: this.encoder});
-        if (searchTerm !== undefined && searchTerm !== null) {
+        if ($filter !== undefined && $filter !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>searchTerm, 'SearchTerm');
+            <any>$filter, '$filter');
         }
-        if (studentId !== undefined && studentId !== null) {
+        if ($orderby !== undefined && $orderby !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>studentId, 'StudentId');
+            <any>$orderby, '$orderby');
         }
-        if (beltId !== undefined && beltId !== null) {
+        if ($top !== undefined && $top !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>beltId, 'BeltId');
+            <any>$top, '$top');
         }
-        if (graduationDateFrom !== undefined && graduationDateFrom !== null) {
+        if ($skip !== undefined && $skip !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>graduationDateFrom, 'GraduationDateFrom');
+            <any>$skip, '$skip');
         }
-        if (graduationDateTo !== undefined && graduationDateTo !== null) {
+        if ($count !== undefined && $count !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>graduationDateTo, 'GraduationDateTo');
+            <any>$count, '$count');
         }
-        if (pageNumber !== undefined && pageNumber !== null) {
+        if ($select !== undefined && $select !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>pageNumber, 'PageNumber');
-        }
-        if (pageSize !== undefined && pageSize !== null) {
-          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>pageSize, 'PageSize');
+            <any>$select, '$select');
         }
 
         let localVarHeaders = this.defaultHeaders;
@@ -255,8 +287,45 @@ export class GraduationService implements GraduationServiceInterface {
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                'text/plain',
+                'application/json;odata.metadata=minimal;odata.streaming=true',
+                'application/json;odata.metadata=minimal;odata.streaming=false',
+                'application/json;odata.metadata=minimal',
+                'application/json;odata.metadata=full;odata.streaming=true',
+                'application/json;odata.metadata=full;odata.streaming=false',
+                'application/json;odata.metadata=full',
+                'application/json;odata.metadata=none;odata.streaming=true',
+                'application/json;odata.metadata=none;odata.streaming=false',
+                'application/json;odata.metadata=none',
+                'application/json;odata.streaming=true',
+                'application/json;odata.streaming=false',
                 'application/json',
+                'application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=false',
+                'application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=true',
+                'application/json;odata.metadata=minimal;odata.streaming=false;IEEE754Compatible=false',
+                'application/json;odata.metadata=minimal;odata.streaming=false;IEEE754Compatible=true',
+                'application/json;odata.metadata=minimal;IEEE754Compatible=false',
+                'application/json;odata.metadata=minimal;IEEE754Compatible=true',
+                'application/json;odata.metadata=full;odata.streaming=true;IEEE754Compatible=false',
+                'application/json;odata.metadata=full;odata.streaming=true;IEEE754Compatible=true',
+                'application/json;odata.metadata=full;odata.streaming=false;IEEE754Compatible=false',
+                'application/json;odata.metadata=full;odata.streaming=false;IEEE754Compatible=true',
+                'application/json;odata.metadata=full;IEEE754Compatible=false',
+                'application/json;odata.metadata=full;IEEE754Compatible=true',
+                'application/json;odata.metadata=none;odata.streaming=true;IEEE754Compatible=false',
+                'application/json;odata.metadata=none;odata.streaming=true;IEEE754Compatible=true',
+                'application/json;odata.metadata=none;odata.streaming=false;IEEE754Compatible=true',
+                'application/json;odata.metadata=none;odata.streaming=false;IEEE754Compatible=false',
+                'application/json;odata.metadata=none;IEEE754Compatible=false',
+                'application/json;odata.metadata=none;IEEE754Compatible=true',
+                'application/json;odata.streaming=true;IEEE754Compatible=false',
+                'application/json;odata.streaming=true;IEEE754Compatible=true',
+                'application/json;odata.streaming=false;IEEE754Compatible=false',
+                'application/json;odata.streaming=false;IEEE754Compatible=true',
+                'application/json;IEEE754Compatible=false',
+                'application/json;IEEE754Compatible=true',
+                'application/xml',
+                'text/plain',
+                'application/octet-stream',
                 'text/json'
             ];
             localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
@@ -288,7 +357,7 @@ export class GraduationService implements GraduationServiceInterface {
         }
 
         let localVarPath = `/api/Graduation`;
-        return this.httpClient.request<PaginationGraduationDTO>('get', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<Array<CarlonGracieBackendProgressionApplicationDTOsShowGraduationDTO>>('get', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 params: localVarQueryParameters,
@@ -369,10 +438,10 @@ export class GraduationService implements GraduationServiceInterface {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiGraduationIdGet(id: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<ShowGraduationDTO>;
-    public apiGraduationIdGet(id: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<ShowGraduationDTO>>;
-    public apiGraduationIdGet(id: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<ShowGraduationDTO>>;
-    public apiGraduationIdGet(id: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public apiGraduationIdGet(id: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json;odata.metadata=minimal;odata.streaming=true' | 'application/json;odata.metadata=minimal;odata.streaming=false' | 'application/json;odata.metadata=minimal' | 'application/json;odata.metadata=full;odata.streaming=true' | 'application/json;odata.metadata=full;odata.streaming=false' | 'application/json;odata.metadata=full' | 'application/json;odata.metadata=none;odata.streaming=true' | 'application/json;odata.metadata=none;odata.streaming=false' | 'application/json;odata.metadata=none' | 'application/json;odata.streaming=true' | 'application/json;odata.streaming=false' | 'application/json' | 'application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=false' | 'application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=true' | 'application/json;odata.metadata=minimal;odata.streaming=false;IEEE754Compatible=false' | 'application/json;odata.metadata=minimal;odata.streaming=false;IEEE754Compatible=true' | 'application/json;odata.metadata=minimal;IEEE754Compatible=false' | 'application/json;odata.metadata=minimal;IEEE754Compatible=true' | 'application/json;odata.metadata=full;odata.streaming=true;IEEE754Compatible=false' | 'application/json;odata.metadata=full;odata.streaming=true;IEEE754Compatible=true' | 'application/json;odata.metadata=full;odata.streaming=false;IEEE754Compatible=false' | 'application/json;odata.metadata=full;odata.streaming=false;IEEE754Compatible=true' | 'application/json;odata.metadata=full;IEEE754Compatible=false' | 'application/json;odata.metadata=full;IEEE754Compatible=true' | 'application/json;odata.metadata=none;odata.streaming=true;IEEE754Compatible=false' | 'application/json;odata.metadata=none;odata.streaming=true;IEEE754Compatible=true' | 'application/json;odata.metadata=none;odata.streaming=false;IEEE754Compatible=true' | 'application/json;odata.metadata=none;odata.streaming=false;IEEE754Compatible=false' | 'application/json;odata.metadata=none;IEEE754Compatible=false' | 'application/json;odata.metadata=none;IEEE754Compatible=true' | 'application/json;odata.streaming=true;IEEE754Compatible=false' | 'application/json;odata.streaming=true;IEEE754Compatible=true' | 'application/json;odata.streaming=false;IEEE754Compatible=false' | 'application/json;odata.streaming=false;IEEE754Compatible=true' | 'application/json;IEEE754Compatible=false' | 'application/json;IEEE754Compatible=true' | 'application/xml' | 'text/plain' | 'application/octet-stream' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<CarlonGracieBackendProgressionApplicationDTOsShowGraduationDTO>;
+    public apiGraduationIdGet(id: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json;odata.metadata=minimal;odata.streaming=true' | 'application/json;odata.metadata=minimal;odata.streaming=false' | 'application/json;odata.metadata=minimal' | 'application/json;odata.metadata=full;odata.streaming=true' | 'application/json;odata.metadata=full;odata.streaming=false' | 'application/json;odata.metadata=full' | 'application/json;odata.metadata=none;odata.streaming=true' | 'application/json;odata.metadata=none;odata.streaming=false' | 'application/json;odata.metadata=none' | 'application/json;odata.streaming=true' | 'application/json;odata.streaming=false' | 'application/json' | 'application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=false' | 'application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=true' | 'application/json;odata.metadata=minimal;odata.streaming=false;IEEE754Compatible=false' | 'application/json;odata.metadata=minimal;odata.streaming=false;IEEE754Compatible=true' | 'application/json;odata.metadata=minimal;IEEE754Compatible=false' | 'application/json;odata.metadata=minimal;IEEE754Compatible=true' | 'application/json;odata.metadata=full;odata.streaming=true;IEEE754Compatible=false' | 'application/json;odata.metadata=full;odata.streaming=true;IEEE754Compatible=true' | 'application/json;odata.metadata=full;odata.streaming=false;IEEE754Compatible=false' | 'application/json;odata.metadata=full;odata.streaming=false;IEEE754Compatible=true' | 'application/json;odata.metadata=full;IEEE754Compatible=false' | 'application/json;odata.metadata=full;IEEE754Compatible=true' | 'application/json;odata.metadata=none;odata.streaming=true;IEEE754Compatible=false' | 'application/json;odata.metadata=none;odata.streaming=true;IEEE754Compatible=true' | 'application/json;odata.metadata=none;odata.streaming=false;IEEE754Compatible=true' | 'application/json;odata.metadata=none;odata.streaming=false;IEEE754Compatible=false' | 'application/json;odata.metadata=none;IEEE754Compatible=false' | 'application/json;odata.metadata=none;IEEE754Compatible=true' | 'application/json;odata.streaming=true;IEEE754Compatible=false' | 'application/json;odata.streaming=true;IEEE754Compatible=true' | 'application/json;odata.streaming=false;IEEE754Compatible=false' | 'application/json;odata.streaming=false;IEEE754Compatible=true' | 'application/json;IEEE754Compatible=false' | 'application/json;IEEE754Compatible=true' | 'application/xml' | 'text/plain' | 'application/octet-stream' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<CarlonGracieBackendProgressionApplicationDTOsShowGraduationDTO>>;
+    public apiGraduationIdGet(id: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json;odata.metadata=minimal;odata.streaming=true' | 'application/json;odata.metadata=minimal;odata.streaming=false' | 'application/json;odata.metadata=minimal' | 'application/json;odata.metadata=full;odata.streaming=true' | 'application/json;odata.metadata=full;odata.streaming=false' | 'application/json;odata.metadata=full' | 'application/json;odata.metadata=none;odata.streaming=true' | 'application/json;odata.metadata=none;odata.streaming=false' | 'application/json;odata.metadata=none' | 'application/json;odata.streaming=true' | 'application/json;odata.streaming=false' | 'application/json' | 'application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=false' | 'application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=true' | 'application/json;odata.metadata=minimal;odata.streaming=false;IEEE754Compatible=false' | 'application/json;odata.metadata=minimal;odata.streaming=false;IEEE754Compatible=true' | 'application/json;odata.metadata=minimal;IEEE754Compatible=false' | 'application/json;odata.metadata=minimal;IEEE754Compatible=true' | 'application/json;odata.metadata=full;odata.streaming=true;IEEE754Compatible=false' | 'application/json;odata.metadata=full;odata.streaming=true;IEEE754Compatible=true' | 'application/json;odata.metadata=full;odata.streaming=false;IEEE754Compatible=false' | 'application/json;odata.metadata=full;odata.streaming=false;IEEE754Compatible=true' | 'application/json;odata.metadata=full;IEEE754Compatible=false' | 'application/json;odata.metadata=full;IEEE754Compatible=true' | 'application/json;odata.metadata=none;odata.streaming=true;IEEE754Compatible=false' | 'application/json;odata.metadata=none;odata.streaming=true;IEEE754Compatible=true' | 'application/json;odata.metadata=none;odata.streaming=false;IEEE754Compatible=true' | 'application/json;odata.metadata=none;odata.streaming=false;IEEE754Compatible=false' | 'application/json;odata.metadata=none;IEEE754Compatible=false' | 'application/json;odata.metadata=none;IEEE754Compatible=true' | 'application/json;odata.streaming=true;IEEE754Compatible=false' | 'application/json;odata.streaming=true;IEEE754Compatible=true' | 'application/json;odata.streaming=false;IEEE754Compatible=false' | 'application/json;odata.streaming=false;IEEE754Compatible=true' | 'application/json;IEEE754Compatible=false' | 'application/json;IEEE754Compatible=true' | 'application/xml' | 'text/plain' | 'application/octet-stream' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<CarlonGracieBackendProgressionApplicationDTOsShowGraduationDTO>>;
+    public apiGraduationIdGet(id: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json;odata.metadata=minimal;odata.streaming=true' | 'application/json;odata.metadata=minimal;odata.streaming=false' | 'application/json;odata.metadata=minimal' | 'application/json;odata.metadata=full;odata.streaming=true' | 'application/json;odata.metadata=full;odata.streaming=false' | 'application/json;odata.metadata=full' | 'application/json;odata.metadata=none;odata.streaming=true' | 'application/json;odata.metadata=none;odata.streaming=false' | 'application/json;odata.metadata=none' | 'application/json;odata.streaming=true' | 'application/json;odata.streaming=false' | 'application/json' | 'application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=false' | 'application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=true' | 'application/json;odata.metadata=minimal;odata.streaming=false;IEEE754Compatible=false' | 'application/json;odata.metadata=minimal;odata.streaming=false;IEEE754Compatible=true' | 'application/json;odata.metadata=minimal;IEEE754Compatible=false' | 'application/json;odata.metadata=minimal;IEEE754Compatible=true' | 'application/json;odata.metadata=full;odata.streaming=true;IEEE754Compatible=false' | 'application/json;odata.metadata=full;odata.streaming=true;IEEE754Compatible=true' | 'application/json;odata.metadata=full;odata.streaming=false;IEEE754Compatible=false' | 'application/json;odata.metadata=full;odata.streaming=false;IEEE754Compatible=true' | 'application/json;odata.metadata=full;IEEE754Compatible=false' | 'application/json;odata.metadata=full;IEEE754Compatible=true' | 'application/json;odata.metadata=none;odata.streaming=true;IEEE754Compatible=false' | 'application/json;odata.metadata=none;odata.streaming=true;IEEE754Compatible=true' | 'application/json;odata.metadata=none;odata.streaming=false;IEEE754Compatible=true' | 'application/json;odata.metadata=none;odata.streaming=false;IEEE754Compatible=false' | 'application/json;odata.metadata=none;IEEE754Compatible=false' | 'application/json;odata.metadata=none;IEEE754Compatible=true' | 'application/json;odata.streaming=true;IEEE754Compatible=false' | 'application/json;odata.streaming=true;IEEE754Compatible=true' | 'application/json;odata.streaming=false;IEEE754Compatible=false' | 'application/json;odata.streaming=false;IEEE754Compatible=true' | 'application/json;IEEE754Compatible=false' | 'application/json;IEEE754Compatible=true' | 'application/xml' | 'text/plain' | 'application/octet-stream' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         if (id === null || id === undefined) {
             throw new Error('Required parameter id was null or undefined when calling apiGraduationIdGet.');
         }
@@ -383,8 +452,45 @@ export class GraduationService implements GraduationServiceInterface {
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                'text/plain',
+                'application/json;odata.metadata=minimal;odata.streaming=true',
+                'application/json;odata.metadata=minimal;odata.streaming=false',
+                'application/json;odata.metadata=minimal',
+                'application/json;odata.metadata=full;odata.streaming=true',
+                'application/json;odata.metadata=full;odata.streaming=false',
+                'application/json;odata.metadata=full',
+                'application/json;odata.metadata=none;odata.streaming=true',
+                'application/json;odata.metadata=none;odata.streaming=false',
+                'application/json;odata.metadata=none',
+                'application/json;odata.streaming=true',
+                'application/json;odata.streaming=false',
                 'application/json',
+                'application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=false',
+                'application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=true',
+                'application/json;odata.metadata=minimal;odata.streaming=false;IEEE754Compatible=false',
+                'application/json;odata.metadata=minimal;odata.streaming=false;IEEE754Compatible=true',
+                'application/json;odata.metadata=minimal;IEEE754Compatible=false',
+                'application/json;odata.metadata=minimal;IEEE754Compatible=true',
+                'application/json;odata.metadata=full;odata.streaming=true;IEEE754Compatible=false',
+                'application/json;odata.metadata=full;odata.streaming=true;IEEE754Compatible=true',
+                'application/json;odata.metadata=full;odata.streaming=false;IEEE754Compatible=false',
+                'application/json;odata.metadata=full;odata.streaming=false;IEEE754Compatible=true',
+                'application/json;odata.metadata=full;IEEE754Compatible=false',
+                'application/json;odata.metadata=full;IEEE754Compatible=true',
+                'application/json;odata.metadata=none;odata.streaming=true;IEEE754Compatible=false',
+                'application/json;odata.metadata=none;odata.streaming=true;IEEE754Compatible=true',
+                'application/json;odata.metadata=none;odata.streaming=false;IEEE754Compatible=true',
+                'application/json;odata.metadata=none;odata.streaming=false;IEEE754Compatible=false',
+                'application/json;odata.metadata=none;IEEE754Compatible=false',
+                'application/json;odata.metadata=none;IEEE754Compatible=true',
+                'application/json;odata.streaming=true;IEEE754Compatible=false',
+                'application/json;odata.streaming=true;IEEE754Compatible=true',
+                'application/json;odata.streaming=false;IEEE754Compatible=false',
+                'application/json;odata.streaming=false;IEEE754Compatible=true',
+                'application/json;IEEE754Compatible=false',
+                'application/json;IEEE754Compatible=true',
+                'application/xml',
+                'text/plain',
+                'application/octet-stream',
                 'text/json'
             ];
             localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
@@ -416,7 +522,7 @@ export class GraduationService implements GraduationServiceInterface {
         }
 
         let localVarPath = `/api/Graduation/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: "uuid"})}`;
-        return this.httpClient.request<ShowGraduationDTO>('get', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<CarlonGracieBackendProgressionApplicationDTOsShowGraduationDTO>('get', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 responseType: <any>responseType_,
@@ -431,14 +537,14 @@ export class GraduationService implements GraduationServiceInterface {
 
     /**
      * @param id 
-     * @param updateGraduationDTO 
+     * @param carlonGracieBackendProgressionApplicationDTOsUpdateGraduationDTO 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiGraduationIdPut(id: string, updateGraduationDTO?: UpdateGraduationDTO, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<ShowGraduationDTO>;
-    public apiGraduationIdPut(id: string, updateGraduationDTO?: UpdateGraduationDTO, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<ShowGraduationDTO>>;
-    public apiGraduationIdPut(id: string, updateGraduationDTO?: UpdateGraduationDTO, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<ShowGraduationDTO>>;
-    public apiGraduationIdPut(id: string, updateGraduationDTO?: UpdateGraduationDTO, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public apiGraduationIdPut(id: string, carlonGracieBackendProgressionApplicationDTOsUpdateGraduationDTO?: CarlonGracieBackendProgressionApplicationDTOsUpdateGraduationDTO, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json;odata.metadata=minimal;odata.streaming=true' | 'application/json;odata.metadata=minimal;odata.streaming=false' | 'application/json;odata.metadata=minimal' | 'application/json;odata.metadata=full;odata.streaming=true' | 'application/json;odata.metadata=full;odata.streaming=false' | 'application/json;odata.metadata=full' | 'application/json;odata.metadata=none;odata.streaming=true' | 'application/json;odata.metadata=none;odata.streaming=false' | 'application/json;odata.metadata=none' | 'application/json;odata.streaming=true' | 'application/json;odata.streaming=false' | 'application/json' | 'application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=false' | 'application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=true' | 'application/json;odata.metadata=minimal;odata.streaming=false;IEEE754Compatible=false' | 'application/json;odata.metadata=minimal;odata.streaming=false;IEEE754Compatible=true' | 'application/json;odata.metadata=minimal;IEEE754Compatible=false' | 'application/json;odata.metadata=minimal;IEEE754Compatible=true' | 'application/json;odata.metadata=full;odata.streaming=true;IEEE754Compatible=false' | 'application/json;odata.metadata=full;odata.streaming=true;IEEE754Compatible=true' | 'application/json;odata.metadata=full;odata.streaming=false;IEEE754Compatible=false' | 'application/json;odata.metadata=full;odata.streaming=false;IEEE754Compatible=true' | 'application/json;odata.metadata=full;IEEE754Compatible=false' | 'application/json;odata.metadata=full;IEEE754Compatible=true' | 'application/json;odata.metadata=none;odata.streaming=true;IEEE754Compatible=false' | 'application/json;odata.metadata=none;odata.streaming=true;IEEE754Compatible=true' | 'application/json;odata.metadata=none;odata.streaming=false;IEEE754Compatible=true' | 'application/json;odata.metadata=none;odata.streaming=false;IEEE754Compatible=false' | 'application/json;odata.metadata=none;IEEE754Compatible=false' | 'application/json;odata.metadata=none;IEEE754Compatible=true' | 'application/json;odata.streaming=true;IEEE754Compatible=false' | 'application/json;odata.streaming=true;IEEE754Compatible=true' | 'application/json;odata.streaming=false;IEEE754Compatible=false' | 'application/json;odata.streaming=false;IEEE754Compatible=true' | 'application/json;IEEE754Compatible=false' | 'application/json;IEEE754Compatible=true' | 'application/xml' | 'text/plain' | 'application/octet-stream' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<CarlonGracieBackendProgressionApplicationDTOsShowGraduationDTO>;
+    public apiGraduationIdPut(id: string, carlonGracieBackendProgressionApplicationDTOsUpdateGraduationDTO?: CarlonGracieBackendProgressionApplicationDTOsUpdateGraduationDTO, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json;odata.metadata=minimal;odata.streaming=true' | 'application/json;odata.metadata=minimal;odata.streaming=false' | 'application/json;odata.metadata=minimal' | 'application/json;odata.metadata=full;odata.streaming=true' | 'application/json;odata.metadata=full;odata.streaming=false' | 'application/json;odata.metadata=full' | 'application/json;odata.metadata=none;odata.streaming=true' | 'application/json;odata.metadata=none;odata.streaming=false' | 'application/json;odata.metadata=none' | 'application/json;odata.streaming=true' | 'application/json;odata.streaming=false' | 'application/json' | 'application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=false' | 'application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=true' | 'application/json;odata.metadata=minimal;odata.streaming=false;IEEE754Compatible=false' | 'application/json;odata.metadata=minimal;odata.streaming=false;IEEE754Compatible=true' | 'application/json;odata.metadata=minimal;IEEE754Compatible=false' | 'application/json;odata.metadata=minimal;IEEE754Compatible=true' | 'application/json;odata.metadata=full;odata.streaming=true;IEEE754Compatible=false' | 'application/json;odata.metadata=full;odata.streaming=true;IEEE754Compatible=true' | 'application/json;odata.metadata=full;odata.streaming=false;IEEE754Compatible=false' | 'application/json;odata.metadata=full;odata.streaming=false;IEEE754Compatible=true' | 'application/json;odata.metadata=full;IEEE754Compatible=false' | 'application/json;odata.metadata=full;IEEE754Compatible=true' | 'application/json;odata.metadata=none;odata.streaming=true;IEEE754Compatible=false' | 'application/json;odata.metadata=none;odata.streaming=true;IEEE754Compatible=true' | 'application/json;odata.metadata=none;odata.streaming=false;IEEE754Compatible=true' | 'application/json;odata.metadata=none;odata.streaming=false;IEEE754Compatible=false' | 'application/json;odata.metadata=none;IEEE754Compatible=false' | 'application/json;odata.metadata=none;IEEE754Compatible=true' | 'application/json;odata.streaming=true;IEEE754Compatible=false' | 'application/json;odata.streaming=true;IEEE754Compatible=true' | 'application/json;odata.streaming=false;IEEE754Compatible=false' | 'application/json;odata.streaming=false;IEEE754Compatible=true' | 'application/json;IEEE754Compatible=false' | 'application/json;IEEE754Compatible=true' | 'application/xml' | 'text/plain' | 'application/octet-stream' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<CarlonGracieBackendProgressionApplicationDTOsShowGraduationDTO>>;
+    public apiGraduationIdPut(id: string, carlonGracieBackendProgressionApplicationDTOsUpdateGraduationDTO?: CarlonGracieBackendProgressionApplicationDTOsUpdateGraduationDTO, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json;odata.metadata=minimal;odata.streaming=true' | 'application/json;odata.metadata=minimal;odata.streaming=false' | 'application/json;odata.metadata=minimal' | 'application/json;odata.metadata=full;odata.streaming=true' | 'application/json;odata.metadata=full;odata.streaming=false' | 'application/json;odata.metadata=full' | 'application/json;odata.metadata=none;odata.streaming=true' | 'application/json;odata.metadata=none;odata.streaming=false' | 'application/json;odata.metadata=none' | 'application/json;odata.streaming=true' | 'application/json;odata.streaming=false' | 'application/json' | 'application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=false' | 'application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=true' | 'application/json;odata.metadata=minimal;odata.streaming=false;IEEE754Compatible=false' | 'application/json;odata.metadata=minimal;odata.streaming=false;IEEE754Compatible=true' | 'application/json;odata.metadata=minimal;IEEE754Compatible=false' | 'application/json;odata.metadata=minimal;IEEE754Compatible=true' | 'application/json;odata.metadata=full;odata.streaming=true;IEEE754Compatible=false' | 'application/json;odata.metadata=full;odata.streaming=true;IEEE754Compatible=true' | 'application/json;odata.metadata=full;odata.streaming=false;IEEE754Compatible=false' | 'application/json;odata.metadata=full;odata.streaming=false;IEEE754Compatible=true' | 'application/json;odata.metadata=full;IEEE754Compatible=false' | 'application/json;odata.metadata=full;IEEE754Compatible=true' | 'application/json;odata.metadata=none;odata.streaming=true;IEEE754Compatible=false' | 'application/json;odata.metadata=none;odata.streaming=true;IEEE754Compatible=true' | 'application/json;odata.metadata=none;odata.streaming=false;IEEE754Compatible=true' | 'application/json;odata.metadata=none;odata.streaming=false;IEEE754Compatible=false' | 'application/json;odata.metadata=none;IEEE754Compatible=false' | 'application/json;odata.metadata=none;IEEE754Compatible=true' | 'application/json;odata.streaming=true;IEEE754Compatible=false' | 'application/json;odata.streaming=true;IEEE754Compatible=true' | 'application/json;odata.streaming=false;IEEE754Compatible=false' | 'application/json;odata.streaming=false;IEEE754Compatible=true' | 'application/json;IEEE754Compatible=false' | 'application/json;IEEE754Compatible=true' | 'application/xml' | 'text/plain' | 'application/octet-stream' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<CarlonGracieBackendProgressionApplicationDTOsShowGraduationDTO>>;
+    public apiGraduationIdPut(id: string, carlonGracieBackendProgressionApplicationDTOsUpdateGraduationDTO?: CarlonGracieBackendProgressionApplicationDTOsUpdateGraduationDTO, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json;odata.metadata=minimal;odata.streaming=true' | 'application/json;odata.metadata=minimal;odata.streaming=false' | 'application/json;odata.metadata=minimal' | 'application/json;odata.metadata=full;odata.streaming=true' | 'application/json;odata.metadata=full;odata.streaming=false' | 'application/json;odata.metadata=full' | 'application/json;odata.metadata=none;odata.streaming=true' | 'application/json;odata.metadata=none;odata.streaming=false' | 'application/json;odata.metadata=none' | 'application/json;odata.streaming=true' | 'application/json;odata.streaming=false' | 'application/json' | 'application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=false' | 'application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=true' | 'application/json;odata.metadata=minimal;odata.streaming=false;IEEE754Compatible=false' | 'application/json;odata.metadata=minimal;odata.streaming=false;IEEE754Compatible=true' | 'application/json;odata.metadata=minimal;IEEE754Compatible=false' | 'application/json;odata.metadata=minimal;IEEE754Compatible=true' | 'application/json;odata.metadata=full;odata.streaming=true;IEEE754Compatible=false' | 'application/json;odata.metadata=full;odata.streaming=true;IEEE754Compatible=true' | 'application/json;odata.metadata=full;odata.streaming=false;IEEE754Compatible=false' | 'application/json;odata.metadata=full;odata.streaming=false;IEEE754Compatible=true' | 'application/json;odata.metadata=full;IEEE754Compatible=false' | 'application/json;odata.metadata=full;IEEE754Compatible=true' | 'application/json;odata.metadata=none;odata.streaming=true;IEEE754Compatible=false' | 'application/json;odata.metadata=none;odata.streaming=true;IEEE754Compatible=true' | 'application/json;odata.metadata=none;odata.streaming=false;IEEE754Compatible=true' | 'application/json;odata.metadata=none;odata.streaming=false;IEEE754Compatible=false' | 'application/json;odata.metadata=none;IEEE754Compatible=false' | 'application/json;odata.metadata=none;IEEE754Compatible=true' | 'application/json;odata.streaming=true;IEEE754Compatible=false' | 'application/json;odata.streaming=true;IEEE754Compatible=true' | 'application/json;odata.streaming=false;IEEE754Compatible=false' | 'application/json;odata.streaming=false;IEEE754Compatible=true' | 'application/json;IEEE754Compatible=false' | 'application/json;IEEE754Compatible=true' | 'application/xml' | 'text/plain' | 'application/octet-stream' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         if (id === null || id === undefined) {
             throw new Error('Required parameter id was null or undefined when calling apiGraduationIdPut.');
         }
@@ -449,8 +555,45 @@ export class GraduationService implements GraduationServiceInterface {
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                'text/plain',
+                'application/json;odata.metadata=minimal;odata.streaming=true',
+                'application/json;odata.metadata=minimal;odata.streaming=false',
+                'application/json;odata.metadata=minimal',
+                'application/json;odata.metadata=full;odata.streaming=true',
+                'application/json;odata.metadata=full;odata.streaming=false',
+                'application/json;odata.metadata=full',
+                'application/json;odata.metadata=none;odata.streaming=true',
+                'application/json;odata.metadata=none;odata.streaming=false',
+                'application/json;odata.metadata=none',
+                'application/json;odata.streaming=true',
+                'application/json;odata.streaming=false',
                 'application/json',
+                'application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=false',
+                'application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=true',
+                'application/json;odata.metadata=minimal;odata.streaming=false;IEEE754Compatible=false',
+                'application/json;odata.metadata=minimal;odata.streaming=false;IEEE754Compatible=true',
+                'application/json;odata.metadata=minimal;IEEE754Compatible=false',
+                'application/json;odata.metadata=minimal;IEEE754Compatible=true',
+                'application/json;odata.metadata=full;odata.streaming=true;IEEE754Compatible=false',
+                'application/json;odata.metadata=full;odata.streaming=true;IEEE754Compatible=true',
+                'application/json;odata.metadata=full;odata.streaming=false;IEEE754Compatible=false',
+                'application/json;odata.metadata=full;odata.streaming=false;IEEE754Compatible=true',
+                'application/json;odata.metadata=full;IEEE754Compatible=false',
+                'application/json;odata.metadata=full;IEEE754Compatible=true',
+                'application/json;odata.metadata=none;odata.streaming=true;IEEE754Compatible=false',
+                'application/json;odata.metadata=none;odata.streaming=true;IEEE754Compatible=true',
+                'application/json;odata.metadata=none;odata.streaming=false;IEEE754Compatible=true',
+                'application/json;odata.metadata=none;odata.streaming=false;IEEE754Compatible=false',
+                'application/json;odata.metadata=none;IEEE754Compatible=false',
+                'application/json;odata.metadata=none;IEEE754Compatible=true',
+                'application/json;odata.streaming=true;IEEE754Compatible=false',
+                'application/json;odata.streaming=true;IEEE754Compatible=true',
+                'application/json;odata.streaming=false;IEEE754Compatible=false',
+                'application/json;odata.streaming=false;IEEE754Compatible=true',
+                'application/json;IEEE754Compatible=false',
+                'application/json;IEEE754Compatible=true',
+                'application/xml',
+                'text/plain',
+                'application/octet-stream',
                 'text/json'
             ];
             localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
@@ -472,7 +615,44 @@ export class GraduationService implements GraduationServiceInterface {
 
         // to determine the Content-Type header
         const consumes: string[] = [
+            'application/json;odata.metadata=minimal;odata.streaming=true',
+            'application/json;odata.metadata=minimal;odata.streaming=false',
+            'application/json;odata.metadata=minimal',
+            'application/json;odata.metadata=full;odata.streaming=true',
+            'application/json;odata.metadata=full;odata.streaming=false',
+            'application/json;odata.metadata=full',
+            'application/json;odata.metadata=none;odata.streaming=true',
+            'application/json;odata.metadata=none;odata.streaming=false',
+            'application/json;odata.metadata=none',
+            'application/json;odata.streaming=true',
+            'application/json;odata.streaming=false',
             'application/json',
+            'application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=false',
+            'application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=true',
+            'application/json;odata.metadata=minimal;odata.streaming=false;IEEE754Compatible=false',
+            'application/json;odata.metadata=minimal;odata.streaming=false;IEEE754Compatible=true',
+            'application/json;odata.metadata=minimal;IEEE754Compatible=false',
+            'application/json;odata.metadata=minimal;IEEE754Compatible=true',
+            'application/json;odata.metadata=full;odata.streaming=true;IEEE754Compatible=false',
+            'application/json;odata.metadata=full;odata.streaming=true;IEEE754Compatible=true',
+            'application/json;odata.metadata=full;odata.streaming=false;IEEE754Compatible=false',
+            'application/json;odata.metadata=full;odata.streaming=false;IEEE754Compatible=true',
+            'application/json;odata.metadata=full;IEEE754Compatible=false',
+            'application/json;odata.metadata=full;IEEE754Compatible=true',
+            'application/json;odata.metadata=none;odata.streaming=true;IEEE754Compatible=false',
+            'application/json;odata.metadata=none;odata.streaming=true;IEEE754Compatible=true',
+            'application/json;odata.metadata=none;odata.streaming=false;IEEE754Compatible=true',
+            'application/json;odata.metadata=none;odata.streaming=false;IEEE754Compatible=false',
+            'application/json;odata.metadata=none;IEEE754Compatible=false',
+            'application/json;odata.metadata=none;IEEE754Compatible=true',
+            'application/json;odata.streaming=true;IEEE754Compatible=false',
+            'application/json;odata.streaming=true;IEEE754Compatible=true',
+            'application/json;odata.streaming=false;IEEE754Compatible=false',
+            'application/json;odata.streaming=false;IEEE754Compatible=true',
+            'application/json;IEEE754Compatible=false',
+            'application/json;IEEE754Compatible=true',
+            'application/xml',
+            'text/plain',
             'text/json',
             'application/*+json'
         ];
@@ -493,10 +673,10 @@ export class GraduationService implements GraduationServiceInterface {
         }
 
         let localVarPath = `/api/Graduation/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: "uuid"})}`;
-        return this.httpClient.request<ShowGraduationDTO>('put', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<CarlonGracieBackendProgressionApplicationDTOsShowGraduationDTO>('put', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
-                body: updateGraduationDTO,
+                body: carlonGracieBackendProgressionApplicationDTOsUpdateGraduationDTO,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,
@@ -508,14 +688,14 @@ export class GraduationService implements GraduationServiceInterface {
     }
 
     /**
-     * @param createGraduationDTO 
+     * @param carlonGracieBackendProgressionApplicationDTOsCreateGraduationDTO 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiGraduationPost(createGraduationDTO?: CreateGraduationDTO, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<ShowGraduationDTO>;
-    public apiGraduationPost(createGraduationDTO?: CreateGraduationDTO, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<ShowGraduationDTO>>;
-    public apiGraduationPost(createGraduationDTO?: CreateGraduationDTO, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<ShowGraduationDTO>>;
-    public apiGraduationPost(createGraduationDTO?: CreateGraduationDTO, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public apiGraduationPost(carlonGracieBackendProgressionApplicationDTOsCreateGraduationDTO?: CarlonGracieBackendProgressionApplicationDTOsCreateGraduationDTO, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json;odata.metadata=minimal;odata.streaming=true' | 'application/json;odata.metadata=minimal;odata.streaming=false' | 'application/json;odata.metadata=minimal' | 'application/json;odata.metadata=full;odata.streaming=true' | 'application/json;odata.metadata=full;odata.streaming=false' | 'application/json;odata.metadata=full' | 'application/json;odata.metadata=none;odata.streaming=true' | 'application/json;odata.metadata=none;odata.streaming=false' | 'application/json;odata.metadata=none' | 'application/json;odata.streaming=true' | 'application/json;odata.streaming=false' | 'application/json' | 'application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=false' | 'application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=true' | 'application/json;odata.metadata=minimal;odata.streaming=false;IEEE754Compatible=false' | 'application/json;odata.metadata=minimal;odata.streaming=false;IEEE754Compatible=true' | 'application/json;odata.metadata=minimal;IEEE754Compatible=false' | 'application/json;odata.metadata=minimal;IEEE754Compatible=true' | 'application/json;odata.metadata=full;odata.streaming=true;IEEE754Compatible=false' | 'application/json;odata.metadata=full;odata.streaming=true;IEEE754Compatible=true' | 'application/json;odata.metadata=full;odata.streaming=false;IEEE754Compatible=false' | 'application/json;odata.metadata=full;odata.streaming=false;IEEE754Compatible=true' | 'application/json;odata.metadata=full;IEEE754Compatible=false' | 'application/json;odata.metadata=full;IEEE754Compatible=true' | 'application/json;odata.metadata=none;odata.streaming=true;IEEE754Compatible=false' | 'application/json;odata.metadata=none;odata.streaming=true;IEEE754Compatible=true' | 'application/json;odata.metadata=none;odata.streaming=false;IEEE754Compatible=true' | 'application/json;odata.metadata=none;odata.streaming=false;IEEE754Compatible=false' | 'application/json;odata.metadata=none;IEEE754Compatible=false' | 'application/json;odata.metadata=none;IEEE754Compatible=true' | 'application/json;odata.streaming=true;IEEE754Compatible=false' | 'application/json;odata.streaming=true;IEEE754Compatible=true' | 'application/json;odata.streaming=false;IEEE754Compatible=false' | 'application/json;odata.streaming=false;IEEE754Compatible=true' | 'application/json;IEEE754Compatible=false' | 'application/json;IEEE754Compatible=true' | 'application/xml' | 'text/plain' | 'application/octet-stream' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<CarlonGracieBackendProgressionApplicationDTOsShowGraduationDTO>;
+    public apiGraduationPost(carlonGracieBackendProgressionApplicationDTOsCreateGraduationDTO?: CarlonGracieBackendProgressionApplicationDTOsCreateGraduationDTO, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json;odata.metadata=minimal;odata.streaming=true' | 'application/json;odata.metadata=minimal;odata.streaming=false' | 'application/json;odata.metadata=minimal' | 'application/json;odata.metadata=full;odata.streaming=true' | 'application/json;odata.metadata=full;odata.streaming=false' | 'application/json;odata.metadata=full' | 'application/json;odata.metadata=none;odata.streaming=true' | 'application/json;odata.metadata=none;odata.streaming=false' | 'application/json;odata.metadata=none' | 'application/json;odata.streaming=true' | 'application/json;odata.streaming=false' | 'application/json' | 'application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=false' | 'application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=true' | 'application/json;odata.metadata=minimal;odata.streaming=false;IEEE754Compatible=false' | 'application/json;odata.metadata=minimal;odata.streaming=false;IEEE754Compatible=true' | 'application/json;odata.metadata=minimal;IEEE754Compatible=false' | 'application/json;odata.metadata=minimal;IEEE754Compatible=true' | 'application/json;odata.metadata=full;odata.streaming=true;IEEE754Compatible=false' | 'application/json;odata.metadata=full;odata.streaming=true;IEEE754Compatible=true' | 'application/json;odata.metadata=full;odata.streaming=false;IEEE754Compatible=false' | 'application/json;odata.metadata=full;odata.streaming=false;IEEE754Compatible=true' | 'application/json;odata.metadata=full;IEEE754Compatible=false' | 'application/json;odata.metadata=full;IEEE754Compatible=true' | 'application/json;odata.metadata=none;odata.streaming=true;IEEE754Compatible=false' | 'application/json;odata.metadata=none;odata.streaming=true;IEEE754Compatible=true' | 'application/json;odata.metadata=none;odata.streaming=false;IEEE754Compatible=true' | 'application/json;odata.metadata=none;odata.streaming=false;IEEE754Compatible=false' | 'application/json;odata.metadata=none;IEEE754Compatible=false' | 'application/json;odata.metadata=none;IEEE754Compatible=true' | 'application/json;odata.streaming=true;IEEE754Compatible=false' | 'application/json;odata.streaming=true;IEEE754Compatible=true' | 'application/json;odata.streaming=false;IEEE754Compatible=false' | 'application/json;odata.streaming=false;IEEE754Compatible=true' | 'application/json;IEEE754Compatible=false' | 'application/json;IEEE754Compatible=true' | 'application/xml' | 'text/plain' | 'application/octet-stream' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<CarlonGracieBackendProgressionApplicationDTOsShowGraduationDTO>>;
+    public apiGraduationPost(carlonGracieBackendProgressionApplicationDTOsCreateGraduationDTO?: CarlonGracieBackendProgressionApplicationDTOsCreateGraduationDTO, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json;odata.metadata=minimal;odata.streaming=true' | 'application/json;odata.metadata=minimal;odata.streaming=false' | 'application/json;odata.metadata=minimal' | 'application/json;odata.metadata=full;odata.streaming=true' | 'application/json;odata.metadata=full;odata.streaming=false' | 'application/json;odata.metadata=full' | 'application/json;odata.metadata=none;odata.streaming=true' | 'application/json;odata.metadata=none;odata.streaming=false' | 'application/json;odata.metadata=none' | 'application/json;odata.streaming=true' | 'application/json;odata.streaming=false' | 'application/json' | 'application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=false' | 'application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=true' | 'application/json;odata.metadata=minimal;odata.streaming=false;IEEE754Compatible=false' | 'application/json;odata.metadata=minimal;odata.streaming=false;IEEE754Compatible=true' | 'application/json;odata.metadata=minimal;IEEE754Compatible=false' | 'application/json;odata.metadata=minimal;IEEE754Compatible=true' | 'application/json;odata.metadata=full;odata.streaming=true;IEEE754Compatible=false' | 'application/json;odata.metadata=full;odata.streaming=true;IEEE754Compatible=true' | 'application/json;odata.metadata=full;odata.streaming=false;IEEE754Compatible=false' | 'application/json;odata.metadata=full;odata.streaming=false;IEEE754Compatible=true' | 'application/json;odata.metadata=full;IEEE754Compatible=false' | 'application/json;odata.metadata=full;IEEE754Compatible=true' | 'application/json;odata.metadata=none;odata.streaming=true;IEEE754Compatible=false' | 'application/json;odata.metadata=none;odata.streaming=true;IEEE754Compatible=true' | 'application/json;odata.metadata=none;odata.streaming=false;IEEE754Compatible=true' | 'application/json;odata.metadata=none;odata.streaming=false;IEEE754Compatible=false' | 'application/json;odata.metadata=none;IEEE754Compatible=false' | 'application/json;odata.metadata=none;IEEE754Compatible=true' | 'application/json;odata.streaming=true;IEEE754Compatible=false' | 'application/json;odata.streaming=true;IEEE754Compatible=true' | 'application/json;odata.streaming=false;IEEE754Compatible=false' | 'application/json;odata.streaming=false;IEEE754Compatible=true' | 'application/json;IEEE754Compatible=false' | 'application/json;IEEE754Compatible=true' | 'application/xml' | 'text/plain' | 'application/octet-stream' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<CarlonGracieBackendProgressionApplicationDTOsShowGraduationDTO>>;
+    public apiGraduationPost(carlonGracieBackendProgressionApplicationDTOsCreateGraduationDTO?: CarlonGracieBackendProgressionApplicationDTOsCreateGraduationDTO, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json;odata.metadata=minimal;odata.streaming=true' | 'application/json;odata.metadata=minimal;odata.streaming=false' | 'application/json;odata.metadata=minimal' | 'application/json;odata.metadata=full;odata.streaming=true' | 'application/json;odata.metadata=full;odata.streaming=false' | 'application/json;odata.metadata=full' | 'application/json;odata.metadata=none;odata.streaming=true' | 'application/json;odata.metadata=none;odata.streaming=false' | 'application/json;odata.metadata=none' | 'application/json;odata.streaming=true' | 'application/json;odata.streaming=false' | 'application/json' | 'application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=false' | 'application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=true' | 'application/json;odata.metadata=minimal;odata.streaming=false;IEEE754Compatible=false' | 'application/json;odata.metadata=minimal;odata.streaming=false;IEEE754Compatible=true' | 'application/json;odata.metadata=minimal;IEEE754Compatible=false' | 'application/json;odata.metadata=minimal;IEEE754Compatible=true' | 'application/json;odata.metadata=full;odata.streaming=true;IEEE754Compatible=false' | 'application/json;odata.metadata=full;odata.streaming=true;IEEE754Compatible=true' | 'application/json;odata.metadata=full;odata.streaming=false;IEEE754Compatible=false' | 'application/json;odata.metadata=full;odata.streaming=false;IEEE754Compatible=true' | 'application/json;odata.metadata=full;IEEE754Compatible=false' | 'application/json;odata.metadata=full;IEEE754Compatible=true' | 'application/json;odata.metadata=none;odata.streaming=true;IEEE754Compatible=false' | 'application/json;odata.metadata=none;odata.streaming=true;IEEE754Compatible=true' | 'application/json;odata.metadata=none;odata.streaming=false;IEEE754Compatible=true' | 'application/json;odata.metadata=none;odata.streaming=false;IEEE754Compatible=false' | 'application/json;odata.metadata=none;IEEE754Compatible=false' | 'application/json;odata.metadata=none;IEEE754Compatible=true' | 'application/json;odata.streaming=true;IEEE754Compatible=false' | 'application/json;odata.streaming=true;IEEE754Compatible=true' | 'application/json;odata.streaming=false;IEEE754Compatible=false' | 'application/json;odata.streaming=false;IEEE754Compatible=true' | 'application/json;IEEE754Compatible=false' | 'application/json;IEEE754Compatible=true' | 'application/xml' | 'text/plain' | 'application/octet-stream' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
 
         let localVarHeaders = this.defaultHeaders;
 
@@ -523,8 +703,45 @@ export class GraduationService implements GraduationServiceInterface {
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                'text/plain',
+                'application/json;odata.metadata=minimal;odata.streaming=true',
+                'application/json;odata.metadata=minimal;odata.streaming=false',
+                'application/json;odata.metadata=minimal',
+                'application/json;odata.metadata=full;odata.streaming=true',
+                'application/json;odata.metadata=full;odata.streaming=false',
+                'application/json;odata.metadata=full',
+                'application/json;odata.metadata=none;odata.streaming=true',
+                'application/json;odata.metadata=none;odata.streaming=false',
+                'application/json;odata.metadata=none',
+                'application/json;odata.streaming=true',
+                'application/json;odata.streaming=false',
                 'application/json',
+                'application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=false',
+                'application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=true',
+                'application/json;odata.metadata=minimal;odata.streaming=false;IEEE754Compatible=false',
+                'application/json;odata.metadata=minimal;odata.streaming=false;IEEE754Compatible=true',
+                'application/json;odata.metadata=minimal;IEEE754Compatible=false',
+                'application/json;odata.metadata=minimal;IEEE754Compatible=true',
+                'application/json;odata.metadata=full;odata.streaming=true;IEEE754Compatible=false',
+                'application/json;odata.metadata=full;odata.streaming=true;IEEE754Compatible=true',
+                'application/json;odata.metadata=full;odata.streaming=false;IEEE754Compatible=false',
+                'application/json;odata.metadata=full;odata.streaming=false;IEEE754Compatible=true',
+                'application/json;odata.metadata=full;IEEE754Compatible=false',
+                'application/json;odata.metadata=full;IEEE754Compatible=true',
+                'application/json;odata.metadata=none;odata.streaming=true;IEEE754Compatible=false',
+                'application/json;odata.metadata=none;odata.streaming=true;IEEE754Compatible=true',
+                'application/json;odata.metadata=none;odata.streaming=false;IEEE754Compatible=true',
+                'application/json;odata.metadata=none;odata.streaming=false;IEEE754Compatible=false',
+                'application/json;odata.metadata=none;IEEE754Compatible=false',
+                'application/json;odata.metadata=none;IEEE754Compatible=true',
+                'application/json;odata.streaming=true;IEEE754Compatible=false',
+                'application/json;odata.streaming=true;IEEE754Compatible=true',
+                'application/json;odata.streaming=false;IEEE754Compatible=false',
+                'application/json;odata.streaming=false;IEEE754Compatible=true',
+                'application/json;IEEE754Compatible=false',
+                'application/json;IEEE754Compatible=true',
+                'application/xml',
+                'text/plain',
+                'application/octet-stream',
                 'text/json'
             ];
             localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
@@ -546,7 +763,44 @@ export class GraduationService implements GraduationServiceInterface {
 
         // to determine the Content-Type header
         const consumes: string[] = [
+            'application/json;odata.metadata=minimal;odata.streaming=true',
+            'application/json;odata.metadata=minimal;odata.streaming=false',
+            'application/json;odata.metadata=minimal',
+            'application/json;odata.metadata=full;odata.streaming=true',
+            'application/json;odata.metadata=full;odata.streaming=false',
+            'application/json;odata.metadata=full',
+            'application/json;odata.metadata=none;odata.streaming=true',
+            'application/json;odata.metadata=none;odata.streaming=false',
+            'application/json;odata.metadata=none',
+            'application/json;odata.streaming=true',
+            'application/json;odata.streaming=false',
             'application/json',
+            'application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=false',
+            'application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=true',
+            'application/json;odata.metadata=minimal;odata.streaming=false;IEEE754Compatible=false',
+            'application/json;odata.metadata=minimal;odata.streaming=false;IEEE754Compatible=true',
+            'application/json;odata.metadata=minimal;IEEE754Compatible=false',
+            'application/json;odata.metadata=minimal;IEEE754Compatible=true',
+            'application/json;odata.metadata=full;odata.streaming=true;IEEE754Compatible=false',
+            'application/json;odata.metadata=full;odata.streaming=true;IEEE754Compatible=true',
+            'application/json;odata.metadata=full;odata.streaming=false;IEEE754Compatible=false',
+            'application/json;odata.metadata=full;odata.streaming=false;IEEE754Compatible=true',
+            'application/json;odata.metadata=full;IEEE754Compatible=false',
+            'application/json;odata.metadata=full;IEEE754Compatible=true',
+            'application/json;odata.metadata=none;odata.streaming=true;IEEE754Compatible=false',
+            'application/json;odata.metadata=none;odata.streaming=true;IEEE754Compatible=true',
+            'application/json;odata.metadata=none;odata.streaming=false;IEEE754Compatible=true',
+            'application/json;odata.metadata=none;odata.streaming=false;IEEE754Compatible=false',
+            'application/json;odata.metadata=none;IEEE754Compatible=false',
+            'application/json;odata.metadata=none;IEEE754Compatible=true',
+            'application/json;odata.streaming=true;IEEE754Compatible=false',
+            'application/json;odata.streaming=true;IEEE754Compatible=true',
+            'application/json;odata.streaming=false;IEEE754Compatible=false',
+            'application/json;odata.streaming=false;IEEE754Compatible=true',
+            'application/json;IEEE754Compatible=false',
+            'application/json;IEEE754Compatible=true',
+            'application/xml',
+            'text/plain',
             'text/json',
             'application/*+json'
         ];
@@ -567,10 +821,10 @@ export class GraduationService implements GraduationServiceInterface {
         }
 
         let localVarPath = `/api/Graduation`;
-        return this.httpClient.request<ShowGraduationDTO>('post', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<CarlonGracieBackendProgressionApplicationDTOsShowGraduationDTO>('post', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
-                body: createGraduationDTO,
+                body: carlonGracieBackendProgressionApplicationDTOsCreateGraduationDTO,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,
@@ -593,10 +847,10 @@ export class GraduationService implements GraduationServiceInterface {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiGraduationUserUserIdGet(userId: string, searchTerm?: string, studentId?: string, beltId?: string, graduationDateFrom?: string, graduationDateTo?: string, pageNumber?: number, pageSize?: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<Array<ShowGraduationDTO>>;
-    public apiGraduationUserUserIdGet(userId: string, searchTerm?: string, studentId?: string, beltId?: string, graduationDateFrom?: string, graduationDateTo?: string, pageNumber?: number, pageSize?: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<ShowGraduationDTO>>>;
-    public apiGraduationUserUserIdGet(userId: string, searchTerm?: string, studentId?: string, beltId?: string, graduationDateFrom?: string, graduationDateTo?: string, pageNumber?: number, pageSize?: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<ShowGraduationDTO>>>;
-    public apiGraduationUserUserIdGet(userId: string, searchTerm?: string, studentId?: string, beltId?: string, graduationDateFrom?: string, graduationDateTo?: string, pageNumber?: number, pageSize?: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public apiGraduationUserUserIdGet(userId: string, searchTerm?: string, studentId?: string, beltId?: string, graduationDateFrom?: string, graduationDateTo?: string, pageNumber?: number, pageSize?: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json;odata.metadata=minimal;odata.streaming=true' | 'application/json;odata.metadata=minimal;odata.streaming=false' | 'application/json;odata.metadata=minimal' | 'application/json;odata.metadata=full;odata.streaming=true' | 'application/json;odata.metadata=full;odata.streaming=false' | 'application/json;odata.metadata=full' | 'application/json;odata.metadata=none;odata.streaming=true' | 'application/json;odata.metadata=none;odata.streaming=false' | 'application/json;odata.metadata=none' | 'application/json;odata.streaming=true' | 'application/json;odata.streaming=false' | 'application/json' | 'application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=false' | 'application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=true' | 'application/json;odata.metadata=minimal;odata.streaming=false;IEEE754Compatible=false' | 'application/json;odata.metadata=minimal;odata.streaming=false;IEEE754Compatible=true' | 'application/json;odata.metadata=minimal;IEEE754Compatible=false' | 'application/json;odata.metadata=minimal;IEEE754Compatible=true' | 'application/json;odata.metadata=full;odata.streaming=true;IEEE754Compatible=false' | 'application/json;odata.metadata=full;odata.streaming=true;IEEE754Compatible=true' | 'application/json;odata.metadata=full;odata.streaming=false;IEEE754Compatible=false' | 'application/json;odata.metadata=full;odata.streaming=false;IEEE754Compatible=true' | 'application/json;odata.metadata=full;IEEE754Compatible=false' | 'application/json;odata.metadata=full;IEEE754Compatible=true' | 'application/json;odata.metadata=none;odata.streaming=true;IEEE754Compatible=false' | 'application/json;odata.metadata=none;odata.streaming=true;IEEE754Compatible=true' | 'application/json;odata.metadata=none;odata.streaming=false;IEEE754Compatible=true' | 'application/json;odata.metadata=none;odata.streaming=false;IEEE754Compatible=false' | 'application/json;odata.metadata=none;IEEE754Compatible=false' | 'application/json;odata.metadata=none;IEEE754Compatible=true' | 'application/json;odata.streaming=true;IEEE754Compatible=false' | 'application/json;odata.streaming=true;IEEE754Compatible=true' | 'application/json;odata.streaming=false;IEEE754Compatible=false' | 'application/json;odata.streaming=false;IEEE754Compatible=true' | 'application/json;IEEE754Compatible=false' | 'application/json;IEEE754Compatible=true' | 'application/xml' | 'text/plain' | 'application/octet-stream' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<Array<CarlonGracieBackendProgressionApplicationDTOsShowGraduationDTO>>;
+    public apiGraduationUserUserIdGet(userId: string, searchTerm?: string, studentId?: string, beltId?: string, graduationDateFrom?: string, graduationDateTo?: string, pageNumber?: number, pageSize?: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json;odata.metadata=minimal;odata.streaming=true' | 'application/json;odata.metadata=minimal;odata.streaming=false' | 'application/json;odata.metadata=minimal' | 'application/json;odata.metadata=full;odata.streaming=true' | 'application/json;odata.metadata=full;odata.streaming=false' | 'application/json;odata.metadata=full' | 'application/json;odata.metadata=none;odata.streaming=true' | 'application/json;odata.metadata=none;odata.streaming=false' | 'application/json;odata.metadata=none' | 'application/json;odata.streaming=true' | 'application/json;odata.streaming=false' | 'application/json' | 'application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=false' | 'application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=true' | 'application/json;odata.metadata=minimal;odata.streaming=false;IEEE754Compatible=false' | 'application/json;odata.metadata=minimal;odata.streaming=false;IEEE754Compatible=true' | 'application/json;odata.metadata=minimal;IEEE754Compatible=false' | 'application/json;odata.metadata=minimal;IEEE754Compatible=true' | 'application/json;odata.metadata=full;odata.streaming=true;IEEE754Compatible=false' | 'application/json;odata.metadata=full;odata.streaming=true;IEEE754Compatible=true' | 'application/json;odata.metadata=full;odata.streaming=false;IEEE754Compatible=false' | 'application/json;odata.metadata=full;odata.streaming=false;IEEE754Compatible=true' | 'application/json;odata.metadata=full;IEEE754Compatible=false' | 'application/json;odata.metadata=full;IEEE754Compatible=true' | 'application/json;odata.metadata=none;odata.streaming=true;IEEE754Compatible=false' | 'application/json;odata.metadata=none;odata.streaming=true;IEEE754Compatible=true' | 'application/json;odata.metadata=none;odata.streaming=false;IEEE754Compatible=true' | 'application/json;odata.metadata=none;odata.streaming=false;IEEE754Compatible=false' | 'application/json;odata.metadata=none;IEEE754Compatible=false' | 'application/json;odata.metadata=none;IEEE754Compatible=true' | 'application/json;odata.streaming=true;IEEE754Compatible=false' | 'application/json;odata.streaming=true;IEEE754Compatible=true' | 'application/json;odata.streaming=false;IEEE754Compatible=false' | 'application/json;odata.streaming=false;IEEE754Compatible=true' | 'application/json;IEEE754Compatible=false' | 'application/json;IEEE754Compatible=true' | 'application/xml' | 'text/plain' | 'application/octet-stream' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<CarlonGracieBackendProgressionApplicationDTOsShowGraduationDTO>>>;
+    public apiGraduationUserUserIdGet(userId: string, searchTerm?: string, studentId?: string, beltId?: string, graduationDateFrom?: string, graduationDateTo?: string, pageNumber?: number, pageSize?: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json;odata.metadata=minimal;odata.streaming=true' | 'application/json;odata.metadata=minimal;odata.streaming=false' | 'application/json;odata.metadata=minimal' | 'application/json;odata.metadata=full;odata.streaming=true' | 'application/json;odata.metadata=full;odata.streaming=false' | 'application/json;odata.metadata=full' | 'application/json;odata.metadata=none;odata.streaming=true' | 'application/json;odata.metadata=none;odata.streaming=false' | 'application/json;odata.metadata=none' | 'application/json;odata.streaming=true' | 'application/json;odata.streaming=false' | 'application/json' | 'application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=false' | 'application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=true' | 'application/json;odata.metadata=minimal;odata.streaming=false;IEEE754Compatible=false' | 'application/json;odata.metadata=minimal;odata.streaming=false;IEEE754Compatible=true' | 'application/json;odata.metadata=minimal;IEEE754Compatible=false' | 'application/json;odata.metadata=minimal;IEEE754Compatible=true' | 'application/json;odata.metadata=full;odata.streaming=true;IEEE754Compatible=false' | 'application/json;odata.metadata=full;odata.streaming=true;IEEE754Compatible=true' | 'application/json;odata.metadata=full;odata.streaming=false;IEEE754Compatible=false' | 'application/json;odata.metadata=full;odata.streaming=false;IEEE754Compatible=true' | 'application/json;odata.metadata=full;IEEE754Compatible=false' | 'application/json;odata.metadata=full;IEEE754Compatible=true' | 'application/json;odata.metadata=none;odata.streaming=true;IEEE754Compatible=false' | 'application/json;odata.metadata=none;odata.streaming=true;IEEE754Compatible=true' | 'application/json;odata.metadata=none;odata.streaming=false;IEEE754Compatible=true' | 'application/json;odata.metadata=none;odata.streaming=false;IEEE754Compatible=false' | 'application/json;odata.metadata=none;IEEE754Compatible=false' | 'application/json;odata.metadata=none;IEEE754Compatible=true' | 'application/json;odata.streaming=true;IEEE754Compatible=false' | 'application/json;odata.streaming=true;IEEE754Compatible=true' | 'application/json;odata.streaming=false;IEEE754Compatible=false' | 'application/json;odata.streaming=false;IEEE754Compatible=true' | 'application/json;IEEE754Compatible=false' | 'application/json;IEEE754Compatible=true' | 'application/xml' | 'text/plain' | 'application/octet-stream' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<CarlonGracieBackendProgressionApplicationDTOsShowGraduationDTO>>>;
+    public apiGraduationUserUserIdGet(userId: string, searchTerm?: string, studentId?: string, beltId?: string, graduationDateFrom?: string, graduationDateTo?: string, pageNumber?: number, pageSize?: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json;odata.metadata=minimal;odata.streaming=true' | 'application/json;odata.metadata=minimal;odata.streaming=false' | 'application/json;odata.metadata=minimal' | 'application/json;odata.metadata=full;odata.streaming=true' | 'application/json;odata.metadata=full;odata.streaming=false' | 'application/json;odata.metadata=full' | 'application/json;odata.metadata=none;odata.streaming=true' | 'application/json;odata.metadata=none;odata.streaming=false' | 'application/json;odata.metadata=none' | 'application/json;odata.streaming=true' | 'application/json;odata.streaming=false' | 'application/json' | 'application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=false' | 'application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=true' | 'application/json;odata.metadata=minimal;odata.streaming=false;IEEE754Compatible=false' | 'application/json;odata.metadata=minimal;odata.streaming=false;IEEE754Compatible=true' | 'application/json;odata.metadata=minimal;IEEE754Compatible=false' | 'application/json;odata.metadata=minimal;IEEE754Compatible=true' | 'application/json;odata.metadata=full;odata.streaming=true;IEEE754Compatible=false' | 'application/json;odata.metadata=full;odata.streaming=true;IEEE754Compatible=true' | 'application/json;odata.metadata=full;odata.streaming=false;IEEE754Compatible=false' | 'application/json;odata.metadata=full;odata.streaming=false;IEEE754Compatible=true' | 'application/json;odata.metadata=full;IEEE754Compatible=false' | 'application/json;odata.metadata=full;IEEE754Compatible=true' | 'application/json;odata.metadata=none;odata.streaming=true;IEEE754Compatible=false' | 'application/json;odata.metadata=none;odata.streaming=true;IEEE754Compatible=true' | 'application/json;odata.metadata=none;odata.streaming=false;IEEE754Compatible=true' | 'application/json;odata.metadata=none;odata.streaming=false;IEEE754Compatible=false' | 'application/json;odata.metadata=none;IEEE754Compatible=false' | 'application/json;odata.metadata=none;IEEE754Compatible=true' | 'application/json;odata.streaming=true;IEEE754Compatible=false' | 'application/json;odata.streaming=true;IEEE754Compatible=true' | 'application/json;odata.streaming=false;IEEE754Compatible=false' | 'application/json;odata.streaming=false;IEEE754Compatible=true' | 'application/json;IEEE754Compatible=false' | 'application/json;IEEE754Compatible=true' | 'application/xml' | 'text/plain' | 'application/octet-stream' | 'text/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         if (userId === null || userId === undefined) {
             throw new Error('Required parameter userId was null or undefined when calling apiGraduationUserUserIdGet.');
         }
@@ -637,8 +891,45 @@ export class GraduationService implements GraduationServiceInterface {
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                'text/plain',
+                'application/json;odata.metadata=minimal;odata.streaming=true',
+                'application/json;odata.metadata=minimal;odata.streaming=false',
+                'application/json;odata.metadata=minimal',
+                'application/json;odata.metadata=full;odata.streaming=true',
+                'application/json;odata.metadata=full;odata.streaming=false',
+                'application/json;odata.metadata=full',
+                'application/json;odata.metadata=none;odata.streaming=true',
+                'application/json;odata.metadata=none;odata.streaming=false',
+                'application/json;odata.metadata=none',
+                'application/json;odata.streaming=true',
+                'application/json;odata.streaming=false',
                 'application/json',
+                'application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=false',
+                'application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=true',
+                'application/json;odata.metadata=minimal;odata.streaming=false;IEEE754Compatible=false',
+                'application/json;odata.metadata=minimal;odata.streaming=false;IEEE754Compatible=true',
+                'application/json;odata.metadata=minimal;IEEE754Compatible=false',
+                'application/json;odata.metadata=minimal;IEEE754Compatible=true',
+                'application/json;odata.metadata=full;odata.streaming=true;IEEE754Compatible=false',
+                'application/json;odata.metadata=full;odata.streaming=true;IEEE754Compatible=true',
+                'application/json;odata.metadata=full;odata.streaming=false;IEEE754Compatible=false',
+                'application/json;odata.metadata=full;odata.streaming=false;IEEE754Compatible=true',
+                'application/json;odata.metadata=full;IEEE754Compatible=false',
+                'application/json;odata.metadata=full;IEEE754Compatible=true',
+                'application/json;odata.metadata=none;odata.streaming=true;IEEE754Compatible=false',
+                'application/json;odata.metadata=none;odata.streaming=true;IEEE754Compatible=true',
+                'application/json;odata.metadata=none;odata.streaming=false;IEEE754Compatible=true',
+                'application/json;odata.metadata=none;odata.streaming=false;IEEE754Compatible=false',
+                'application/json;odata.metadata=none;IEEE754Compatible=false',
+                'application/json;odata.metadata=none;IEEE754Compatible=true',
+                'application/json;odata.streaming=true;IEEE754Compatible=false',
+                'application/json;odata.streaming=true;IEEE754Compatible=true',
+                'application/json;odata.streaming=false;IEEE754Compatible=false',
+                'application/json;odata.streaming=false;IEEE754Compatible=true',
+                'application/json;IEEE754Compatible=false',
+                'application/json;IEEE754Compatible=true',
+                'application/xml',
+                'text/plain',
+                'application/octet-stream',
                 'text/json'
             ];
             localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
@@ -670,7 +961,7 @@ export class GraduationService implements GraduationServiceInterface {
         }
 
         let localVarPath = `/api/Graduation/user/${this.configuration.encodeParam({name: "userId", value: userId, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: "uuid"})}`;
-        return this.httpClient.request<Array<ShowGraduationDTO>>('get', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<Array<CarlonGracieBackendProgressionApplicationDTOsShowGraduationDTO>>('get', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 params: localVarQueryParameters,

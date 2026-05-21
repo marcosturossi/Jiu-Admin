@@ -18,7 +18,7 @@ import { CustomHttpParameterCodec }                          from '../encoder';
 import { Observable }                                        from 'rxjs';
 
 // @ts-ignore
-import { BirthdayGreetingsResultDTO } from '../model/birthdayGreetingsResultDTO';
+import { CarlonGracieBackendStudentsApplicationDTOsBirthdayGreetingsResultDTO } from '../model/carlonGracieBackendStudentsApplicationDTOsBirthdayGreetingsResultDTO';
 
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
@@ -98,9 +98,9 @@ export class AdminStudentService implements AdminStudentServiceInterface {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiAdminStudentsSendBirthdayGreetingsPost(observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<BirthdayGreetingsResultDTO>;
-    public apiAdminStudentsSendBirthdayGreetingsPost(observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<BirthdayGreetingsResultDTO>>;
-    public apiAdminStudentsSendBirthdayGreetingsPost(observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<BirthdayGreetingsResultDTO>>;
+    public apiAdminStudentsSendBirthdayGreetingsPost(observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<CarlonGracieBackendStudentsApplicationDTOsBirthdayGreetingsResultDTO>;
+    public apiAdminStudentsSendBirthdayGreetingsPost(observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<CarlonGracieBackendStudentsApplicationDTOsBirthdayGreetingsResultDTO>>;
+    public apiAdminStudentsSendBirthdayGreetingsPost(observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<CarlonGracieBackendStudentsApplicationDTOsBirthdayGreetingsResultDTO>>;
     public apiAdminStudentsSendBirthdayGreetingsPost(observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
 
         let localVarHeaders = this.defaultHeaders;
@@ -140,7 +140,7 @@ export class AdminStudentService implements AdminStudentServiceInterface {
         }
 
         let localVarPath = `/api/admin/students/send-birthday-greetings`;
-        return this.httpClient.request<BirthdayGreetingsResultDTO>('post', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<CarlonGracieBackendStudentsApplicationDTOsBirthdayGreetingsResultDTO>('post', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 responseType: <any>responseType_,

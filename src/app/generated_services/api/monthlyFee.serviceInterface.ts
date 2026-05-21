@@ -14,12 +14,10 @@ import { Observable }                                        from 'rxjs';
 
 import { ApiAdminAcademiesIdGet404Response } from '../model/models';
 import { ApiMedicalClearanceIdAttachmentGet200Response } from '../model/models';
-import { ChargeResult } from '../model/models';
-import { ChargeStatus } from '../model/models';
-import { FeeStatus } from '../model/models';
-import { PaginationMonthlyFeeDTO } from '../model/models';
-import { PayMonthlyFeeDTO } from '../model/models';
-import { ShowMonthlyFeeDTO } from '../model/models';
+import { CarlonGracieBackendApplicationInterfacesInfrastructureChargeResult } from '../model/models';
+import { CarlonGracieBackendApplicationInterfacesInfrastructureChargeStatus } from '../model/models';
+import { CarlonGracieBackendFinancesApplicationDTOsPayMonthlyFeeDTO } from '../model/models';
+import { CarlonGracieBackendFinancesApplicationDTOsShowMonthlyFeeDTO } from '../model/models';
 
 
 import { Configuration }                                     from '../configuration';
@@ -35,50 +33,48 @@ export interface MonthlyFeeServiceInterface {
      * 
      * @param contractId 
      */
-    apiMonthlyFeeContractContractIdGet(contractId: string, extraHttpRequestParams?: any): Observable<Array<ShowMonthlyFeeDTO>>;
+    apiMonthlyFeeContractContractIdGet(contractId: string, extraHttpRequestParams?: any): Observable<Array<CarlonGracieBackendFinancesApplicationDTOsShowMonthlyFeeDTO>>;
 
     /**
      * 
      * 
-     * @param searchTerm 
-     * @param contractId 
-     * @param studentId 
-     * @param status 
-     * @param dueDateFrom 
-     * @param dueDateTo 
-     * @param pageNumber 
-     * @param pageSize 
+     * @param $filter OData filter expression. Examples: contains(name,\&#39;John\&#39;) | status eq \&#39;Active\&#39; | amount gt 100 | createdAt ge 2024-01-01T00:00:00Z
+     * @param $orderby Sort expression. Examples: name asc | createdAt desc | name asc,amount desc
+     * @param $top Page size — number of records to return (default: 20, max: 200). Use with $skip for pagination.
+     * @param $skip Records to skip. Use ($pageNumber - 1) * $top. Example: page 3 with size 20 → $skip&#x3D;40
+     * @param $count Set to \&#39;true\&#39; to include total record count in response as @odata.count
+     * @param $select Return only specific fields. Example: $select&#x3D;id,name,createdAt
      */
-    apiMonthlyFeeGet(searchTerm?: string, contractId?: string, studentId?: string, status?: FeeStatus, dueDateFrom?: string, dueDateTo?: string, pageNumber?: number, pageSize?: number, extraHttpRequestParams?: any): Observable<PaginationMonthlyFeeDTO>;
-
-    /**
-     * 
-     * 
-     * @param id 
-     */
-    apiMonthlyFeeIdChargePost(id: string, extraHttpRequestParams?: any): Observable<ChargeResult>;
+    apiMonthlyFeeGet($filter?: string, $orderby?: string, $top?: string, $skip?: string, $count?: string, $select?: string, extraHttpRequestParams?: any): Observable<Array<CarlonGracieBackendFinancesApplicationDTOsShowMonthlyFeeDTO>>;
 
     /**
      * 
      * 
      * @param id 
      */
-    apiMonthlyFeeIdChargeStatusGet(id: string, extraHttpRequestParams?: any): Observable<ChargeStatus>;
+    apiMonthlyFeeIdChargePost(id: string, extraHttpRequestParams?: any): Observable<CarlonGracieBackendApplicationInterfacesInfrastructureChargeResult>;
 
     /**
      * 
      * 
      * @param id 
      */
-    apiMonthlyFeeIdGet(id: string, extraHttpRequestParams?: any): Observable<ShowMonthlyFeeDTO>;
+    apiMonthlyFeeIdChargeStatusGet(id: string, extraHttpRequestParams?: any): Observable<CarlonGracieBackendApplicationInterfacesInfrastructureChargeStatus>;
 
     /**
      * 
      * 
      * @param id 
-     * @param payMonthlyFeeDTO 
      */
-    apiMonthlyFeeIdPayPatch(id: string, payMonthlyFeeDTO?: PayMonthlyFeeDTO, extraHttpRequestParams?: any): Observable<ShowMonthlyFeeDTO>;
+    apiMonthlyFeeIdGet(id: string, extraHttpRequestParams?: any): Observable<CarlonGracieBackendFinancesApplicationDTOsShowMonthlyFeeDTO>;
+
+    /**
+     * 
+     * 
+     * @param id 
+     * @param carlonGracieBackendFinancesApplicationDTOsPayMonthlyFeeDTO 
+     */
+    apiMonthlyFeeIdPayPatch(id: string, carlonGracieBackendFinancesApplicationDTOsPayMonthlyFeeDTO?: CarlonGracieBackendFinancesApplicationDTOsPayMonthlyFeeDTO, extraHttpRequestParams?: any): Observable<CarlonGracieBackendFinancesApplicationDTOsShowMonthlyFeeDTO>;
 
     /**
      * 
@@ -91,13 +87,13 @@ export interface MonthlyFeeServiceInterface {
      * 
      * 
      */
-    apiMonthlyFeeOverdueGet(extraHttpRequestParams?: any): Observable<Array<ShowMonthlyFeeDTO>>;
+    apiMonthlyFeeOverdueGet(extraHttpRequestParams?: any): Observable<Array<CarlonGracieBackendFinancesApplicationDTOsShowMonthlyFeeDTO>>;
 
     /**
      * 
      * 
      * @param studentId 
      */
-    apiMonthlyFeeStudentStudentIdGet(studentId: string, extraHttpRequestParams?: any): Observable<Array<ShowMonthlyFeeDTO>>;
+    apiMonthlyFeeStudentStudentIdGet(studentId: string, extraHttpRequestParams?: any): Observable<Array<CarlonGracieBackendFinancesApplicationDTOsShowMonthlyFeeDTO>>;
 
 }

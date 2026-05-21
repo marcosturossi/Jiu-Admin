@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, DestroyRef, inject, output, signal } from '@angular/core';
-import { FrequencyService, StudentsService, ShowStudentDTO, ShowLessonDTO, LessonService } from '../../../../generated_services';
+import { FrequencyService, StudentsService, CarlonGracieBackendDTOsShowStudentDTO as ShowStudentDTO, CarlonGracieBackendAttendanceApplicationDTOsShowLessonDTO as ShowLessonDTO, LessonService } from '../../../../generated_services';
 import { FormBuilder, FormArray, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CreateFrequencyDTO } from '../../../../generated_services/model/createFrequencyDTO';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';

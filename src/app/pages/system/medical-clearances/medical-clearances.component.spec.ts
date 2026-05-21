@@ -4,11 +4,11 @@ import { MedicalClearancesComponent } from './medical-clearances.component';
 import { MedicalClearanceService } from '../../../generated_services/api/medicalClearance.service';
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
-import { PaginationMedicalClearanceDTO } from '../../../generated_services';
 import { ShowMedicalClearanceDTO } from '../../../generated_services/model/showMedicalClearanceDTO';
 
 const MOCK_CLEARANCE: ShowMedicalClearanceDTO = { id: 'mc1', studentId: 'student-1', expiresAt: '2025-01-01', isExpired: false, isExpiringSoon: false };
-const MOCK_PAGINATION: PaginationMedicalClearanceDTO = { items: [MOCK_CLEARANCE], totalCount: 1, pageNumber: 1, pageSize: 10, totalPages: 1 };
+const MOCK_ODATA_RESPONSE = { '@odata.count': 1, value: [MOCK_CLEARANCE] };
+const MOCK_PAGE = { items: [MOCK_CLEARANCE], totalCount: 1, totalPages: 1 };
 
 describe('MedicalClearancesComponent', () => {
   let component: MedicalClearancesComponent;
@@ -25,7 +25,7 @@ describe('MedicalClearancesComponent', () => {
     ]);
     const nsSpy = jasmine.createSpyObj('NotificationService', ['showSuccess', 'showError']);
     const subnavSpy = jasmine.createSpyObj('SubnavService', ['setTitle']);
-    clearanceSpy.apiMedicalClearanceGet.and.returnValue(of(MOCK_PAGINATION));
+    clearanceSpy.apiMedicalClearanceGet.and.returnValue(of(MOCK_ODATA_RESPONSE));
 
     await TestBed.configureTestingModule({
       imports: [MedicalClearancesComponent],
@@ -50,7 +50,7 @@ describe('MedicalClearancesComponent', () => {
 
   it('should load clearances on init', () => {
     expect(medicalClearanceService.apiMedicalClearanceGet).toHaveBeenCalled();
-    expect((component as any).items()).toEqual(MOCK_PAGINATION);
+    expect((component as any).items()).toEqual(MOCK_PAGE);
   });
 
   it('should set isLoading to false after successful load', () => {

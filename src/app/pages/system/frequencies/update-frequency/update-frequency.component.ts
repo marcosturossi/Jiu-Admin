@@ -2,8 +2,8 @@ import { ChangeDetectionStrategy, Component, DestroyRef, effect, inject, input, 
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Subject, debounceTime } from 'rxjs';
-import { FrequencyService, StudentsService, PaginationStudentDTO } from '../../../../generated_services';
-import { ShowFrequencyDTO, UpdateFrequencyDTO } from '../../../../generated_services';
+import { FrequencyService, StudentsService } from '../../../../generated_services';
+import { CarlonGracieBackendAttendanceApplicationDTOsShowFrequencyDTO as ShowFrequencyDTO, CarlonGracieBackendAttendanceApplicationDTOsUpdateFrequencyDTO as UpdateFrequencyDTO } from '../../../../generated_services';
 import { NotificationService } from '../../../../services/notification.service';
 import { SearchOption } from '../../../../shared/search-select/search-option';
 import { SearchSelectComponent } from '../../../../shared/search-select/search-select.component';
@@ -60,10 +60,10 @@ export class UpdateFrequencyComponent {
   }
 
   private loadStudents(term = ''): void {
-    this.studentsService.apiStudentsGet(term || undefined, undefined, undefined, undefined, undefined, 1, 100).subscribe({
-      next: (result: PaginationStudentDTO) => {
+    this.studentsService.apiStudentsGet(term || undefined, undefined, '100').subscribe({
+      next: (students: any[]) => {
         this.studentOptions.set(
-          (result.items ?? []).map(s => ({ id: s.id ?? '', label: `${s.firstName} ${s.lastName}` }))
+          students.map(s => ({ id: s.id ?? '', label: `${s.firstName} ${s.lastName}` }))
         );
       },
       error: () => this.ns.showError('Erro ao Carregar Alunos!', 'Não foi possível carregar a lista de alunos. Tente novamente.')

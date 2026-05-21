@@ -12,10 +12,10 @@ import { HttpHeaders }                                       from '@angular/comm
 
 import { Observable }                                        from 'rxjs';
 
-import { BarChartDataDTO } from '../model/models';
-import { MonthlyNewStudentsDTO } from '../model/models';
-import { StudentsBirthDay } from '../model/models';
-import { TopStudentDTO } from '../model/models';
+import { CarlonGracieBackendDTOsBarChartDataDTO } from '../model/models';
+import { CarlonGracieBackendDTOsMonthlyNewStudentsDTO } from '../model/models';
+import { CarlonGracieBackendDTOsStudentsBirthDay } from '../model/models';
+import { CarlonGracieBackendDTOsTopStudentDTO } from '../model/models';
 
 
 import { Configuration }                                     from '../configuration';
@@ -38,27 +38,27 @@ export interface DashboardServiceInterface {
      * 
      * @param days 
      */
-    apiDashboardBirthdaysGet(days?: number, extraHttpRequestParams?: any): Observable<Array<StudentsBirthDay>>;
+    apiDashboardBirthdaysGet(days?: number, extraHttpRequestParams?: any): Observable<Array<CarlonGracieBackendDTOsStudentsBirthDay>>;
 
     /**
      * 
      * 
      * @param days 
      */
-    apiDashboardFrequencyBeltsDistributionGet(days?: number, extraHttpRequestParams?: any): Observable<BarChartDataDTO>;
+    apiDashboardFrequencyBeltsDistributionGet(days?: number, extraHttpRequestParams?: any): Observable<CarlonGracieBackendDTOsBarChartDataDTO>;
 
     /**
      * 
      * 
      * @param months 
      */
-    apiDashboardNewStudentsGet(months?: number, extraHttpRequestParams?: any): Observable<MonthlyNewStudentsDTO>;
+    apiDashboardNewStudentsGet(months?: number, extraHttpRequestParams?: any): Observable<CarlonGracieBackendDTOsMonthlyNewStudentsDTO>;
 
     /**
      * 
      * 
      * @param days 
      */
-    apiDashboardTopStudentsGet(days?: number, extraHttpRequestParams?: any): Observable<Array<TopStudentDTO>>;
+    apiDashboardTopStudentsGet(days?: number, extraHttpRequestParams?: any): Observable<Array<CarlonGracieBackendDTOsTopStudentDTO>>;
 
 }

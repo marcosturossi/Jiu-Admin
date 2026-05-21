@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
-import { DashboardService, TopStudentDTO } from '../../../generated_services';
+import { DashboardService } from '../../../generated_services';
+import { CarlonGracieBackendDTOsTopStudentDTO } from '../../../generated_services/model/carlonGracieBackendDTOsTopStudentDTO';
 
 @Component({
   selector: 'app-top-students',
@@ -11,7 +12,7 @@ import { DashboardService, TopStudentDTO } from '../../../generated_services';
 export class TopStudentsComponent {
   private readonly dashboardService = inject(DashboardService);
 
-  protected readonly topStudents = signal<TopStudentDTO[]>([]);
+  protected readonly topStudents = signal<CarlonGracieBackendDTOsTopStudentDTO[]>([]);
   protected readonly loading = signal(true);
   protected readonly error = signal('');
 

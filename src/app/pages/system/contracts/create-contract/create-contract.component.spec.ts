@@ -5,16 +5,13 @@ import { ContractService } from '../../../../generated_services/api/contract.ser
 import { FeePlanService } from '../../../../generated_services/api/feePlan.service';
 import { StudentsService } from '../../../../generated_services/api/students.service';
 import { NotificationService } from '../../../../services/notification.service';
-import { ShowStudentDTO, ShowFeePlanDTO } from '../../../../generated_services';
+import { CarlonGracieBackendDTOsShowStudentDTO as ShowStudentDTO, CarlonGracieBackendFinancesApplicationDTOsShowFeePlanDTO as ShowFeePlanDTO } from '../../../../generated_services';
 
 const MOCK_STUDENTS: ShowStudentDTO[] = [
   { id: 's1', firstName: 'João', lastName: 'Silva', userName: 'joao', email: 'j@test.com' },
 ];
 
-const MOCK_FEE_PLANS = {
-  items: [{ id: 'fp1', name: 'Mensal', price: 150 } as ShowFeePlanDTO],
-  totalCount: 1, pageNumber: 1, pageSize: 100, totalPages: 1,
-};
+const MOCK_FEE_PLANS: ShowFeePlanDTO[] = [{ id: 'fp1', name: 'Mensal', price: 150 } as ShowFeePlanDTO];
 
 describe('CreateContractComponent', () => {
   let fixture: ComponentFixture<CreateContractComponent>;

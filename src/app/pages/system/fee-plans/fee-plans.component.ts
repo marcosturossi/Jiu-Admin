@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { CurrencyPipe } from '@angular/common';
-import { FeePlanService, PaginationFeePlanDTO, ShowFeePlanDTO } from '../../../generated_services';
+import { FeePlanService, CarlonGracieBackendFinancesApplicationDTOsShowFeePlanDTO as ShowFeePlanDTO } from '../../../generated_services';
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
 import { FilterComponent } from '../../../shared/filter/filter.component';
@@ -8,6 +8,7 @@ import { FilterOutput } from '../../../shared/filter/filter.types';
 import { PaginationComponent } from '../../../shared/pagination/pagination.component';
 import { CreateFeePlanComponent } from './create-fee-plan/create-fee-plan.component';
 import { UpdateFeePlanComponent } from './update-fee-plan/update-fee-plan.component';
+import { ODataPage, parseODataPage, buildODataFilter } from '../../../utils/odata.utils';
 
 @Component({
   selector: 'app-fee-plans',
@@ -29,7 +30,7 @@ export class FeePlansComponent {
   private readonly notificationService = inject(NotificationService);
 
   protected readonly isLoading = signal(false);
-  protected readonly items = signal<PaginationFeePlanDTO | null>(null);
+  protected readonly items = signal<ODataPage<ShowFeePlanDTO> | null>(null);
   protected readonly openedCreate = signal(false);
   protected readonly openedUpdate = signal(false);
   protected readonly selected = signal<ShowFeePlanDTO | null>(null);
@@ -44,8 +45,10 @@ export class FeePlansComponent {
 
   protected load(): void {
     this.isLoading.set(true);
-    this.service.apiFeePlanGet(this.filterText() || undefined, undefined, undefined, this.currentPage(), this.pageSize()).subscribe({
-      next: result => { this.items.set(result); this.isLoading.set(false); },
+    const skip = (this.currentPage() - 1) * this.pageSize();
+    const filter = buildODataFilter(this.filterText(), ['name']);
+    this.service.apiFeePlanGet(filter, undefined, String(this.pageSize()), String(skip), 'true').subscribe({
+      next: (body: any) => { this.items.set(parseODataPage<ShowFeePlanDTO>(body, this.pageSize())); this.isLoading.set(false); },
       error: () => { this.isLoading.set(false); this.notificationService.showError('Erro', 'Não foi possível carregar.'); }
     });
   }

@@ -1,13 +1,13 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { NotificationService as ApiNotificationService } from '../../../generated_services/api/notification.service';
-import { ShowNotificationDTO } from '../../../generated_services/model/showNotificationDTO';
+import { CarlonGracieBackendCommunicationsApplicationDTOsShowNotificationDto as ShowNotificationDTO } from '../../../generated_services/model/carlonGracieBackendCommunicationsApplicationDTOsShowNotificationDto';
 import { CreateNotificationComponent } from './create-notification/create-notification.component';
 import { UpdateNotificationComponent } from './update-notification/update-notification.component';
-import { NotificationType } from '../../../generated_services/model/notificationType';
+import { CarlonGracieBackendCommunicationsDomainNotificationType as NotificationType } from '../../../generated_services/model/carlonGracieBackendCommunicationsDomainNotificationType';
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
-import { PaginationNotificationDTO } from '../../../generated_services';
+import { CarlonGracieBackendCommunicationsApplicationDTOsPaginationNotificationDto as PaginationNotificationDTO } from '../../../generated_services';
 import { FilterComponent } from '../../../shared/filter/filter.component';
 import { FilterOutput } from '../../../shared/filter/filter.types';
 import { PaginationComponent } from '../../../shared/pagination/pagination.component';
@@ -41,9 +41,8 @@ export class NotificationComponent {
   protected load(): void {
     this.isLoading.set(true);
     this.apiNotificationService.apiNotificationGet(
-      this.filterText() || undefined,
-      undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined,
       this.currentPage(), this.pageSize(),
+      this.filterText() || undefined,
     ).subscribe({
       next: r => { this.items.set(r); this.isLoading.set(false); },
       error: () => { this.isLoading.set(false); this.ns.showError('Erro ao Carregar Notificações!', 'Não foi possível carregar a lista de notificações. Tente novamente.'); }
@@ -67,7 +66,7 @@ export class NotificationComponent {
     });
   }
 
-  protected getNotificationTypeText(type: NotificationType): string {
+  protected getNotificationTypeText(type: NotificationType | undefined): string {
     switch (type) {
       case NotificationType.Info: return 'Informação';
       case NotificationType.Success: return 'Sucesso';

@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { of, throwError } from 'rxjs';
 import { GraduationRequirementsComponent } from './graduation-requirements.component';
-import { GraduationRequirementsService, ShowGraduationRequirementsDTO } from '../../../generated_services';
+import { GraduationRequirementsService, CarlonGracieBackendProgressionApplicationDTOsShowGraduationRequirementDTO as ShowGraduationRequirementsDTO } from '../../../generated_services';
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
 

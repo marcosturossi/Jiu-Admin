@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
-import { DashboardService, MonthlyNewStudentsDTO } from '../../../generated_services';
+import { DashboardService } from '../../../generated_services';
 
 @Component({
   selector: 'app-new-students-this-month',

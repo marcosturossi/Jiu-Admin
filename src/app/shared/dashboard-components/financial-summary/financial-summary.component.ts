@@ -61,32 +61,31 @@ export class FinancialSummaryComponent implements OnInit {
       .toISOString()
       .split('T')[0];
     const dateTo = now.toISOString().split('T')[0];
+    const filter = `transactionDate ge ${dateFrom} and transactionDate le ${dateTo}`;
 
     this.transactionService
       .apiFinancialTransactionGet(
+        filter,
         undefined,
-        undefined,
-        dateFrom,
-        dateTo,
-        undefined,
-        1,
-        1000
+        '1000',
+        '0',
+        'true'
       )
       .subscribe({
-        next: (data) => {
-          const items = data?.items ?? [];
+        next: (body: any) => {
+          const items = Array.isArray(body) ? body : (body?.value ?? []);
           const income = items
-            .filter((t) => {
+            .filter((t: any) => {
               const type = normalizeTransactionType(t.type);
               return type === TransactionType.Income || type === TransactionType.Credit;
             })
-            .reduce((sum, t) => sum + (t.amount ?? 0), 0);
+            .reduce((sum: number, t: any) => sum + (t.amount ?? 0), 0);
           const expenses = items
-            .filter((t) => {
+            .filter((t: any) => {
               const type = normalizeTransactionType(t.type);
               return type === TransactionType.Expense || type === TransactionType.Debit;
             })
-            .reduce((sum, t) => sum + (t.amount ?? 0), 0);
+            .reduce((sum: number, t: any) => sum + (t.amount ?? 0), 0);
           this.totalIncome.set(income);
           this.totalExpenses.set(expenses);
           this.balance.set(income - expenses);

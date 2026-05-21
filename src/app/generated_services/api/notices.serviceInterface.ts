@@ -13,10 +13,10 @@ import { HttpHeaders }                                       from '@angular/comm
 import { Observable }                                        from 'rxjs';
 
 import { ApiAdminAcademiesIdGet404Response } from '../model/models';
-import { CreateNoticesDTO } from '../model/models';
-import { ShowNoticesDTO } from '../model/models';
-import { UpdateNoticesDTO } from '../model/models';
-import { ValidationProblemDetails } from '../model/models';
+import { CarlonGracieBackendReportingApplicationDTOsCreateNoticeDto } from '../model/models';
+import { CarlonGracieBackendReportingApplicationDTOsShowNoticeDto } from '../model/models';
+import { CarlonGracieBackendReportingApplicationDTOsUpdateNoticeDto } from '../model/models';
+import { MicrosoftAspNetCoreMvcValidationProblemDetails } from '../model/models';
 
 
 import { Configuration }                                     from '../configuration';
@@ -35,17 +35,19 @@ export interface NoticesServiceInterface {
      * @param createdFrom 
      * @param createdTo 
      */
-    apiNoticesActiveGet(description?: string, isActive?: boolean, createdFrom?: string, createdTo?: string, extraHttpRequestParams?: any): Observable<Array<ShowNoticesDTO>>;
+    apiNoticesActiveGet(description?: string, isActive?: boolean, createdFrom?: string, createdTo?: string, extraHttpRequestParams?: any): Observable<Array<CarlonGracieBackendReportingApplicationDTOsShowNoticeDto>>;
 
     /**
      * 
      * 
-     * @param description 
-     * @param isActive 
-     * @param createdFrom 
-     * @param createdTo 
+     * @param $filter OData filter expression. Examples: contains(name,\&#39;John\&#39;) | status eq \&#39;Active\&#39; | amount gt 100 | createdAt ge 2024-01-01T00:00:00Z
+     * @param $orderby Sort expression. Examples: name asc | createdAt desc | name asc,amount desc
+     * @param $top Page size — number of records to return (default: 20, max: 200). Use with $skip for pagination.
+     * @param $skip Records to skip. Use ($pageNumber - 1) * $top. Example: page 3 with size 20 → $skip&#x3D;40
+     * @param $count Set to \&#39;true\&#39; to include total record count in response as @odata.count
+     * @param $select Return only specific fields. Example: $select&#x3D;id,name,createdAt
      */
-    apiNoticesGet(description?: string, isActive?: boolean, createdFrom?: string, createdTo?: string, extraHttpRequestParams?: any): Observable<Array<ShowNoticesDTO>>;
+    apiNoticesGet($filter?: string, $orderby?: string, $top?: string, $skip?: string, $count?: string, $select?: string, extraHttpRequestParams?: any): Observable<Array<CarlonGracieBackendReportingApplicationDTOsShowNoticeDto>>;
 
     /**
      * 
@@ -59,21 +61,21 @@ export interface NoticesServiceInterface {
      * 
      * @param id 
      */
-    apiNoticesIdGet(id: string, extraHttpRequestParams?: any): Observable<ShowNoticesDTO>;
+    apiNoticesIdGet(id: string, extraHttpRequestParams?: any): Observable<CarlonGracieBackendReportingApplicationDTOsShowNoticeDto>;
 
     /**
      * 
      * 
      * @param id 
-     * @param updateNoticesDTO 
+     * @param carlonGracieBackendReportingApplicationDTOsUpdateNoticeDto 
      */
-    apiNoticesIdPut(id: string, updateNoticesDTO?: UpdateNoticesDTO, extraHttpRequestParams?: any): Observable<ShowNoticesDTO>;
+    apiNoticesIdPut(id: string, carlonGracieBackendReportingApplicationDTOsUpdateNoticeDto?: CarlonGracieBackendReportingApplicationDTOsUpdateNoticeDto, extraHttpRequestParams?: any): Observable<CarlonGracieBackendReportingApplicationDTOsShowNoticeDto>;
 
     /**
      * 
      * 
-     * @param createNoticesDTO 
+     * @param carlonGracieBackendReportingApplicationDTOsCreateNoticeDto 
      */
-    apiNoticesPost(createNoticesDTO?: CreateNoticesDTO, extraHttpRequestParams?: any): Observable<ShowNoticesDTO>;
+    apiNoticesPost(carlonGracieBackendReportingApplicationDTOsCreateNoticeDto?: CarlonGracieBackendReportingApplicationDTOsCreateNoticeDto, extraHttpRequestParams?: any): Observable<CarlonGracieBackendReportingApplicationDTOsShowNoticeDto>;
 
 }

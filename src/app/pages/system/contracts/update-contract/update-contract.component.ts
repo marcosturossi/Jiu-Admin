@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, effect, inject, input, output, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ContractService } from '../../../../generated_services/api/contract.service';
-import { ShowContractDTO, ContractStatus } from '../../../../generated_services';
+import { CarlonGracieBackendFinancesApplicationDTOsShowContractDTO as ShowContractDTO, CarlonGracieBackendSharedDomainEnumsContractStatus as ContractStatus } from '../../../../generated_services';
 import { NotificationService } from '../../../../services/notification.service';
 
 @Component({

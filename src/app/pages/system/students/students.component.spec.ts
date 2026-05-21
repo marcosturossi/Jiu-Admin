@@ -4,11 +4,11 @@ import { StudentsComponent } from './students.component';
 import { StudentsService } from '../../../generated_services/api/students.service';
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
-import { PaginationStudentDTO } from '../../../generated_services/model/paginationStudentDTO';
 import { ShowStudentDTO } from '../../../generated_services/model/showStudentDTO';
 
 const MOCK_STUDENT: ShowStudentDTO = { id: 's1', userName: 'joao.silva', email: 'joao@test.com', firstName: 'João', lastName: 'Silva', isActive: true };
-const MOCK_PAGINATION: PaginationStudentDTO = { items: [MOCK_STUDENT], totalCount: 1, pageNumber: 1, pageSize: 10, totalPages: 1 };
+const MOCK_ODATA_RESPONSE = { '@odata.count': 1, value: [MOCK_STUDENT] };
+const MOCK_PAGE = { items: [MOCK_STUDENT], totalCount: 1, totalPages: 1 };
 
 describe('StudentsComponent', () => {
   let component: StudentsComponent;
@@ -21,7 +21,7 @@ describe('StudentsComponent', () => {
     const studentsSpy = jasmine.createSpyObj('StudentsService', ['apiStudentsGet', 'apiStudentsIdDelete']);
     const nsSpy = jasmine.createSpyObj('NotificationService', ['showSuccess', 'showError']);
     const subnavSpy = jasmine.createSpyObj('SubnavService', ['setTitle']);
-    studentsSpy.apiStudentsGet.and.returnValue(of(MOCK_PAGINATION));
+    studentsSpy.apiStudentsGet.and.returnValue(of(MOCK_ODATA_RESPONSE));
 
     await TestBed.configureTestingModule({
       imports: [StudentsComponent],
@@ -46,7 +46,7 @@ describe('StudentsComponent', () => {
 
   it('should load students on init', () => {
     expect(studentsService.apiStudentsGet).toHaveBeenCalled();
-    expect((component as any).items()).toEqual(MOCK_PAGINATION);
+    expect((component as any).items()).toEqual(MOCK_PAGE);
   });
 
   it('should set isLoading to false after successful load', () => {

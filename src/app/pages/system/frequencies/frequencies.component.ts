@@ -2,12 +2,13 @@ import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal } from '
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { DatePipe } from '@angular/common';
 import { Subject, debounceTime } from 'rxjs';
-import { FrequencyService, PaginationFrequencyDTO, ShowFrequencyDTO } from '../../../generated_services';
+import { FrequencyService, CarlonGracieBackendAttendanceApplicationDTOsShowFrequencyDTO as ShowFrequencyDTO } from '../../../generated_services';
 import { CreateFrequencyComponent } from './create-frequency/create-frequency.component';
 import { UpdateFrequencyComponent } from './update-frequency/update-frequency.component';
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
 import { PaginationComponent } from '../../../shared/pagination/pagination.component';
+import { ODataPage, parseODataPage, buildODataFilter } from '../../../utils/odata.utils';
 
 @Component({
   selector: 'app-frequencies',
@@ -24,7 +25,7 @@ export class FrequenciesComponent {
   private readonly searchSubject = new Subject<string>();
 
   protected readonly isLoading = signal(false);
-  protected readonly items = signal<PaginationFrequencyDTO | null>(null);
+  protected readonly items = signal<ODataPage<ShowFrequencyDTO> | null>(null);
   protected readonly openedCreate = signal(false);
   protected readonly openedUpdate = signal(false);
   protected readonly selected = signal<ShowFrequencyDTO | null>(null);
@@ -44,8 +45,10 @@ export class FrequenciesComponent {
 
   protected load(): void {
     this.isLoading.set(true);
-    this.frequencyService.apiFrequencyGet(this.filterText() || undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, this.currentPage(), this.pageSize()).subscribe({
-      next: r => { this.items.set(r); this.isLoading.set(false); },
+    const skip = (this.currentPage() - 1) * this.pageSize();
+    const filter = buildODataFilter(this.filterText(), ['studentName', 'lessonTitle']);
+    this.frequencyService.apiFrequencyGet(filter, undefined, String(this.pageSize()), String(skip), 'true').subscribe({
+      next: (body: any) => { this.items.set(parseODataPage<ShowFrequencyDTO>(body, this.pageSize())); this.isLoading.set(false); },
       error: () => {
         this.isLoading.set(false);
         this.ns.showError('Erro ao Carregar Frequências!', 'Não foi possível carregar a lista de frequências. Tente novamente.');

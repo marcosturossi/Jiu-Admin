@@ -13,14 +13,14 @@ import { HttpHeaders }                                       from '@angular/comm
 import { Observable }                                        from 'rxjs';
 
 import { ApiAdminAcademiesIdGet404Response } from '../model/models';
-import { CreateNotificationDTO } from '../model/models';
-import { MarkAsReadDTO } from '../model/models';
-import { NotificationStatsDTO } from '../model/models';
-import { NotificationType } from '../model/models';
-import { PaginationNotificationDTO } from '../model/models';
-import { ShowNotificationDTO } from '../model/models';
-import { UpdateNotificationDTO } from '../model/models';
-import { ValidationProblemDetails } from '../model/models';
+import { CarlonGracieBackendCommunicationsApplicationDTOsCreateNotificationDto } from '../model/models';
+import { CarlonGracieBackendCommunicationsApplicationDTOsMarkAsReadDto } from '../model/models';
+import { CarlonGracieBackendCommunicationsApplicationDTOsNotificationStatsDto } from '../model/models';
+import { CarlonGracieBackendCommunicationsApplicationDTOsPaginationNotificationDto } from '../model/models';
+import { CarlonGracieBackendCommunicationsApplicationDTOsShowNotificationDto } from '../model/models';
+import { CarlonGracieBackendCommunicationsApplicationDTOsUpdateNotificationDto } from '../model/models';
+import { CarlonGracieBackendCommunicationsDomainNotificationType } from '../model/models';
+import { MicrosoftAspNetCoreMvcValidationProblemDetails } from '../model/models';
 
 
 import { Configuration }                                     from '../configuration';
@@ -35,7 +35,7 @@ export interface NotificationServiceInterface {
      * 
      * 
      */
-    apiNotificationActiveGet(extraHttpRequestParams?: any): Observable<Array<ShowNotificationDTO>>;
+    apiNotificationActiveGet(extraHttpRequestParams?: any): Observable<Array<CarlonGracieBackendCommunicationsApplicationDTOsShowNotificationDto>>;
 
     /**
      * 
@@ -46,6 +46,8 @@ export interface NotificationServiceInterface {
     /**
      * 
      * 
+     * @param pageNumber 
+     * @param pageSize 
      * @param searchTerm 
      * @param type 
      * @param isActive 
@@ -53,12 +55,8 @@ export interface NotificationServiceInterface {
      * @param isExpired 
      * @param createdFrom 
      * @param createdTo 
-     * @param expiresFrom 
-     * @param expiresTo 
-     * @param pageNumber 
-     * @param pageSize 
      */
-    apiNotificationGet(searchTerm?: string, type?: NotificationType, isActive?: boolean, studentId?: string, isExpired?: boolean, createdFrom?: string, createdTo?: string, expiresFrom?: string, expiresTo?: string, pageNumber?: number, pageSize?: number, extraHttpRequestParams?: any): Observable<PaginationNotificationDTO>;
+    apiNotificationGet(pageNumber?: number, pageSize?: number, searchTerm?: string, type?: CarlonGracieBackendCommunicationsDomainNotificationType, isActive?: boolean, studentId?: string, isExpired?: boolean, createdFrom?: string, createdTo?: string, extraHttpRequestParams?: any): Observable<CarlonGracieBackendCommunicationsApplicationDTOsPaginationNotificationDto>;
 
     /**
      * 
@@ -72,15 +70,15 @@ export interface NotificationServiceInterface {
      * 
      * @param id 
      */
-    apiNotificationIdGet(id: string, extraHttpRequestParams?: any): Observable<ShowNotificationDTO>;
+    apiNotificationIdGet(id: string, extraHttpRequestParams?: any): Observable<CarlonGracieBackendCommunicationsApplicationDTOsShowNotificationDto>;
 
     /**
      * 
      * 
      * @param id 
-     * @param updateNotificationDTO 
+     * @param carlonGracieBackendCommunicationsApplicationDTOsUpdateNotificationDto 
      */
-    apiNotificationIdPut(id: string, updateNotificationDTO?: UpdateNotificationDTO, extraHttpRequestParams?: any): Observable<ShowNotificationDTO>;
+    apiNotificationIdPut(id: string, carlonGracieBackendCommunicationsApplicationDTOsUpdateNotificationDto?: CarlonGracieBackendCommunicationsApplicationDTOsUpdateNotificationDto, extraHttpRequestParams?: any): Observable<CarlonGracieBackendCommunicationsApplicationDTOsShowNotificationDto>;
 
     /**
      * 
@@ -91,13 +89,15 @@ export interface NotificationServiceInterface {
     /**
      * 
      * 
-     * @param markAsReadDTO 
+     * @param carlonGracieBackendCommunicationsApplicationDTOsMarkAsReadDto 
      */
-    apiNotificationMarkAsReadPost(markAsReadDTO?: MarkAsReadDTO, extraHttpRequestParams?: any): Observable<{}>;
+    apiNotificationMarkAsReadPost(carlonGracieBackendCommunicationsApplicationDTOsMarkAsReadDto?: CarlonGracieBackendCommunicationsApplicationDTOsMarkAsReadDto, extraHttpRequestParams?: any): Observable<{}>;
 
     /**
      * 
      * 
+     * @param pageNumber 
+     * @param pageSize 
      * @param searchTerm 
      * @param type 
      * @param isActive 
@@ -105,22 +105,20 @@ export interface NotificationServiceInterface {
      * @param isExpired 
      * @param createdFrom 
      * @param createdTo 
-     * @param expiresFrom 
-     * @param expiresTo 
+     */
+    apiNotificationMyGet(pageNumber?: number, pageSize?: number, searchTerm?: string, type?: CarlonGracieBackendCommunicationsDomainNotificationType, isActive?: boolean, studentId?: string, isExpired?: boolean, createdFrom?: string, createdTo?: string, extraHttpRequestParams?: any): Observable<Array<CarlonGracieBackendCommunicationsApplicationDTOsShowNotificationDto>>;
+
+    /**
+     * 
+     * 
+     */
+    apiNotificationMyStatsGet(extraHttpRequestParams?: any): Observable<CarlonGracieBackendCommunicationsApplicationDTOsNotificationStatsDto>;
+
+    /**
+     * 
+     * 
      * @param pageNumber 
      * @param pageSize 
-     */
-    apiNotificationMyGet(searchTerm?: string, type?: NotificationType, isActive?: boolean, studentId?: string, isExpired?: boolean, createdFrom?: string, createdTo?: string, expiresFrom?: string, expiresTo?: string, pageNumber?: number, pageSize?: number, extraHttpRequestParams?: any): Observable<Array<ShowNotificationDTO>>;
-
-    /**
-     * 
-     * 
-     */
-    apiNotificationMyStatsGet(extraHttpRequestParams?: any): Observable<NotificationStatsDTO>;
-
-    /**
-     * 
-     * 
      * @param searchTerm 
      * @param type 
      * @param isActive 
@@ -128,24 +126,22 @@ export interface NotificationServiceInterface {
      * @param isExpired 
      * @param createdFrom 
      * @param createdTo 
-     * @param expiresFrom 
-     * @param expiresTo 
-     * @param pageNumber 
-     * @param pageSize 
      */
-    apiNotificationMyUnreadGet(searchTerm?: string, type?: NotificationType, isActive?: boolean, studentId?: string, isExpired?: boolean, createdFrom?: string, createdTo?: string, expiresFrom?: string, expiresTo?: string, pageNumber?: number, pageSize?: number, extraHttpRequestParams?: any): Observable<Array<ShowNotificationDTO>>;
+    apiNotificationMyUnreadGet(pageNumber?: number, pageSize?: number, searchTerm?: string, type?: CarlonGracieBackendCommunicationsDomainNotificationType, isActive?: boolean, studentId?: string, isExpired?: boolean, createdFrom?: string, createdTo?: string, extraHttpRequestParams?: any): Observable<Array<CarlonGracieBackendCommunicationsApplicationDTOsShowNotificationDto>>;
 
     /**
      * 
      * 
-     * @param createNotificationDTO 
+     * @param carlonGracieBackendCommunicationsApplicationDTOsCreateNotificationDto 
      */
-    apiNotificationPost(createNotificationDTO?: CreateNotificationDTO, extraHttpRequestParams?: any): Observable<ShowNotificationDTO>;
+    apiNotificationPost(carlonGracieBackendCommunicationsApplicationDTOsCreateNotificationDto?: CarlonGracieBackendCommunicationsApplicationDTOsCreateNotificationDto, extraHttpRequestParams?: any): Observable<CarlonGracieBackendCommunicationsApplicationDTOsShowNotificationDto>;
 
     /**
      * 
      * 
      * @param type 
+     * @param pageNumber 
+     * @param pageSize 
      * @param searchTerm 
      * @param type2 
      * @param isActive 
@@ -153,17 +149,15 @@ export interface NotificationServiceInterface {
      * @param isExpired 
      * @param createdFrom 
      * @param createdTo 
-     * @param expiresFrom 
-     * @param expiresTo 
-     * @param pageNumber 
-     * @param pageSize 
      */
-    apiNotificationTypeTypeGet(type: NotificationType, searchTerm?: string, type2?: NotificationType, isActive?: boolean, studentId?: string, isExpired?: boolean, createdFrom?: string, createdTo?: string, expiresFrom?: string, expiresTo?: string, pageNumber?: number, pageSize?: number, extraHttpRequestParams?: any): Observable<Array<ShowNotificationDTO>>;
+    apiNotificationTypeTypeGet(type: CarlonGracieBackendCommunicationsDomainNotificationType, pageNumber?: number, pageSize?: number, searchTerm?: string, type2?: CarlonGracieBackendCommunicationsDomainNotificationType, isActive?: boolean, studentId?: string, isExpired?: boolean, createdFrom?: string, createdTo?: string, extraHttpRequestParams?: any): Observable<Array<CarlonGracieBackendCommunicationsApplicationDTOsShowNotificationDto>>;
 
     /**
      * 
      * 
      * @param userId 
+     * @param pageNumber 
+     * @param pageSize 
      * @param searchTerm 
      * @param type 
      * @param isActive 
@@ -171,11 +165,7 @@ export interface NotificationServiceInterface {
      * @param isExpired 
      * @param createdFrom 
      * @param createdTo 
-     * @param expiresFrom 
-     * @param expiresTo 
-     * @param pageNumber 
-     * @param pageSize 
      */
-    apiNotificationUserUserIdGet(userId: string, searchTerm?: string, type?: NotificationType, isActive?: boolean, studentId?: string, isExpired?: boolean, createdFrom?: string, createdTo?: string, expiresFrom?: string, expiresTo?: string, pageNumber?: number, pageSize?: number, extraHttpRequestParams?: any): Observable<Array<ShowNotificationDTO>>;
+    apiNotificationUserUserIdGet(userId: string, pageNumber?: number, pageSize?: number, searchTerm?: string, type?: CarlonGracieBackendCommunicationsDomainNotificationType, isActive?: boolean, studentId?: string, isExpired?: boolean, createdFrom?: string, createdTo?: string, extraHttpRequestParams?: any): Observable<Array<CarlonGracieBackendCommunicationsApplicationDTOsShowNotificationDto>>;
 
 }

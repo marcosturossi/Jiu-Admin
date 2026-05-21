@@ -5,11 +5,11 @@ import { ShowMedicalClearanceDTO } from '../../../generated_services/model/showM
 import { CreateMedicalClearanceComponent } from './create-medical-clearance/create-medical-clearance.component';
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
-import { PaginationMedicalClearanceDTO } from '../../../generated_services';
 import { PaginationComponent } from '../../../shared/pagination/pagination.component';
 import { BlobViewerComponent } from '../../../shared/blob-viewer/blob-viewer.component';
 import { FilterComponent } from '../../../shared/filter/filter.component';
 import { FilterOutput } from '../../../shared/filter/filter.types';
+import { ODataPage, parseODataPage, buildODataFilter } from '../../../utils/odata.utils';
 
 @Component({
   selector: 'app-medical-clearances',
@@ -24,7 +24,7 @@ export class MedicalClearancesComponent {
   private readonly ns = inject(NotificationService);
 
   protected readonly isLoading = signal(false);
-  protected readonly items = signal<PaginationMedicalClearanceDTO | null>(null);
+  protected readonly items = signal<ODataPage<ShowMedicalClearanceDTO> | null>(null);
   protected readonly openedCreate = signal(false);
   protected readonly currentPage = signal(1);
   protected readonly pageSize = signal(10);
@@ -40,13 +40,10 @@ export class MedicalClearancesComponent {
 
   protected load(): void {
     this.isLoading.set(true);
-    this.medicalClearanceService.apiMedicalClearanceGet(
-      undefined,
-      this.filterText() || undefined,
-      undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined,
-      this.currentPage(), this.pageSize(),
-    ).subscribe({
-      next: r => { this.items.set(r); this.isLoading.set(false); },
+    const skip = (this.currentPage() - 1) * this.pageSize();
+    const filter = buildODataFilter(this.filterText(), ['student/firstName', 'student/lastName']);
+    this.medicalClearanceService.apiMedicalClearanceGet(filter, undefined, String(this.pageSize()), String(skip), 'true').subscribe({
+      next: (body: any) => { this.items.set(parseODataPage<ShowMedicalClearanceDTO>(body, this.pageSize())); this.isLoading.set(false); },
       error: () => { this.isLoading.set(false); this.ns.showError('Erro de Carregamento', 'Não foi possível carregar a lista de atestados médicos.'); }
     });
   }

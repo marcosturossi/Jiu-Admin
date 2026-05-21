@@ -18,7 +18,7 @@ import { CustomHttpParameterCodec }                          from '../encoder';
 import { Observable }                                        from 'rxjs';
 
 // @ts-ignore
-import { RenewalWarningsResultDTO } from '../model/renewalWarningsResultDTO';
+import { CarlonGracieBackendControllersRenewalWarningsResultDTO } from '../model/carlonGracieBackendControllersRenewalWarningsResultDTO';
 
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
@@ -99,9 +99,9 @@ export class AdminContractService implements AdminContractServiceInterface {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiAdminContractsSendRenewalWarningsPost(daysAhead?: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<RenewalWarningsResultDTO>;
-    public apiAdminContractsSendRenewalWarningsPost(daysAhead?: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<RenewalWarningsResultDTO>>;
-    public apiAdminContractsSendRenewalWarningsPost(daysAhead?: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<RenewalWarningsResultDTO>>;
+    public apiAdminContractsSendRenewalWarningsPost(daysAhead?: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<CarlonGracieBackendControllersRenewalWarningsResultDTO>;
+    public apiAdminContractsSendRenewalWarningsPost(daysAhead?: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<CarlonGracieBackendControllersRenewalWarningsResultDTO>>;
+    public apiAdminContractsSendRenewalWarningsPost(daysAhead?: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<CarlonGracieBackendControllersRenewalWarningsResultDTO>>;
     public apiAdminContractsSendRenewalWarningsPost(daysAhead?: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
 
         let localVarQueryParameters = new HttpParams({encoder: this.encoder});
@@ -147,7 +147,7 @@ export class AdminContractService implements AdminContractServiceInterface {
         }
 
         let localVarPath = `/api/admin/contracts/send-renewal-warnings`;
-        return this.httpClient.request<RenewalWarningsResultDTO>('post', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<CarlonGracieBackendControllersRenewalWarningsResultDTO>('post', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 params: localVarQueryParameters,

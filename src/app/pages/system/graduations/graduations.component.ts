@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
-import { GraduationService, PaginationGraduationDTO, ShowGraduationDTO } from '../../../generated_services';
+import { GraduationService, CarlonGracieBackendProgressionApplicationDTOsShowGraduationDTO as ShowGraduationDTO } from '../../../generated_services';
 import { CreateGraduationComponent } from './create-graduation/create-graduation.component';
 import { UpdateGraduationComponent } from './update-graduation/update-graduation.component';
 import { SubnavService } from '../../../services/subnav.service';
@@ -8,6 +8,7 @@ import { NotificationService } from '../../../services/notification.service';
 import { FilterComponent } from '../../../shared/filter/filter.component';
 import { FilterOutput } from '../../../shared/filter/filter.types';
 import { PaginationComponent } from '../../../shared/pagination/pagination.component';
+import { ODataPage, parseODataPage, buildODataFilter } from '../../../utils/odata.utils';
 
 @Component({
   selector: 'app-graduations',
@@ -28,7 +29,7 @@ export class GraduationsComponent {
   private readonly notificationService = inject(NotificationService);
 
   protected readonly isLoading = signal(false);
-  protected readonly items = signal<PaginationGraduationDTO | null>(null);
+  protected readonly items = signal<ODataPage<ShowGraduationDTO> | null>(null);
   protected readonly openedCreate = signal(false);
   protected readonly openedUpdate = signal(false);
   protected readonly selected = signal<ShowGraduationDTO | null>(null);
@@ -43,8 +44,10 @@ export class GraduationsComponent {
 
   protected load(): void {
     this.isLoading.set(true);
-    this.graduationService.apiGraduationGet(this.filterText() || undefined, undefined, undefined, undefined, undefined, this.currentPage(), this.pageSize()).subscribe({
-      next: r => { this.items.set(r); this.isLoading.set(false); },
+    const skip = (this.currentPage() - 1) * this.pageSize();
+    const filter = buildODataFilter(this.filterText(), ['fullName']);
+    this.graduationService.apiGraduationGet(filter, undefined, String(this.pageSize()), String(skip), 'true').subscribe({
+      next: (body: any) => { this.items.set(parseODataPage<ShowGraduationDTO>(body, this.pageSize())); this.isLoading.set(false); },
       error: () => {
         this.isLoading.set(false);
         this.notificationService.showError('Erro ao Carregar Graduações!', 'Não foi possível carregar a lista de graduações. Tente novamente.');

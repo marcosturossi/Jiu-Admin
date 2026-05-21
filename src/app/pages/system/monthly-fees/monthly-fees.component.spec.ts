@@ -10,10 +10,11 @@ registerLocaleData(localePt, 'pt-BR');
 import { MonthlyFeeService } from '../../../generated_services/api/monthlyFee.service';
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
-import { FeeStatus, PaginationMonthlyFeeDTO, ShowMonthlyFeeDTO } from '../../../generated_services';
+import { CarlonGracieBackendSharedDomainEnumsFeeStatus as FeeStatus, CarlonGracieBackendFinancesApplicationDTOsShowMonthlyFeeDTO as ShowMonthlyFeeDTO } from '../../../generated_services';
 
 const MOCK_FEE: ShowMonthlyFeeDTO = { id: 'fee1', contractId: 'c1', studentId: 's1', amount: 150, status: FeeStatus.Pending, dueDate: '2024-03-01' };
-const MOCK_PAGINATION: PaginationMonthlyFeeDTO = { items: [MOCK_FEE], totalCount: 1, pageNumber: 1, pageSize: 10, totalPages: 1 };
+const MOCK_ODATA_RESPONSE = { '@odata.count': 1, value: [MOCK_FEE] };
+const MOCK_PAGE = { items: [MOCK_FEE], totalCount: 1, totalPages: 1 };
 
 describe('MonthlyFeesComponent', () => {
   let component: MonthlyFeesComponent;
@@ -26,7 +27,7 @@ describe('MonthlyFeesComponent', () => {
     const feeSpy = jasmine.createSpyObj('MonthlyFeeService', ['apiMonthlyFeeGet', 'apiMonthlyFeeIdPayPatch', 'apiMonthlyFeeIdReceiptPdfGet']);
     const nsSpy = jasmine.createSpyObj('NotificationService', ['showSuccess', 'showError']);
     const subnavSpy = jasmine.createSpyObj('SubnavService', ['setTitle']);
-    feeSpy.apiMonthlyFeeGet.and.returnValue(of(MOCK_PAGINATION));
+    feeSpy.apiMonthlyFeeGet.and.returnValue(of(MOCK_ODATA_RESPONSE));
 
     await TestBed.configureTestingModule({
       imports: [MonthlyFeesComponent, ReactiveFormsModule],
@@ -52,7 +53,7 @@ describe('MonthlyFeesComponent', () => {
 
   it('should load monthly fees on init', () => {
     expect(feeService.apiMonthlyFeeGet).toHaveBeenCalled();
-    expect((component as any).items()).toEqual(MOCK_PAGINATION);
+    expect((component as any).items()).toEqual(MOCK_PAGE);
   });
 
   it('should set isLoading to false after successful load', () => {

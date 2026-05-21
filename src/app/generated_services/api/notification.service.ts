@@ -20,21 +20,21 @@ import { Observable }                                        from 'rxjs';
 // @ts-ignore
 import { ApiAdminAcademiesIdGet404Response } from '../model/apiAdminAcademiesIdGet404Response';
 // @ts-ignore
-import { CreateNotificationDTO } from '../model/createNotificationDTO';
+import { CarlonGracieBackendCommunicationsApplicationDTOsCreateNotificationDto } from '../model/carlonGracieBackendCommunicationsApplicationDTOsCreateNotificationDto';
 // @ts-ignore
-import { MarkAsReadDTO } from '../model/markAsReadDTO';
+import { CarlonGracieBackendCommunicationsApplicationDTOsMarkAsReadDto } from '../model/carlonGracieBackendCommunicationsApplicationDTOsMarkAsReadDto';
 // @ts-ignore
-import { NotificationStatsDTO } from '../model/notificationStatsDTO';
+import { CarlonGracieBackendCommunicationsApplicationDTOsNotificationStatsDto } from '../model/carlonGracieBackendCommunicationsApplicationDTOsNotificationStatsDto';
 // @ts-ignore
-import { NotificationType } from '../model/notificationType';
+import { CarlonGracieBackendCommunicationsApplicationDTOsPaginationNotificationDto } from '../model/carlonGracieBackendCommunicationsApplicationDTOsPaginationNotificationDto';
 // @ts-ignore
-import { PaginationNotificationDTO } from '../model/paginationNotificationDTO';
+import { CarlonGracieBackendCommunicationsApplicationDTOsShowNotificationDto } from '../model/carlonGracieBackendCommunicationsApplicationDTOsShowNotificationDto';
 // @ts-ignore
-import { ShowNotificationDTO } from '../model/showNotificationDTO';
+import { CarlonGracieBackendCommunicationsApplicationDTOsUpdateNotificationDto } from '../model/carlonGracieBackendCommunicationsApplicationDTOsUpdateNotificationDto';
 // @ts-ignore
-import { UpdateNotificationDTO } from '../model/updateNotificationDTO';
+import { CarlonGracieBackendCommunicationsDomainNotificationType } from '../model/carlonGracieBackendCommunicationsDomainNotificationType';
 // @ts-ignore
-import { ValidationProblemDetails } from '../model/validationProblemDetails';
+import { MicrosoftAspNetCoreMvcValidationProblemDetails } from '../model/microsoftAspNetCoreMvcValidationProblemDetails';
 
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
@@ -114,9 +114,9 @@ export class NotificationService implements NotificationServiceInterface {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiNotificationActiveGet(observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Array<ShowNotificationDTO>>;
-    public apiNotificationActiveGet(observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<ShowNotificationDTO>>>;
-    public apiNotificationActiveGet(observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<ShowNotificationDTO>>>;
+    public apiNotificationActiveGet(observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Array<CarlonGracieBackendCommunicationsApplicationDTOsShowNotificationDto>>;
+    public apiNotificationActiveGet(observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<CarlonGracieBackendCommunicationsApplicationDTOsShowNotificationDto>>>;
+    public apiNotificationActiveGet(observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<CarlonGracieBackendCommunicationsApplicationDTOsShowNotificationDto>>>;
     public apiNotificationActiveGet(observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
 
         let localVarHeaders = this.defaultHeaders;
@@ -156,7 +156,7 @@ export class NotificationService implements NotificationServiceInterface {
         }
 
         let localVarPath = `/api/Notification/active`;
-        return this.httpClient.request<Array<ShowNotificationDTO>>('get', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<Array<CarlonGracieBackendCommunicationsApplicationDTOsShowNotificationDto>>('get', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 responseType: <any>responseType_,
@@ -228,6 +228,8 @@ export class NotificationService implements NotificationServiceInterface {
     }
 
     /**
+     * @param pageNumber 
+     * @param pageSize 
      * @param searchTerm 
      * @param type 
      * @param isActive 
@@ -235,19 +237,23 @@ export class NotificationService implements NotificationServiceInterface {
      * @param isExpired 
      * @param createdFrom 
      * @param createdTo 
-     * @param expiresFrom 
-     * @param expiresTo 
-     * @param pageNumber 
-     * @param pageSize 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiNotificationGet(searchTerm?: string, type?: NotificationType, isActive?: boolean, studentId?: string, isExpired?: boolean, createdFrom?: string, createdTo?: string, expiresFrom?: string, expiresTo?: string, pageNumber?: number, pageSize?: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<PaginationNotificationDTO>;
-    public apiNotificationGet(searchTerm?: string, type?: NotificationType, isActive?: boolean, studentId?: string, isExpired?: boolean, createdFrom?: string, createdTo?: string, expiresFrom?: string, expiresTo?: string, pageNumber?: number, pageSize?: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<PaginationNotificationDTO>>;
-    public apiNotificationGet(searchTerm?: string, type?: NotificationType, isActive?: boolean, studentId?: string, isExpired?: boolean, createdFrom?: string, createdTo?: string, expiresFrom?: string, expiresTo?: string, pageNumber?: number, pageSize?: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<PaginationNotificationDTO>>;
-    public apiNotificationGet(searchTerm?: string, type?: NotificationType, isActive?: boolean, studentId?: string, isExpired?: boolean, createdFrom?: string, createdTo?: string, expiresFrom?: string, expiresTo?: string, pageNumber?: number, pageSize?: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public apiNotificationGet(pageNumber?: number, pageSize?: number, searchTerm?: string, type?: CarlonGracieBackendCommunicationsDomainNotificationType, isActive?: boolean, studentId?: string, isExpired?: boolean, createdFrom?: string, createdTo?: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<CarlonGracieBackendCommunicationsApplicationDTOsPaginationNotificationDto>;
+    public apiNotificationGet(pageNumber?: number, pageSize?: number, searchTerm?: string, type?: CarlonGracieBackendCommunicationsDomainNotificationType, isActive?: boolean, studentId?: string, isExpired?: boolean, createdFrom?: string, createdTo?: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<CarlonGracieBackendCommunicationsApplicationDTOsPaginationNotificationDto>>;
+    public apiNotificationGet(pageNumber?: number, pageSize?: number, searchTerm?: string, type?: CarlonGracieBackendCommunicationsDomainNotificationType, isActive?: boolean, studentId?: string, isExpired?: boolean, createdFrom?: string, createdTo?: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<CarlonGracieBackendCommunicationsApplicationDTOsPaginationNotificationDto>>;
+    public apiNotificationGet(pageNumber?: number, pageSize?: number, searchTerm?: string, type?: CarlonGracieBackendCommunicationsDomainNotificationType, isActive?: boolean, studentId?: string, isExpired?: boolean, createdFrom?: string, createdTo?: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
 
         let localVarQueryParameters = new HttpParams({encoder: this.encoder});
+        if (pageNumber !== undefined && pageNumber !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>pageNumber, 'PageNumber');
+        }
+        if (pageSize !== undefined && pageSize !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>pageSize, 'PageSize');
+        }
         if (searchTerm !== undefined && searchTerm !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
             <any>searchTerm, 'SearchTerm');
@@ -275,22 +281,6 @@ export class NotificationService implements NotificationServiceInterface {
         if (createdTo !== undefined && createdTo !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
             <any>createdTo, 'CreatedTo');
-        }
-        if (expiresFrom !== undefined && expiresFrom !== null) {
-          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>expiresFrom, 'ExpiresFrom');
-        }
-        if (expiresTo !== undefined && expiresTo !== null) {
-          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>expiresTo, 'ExpiresTo');
-        }
-        if (pageNumber !== undefined && pageNumber !== null) {
-          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>pageNumber, 'PageNumber');
-        }
-        if (pageSize !== undefined && pageSize !== null) {
-          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>pageSize, 'PageSize');
         }
 
         let localVarHeaders = this.defaultHeaders;
@@ -330,7 +320,7 @@ export class NotificationService implements NotificationServiceInterface {
         }
 
         let localVarPath = `/api/Notification`;
-        return this.httpClient.request<PaginationNotificationDTO>('get', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<CarlonGracieBackendCommunicationsApplicationDTOsPaginationNotificationDto>('get', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 params: localVarQueryParameters,
@@ -412,9 +402,9 @@ export class NotificationService implements NotificationServiceInterface {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiNotificationIdGet(id: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<ShowNotificationDTO>;
-    public apiNotificationIdGet(id: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<ShowNotificationDTO>>;
-    public apiNotificationIdGet(id: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<ShowNotificationDTO>>;
+    public apiNotificationIdGet(id: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<CarlonGracieBackendCommunicationsApplicationDTOsShowNotificationDto>;
+    public apiNotificationIdGet(id: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<CarlonGracieBackendCommunicationsApplicationDTOsShowNotificationDto>>;
+    public apiNotificationIdGet(id: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<CarlonGracieBackendCommunicationsApplicationDTOsShowNotificationDto>>;
     public apiNotificationIdGet(id: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         if (id === null || id === undefined) {
             throw new Error('Required parameter id was null or undefined when calling apiNotificationIdGet.');
@@ -457,7 +447,7 @@ export class NotificationService implements NotificationServiceInterface {
         }
 
         let localVarPath = `/api/Notification/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: "uuid"})}`;
-        return this.httpClient.request<ShowNotificationDTO>('get', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<CarlonGracieBackendCommunicationsApplicationDTOsShowNotificationDto>('get', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 responseType: <any>responseType_,
@@ -472,14 +462,14 @@ export class NotificationService implements NotificationServiceInterface {
 
     /**
      * @param id 
-     * @param updateNotificationDTO 
+     * @param carlonGracieBackendCommunicationsApplicationDTOsUpdateNotificationDto 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiNotificationIdPut(id: string, updateNotificationDTO?: UpdateNotificationDTO, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<ShowNotificationDTO>;
-    public apiNotificationIdPut(id: string, updateNotificationDTO?: UpdateNotificationDTO, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<ShowNotificationDTO>>;
-    public apiNotificationIdPut(id: string, updateNotificationDTO?: UpdateNotificationDTO, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<ShowNotificationDTO>>;
-    public apiNotificationIdPut(id: string, updateNotificationDTO?: UpdateNotificationDTO, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public apiNotificationIdPut(id: string, carlonGracieBackendCommunicationsApplicationDTOsUpdateNotificationDto?: CarlonGracieBackendCommunicationsApplicationDTOsUpdateNotificationDto, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<CarlonGracieBackendCommunicationsApplicationDTOsShowNotificationDto>;
+    public apiNotificationIdPut(id: string, carlonGracieBackendCommunicationsApplicationDTOsUpdateNotificationDto?: CarlonGracieBackendCommunicationsApplicationDTOsUpdateNotificationDto, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<CarlonGracieBackendCommunicationsApplicationDTOsShowNotificationDto>>;
+    public apiNotificationIdPut(id: string, carlonGracieBackendCommunicationsApplicationDTOsUpdateNotificationDto?: CarlonGracieBackendCommunicationsApplicationDTOsUpdateNotificationDto, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<CarlonGracieBackendCommunicationsApplicationDTOsShowNotificationDto>>;
+    public apiNotificationIdPut(id: string, carlonGracieBackendCommunicationsApplicationDTOsUpdateNotificationDto?: CarlonGracieBackendCommunicationsApplicationDTOsUpdateNotificationDto, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         if (id === null || id === undefined) {
             throw new Error('Required parameter id was null or undefined when calling apiNotificationIdPut.');
         }
@@ -511,7 +501,44 @@ export class NotificationService implements NotificationServiceInterface {
 
         // to determine the Content-Type header
         const consumes: string[] = [
+            'application/json;odata.metadata=minimal;odata.streaming=true',
+            'application/json;odata.metadata=minimal;odata.streaming=false',
+            'application/json;odata.metadata=minimal',
+            'application/json;odata.metadata=full;odata.streaming=true',
+            'application/json;odata.metadata=full;odata.streaming=false',
+            'application/json;odata.metadata=full',
+            'application/json;odata.metadata=none;odata.streaming=true',
+            'application/json;odata.metadata=none;odata.streaming=false',
+            'application/json;odata.metadata=none',
+            'application/json;odata.streaming=true',
+            'application/json;odata.streaming=false',
             'application/json',
+            'application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=false',
+            'application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=true',
+            'application/json;odata.metadata=minimal;odata.streaming=false;IEEE754Compatible=false',
+            'application/json;odata.metadata=minimal;odata.streaming=false;IEEE754Compatible=true',
+            'application/json;odata.metadata=minimal;IEEE754Compatible=false',
+            'application/json;odata.metadata=minimal;IEEE754Compatible=true',
+            'application/json;odata.metadata=full;odata.streaming=true;IEEE754Compatible=false',
+            'application/json;odata.metadata=full;odata.streaming=true;IEEE754Compatible=true',
+            'application/json;odata.metadata=full;odata.streaming=false;IEEE754Compatible=false',
+            'application/json;odata.metadata=full;odata.streaming=false;IEEE754Compatible=true',
+            'application/json;odata.metadata=full;IEEE754Compatible=false',
+            'application/json;odata.metadata=full;IEEE754Compatible=true',
+            'application/json;odata.metadata=none;odata.streaming=true;IEEE754Compatible=false',
+            'application/json;odata.metadata=none;odata.streaming=true;IEEE754Compatible=true',
+            'application/json;odata.metadata=none;odata.streaming=false;IEEE754Compatible=true',
+            'application/json;odata.metadata=none;odata.streaming=false;IEEE754Compatible=false',
+            'application/json;odata.metadata=none;IEEE754Compatible=false',
+            'application/json;odata.metadata=none;IEEE754Compatible=true',
+            'application/json;odata.streaming=true;IEEE754Compatible=false',
+            'application/json;odata.streaming=true;IEEE754Compatible=true',
+            'application/json;odata.streaming=false;IEEE754Compatible=false',
+            'application/json;odata.streaming=false;IEEE754Compatible=true',
+            'application/json;IEEE754Compatible=false',
+            'application/json;IEEE754Compatible=true',
+            'application/xml',
+            'text/plain',
             'text/json',
             'application/*+json'
         ];
@@ -532,10 +559,10 @@ export class NotificationService implements NotificationServiceInterface {
         }
 
         let localVarPath = `/api/Notification/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: "uuid"})}`;
-        return this.httpClient.request<ShowNotificationDTO>('put', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<CarlonGracieBackendCommunicationsApplicationDTOsShowNotificationDto>('put', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
-                body: updateNotificationDTO,
+                body: carlonGracieBackendCommunicationsApplicationDTOsUpdateNotificationDto,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,
@@ -605,14 +632,14 @@ export class NotificationService implements NotificationServiceInterface {
     }
 
     /**
-     * @param markAsReadDTO 
+     * @param carlonGracieBackendCommunicationsApplicationDTOsMarkAsReadDto 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiNotificationMarkAsReadPost(markAsReadDTO?: MarkAsReadDTO, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any>;
-    public apiNotificationMarkAsReadPost(markAsReadDTO?: MarkAsReadDTO, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<any>>;
-    public apiNotificationMarkAsReadPost(markAsReadDTO?: MarkAsReadDTO, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<any>>;
-    public apiNotificationMarkAsReadPost(markAsReadDTO?: MarkAsReadDTO, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public apiNotificationMarkAsReadPost(carlonGracieBackendCommunicationsApplicationDTOsMarkAsReadDto?: CarlonGracieBackendCommunicationsApplicationDTOsMarkAsReadDto, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any>;
+    public apiNotificationMarkAsReadPost(carlonGracieBackendCommunicationsApplicationDTOsMarkAsReadDto?: CarlonGracieBackendCommunicationsApplicationDTOsMarkAsReadDto, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<any>>;
+    public apiNotificationMarkAsReadPost(carlonGracieBackendCommunicationsApplicationDTOsMarkAsReadDto?: CarlonGracieBackendCommunicationsApplicationDTOsMarkAsReadDto, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<any>>;
+    public apiNotificationMarkAsReadPost(carlonGracieBackendCommunicationsApplicationDTOsMarkAsReadDto?: CarlonGracieBackendCommunicationsApplicationDTOsMarkAsReadDto, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
 
         let localVarHeaders = this.defaultHeaders;
 
@@ -641,7 +668,44 @@ export class NotificationService implements NotificationServiceInterface {
 
         // to determine the Content-Type header
         const consumes: string[] = [
+            'application/json;odata.metadata=minimal;odata.streaming=true',
+            'application/json;odata.metadata=minimal;odata.streaming=false',
+            'application/json;odata.metadata=minimal',
+            'application/json;odata.metadata=full;odata.streaming=true',
+            'application/json;odata.metadata=full;odata.streaming=false',
+            'application/json;odata.metadata=full',
+            'application/json;odata.metadata=none;odata.streaming=true',
+            'application/json;odata.metadata=none;odata.streaming=false',
+            'application/json;odata.metadata=none',
+            'application/json;odata.streaming=true',
+            'application/json;odata.streaming=false',
             'application/json',
+            'application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=false',
+            'application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=true',
+            'application/json;odata.metadata=minimal;odata.streaming=false;IEEE754Compatible=false',
+            'application/json;odata.metadata=minimal;odata.streaming=false;IEEE754Compatible=true',
+            'application/json;odata.metadata=minimal;IEEE754Compatible=false',
+            'application/json;odata.metadata=minimal;IEEE754Compatible=true',
+            'application/json;odata.metadata=full;odata.streaming=true;IEEE754Compatible=false',
+            'application/json;odata.metadata=full;odata.streaming=true;IEEE754Compatible=true',
+            'application/json;odata.metadata=full;odata.streaming=false;IEEE754Compatible=false',
+            'application/json;odata.metadata=full;odata.streaming=false;IEEE754Compatible=true',
+            'application/json;odata.metadata=full;IEEE754Compatible=false',
+            'application/json;odata.metadata=full;IEEE754Compatible=true',
+            'application/json;odata.metadata=none;odata.streaming=true;IEEE754Compatible=false',
+            'application/json;odata.metadata=none;odata.streaming=true;IEEE754Compatible=true',
+            'application/json;odata.metadata=none;odata.streaming=false;IEEE754Compatible=true',
+            'application/json;odata.metadata=none;odata.streaming=false;IEEE754Compatible=false',
+            'application/json;odata.metadata=none;IEEE754Compatible=false',
+            'application/json;odata.metadata=none;IEEE754Compatible=true',
+            'application/json;odata.streaming=true;IEEE754Compatible=false',
+            'application/json;odata.streaming=true;IEEE754Compatible=true',
+            'application/json;odata.streaming=false;IEEE754Compatible=false',
+            'application/json;odata.streaming=false;IEEE754Compatible=true',
+            'application/json;IEEE754Compatible=false',
+            'application/json;IEEE754Compatible=true',
+            'application/xml',
+            'text/plain',
             'text/json',
             'application/*+json'
         ];
@@ -665,7 +729,7 @@ export class NotificationService implements NotificationServiceInterface {
         return this.httpClient.request<any>('post', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
-                body: markAsReadDTO,
+                body: carlonGracieBackendCommunicationsApplicationDTOsMarkAsReadDto,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,
@@ -677,6 +741,8 @@ export class NotificationService implements NotificationServiceInterface {
     }
 
     /**
+     * @param pageNumber 
+     * @param pageSize 
      * @param searchTerm 
      * @param type 
      * @param isActive 
@@ -684,19 +750,23 @@ export class NotificationService implements NotificationServiceInterface {
      * @param isExpired 
      * @param createdFrom 
      * @param createdTo 
-     * @param expiresFrom 
-     * @param expiresTo 
-     * @param pageNumber 
-     * @param pageSize 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiNotificationMyGet(searchTerm?: string, type?: NotificationType, isActive?: boolean, studentId?: string, isExpired?: boolean, createdFrom?: string, createdTo?: string, expiresFrom?: string, expiresTo?: string, pageNumber?: number, pageSize?: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Array<ShowNotificationDTO>>;
-    public apiNotificationMyGet(searchTerm?: string, type?: NotificationType, isActive?: boolean, studentId?: string, isExpired?: boolean, createdFrom?: string, createdTo?: string, expiresFrom?: string, expiresTo?: string, pageNumber?: number, pageSize?: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<ShowNotificationDTO>>>;
-    public apiNotificationMyGet(searchTerm?: string, type?: NotificationType, isActive?: boolean, studentId?: string, isExpired?: boolean, createdFrom?: string, createdTo?: string, expiresFrom?: string, expiresTo?: string, pageNumber?: number, pageSize?: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<ShowNotificationDTO>>>;
-    public apiNotificationMyGet(searchTerm?: string, type?: NotificationType, isActive?: boolean, studentId?: string, isExpired?: boolean, createdFrom?: string, createdTo?: string, expiresFrom?: string, expiresTo?: string, pageNumber?: number, pageSize?: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public apiNotificationMyGet(pageNumber?: number, pageSize?: number, searchTerm?: string, type?: CarlonGracieBackendCommunicationsDomainNotificationType, isActive?: boolean, studentId?: string, isExpired?: boolean, createdFrom?: string, createdTo?: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Array<CarlonGracieBackendCommunicationsApplicationDTOsShowNotificationDto>>;
+    public apiNotificationMyGet(pageNumber?: number, pageSize?: number, searchTerm?: string, type?: CarlonGracieBackendCommunicationsDomainNotificationType, isActive?: boolean, studentId?: string, isExpired?: boolean, createdFrom?: string, createdTo?: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<CarlonGracieBackendCommunicationsApplicationDTOsShowNotificationDto>>>;
+    public apiNotificationMyGet(pageNumber?: number, pageSize?: number, searchTerm?: string, type?: CarlonGracieBackendCommunicationsDomainNotificationType, isActive?: boolean, studentId?: string, isExpired?: boolean, createdFrom?: string, createdTo?: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<CarlonGracieBackendCommunicationsApplicationDTOsShowNotificationDto>>>;
+    public apiNotificationMyGet(pageNumber?: number, pageSize?: number, searchTerm?: string, type?: CarlonGracieBackendCommunicationsDomainNotificationType, isActive?: boolean, studentId?: string, isExpired?: boolean, createdFrom?: string, createdTo?: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
 
         let localVarQueryParameters = new HttpParams({encoder: this.encoder});
+        if (pageNumber !== undefined && pageNumber !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>pageNumber, 'PageNumber');
+        }
+        if (pageSize !== undefined && pageSize !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>pageSize, 'PageSize');
+        }
         if (searchTerm !== undefined && searchTerm !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
             <any>searchTerm, 'SearchTerm');
@@ -724,22 +794,6 @@ export class NotificationService implements NotificationServiceInterface {
         if (createdTo !== undefined && createdTo !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
             <any>createdTo, 'CreatedTo');
-        }
-        if (expiresFrom !== undefined && expiresFrom !== null) {
-          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>expiresFrom, 'ExpiresFrom');
-        }
-        if (expiresTo !== undefined && expiresTo !== null) {
-          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>expiresTo, 'ExpiresTo');
-        }
-        if (pageNumber !== undefined && pageNumber !== null) {
-          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>pageNumber, 'PageNumber');
-        }
-        if (pageSize !== undefined && pageSize !== null) {
-          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>pageSize, 'PageSize');
         }
 
         let localVarHeaders = this.defaultHeaders;
@@ -779,7 +833,7 @@ export class NotificationService implements NotificationServiceInterface {
         }
 
         let localVarPath = `/api/Notification/my`;
-        return this.httpClient.request<Array<ShowNotificationDTO>>('get', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<Array<CarlonGracieBackendCommunicationsApplicationDTOsShowNotificationDto>>('get', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 params: localVarQueryParameters,
@@ -797,9 +851,9 @@ export class NotificationService implements NotificationServiceInterface {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiNotificationMyStatsGet(observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<NotificationStatsDTO>;
-    public apiNotificationMyStatsGet(observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<NotificationStatsDTO>>;
-    public apiNotificationMyStatsGet(observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<NotificationStatsDTO>>;
+    public apiNotificationMyStatsGet(observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<CarlonGracieBackendCommunicationsApplicationDTOsNotificationStatsDto>;
+    public apiNotificationMyStatsGet(observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<CarlonGracieBackendCommunicationsApplicationDTOsNotificationStatsDto>>;
+    public apiNotificationMyStatsGet(observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<CarlonGracieBackendCommunicationsApplicationDTOsNotificationStatsDto>>;
     public apiNotificationMyStatsGet(observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
 
         let localVarHeaders = this.defaultHeaders;
@@ -839,7 +893,7 @@ export class NotificationService implements NotificationServiceInterface {
         }
 
         let localVarPath = `/api/Notification/my/stats`;
-        return this.httpClient.request<NotificationStatsDTO>('get', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<CarlonGracieBackendCommunicationsApplicationDTOsNotificationStatsDto>('get', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 responseType: <any>responseType_,
@@ -853,6 +907,8 @@ export class NotificationService implements NotificationServiceInterface {
     }
 
     /**
+     * @param pageNumber 
+     * @param pageSize 
      * @param searchTerm 
      * @param type 
      * @param isActive 
@@ -860,19 +916,23 @@ export class NotificationService implements NotificationServiceInterface {
      * @param isExpired 
      * @param createdFrom 
      * @param createdTo 
-     * @param expiresFrom 
-     * @param expiresTo 
-     * @param pageNumber 
-     * @param pageSize 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiNotificationMyUnreadGet(searchTerm?: string, type?: NotificationType, isActive?: boolean, studentId?: string, isExpired?: boolean, createdFrom?: string, createdTo?: string, expiresFrom?: string, expiresTo?: string, pageNumber?: number, pageSize?: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Array<ShowNotificationDTO>>;
-    public apiNotificationMyUnreadGet(searchTerm?: string, type?: NotificationType, isActive?: boolean, studentId?: string, isExpired?: boolean, createdFrom?: string, createdTo?: string, expiresFrom?: string, expiresTo?: string, pageNumber?: number, pageSize?: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<ShowNotificationDTO>>>;
-    public apiNotificationMyUnreadGet(searchTerm?: string, type?: NotificationType, isActive?: boolean, studentId?: string, isExpired?: boolean, createdFrom?: string, createdTo?: string, expiresFrom?: string, expiresTo?: string, pageNumber?: number, pageSize?: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<ShowNotificationDTO>>>;
-    public apiNotificationMyUnreadGet(searchTerm?: string, type?: NotificationType, isActive?: boolean, studentId?: string, isExpired?: boolean, createdFrom?: string, createdTo?: string, expiresFrom?: string, expiresTo?: string, pageNumber?: number, pageSize?: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public apiNotificationMyUnreadGet(pageNumber?: number, pageSize?: number, searchTerm?: string, type?: CarlonGracieBackendCommunicationsDomainNotificationType, isActive?: boolean, studentId?: string, isExpired?: boolean, createdFrom?: string, createdTo?: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Array<CarlonGracieBackendCommunicationsApplicationDTOsShowNotificationDto>>;
+    public apiNotificationMyUnreadGet(pageNumber?: number, pageSize?: number, searchTerm?: string, type?: CarlonGracieBackendCommunicationsDomainNotificationType, isActive?: boolean, studentId?: string, isExpired?: boolean, createdFrom?: string, createdTo?: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<CarlonGracieBackendCommunicationsApplicationDTOsShowNotificationDto>>>;
+    public apiNotificationMyUnreadGet(pageNumber?: number, pageSize?: number, searchTerm?: string, type?: CarlonGracieBackendCommunicationsDomainNotificationType, isActive?: boolean, studentId?: string, isExpired?: boolean, createdFrom?: string, createdTo?: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<CarlonGracieBackendCommunicationsApplicationDTOsShowNotificationDto>>>;
+    public apiNotificationMyUnreadGet(pageNumber?: number, pageSize?: number, searchTerm?: string, type?: CarlonGracieBackendCommunicationsDomainNotificationType, isActive?: boolean, studentId?: string, isExpired?: boolean, createdFrom?: string, createdTo?: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
 
         let localVarQueryParameters = new HttpParams({encoder: this.encoder});
+        if (pageNumber !== undefined && pageNumber !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>pageNumber, 'PageNumber');
+        }
+        if (pageSize !== undefined && pageSize !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>pageSize, 'PageSize');
+        }
         if (searchTerm !== undefined && searchTerm !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
             <any>searchTerm, 'SearchTerm');
@@ -900,22 +960,6 @@ export class NotificationService implements NotificationServiceInterface {
         if (createdTo !== undefined && createdTo !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
             <any>createdTo, 'CreatedTo');
-        }
-        if (expiresFrom !== undefined && expiresFrom !== null) {
-          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>expiresFrom, 'ExpiresFrom');
-        }
-        if (expiresTo !== undefined && expiresTo !== null) {
-          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>expiresTo, 'ExpiresTo');
-        }
-        if (pageNumber !== undefined && pageNumber !== null) {
-          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>pageNumber, 'PageNumber');
-        }
-        if (pageSize !== undefined && pageSize !== null) {
-          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>pageSize, 'PageSize');
         }
 
         let localVarHeaders = this.defaultHeaders;
@@ -955,7 +999,7 @@ export class NotificationService implements NotificationServiceInterface {
         }
 
         let localVarPath = `/api/Notification/my/unread`;
-        return this.httpClient.request<Array<ShowNotificationDTO>>('get', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<Array<CarlonGracieBackendCommunicationsApplicationDTOsShowNotificationDto>>('get', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 params: localVarQueryParameters,
@@ -970,14 +1014,14 @@ export class NotificationService implements NotificationServiceInterface {
     }
 
     /**
-     * @param createNotificationDTO 
+     * @param carlonGracieBackendCommunicationsApplicationDTOsCreateNotificationDto 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiNotificationPost(createNotificationDTO?: CreateNotificationDTO, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<ShowNotificationDTO>;
-    public apiNotificationPost(createNotificationDTO?: CreateNotificationDTO, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<ShowNotificationDTO>>;
-    public apiNotificationPost(createNotificationDTO?: CreateNotificationDTO, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<ShowNotificationDTO>>;
-    public apiNotificationPost(createNotificationDTO?: CreateNotificationDTO, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public apiNotificationPost(carlonGracieBackendCommunicationsApplicationDTOsCreateNotificationDto?: CarlonGracieBackendCommunicationsApplicationDTOsCreateNotificationDto, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<CarlonGracieBackendCommunicationsApplicationDTOsShowNotificationDto>;
+    public apiNotificationPost(carlonGracieBackendCommunicationsApplicationDTOsCreateNotificationDto?: CarlonGracieBackendCommunicationsApplicationDTOsCreateNotificationDto, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<CarlonGracieBackendCommunicationsApplicationDTOsShowNotificationDto>>;
+    public apiNotificationPost(carlonGracieBackendCommunicationsApplicationDTOsCreateNotificationDto?: CarlonGracieBackendCommunicationsApplicationDTOsCreateNotificationDto, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<CarlonGracieBackendCommunicationsApplicationDTOsShowNotificationDto>>;
+    public apiNotificationPost(carlonGracieBackendCommunicationsApplicationDTOsCreateNotificationDto?: CarlonGracieBackendCommunicationsApplicationDTOsCreateNotificationDto, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
 
         let localVarHeaders = this.defaultHeaders;
 
@@ -1006,7 +1050,44 @@ export class NotificationService implements NotificationServiceInterface {
 
         // to determine the Content-Type header
         const consumes: string[] = [
+            'application/json;odata.metadata=minimal;odata.streaming=true',
+            'application/json;odata.metadata=minimal;odata.streaming=false',
+            'application/json;odata.metadata=minimal',
+            'application/json;odata.metadata=full;odata.streaming=true',
+            'application/json;odata.metadata=full;odata.streaming=false',
+            'application/json;odata.metadata=full',
+            'application/json;odata.metadata=none;odata.streaming=true',
+            'application/json;odata.metadata=none;odata.streaming=false',
+            'application/json;odata.metadata=none',
+            'application/json;odata.streaming=true',
+            'application/json;odata.streaming=false',
             'application/json',
+            'application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=false',
+            'application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=true',
+            'application/json;odata.metadata=minimal;odata.streaming=false;IEEE754Compatible=false',
+            'application/json;odata.metadata=minimal;odata.streaming=false;IEEE754Compatible=true',
+            'application/json;odata.metadata=minimal;IEEE754Compatible=false',
+            'application/json;odata.metadata=minimal;IEEE754Compatible=true',
+            'application/json;odata.metadata=full;odata.streaming=true;IEEE754Compatible=false',
+            'application/json;odata.metadata=full;odata.streaming=true;IEEE754Compatible=true',
+            'application/json;odata.metadata=full;odata.streaming=false;IEEE754Compatible=false',
+            'application/json;odata.metadata=full;odata.streaming=false;IEEE754Compatible=true',
+            'application/json;odata.metadata=full;IEEE754Compatible=false',
+            'application/json;odata.metadata=full;IEEE754Compatible=true',
+            'application/json;odata.metadata=none;odata.streaming=true;IEEE754Compatible=false',
+            'application/json;odata.metadata=none;odata.streaming=true;IEEE754Compatible=true',
+            'application/json;odata.metadata=none;odata.streaming=false;IEEE754Compatible=true',
+            'application/json;odata.metadata=none;odata.streaming=false;IEEE754Compatible=false',
+            'application/json;odata.metadata=none;IEEE754Compatible=false',
+            'application/json;odata.metadata=none;IEEE754Compatible=true',
+            'application/json;odata.streaming=true;IEEE754Compatible=false',
+            'application/json;odata.streaming=true;IEEE754Compatible=true',
+            'application/json;odata.streaming=false;IEEE754Compatible=false',
+            'application/json;odata.streaming=false;IEEE754Compatible=true',
+            'application/json;IEEE754Compatible=false',
+            'application/json;IEEE754Compatible=true',
+            'application/xml',
+            'text/plain',
             'text/json',
             'application/*+json'
         ];
@@ -1027,10 +1108,10 @@ export class NotificationService implements NotificationServiceInterface {
         }
 
         let localVarPath = `/api/Notification`;
-        return this.httpClient.request<ShowNotificationDTO>('post', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<CarlonGracieBackendCommunicationsApplicationDTOsShowNotificationDto>('post', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
-                body: createNotificationDTO,
+                body: carlonGracieBackendCommunicationsApplicationDTOsCreateNotificationDto,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,
@@ -1043,6 +1124,8 @@ export class NotificationService implements NotificationServiceInterface {
 
     /**
      * @param type 
+     * @param pageNumber 
+     * @param pageSize 
      * @param searchTerm 
      * @param type2 
      * @param isActive 
@@ -1050,22 +1133,26 @@ export class NotificationService implements NotificationServiceInterface {
      * @param isExpired 
      * @param createdFrom 
      * @param createdTo 
-     * @param expiresFrom 
-     * @param expiresTo 
-     * @param pageNumber 
-     * @param pageSize 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiNotificationTypeTypeGet(type: NotificationType, searchTerm?: string, type2?: NotificationType, isActive?: boolean, studentId?: string, isExpired?: boolean, createdFrom?: string, createdTo?: string, expiresFrom?: string, expiresTo?: string, pageNumber?: number, pageSize?: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Array<ShowNotificationDTO>>;
-    public apiNotificationTypeTypeGet(type: NotificationType, searchTerm?: string, type2?: NotificationType, isActive?: boolean, studentId?: string, isExpired?: boolean, createdFrom?: string, createdTo?: string, expiresFrom?: string, expiresTo?: string, pageNumber?: number, pageSize?: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<ShowNotificationDTO>>>;
-    public apiNotificationTypeTypeGet(type: NotificationType, searchTerm?: string, type2?: NotificationType, isActive?: boolean, studentId?: string, isExpired?: boolean, createdFrom?: string, createdTo?: string, expiresFrom?: string, expiresTo?: string, pageNumber?: number, pageSize?: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<ShowNotificationDTO>>>;
-    public apiNotificationTypeTypeGet(type: NotificationType, searchTerm?: string, type2?: NotificationType, isActive?: boolean, studentId?: string, isExpired?: boolean, createdFrom?: string, createdTo?: string, expiresFrom?: string, expiresTo?: string, pageNumber?: number, pageSize?: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public apiNotificationTypeTypeGet(type: CarlonGracieBackendCommunicationsDomainNotificationType, pageNumber?: number, pageSize?: number, searchTerm?: string, type2?: CarlonGracieBackendCommunicationsDomainNotificationType, isActive?: boolean, studentId?: string, isExpired?: boolean, createdFrom?: string, createdTo?: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Array<CarlonGracieBackendCommunicationsApplicationDTOsShowNotificationDto>>;
+    public apiNotificationTypeTypeGet(type: CarlonGracieBackendCommunicationsDomainNotificationType, pageNumber?: number, pageSize?: number, searchTerm?: string, type2?: CarlonGracieBackendCommunicationsDomainNotificationType, isActive?: boolean, studentId?: string, isExpired?: boolean, createdFrom?: string, createdTo?: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<CarlonGracieBackendCommunicationsApplicationDTOsShowNotificationDto>>>;
+    public apiNotificationTypeTypeGet(type: CarlonGracieBackendCommunicationsDomainNotificationType, pageNumber?: number, pageSize?: number, searchTerm?: string, type2?: CarlonGracieBackendCommunicationsDomainNotificationType, isActive?: boolean, studentId?: string, isExpired?: boolean, createdFrom?: string, createdTo?: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<CarlonGracieBackendCommunicationsApplicationDTOsShowNotificationDto>>>;
+    public apiNotificationTypeTypeGet(type: CarlonGracieBackendCommunicationsDomainNotificationType, pageNumber?: number, pageSize?: number, searchTerm?: string, type2?: CarlonGracieBackendCommunicationsDomainNotificationType, isActive?: boolean, studentId?: string, isExpired?: boolean, createdFrom?: string, createdTo?: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         if (type === null || type === undefined) {
             throw new Error('Required parameter type was null or undefined when calling apiNotificationTypeTypeGet.');
         }
 
         let localVarQueryParameters = new HttpParams({encoder: this.encoder});
+        if (pageNumber !== undefined && pageNumber !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>pageNumber, 'PageNumber');
+        }
+        if (pageSize !== undefined && pageSize !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>pageSize, 'PageSize');
+        }
         if (searchTerm !== undefined && searchTerm !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
             <any>searchTerm, 'SearchTerm');
@@ -1093,22 +1180,6 @@ export class NotificationService implements NotificationServiceInterface {
         if (createdTo !== undefined && createdTo !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
             <any>createdTo, 'CreatedTo');
-        }
-        if (expiresFrom !== undefined && expiresFrom !== null) {
-          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>expiresFrom, 'ExpiresFrom');
-        }
-        if (expiresTo !== undefined && expiresTo !== null) {
-          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>expiresTo, 'ExpiresTo');
-        }
-        if (pageNumber !== undefined && pageNumber !== null) {
-          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>pageNumber, 'PageNumber');
-        }
-        if (pageSize !== undefined && pageSize !== null) {
-          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>pageSize, 'PageSize');
         }
 
         let localVarHeaders = this.defaultHeaders;
@@ -1147,8 +1218,8 @@ export class NotificationService implements NotificationServiceInterface {
             }
         }
 
-        let localVarPath = `/api/Notification/type/${this.configuration.encodeParam({name: "type", value: type, in: "path", style: "simple", explode: false, dataType: "NotificationType", dataFormat: undefined})}`;
-        return this.httpClient.request<Array<ShowNotificationDTO>>('get', `${this.configuration.basePath}${localVarPath}`,
+        let localVarPath = `/api/Notification/type/${this.configuration.encodeParam({name: "type", value: type, in: "path", style: "simple", explode: false, dataType: "CarlonGracieBackendCommunicationsDomainNotificationType", dataFormat: undefined})}`;
+        return this.httpClient.request<Array<CarlonGracieBackendCommunicationsApplicationDTOsShowNotificationDto>>('get', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 params: localVarQueryParameters,
@@ -1164,6 +1235,8 @@ export class NotificationService implements NotificationServiceInterface {
 
     /**
      * @param userId 
+     * @param pageNumber 
+     * @param pageSize 
      * @param searchTerm 
      * @param type 
      * @param isActive 
@@ -1171,22 +1244,26 @@ export class NotificationService implements NotificationServiceInterface {
      * @param isExpired 
      * @param createdFrom 
      * @param createdTo 
-     * @param expiresFrom 
-     * @param expiresTo 
-     * @param pageNumber 
-     * @param pageSize 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiNotificationUserUserIdGet(userId: string, searchTerm?: string, type?: NotificationType, isActive?: boolean, studentId?: string, isExpired?: boolean, createdFrom?: string, createdTo?: string, expiresFrom?: string, expiresTo?: string, pageNumber?: number, pageSize?: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Array<ShowNotificationDTO>>;
-    public apiNotificationUserUserIdGet(userId: string, searchTerm?: string, type?: NotificationType, isActive?: boolean, studentId?: string, isExpired?: boolean, createdFrom?: string, createdTo?: string, expiresFrom?: string, expiresTo?: string, pageNumber?: number, pageSize?: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<ShowNotificationDTO>>>;
-    public apiNotificationUserUserIdGet(userId: string, searchTerm?: string, type?: NotificationType, isActive?: boolean, studentId?: string, isExpired?: boolean, createdFrom?: string, createdTo?: string, expiresFrom?: string, expiresTo?: string, pageNumber?: number, pageSize?: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<ShowNotificationDTO>>>;
-    public apiNotificationUserUserIdGet(userId: string, searchTerm?: string, type?: NotificationType, isActive?: boolean, studentId?: string, isExpired?: boolean, createdFrom?: string, createdTo?: string, expiresFrom?: string, expiresTo?: string, pageNumber?: number, pageSize?: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public apiNotificationUserUserIdGet(userId: string, pageNumber?: number, pageSize?: number, searchTerm?: string, type?: CarlonGracieBackendCommunicationsDomainNotificationType, isActive?: boolean, studentId?: string, isExpired?: boolean, createdFrom?: string, createdTo?: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Array<CarlonGracieBackendCommunicationsApplicationDTOsShowNotificationDto>>;
+    public apiNotificationUserUserIdGet(userId: string, pageNumber?: number, pageSize?: number, searchTerm?: string, type?: CarlonGracieBackendCommunicationsDomainNotificationType, isActive?: boolean, studentId?: string, isExpired?: boolean, createdFrom?: string, createdTo?: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<CarlonGracieBackendCommunicationsApplicationDTOsShowNotificationDto>>>;
+    public apiNotificationUserUserIdGet(userId: string, pageNumber?: number, pageSize?: number, searchTerm?: string, type?: CarlonGracieBackendCommunicationsDomainNotificationType, isActive?: boolean, studentId?: string, isExpired?: boolean, createdFrom?: string, createdTo?: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<CarlonGracieBackendCommunicationsApplicationDTOsShowNotificationDto>>>;
+    public apiNotificationUserUserIdGet(userId: string, pageNumber?: number, pageSize?: number, searchTerm?: string, type?: CarlonGracieBackendCommunicationsDomainNotificationType, isActive?: boolean, studentId?: string, isExpired?: boolean, createdFrom?: string, createdTo?: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         if (userId === null || userId === undefined) {
             throw new Error('Required parameter userId was null or undefined when calling apiNotificationUserUserIdGet.');
         }
 
         let localVarQueryParameters = new HttpParams({encoder: this.encoder});
+        if (pageNumber !== undefined && pageNumber !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>pageNumber, 'PageNumber');
+        }
+        if (pageSize !== undefined && pageSize !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>pageSize, 'PageSize');
+        }
         if (searchTerm !== undefined && searchTerm !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
             <any>searchTerm, 'SearchTerm');
@@ -1214,22 +1291,6 @@ export class NotificationService implements NotificationServiceInterface {
         if (createdTo !== undefined && createdTo !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
             <any>createdTo, 'CreatedTo');
-        }
-        if (expiresFrom !== undefined && expiresFrom !== null) {
-          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>expiresFrom, 'ExpiresFrom');
-        }
-        if (expiresTo !== undefined && expiresTo !== null) {
-          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>expiresTo, 'ExpiresTo');
-        }
-        if (pageNumber !== undefined && pageNumber !== null) {
-          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>pageNumber, 'PageNumber');
-        }
-        if (pageSize !== undefined && pageSize !== null) {
-          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>pageSize, 'PageSize');
         }
 
         let localVarHeaders = this.defaultHeaders;
@@ -1269,7 +1330,7 @@ export class NotificationService implements NotificationServiceInterface {
         }
 
         let localVarPath = `/api/Notification/user/${this.configuration.encodeParam({name: "userId", value: userId, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: "uuid"})}`;
-        return this.httpClient.request<Array<ShowNotificationDTO>>('get', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<Array<CarlonGracieBackendCommunicationsApplicationDTOsShowNotificationDto>>('get', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 params: localVarQueryParameters,

@@ -18,13 +18,13 @@ import { CustomHttpParameterCodec }                          from '../encoder';
 import { Observable }                                        from 'rxjs';
 
 // @ts-ignore
-import { BarChartDataDTO } from '../model/barChartDataDTO';
+import { CarlonGracieBackendDTOsBarChartDataDTO } from '../model/carlonGracieBackendDTOsBarChartDataDTO';
 // @ts-ignore
-import { MonthlyNewStudentsDTO } from '../model/monthlyNewStudentsDTO';
+import { CarlonGracieBackendDTOsMonthlyNewStudentsDTO } from '../model/carlonGracieBackendDTOsMonthlyNewStudentsDTO';
 // @ts-ignore
-import { StudentsBirthDay } from '../model/studentsBirthDay';
+import { CarlonGracieBackendDTOsStudentsBirthDay } from '../model/carlonGracieBackendDTOsStudentsBirthDay';
 // @ts-ignore
-import { TopStudentDTO } from '../model/topStudentDTO';
+import { CarlonGracieBackendDTOsTopStudentDTO } from '../model/carlonGracieBackendDTOsTopStudentDTO';
 
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
@@ -171,9 +171,9 @@ export class DashboardService implements DashboardServiceInterface {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiDashboardBirthdaysGet(days?: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Array<StudentsBirthDay>>;
-    public apiDashboardBirthdaysGet(days?: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<StudentsBirthDay>>>;
-    public apiDashboardBirthdaysGet(days?: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<StudentsBirthDay>>>;
+    public apiDashboardBirthdaysGet(days?: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Array<CarlonGracieBackendDTOsStudentsBirthDay>>;
+    public apiDashboardBirthdaysGet(days?: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<CarlonGracieBackendDTOsStudentsBirthDay>>>;
+    public apiDashboardBirthdaysGet(days?: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<CarlonGracieBackendDTOsStudentsBirthDay>>>;
     public apiDashboardBirthdaysGet(days?: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
 
         let localVarQueryParameters = new HttpParams({encoder: this.encoder});
@@ -219,7 +219,7 @@ export class DashboardService implements DashboardServiceInterface {
         }
 
         let localVarPath = `/api/Dashboard/birthdays`;
-        return this.httpClient.request<Array<StudentsBirthDay>>('get', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<Array<CarlonGracieBackendDTOsStudentsBirthDay>>('get', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 params: localVarQueryParameters,
@@ -238,9 +238,9 @@ export class DashboardService implements DashboardServiceInterface {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiDashboardFrequencyBeltsDistributionGet(days?: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<BarChartDataDTO>;
-    public apiDashboardFrequencyBeltsDistributionGet(days?: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<BarChartDataDTO>>;
-    public apiDashboardFrequencyBeltsDistributionGet(days?: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<BarChartDataDTO>>;
+    public apiDashboardFrequencyBeltsDistributionGet(days?: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<CarlonGracieBackendDTOsBarChartDataDTO>;
+    public apiDashboardFrequencyBeltsDistributionGet(days?: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<CarlonGracieBackendDTOsBarChartDataDTO>>;
+    public apiDashboardFrequencyBeltsDistributionGet(days?: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<CarlonGracieBackendDTOsBarChartDataDTO>>;
     public apiDashboardFrequencyBeltsDistributionGet(days?: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
 
         let localVarQueryParameters = new HttpParams({encoder: this.encoder});
@@ -286,7 +286,7 @@ export class DashboardService implements DashboardServiceInterface {
         }
 
         let localVarPath = `/api/Dashboard/frequency-belts-distribution`;
-        return this.httpClient.request<BarChartDataDTO>('get', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<CarlonGracieBackendDTOsBarChartDataDTO>('get', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 params: localVarQueryParameters,
@@ -305,9 +305,9 @@ export class DashboardService implements DashboardServiceInterface {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiDashboardNewStudentsGet(months?: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<MonthlyNewStudentsDTO>;
-    public apiDashboardNewStudentsGet(months?: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<MonthlyNewStudentsDTO>>;
-    public apiDashboardNewStudentsGet(months?: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<MonthlyNewStudentsDTO>>;
+    public apiDashboardNewStudentsGet(months?: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<CarlonGracieBackendDTOsMonthlyNewStudentsDTO>;
+    public apiDashboardNewStudentsGet(months?: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<CarlonGracieBackendDTOsMonthlyNewStudentsDTO>>;
+    public apiDashboardNewStudentsGet(months?: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<CarlonGracieBackendDTOsMonthlyNewStudentsDTO>>;
     public apiDashboardNewStudentsGet(months?: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
 
         let localVarQueryParameters = new HttpParams({encoder: this.encoder});
@@ -353,7 +353,7 @@ export class DashboardService implements DashboardServiceInterface {
         }
 
         let localVarPath = `/api/Dashboard/new-students`;
-        return this.httpClient.request<MonthlyNewStudentsDTO>('get', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<CarlonGracieBackendDTOsMonthlyNewStudentsDTO>('get', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 params: localVarQueryParameters,
@@ -372,9 +372,9 @@ export class DashboardService implements DashboardServiceInterface {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiDashboardTopStudentsGet(days?: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Array<TopStudentDTO>>;
-    public apiDashboardTopStudentsGet(days?: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<TopStudentDTO>>>;
-    public apiDashboardTopStudentsGet(days?: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<TopStudentDTO>>>;
+    public apiDashboardTopStudentsGet(days?: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Array<CarlonGracieBackendDTOsTopStudentDTO>>;
+    public apiDashboardTopStudentsGet(days?: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<CarlonGracieBackendDTOsTopStudentDTO>>>;
+    public apiDashboardTopStudentsGet(days?: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<CarlonGracieBackendDTOsTopStudentDTO>>>;
     public apiDashboardTopStudentsGet(days?: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
 
         let localVarQueryParameters = new HttpParams({encoder: this.encoder});
@@ -420,7 +420,7 @@ export class DashboardService implements DashboardServiceInterface {
         }
 
         let localVarPath = `/api/Dashboard/top-students`;
-        return this.httpClient.request<Array<TopStudentDTO>>('get', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<Array<CarlonGracieBackendDTOsTopStudentDTO>>('get', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 params: localVarQueryParameters,

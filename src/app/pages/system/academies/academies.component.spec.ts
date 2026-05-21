@@ -4,7 +4,7 @@ import { AcademiesComponent } from './academies.component';
 import { AcademyService } from '../../../generated_services/api/academy.service';
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
-import { PaginationAcademyDTO } from '../../../generated_services/model/paginationAcademyDTO';
+import { ODataPage } from '../../../utils/odata.utils';
 import { ShowAcademyDTO } from '../../../generated_services/model/showAcademyDTO';
 
 const MOCK_ACADEMY_1: ShowAcademyDTO = {
@@ -23,11 +23,10 @@ const MOCK_ACADEMY_2: ShowAcademyDTO = {
   createdAt: '2024-02-10',
 };
 
-const MOCK_PAGINATION: PaginationAcademyDTO = {
+const MOCK_ODATA_RESPONSE = { '@odata.count': 2, value: [MOCK_ACADEMY_1, MOCK_ACADEMY_2] };
+const MOCK_PAGINATION: ODataPage<any> = {
   items: [MOCK_ACADEMY_1, MOCK_ACADEMY_2],
   totalCount: 2,
-  pageNumber: 1,
-  pageSize: 10,
   totalPages: 1,
 };
 
@@ -49,7 +48,7 @@ describe('AcademiesComponent', () => {
     ]);
     const subnavSpy = jasmine.createSpyObj('SubnavService', ['setTitle']);
 
-    academySpy.apiAdminAcademiesGet.and.returnValue(of(MOCK_PAGINATION));
+    academySpy.apiAdminAcademiesGet.and.returnValue(of(MOCK_ODATA_RESPONSE));
 
     await TestBed.configureTestingModule({
       imports: [AcademiesComponent],
@@ -78,8 +77,9 @@ describe('AcademiesComponent', () => {
 
   it('should load academies on init', () => {
     expect(academyService.apiAdminAcademiesGet).toHaveBeenCalled();
-    const items = (component as any).items() as PaginationAcademyDTO;
-    expect(items).toEqual(MOCK_PAGINATION);
+    const page = (component as any).items() as ODataPage<any>;
+    expect(page.items.length).toBe(2);
+    expect(page.totalCount).toBe(2);
   });
 
   it('should set isLoading to false after successful load', () => {

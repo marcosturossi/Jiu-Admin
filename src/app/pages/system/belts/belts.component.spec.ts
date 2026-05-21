@@ -4,11 +4,11 @@ import { BeltsComponent } from './belts.component';
 import { BeltService } from '../../../generated_services/api/belt.service';
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
-import { PaginationBeltDTO } from '../../../generated_services/model/paginationBeltDTO';
 import { ShowBeltDTO } from '../../../generated_services/model/showBeltDTO';
 
 const MOCK_BELT: ShowBeltDTO = { id: 'b1', color: 'Branca', orderIndex: 1, isForKids: false };
-const MOCK_PAGINATION: PaginationBeltDTO = { items: [MOCK_BELT], totalCount: 1, pageNumber: 1, pageSize: 10, totalPages: 1 };
+const MOCK_ODATA_RESPONSE = { '@odata.count': 1, value: [MOCK_BELT] };
+const MOCK_PAGE = { items: [MOCK_BELT], totalCount: 1, totalPages: 1 };
 
 describe('BeltsComponent', () => {
   let component: BeltsComponent;
@@ -21,7 +21,7 @@ describe('BeltsComponent', () => {
     const beltSpy = jasmine.createSpyObj('BeltService', ['apiBeltGet', 'apiBeltIdDelete']);
     const nsSpy = jasmine.createSpyObj('NotificationService', ['showSuccess', 'showError']);
     const subnavSpy = jasmine.createSpyObj('SubnavService', ['setTitle']);
-    beltSpy.apiBeltGet.and.returnValue(of(MOCK_PAGINATION));
+    beltSpy.apiBeltGet.and.returnValue(of(MOCK_ODATA_RESPONSE));
 
     await TestBed.configureTestingModule({
       imports: [BeltsComponent],
@@ -46,7 +46,7 @@ describe('BeltsComponent', () => {
 
   it('should load belts on init', () => {
     expect(beltService.apiBeltGet).toHaveBeenCalled();
-    expect((component as any).items()).toEqual(MOCK_PAGINATION);
+    expect((component as any).items()).toEqual(MOCK_PAGE);
   });
 
   it('should set isLoading to false after successful load', () => {

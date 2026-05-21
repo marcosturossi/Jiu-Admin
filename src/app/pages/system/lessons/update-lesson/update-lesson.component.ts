@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, effect, inject, input, output } fro
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { LessonService } from '../../../../generated_services/api/lesson.service';
 import { ShowLessonDTO } from '../../../../generated_services/model/showLessonDTO';
-import { UpdateLessonDTO } from '../../../../generated_services/model/updateLessonDTO';
+import { CarlonGracieBackendAttendanceApplicationDTOsUpdateLessonDTO as UpdateLessonDTO } from '../../../../generated_services/model/carlonGracieBackendAttendanceApplicationDTOsUpdateLessonDTO';
 import { NotificationService } from '../../../../services/notification.service';
 
 @Component({
@@ -74,7 +74,7 @@ export class UpdateLessonComponent {
   private toDTO(): UpdateLessonDTO {
     const v = this.form.value;
     return {
-      title: v.title,
+      title: v.title!,
       description: v.description,
       scheduledDate: v.scheduledDate,
       duration: v.duration,

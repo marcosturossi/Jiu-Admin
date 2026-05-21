@@ -5,7 +5,7 @@ import { Subject, debounceTime, forkJoin, Observable } from 'rxjs';
 import { ContractService } from '../../../../generated_services/api/contract.service';
 import { FeePlanService } from '../../../../generated_services/api/feePlan.service';
 import { StudentsService } from '../../../../generated_services/api/students.service';
-import { ShowStudentDTO, ShowFeePlanDTO, ShowContractDTO } from '../../../../generated_services';
+import { CarlonGracieBackendDTOsShowStudentDTO as ShowStudentDTO, CarlonGracieBackendFinancesApplicationDTOsShowFeePlanDTO as ShowFeePlanDTO, CarlonGracieBackendFinancesApplicationDTOsShowContractDTO as ShowContractDTO } from '../../../../generated_services';
 import { NotificationService } from '../../../../services/notification.service';
 import { SearchOption } from '../../../../shared/search-select/search-option';
 import { SearchSelectComponent } from '../../../../shared/search-select/search-select.component';
@@ -122,9 +122,8 @@ export class CreateContractComponent {
   }
 
   private loadFeePlans(term = ''): void {
-    this.feePlanService.apiFeePlanGet(term || undefined, undefined, undefined, 1, 100).subscribe({
-      next: result => {
-        const plans = result.items ?? [];
+    this.feePlanService.apiFeePlanGet(term || undefined, undefined, '100').subscribe({
+      next: (plans: ShowFeePlanDTO[]) => {
         this.allFeePlans.set(plans);
         this.feePlanOptions.set(
           plans.map((p: ShowFeePlanDTO) => ({

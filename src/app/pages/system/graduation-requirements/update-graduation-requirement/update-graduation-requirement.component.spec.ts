@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { of, throwError } from 'rxjs';
 import { ComponentRef } from '@angular/core';
 import { UpdateGraduationRequirementComponent } from './update-graduation-requirement.component';
-import { GraduationRequirementsService, BeltService, ShowGraduationRequirementsDTO } from '../../../../generated_services';
+import { GraduationRequirementsService, BeltService, CarlonGracieBackendProgressionApplicationDTOsShowGraduationRequirementDTO as ShowGraduationRequirementsDTO } from '../../../../generated_services';
 import { NotificationService } from '../../../../services/notification.service';
 
 const MOCK_REQUIREMENT: ShowGraduationRequirementsDTO = { id: 'r1', beltId: 'belt1', description: 'Mínimo 100 aulas', minimumClasses: 100 };
@@ -18,7 +18,7 @@ describe('UpdateGraduationRequirementComponent', () => {
     const reqSpy = jasmine.createSpyObj('GraduationRequirementsService', ['apiGraduationRequirementsIdPut']);
     const beltSpy = jasmine.createSpyObj('BeltService', ['apiBeltGet']);
     const nsSpy = jasmine.createSpyObj('NotificationService', ['showSuccess', 'showError']);
-    beltSpy.apiBeltGet.and.returnValue(of({ items: [{ id: 'belt1', color: 'Azul' }] }));
+    beltSpy.apiBeltGet.and.returnValue(of([{ id: 'belt1', color: 'Azul' }]));
     await TestBed.configureTestingModule({
       imports: [UpdateGraduationRequirementComponent],
       providers: [

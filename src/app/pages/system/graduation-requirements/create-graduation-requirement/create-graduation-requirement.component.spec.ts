@@ -15,7 +15,7 @@ describe('CreateGraduationRequirementComponent', () => {
     const reqSpy = jasmine.createSpyObj('GraduationRequirementsService', ['apiGraduationRequirementsPost']);
     const beltSpy = jasmine.createSpyObj('BeltService', ['apiBeltGet']);
     const nsSpy = jasmine.createSpyObj('NotificationService', ['showSuccess', 'showError']);
-    beltSpy.apiBeltGet.and.returnValue(of({ items: [{ id: 'belt1', color: 'Azul' }] }));
+    beltSpy.apiBeltGet.and.returnValue(of([{ id: 'belt1', color: 'Azul' }]));
     await TestBed.configureTestingModule({
       imports: [CreateGraduationRequirementComponent],
       providers: [

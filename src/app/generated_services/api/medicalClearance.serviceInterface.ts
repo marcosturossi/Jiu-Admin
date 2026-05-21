@@ -14,11 +14,10 @@ import { Observable }                                        from 'rxjs';
 
 import { ApiAdminAcademiesIdGet404Response } from '../model/models';
 import { ApiMedicalClearanceIdAttachmentGet200Response } from '../model/models';
-import { CreateMedicalClearanceDTO } from '../model/models';
-import { MedicalClearanceAttachmentResponseDTO } from '../model/models';
-import { PaginationMedicalClearanceDTO } from '../model/models';
-import { ShowMedicalClearanceDTO } from '../model/models';
-import { UpdateMedicalClearanceDTO } from '../model/models';
+import { CarlonGracieBackendHealthComplianceApplicationDTOsCreateMedicalClearanceDto } from '../model/models';
+import { CarlonGracieBackendHealthComplianceApplicationDTOsMedicalClearanceAttachmentResponseDto } from '../model/models';
+import { CarlonGracieBackendHealthComplianceApplicationDTOsShowMedicalClearanceDto } from '../model/models';
+import { CarlonGracieBackendHealthComplianceApplicationDTOsUpdateMedicalClearanceDto } from '../model/models';
 
 
 import { Configuration }                                     from '../configuration';
@@ -33,34 +32,26 @@ export interface MedicalClearanceServiceInterface {
      * 
      * 
      */
-    apiMedicalClearanceExpiredGet(extraHttpRequestParams?: any): Observable<Array<ShowMedicalClearanceDTO>>;
+    apiMedicalClearanceExpiredGet(extraHttpRequestParams?: any): Observable<Array<CarlonGracieBackendHealthComplianceApplicationDTOsShowMedicalClearanceDto>>;
 
     /**
      * 
      * 
      * @param daysThreshold 
      */
-    apiMedicalClearanceExpiringSoonGet(daysThreshold?: number, extraHttpRequestParams?: any): Observable<Array<ShowMedicalClearanceDTO>>;
+    apiMedicalClearanceExpiringSoonGet(daysThreshold?: number, extraHttpRequestParams?: any): Observable<Array<CarlonGracieBackendHealthComplianceApplicationDTOsShowMedicalClearanceDto>>;
 
     /**
      * 
      * 
-     * @param studentId 
-     * @param studentName 
-     * @param isApproved 
-     * @param isActive 
-     * @param hasAttachment 
-     * @param isExpired 
-     * @param isExpiringSoon 
-     * @param expiringSoonDaysThreshold 
-     * @param expiresFrom 
-     * @param expiresTo 
-     * @param pageNumber 
-     * @param pageSize 
-     * @param page 
-     * @param pageSize2 
+     * @param $filter OData filter expression. Examples: contains(name,\&#39;John\&#39;) | status eq \&#39;Active\&#39; | amount gt 100 | createdAt ge 2024-01-01T00:00:00Z
+     * @param $orderby Sort expression. Examples: name asc | createdAt desc | name asc,amount desc
+     * @param $top Page size — number of records to return (default: 20, max: 200). Use with $skip for pagination.
+     * @param $skip Records to skip. Use ($pageNumber - 1) * $top. Example: page 3 with size 20 → $skip&#x3D;40
+     * @param $count Set to \&#39;true\&#39; to include total record count in response as @odata.count
+     * @param $select Return only specific fields. Example: $select&#x3D;id,name,createdAt
      */
-    apiMedicalClearanceGet(studentId?: string, studentName?: string, isApproved?: boolean, isActive?: boolean, hasAttachment?: boolean, isExpired?: boolean, isExpiringSoon?: boolean, expiringSoonDaysThreshold?: number, expiresFrom?: string, expiresTo?: string, pageNumber?: number, pageSize?: number, page?: number, pageSize2?: number, extraHttpRequestParams?: any): Observable<PaginationMedicalClearanceDTO>;
+    apiMedicalClearanceGet($filter?: string, $orderby?: string, $top?: string, $skip?: string, $count?: string, $select?: string, extraHttpRequestParams?: any): Observable<Array<CarlonGracieBackendHealthComplianceApplicationDTOsShowMedicalClearanceDto>>;
 
     /**
      * 
@@ -75,7 +66,7 @@ export interface MedicalClearanceServiceInterface {
      * @param id 
      * @param file 
      */
-    apiMedicalClearanceIdAttachmentPost(id: string, file?: Blob, extraHttpRequestParams?: any): Observable<MedicalClearanceAttachmentResponseDTO>;
+    apiMedicalClearanceIdAttachmentPost(id: string, file?: Blob, extraHttpRequestParams?: any): Observable<CarlonGracieBackendHealthComplianceApplicationDTOsMedicalClearanceAttachmentResponseDto>;
 
     /**
      * 
@@ -97,53 +88,51 @@ export interface MedicalClearanceServiceInterface {
      * 
      * @param id 
      */
-    apiMedicalClearanceIdGet(id: string, extraHttpRequestParams?: any): Observable<ShowMedicalClearanceDTO>;
+    apiMedicalClearanceIdGet(id: string, extraHttpRequestParams?: any): Observable<CarlonGracieBackendHealthComplianceApplicationDTOsShowMedicalClearanceDto>;
 
     /**
      * 
      * 
      * @param id 
-     * @param updateMedicalClearanceDTO 
+     * @param carlonGracieBackendHealthComplianceApplicationDTOsUpdateMedicalClearanceDto 
      */
-    apiMedicalClearanceIdPut(id: string, updateMedicalClearanceDTO?: UpdateMedicalClearanceDTO, extraHttpRequestParams?: any): Observable<ShowMedicalClearanceDTO>;
+    apiMedicalClearanceIdPut(id: string, carlonGracieBackendHealthComplianceApplicationDTOsUpdateMedicalClearanceDto?: CarlonGracieBackendHealthComplianceApplicationDTOsUpdateMedicalClearanceDto, extraHttpRequestParams?: any): Observable<CarlonGracieBackendHealthComplianceApplicationDTOsShowMedicalClearanceDto>;
 
     /**
      * 
      * 
      */
-    apiMedicalClearancePendingReviewGet(extraHttpRequestParams?: any): Observable<Array<ShowMedicalClearanceDTO>>;
+    apiMedicalClearancePendingReviewGet(extraHttpRequestParams?: any): Observable<Array<CarlonGracieBackendHealthComplianceApplicationDTOsShowMedicalClearanceDto>>;
 
     /**
      * 
      * 
-     * @param createMedicalClearanceDTO 
+     * @param carlonGracieBackendHealthComplianceApplicationDTOsCreateMedicalClearanceDto 
      */
-    apiMedicalClearancePost(createMedicalClearanceDTO?: CreateMedicalClearanceDTO, extraHttpRequestParams?: any): Observable<ShowMedicalClearanceDTO>;
+    apiMedicalClearancePost(carlonGracieBackendHealthComplianceApplicationDTOsCreateMedicalClearanceDto?: CarlonGracieBackendHealthComplianceApplicationDTOsCreateMedicalClearanceDto, extraHttpRequestParams?: any): Observable<CarlonGracieBackendHealthComplianceApplicationDTOsShowMedicalClearanceDto>;
 
     /**
      * 
      * 
      * @param studentId 
      */
-    apiMedicalClearanceStudentStudentIdCurrentGet(studentId: string, extraHttpRequestParams?: any): Observable<ShowMedicalClearanceDTO>;
+    apiMedicalClearanceStudentStudentIdCurrentGet(studentId: string, extraHttpRequestParams?: any): Observable<CarlonGracieBackendHealthComplianceApplicationDTOsShowMedicalClearanceDto>;
 
     /**
      * 
      * 
      * @param studentId 
      * @param studentId2 
-     * @param studentName 
      * @param isApproved 
      * @param isActive 
      * @param hasAttachment 
      * @param isExpired 
      * @param isExpiringSoon 
-     * @param expiringSoonDaysThreshold 
      * @param expiresFrom 
      * @param expiresTo 
      * @param pageNumber 
      * @param pageSize 
      */
-    apiMedicalClearanceStudentStudentIdGet(studentId: string, studentId2?: string, studentName?: string, isApproved?: boolean, isActive?: boolean, hasAttachment?: boolean, isExpired?: boolean, isExpiringSoon?: boolean, expiringSoonDaysThreshold?: number, expiresFrom?: string, expiresTo?: string, pageNumber?: number, pageSize?: number, extraHttpRequestParams?: any): Observable<Array<ShowMedicalClearanceDTO>>;
+    apiMedicalClearanceStudentStudentIdGet(studentId: string, studentId2?: string, isApproved?: boolean, isActive?: boolean, hasAttachment?: boolean, isExpired?: boolean, isExpiringSoon?: boolean, expiresFrom?: string, expiresTo?: string, pageNumber?: number, pageSize?: number, extraHttpRequestParams?: any): Observable<Array<CarlonGracieBackendHealthComplianceApplicationDTOsShowMedicalClearanceDto>>;
 
 }

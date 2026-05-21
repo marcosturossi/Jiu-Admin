@@ -7,7 +7,7 @@ import {
 import { DatePipe } from '@angular/common';
 import { AcademyService } from '../../../generated_services/api/academy.service';
 import { ShowAcademyDTO } from '../../../generated_services/model/showAcademyDTO';
-import { PaginationAcademyDTO } from '../../../generated_services/model/paginationAcademyDTO';
+import { ODataPage, parseODataPage } from '../../../utils/odata.utils';
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
 import { PaginationComponent } from '../../../shared/pagination/pagination.component';
@@ -33,7 +33,7 @@ export class AcademiesComponent {
   private readonly notificationService = inject(NotificationService);
 
   protected readonly isLoading = signal(false);
-  protected readonly items = signal<PaginationAcademyDTO | null>(null);
+  protected readonly items = signal<ODataPage<ShowAcademyDTO> | null>(null);
   protected readonly openedCreate = signal(false);
   protected readonly openedUpdate = signal(false);
   protected readonly selected = signal<ShowAcademyDTO | null>(null);
@@ -49,11 +49,13 @@ export class AcademiesComponent {
   protected load(): void {
     this.isLoading.set(true);
     const name = this.searchName().trim() || undefined;
+    const filter = name ? `contains(name,'${name.replace(/'/g, "''")}')` : undefined;
+    const skip = (this.currentPage() - 1) * this.pageSize();
     this.academyService
-      .apiAdminAcademiesGet(name, undefined, undefined, undefined, this.currentPage(), this.pageSize())
+      .apiAdminAcademiesGet(filter, undefined, String(this.pageSize()), String(skip), 'true')
       .subscribe({
-        next: result => {
-          this.items.set(result);
+        next: (body: any) => {
+          this.items.set(parseODataPage<ShowAcademyDTO>(body, this.pageSize()));
           this.isLoading.set(false);
         },
         error: () => {

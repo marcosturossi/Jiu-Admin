@@ -31,7 +31,7 @@
           }
           @for (graduation of items()?.items ?? []; track graduation.id) {
             <tr>
-              <td>{{ graduation.student?.firstName }} {{ graduation.student?.lastName }}</td>
+              <td>{{ graduation.studentFullName }}</td>
               <td>{{ graduation.graduationDate | date:'dd/MM/yyyy':'UTC' }}</td>
               <td><span class="badge bg-secondary">{{ graduation.belt?.color }}</span></td>
               <td>{{ graduation.belt?.orderIndex }}</td>

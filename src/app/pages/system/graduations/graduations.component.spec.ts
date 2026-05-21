@@ -4,10 +4,11 @@ import { GraduationsComponent } from './graduations.component';
 import { GraduationService } from '../../../generated_services/api/graduation.service';
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
-import { PaginationGraduationDTO, ShowGraduationDTO } from '../../../generated_services';
+import { CarlonGracieBackendProgressionApplicationDTOsShowGraduationDTO as ShowGraduationDTO } from '../../../generated_services';
 
 const MOCK_GRADUATION: ShowGraduationDTO = { id: 'g1', studentId: 'student-1', beltId: 'belt-1', graduationDate: '2024-01-01' };
-const MOCK_PAGINATION: PaginationGraduationDTO = { items: [MOCK_GRADUATION], totalCount: 1, pageNumber: 1, pageSize: 10, totalPages: 1 };
+const MOCK_ODATA_RESPONSE = { '@odata.count': 1, value: [MOCK_GRADUATION] };
+const MOCK_PAGE = { items: [MOCK_GRADUATION], totalCount: 1, totalPages: 1 };
 
 describe('GraduationsComponent', () => {
   let component: GraduationsComponent;
@@ -20,7 +21,7 @@ describe('GraduationsComponent', () => {
     const graduationSpy = jasmine.createSpyObj('GraduationService', ['apiGraduationGet', 'apiGraduationIdDelete']);
     const nsSpy = jasmine.createSpyObj('NotificationService', ['showSuccess', 'showError']);
     const subnavSpy = jasmine.createSpyObj('SubnavService', ['setTitle']);
-    graduationSpy.apiGraduationGet.and.returnValue(of(MOCK_PAGINATION));
+    graduationSpy.apiGraduationGet.and.returnValue(of(MOCK_ODATA_RESPONSE));
 
     await TestBed.configureTestingModule({
       imports: [GraduationsComponent],
@@ -45,7 +46,7 @@ describe('GraduationsComponent', () => {
 
   it('should load graduations on init', () => {
     expect(graduationService.apiGraduationGet).toHaveBeenCalled();
-    expect((component as any).items()).toEqual(MOCK_PAGINATION);
+    expect((component as any).items()).toEqual(MOCK_PAGE);
   });
 
   it('should set isLoading to false after successful load', () => {

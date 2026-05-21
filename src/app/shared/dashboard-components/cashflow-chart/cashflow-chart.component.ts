@@ -119,29 +119,30 @@ export class CashflowChartComponent implements AfterViewInit, OnDestroy {
     const dateFrom = new Date(months[0].year, months[0].month, 1).toISOString().split('T')[0];
     const dateTo = now.toISOString().split('T')[0];
 
+    const filter = `transactionDate ge ${dateFrom} and transactionDate le ${dateTo}`;
     this.transactionService
-      .apiFinancialTransactionGet(undefined, undefined, dateFrom, dateTo, undefined, 1, 2000)
+      .apiFinancialTransactionGet(filter, undefined, '2000')
       .subscribe({
-        next: (data) => {
-          const items = data?.items ?? [];
+        next: (data: any) => {
+          const items = Array.isArray(data) ? data : (data?.value ?? []);
           this.monthLabels = months.map((m) => m.label);
           this.incomeByMonth = months.map((m) =>
             items
-              .filter((t) => {
+              .filter((t: any) => {
                 const d = new Date(t.transactionDate ?? '');
                 const type = normalizeTransactionType(t.type);
                 return (type === TransactionType.Income || type === TransactionType.Credit) && d.getFullYear() === m.year && d.getMonth() === m.month;
               })
-              .reduce((sum, t) => sum + (t.amount ?? 0), 0)
+              .reduce((sum: number, t: any) => sum + (t.amount ?? 0), 0)
           );
           this.expensesByMonth = months.map((m) =>
             items
-              .filter((t) => {
+              .filter((t: any) => {
                 const d = new Date(t.transactionDate ?? '');
                 const type = normalizeTransactionType(t.type);
                 return (type === TransactionType.Expense || type === TransactionType.Debit) && d.getFullYear() === m.year && d.getMonth() === m.month;
               })
-              .reduce((sum, t) => sum + (t.amount ?? 0), 0)
+              .reduce((sum: number, t: any) => sum + (t.amount ?? 0), 0)
           );
           if (this.chart) {
             this.chart.setOption(this.buildOptions());

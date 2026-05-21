@@ -1,12 +1,13 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { of, throwError } from 'rxjs';
 import { FrequenciesComponent } from './frequencies.component';
-import { FrequencyService, PaginationFrequencyDTO, ShowFrequencyDTO } from '../../../generated_services';
+import { FrequencyService, CarlonGracieBackendAttendanceApplicationDTOsShowFrequencyDTO as ShowFrequencyDTO } from '../../../generated_services';
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
 
 const MOCK_FREQUENCY: ShowFrequencyDTO = { id: 'f1', studentId: 'student-1', lessonId: 'lesson-1', lessonScheduledDate: '2024-03-01' };
-const MOCK_PAGINATION: PaginationFrequencyDTO = { items: [MOCK_FREQUENCY], totalCount: 1, pageNumber: 1, pageSize: 10, totalPages: 1 };
+const MOCK_ODATA_RESPONSE = { '@odata.count': 1, value: [MOCK_FREQUENCY] };
+const MOCK_PAGE = { items: [MOCK_FREQUENCY], totalCount: 1, totalPages: 1 };
 
 describe('FrequenciesComponent', () => {
   let component: FrequenciesComponent;
@@ -19,7 +20,7 @@ describe('FrequenciesComponent', () => {
     const frequencySpy = jasmine.createSpyObj('FrequencyService', ['apiFrequencyGet', 'apiFrequencyIdDelete']);
     const nsSpy = jasmine.createSpyObj('NotificationService', ['showSuccess', 'showError']);
     const subnavSpy = jasmine.createSpyObj('SubnavService', ['setTitle']);
-    frequencySpy.apiFrequencyGet.and.returnValue(of(MOCK_PAGINATION));
+    frequencySpy.apiFrequencyGet.and.returnValue(of(MOCK_ODATA_RESPONSE));
 
     await TestBed.configureTestingModule({
       imports: [FrequenciesComponent],
@@ -44,7 +45,7 @@ describe('FrequenciesComponent', () => {
 
   it('should load frequencies on init', () => {
     expect(frequencyService.apiFrequencyGet).toHaveBeenCalled();
-    expect((component as any).items()).toEqual(MOCK_PAGINATION);
+    expect((component as any).items()).toEqual(MOCK_PAGE);
   });
 
   it('should set isLoading to false after successful load', () => {

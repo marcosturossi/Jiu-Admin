@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
-import { TransactionCategoryService, PaginationTransactionCategoryDTO, ShowTransactionCategoryDTO } from '../../../generated_services';
+import { TransactionCategoryService, CarlonGracieBackendFinancesApplicationDTOsShowTransactionCategoryDTO as ShowTransactionCategoryDTO } from '../../../generated_services';
 import { NotificationService } from '../../../services/notification.service';
 import { SubnavService } from '../../../services/subnav.service';
 import { FilterComponent } from '../../../shared/filter/filter.component';
@@ -8,6 +8,7 @@ import { FilterOutput } from '../../../shared/filter/filter.types';
 import { PaginationComponent } from '../../../shared/pagination/pagination.component';
 import { CreateTransactionCategoryComponent } from './create-transaction-category/create-transaction-category.component';
 import { UpdateTransactionCategoryComponent } from './update-transaction-category/update-transaction-category.component';
+import { ODataPage, parseODataPage, buildODataFilter } from '../../../utils/odata.utils';
 
 @Component({
   selector: 'app-transaction-categories',
@@ -29,7 +30,7 @@ export class TransactionCategoriesComponent {
   private readonly notificationService = inject(NotificationService);
 
   protected readonly isLoading = signal(false);
-  protected readonly items = signal<PaginationTransactionCategoryDTO | null>(null);
+  protected readonly items = signal<ODataPage<ShowTransactionCategoryDTO> | null>(null);
   protected readonly openedCreate = signal(false);
   protected readonly openedUpdate = signal(false);
   protected readonly selected = signal<ShowTransactionCategoryDTO | null>(null);
@@ -44,8 +45,10 @@ export class TransactionCategoriesComponent {
 
   protected load(): void {
     this.isLoading.set(true);
-    this.service.apiTransactionCategoryGet(this.filterText() || undefined, undefined, this.currentPage(), this.pageSize()).subscribe({
-      next: result => { this.items.set(result); this.isLoading.set(false); },
+    const skip = (this.currentPage() - 1) * this.pageSize();
+    const filter = buildODataFilter(this.filterText(), ['name']);
+    this.service.apiTransactionCategoryGet(filter, undefined, String(this.pageSize()), String(skip), 'true').subscribe({
+      next: (body: any) => { this.items.set(parseODataPage<ShowTransactionCategoryDTO>(body, this.pageSize())); this.isLoading.set(false); },
       error: () => { this.isLoading.set(false); this.notificationService.showError('Erro', 'Não foi possível carregar.'); }
     });
   }

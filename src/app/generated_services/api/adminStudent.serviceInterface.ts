@@ -12,7 +12,7 @@ import { HttpHeaders }                                       from '@angular/comm
 
 import { Observable }                                        from 'rxjs';
 
-import { BirthdayGreetingsResultDTO } from '../model/models';
+import { CarlonGracieBackendStudentsApplicationDTOsBirthdayGreetingsResultDTO } from '../model/models';
 
 
 import { Configuration }                                     from '../configuration';
@@ -27,6 +27,6 @@ export interface AdminStudentServiceInterface {
      * 
      * 
      */
-    apiAdminStudentsSendBirthdayGreetingsPost(extraHttpRequestParams?: any): Observable<BirthdayGreetingsResultDTO>;
+    apiAdminStudentsSendBirthdayGreetingsPost(extraHttpRequestParams?: any): Observable<CarlonGracieBackendStudentsApplicationDTOsBirthdayGreetingsResultDTO>;
 
 }

@@ -10,12 +10,13 @@ import { FinancialTransactionService } from '../../../generated_services/api/fin
 import { TransactionCategoryService } from '../../../generated_services/api/transactionCategory.service';
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
-import { PaginationTransactionDTO, ShowTransactionDTO, ShowTransactionCategoryDTO, TransactionType } from '../../../generated_services';
+import { CarlonGracieBackendFinancesApplicationDTOsShowTransactionDTO as ShowTransactionDTO, CarlonGracieBackendFinancesApplicationDTOsShowTransactionCategoryDTO as ShowTransactionCategoryDTO, CarlonGracieBackendSharedDomainEnumsTransactionType as TransactionType } from '../../../generated_services';
 
 const MOCK_TRANSACTION: ShowTransactionDTO = { id: 't1', description: 'Mensalidade março', amount: 150, type: TransactionType.Debit, transactionCategoryId: 'cat1' };
-const MOCK_PAGINATION: PaginationTransactionDTO = { items: [MOCK_TRANSACTION], totalCount: 1, pageNumber: 1, pageSize: 10, totalPages: 1 };
+const MOCK_ODATA_RESPONSE = { '@odata.count': 1, value: [MOCK_TRANSACTION] };
+const MOCK_PAGE = { items: [MOCK_TRANSACTION], totalCount: 1, totalPages: 1 };
 const MOCK_CATEGORIES: ShowTransactionCategoryDTO[] = [{ id: 'cat1', name: 'Mensalidades' }];
-const MOCK_CATEGORY_PAGINATION = { items: MOCK_CATEGORIES, totalCount: 1, pageNumber: 1, pageSize: 200, totalPages: 1 };
+const MOCK_CATEGORY_ODATA = { '@odata.count': 1, value: MOCK_CATEGORIES };
 
 describe('TransactionsComponent', () => {
   let component: TransactionsComponent;
@@ -30,8 +31,8 @@ describe('TransactionsComponent', () => {
     const categorySpy = jasmine.createSpyObj('TransactionCategoryService', ['apiTransactionCategoryGet']);
     const nsSpy = jasmine.createSpyObj('NotificationService', ['showSuccess', 'showError']);
     const subnavSpy = jasmine.createSpyObj('SubnavService', ['setTitle']);
-    transactionSpy.apiFinancialTransactionGet.and.returnValue(of(MOCK_PAGINATION));
-    categorySpy.apiTransactionCategoryGet.and.returnValue(of(MOCK_CATEGORY_PAGINATION));
+    transactionSpy.apiFinancialTransactionGet.and.returnValue(of(MOCK_ODATA_RESPONSE));
+    categorySpy.apiTransactionCategoryGet.and.returnValue(of(MOCK_CATEGORY_ODATA));
 
     await TestBed.configureTestingModule({
       imports: [TransactionsComponent],
@@ -59,7 +60,7 @@ describe('TransactionsComponent', () => {
 
   it('should load transactions on init', () => {
     expect(transactionService.apiFinancialTransactionGet).toHaveBeenCalled();
-    expect((component as any).items()).toEqual(MOCK_PAGINATION);
+    expect((component as any).items()).toEqual(MOCK_PAGE);
   });
 
   it('should load categories on init', () => {

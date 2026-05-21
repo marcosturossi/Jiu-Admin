@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/cor
 import { DatePipe, CurrencyPipe } from '@angular/common';
 import { ContractService } from '../../../generated_services/api/contract.service';
 import { StudentsService } from '../../../generated_services/api/students.service';
-import { ShowContractDTO, PaginationContractDTO, ContractStatus } from '../../../generated_services';
+import { CarlonGracieBackendFinancesApplicationDTOsShowContractDTO as ShowContractDTO, CarlonGracieBackendSharedDomainEnumsContractStatus as ContractStatus } from '../../../generated_services';
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
 import { FilterComponent } from '../../../shared/filter/filter.component';
@@ -10,6 +10,7 @@ import { FilterField, FilterOutput } from '../../../shared/filter/filter.types';
 import { PaginationComponent } from '../../../shared/pagination/pagination.component';
 import { CreateContractComponent } from './create-contract/create-contract.component';
 import { UpdateContractComponent } from './update-contract/update-contract.component';
+import { ODataPage, parseODataPage, buildODataFilter } from '../../../utils/odata.utils';
 
 @Component({
   selector: 'app-contracts',
@@ -33,13 +34,13 @@ export class ContractsComponent {
   private readonly ns = inject(NotificationService);
 
   protected readonly isLoading = signal(false);
-  protected readonly items = signal<PaginationContractDTO | null>(null);
+  protected readonly items = signal<ODataPage<ShowContractDTO> | null>(null);
   protected readonly openedCreate = signal(false);
   protected readonly openedUpdate = signal(false);
   protected readonly selected = signal<ShowContractDTO | null>(null);
   protected readonly currentPage = signal(1);
   protected readonly pageSize = signal(10);
-  protected readonly filterStatus = signal<ContractStatus | undefined>(undefined);
+  protected readonly filterStatus = signal<string | undefined>(undefined);
   protected readonly filterText = signal('');
   protected readonly studentMap = signal<Map<string, string>>(new Map());
 
@@ -72,17 +73,16 @@ export class ContractsComponent {
 
   protected load(): void {
     this.isLoading.set(true);
+    const skip = (this.currentPage() - 1) * this.pageSize();
+    let filter = buildODataFilter(this.filterText(), ['notes']);
+    if (this.filterStatus()) {
+      const enumFilter = `status eq '${this.filterStatus()}'`;
+      filter = filter ? `${filter} and ${enumFilter}` : enumFilter;
+    }
     this.contractService
-      .apiContractGet(
-        this.filterText() || undefined,
-        undefined,
-        undefined,
-        this.filterStatus(),
-        undefined, undefined,
-        this.currentPage(), this.pageSize(),
-      )
+      .apiContractGet(filter, undefined, String(this.pageSize()), String(skip), 'true')
       .subscribe({
-        next: result => { this.items.set(result); this.isLoading.set(false); },
+        next: (body: any) => { this.items.set(parseODataPage<ShowContractDTO>(body, this.pageSize())); this.isLoading.set(false); },
         error: () => { this.isLoading.set(false); this.ns.showError('Erro', 'Não foi possível carregar os contratos.'); },
       });
   }
@@ -120,7 +120,7 @@ export class ContractsComponent {
   protected onFilterChange(output: FilterOutput): void {
     this.filterText.set(output.text);
     const statusCond = output.conditions.find(c => c.field.key === 'status');
-    this.filterStatus.set(statusCond ? Number(statusCond.value) as unknown as ContractStatus : undefined);
+    this.filterStatus.set(statusCond?.value ?? undefined);
     this.currentPage.set(1);
     this.load();
   }

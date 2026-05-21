@@ -41,8 +41,9 @@ export class NoticesComponent {
 
   protected load(): void {
     this.isLoading.set(true);
-    this.noticesService.apiNoticesGet(this.filterText() || undefined).subscribe({
-      next: result => { this.items.set(result); this.isLoading.set(false); },
+    const filter = this.filterText() ? `contains(description,'${this.filterText().replace(/'/g, "''")}')` : undefined;
+    this.noticesService.apiNoticesGet(filter).subscribe({
+      next: result => { this.items.set(result as unknown as ShowNoticesDTO[]); this.isLoading.set(false); },
       error: () => { this.isLoading.set(false); this.notificationService.showError('Erro ao Carregar Avisos!', 'Não foi possível carregar a lista de avisos. Tente novamente.'); }
     });
   }

@@ -4,11 +4,11 @@ import { LessonsComponent } from './lessons.component';
 import { LessonService } from '../../../generated_services/api/lesson.service';
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
-import { PaginationLessonDTO } from '../../../generated_services/model/paginationLessonDTO';
 import { ShowLessonDTO } from '../../../generated_services/model/showLessonDTO';
 
 const MOCK_LESSON: ShowLessonDTO = { id: 'l1', title: 'Aula de Guarda', scheduledDate: '2024-03-01', isActive: true };
-const MOCK_PAGINATION: PaginationLessonDTO = { items: [MOCK_LESSON], totalCount: 1, pageNumber: 1, pageSize: 10, totalPages: 1 };
+const MOCK_ODATA_RESPONSE = { '@odata.count': 1, value: [MOCK_LESSON] };
+const MOCK_PAGE = { items: [MOCK_LESSON], totalCount: 1, totalPages: 1 };
 
 describe('LessonsComponent', () => {
   let component: LessonsComponent;
@@ -21,7 +21,7 @@ describe('LessonsComponent', () => {
     const lessonSpy = jasmine.createSpyObj('LessonService', ['apiLessonGet', 'apiLessonIdDelete']);
     const nsSpy = jasmine.createSpyObj('NotificationService', ['showSuccess', 'showError']);
     const subnavSpy = jasmine.createSpyObj('SubnavService', ['setTitle']);
-    lessonSpy.apiLessonGet.and.returnValue(of(MOCK_PAGINATION));
+    lessonSpy.apiLessonGet.and.returnValue(of(MOCK_ODATA_RESPONSE));
 
     await TestBed.configureTestingModule({
       imports: [LessonsComponent],
@@ -46,7 +46,7 @@ describe('LessonsComponent', () => {
 
   it('should load lessons on init', () => {
     expect(lessonService.apiLessonGet).toHaveBeenCalled();
-    expect((component as any).items()).toEqual(MOCK_PAGINATION);
+    expect((component as any).items()).toEqual(MOCK_PAGE);
   });
 
   it('should set isLoading to false after successful load', () => {

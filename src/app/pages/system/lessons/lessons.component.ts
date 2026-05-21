@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { ShowLessonDTO } from '../../../generated_services/model/showLessonDTO';
-import { LessonService, PaginationLessonDTO } from '../../../generated_services';
+import { LessonService } from '../../../generated_services';
 import { CreateLessonComponent } from './create-lesson/create-lesson.component';
 import { UpdateLessonComponent } from './update-lesson/update-lesson.component';
 import { SubnavService } from '../../../services/subnav.service';
@@ -9,6 +9,7 @@ import { NotificationService } from '../../../services/notification.service';
 import { FilterComponent } from '../../../shared/filter/filter.component';
 import { FilterOutput } from '../../../shared/filter/filter.types';
 import { PaginationComponent } from '../../../shared/pagination/pagination.component';
+import { ODataPage, parseODataPage, buildODataFilter } from '../../../utils/odata.utils';
 
 @Component({
   selector: 'app-lessons',
@@ -29,7 +30,7 @@ export class LessonsComponent {
   private readonly notificationService = inject(NotificationService);
 
   protected readonly isLoading = signal(false);
-  protected readonly items = signal<PaginationLessonDTO | null>(null);
+  protected readonly items = signal<ODataPage<ShowLessonDTO> | null>(null);
   protected readonly openedCreate = signal(false);
   protected readonly openedUpdate = signal(false);
   protected readonly selected = signal<ShowLessonDTO | null>(null);
@@ -44,8 +45,10 @@ export class LessonsComponent {
 
   protected load(): void {
     this.isLoading.set(true);
-    this.lessonService.apiLessonGet(this.filterText() || undefined, undefined, undefined, undefined, undefined, undefined, this.currentPage(), this.pageSize()).subscribe({
-      next: r => { this.items.set(r); this.isLoading.set(false); },
+    const skip = (this.currentPage() - 1) * this.pageSize();
+    const filter = buildODataFilter(this.filterText(), ['title']);
+    this.lessonService.apiLessonGet(filter, undefined, String(this.pageSize()), String(skip), 'true').subscribe({
+      next: (body: any) => { this.items.set(parseODataPage<ShowLessonDTO>(body, this.pageSize())); this.isLoading.set(false); },
       error: () => {
         this.isLoading.set(false);
         this.notificationService.showError('Erro ao Carregar Aulas!', 'Não foi possível carregar a lista de aulas. Tente novamente.');

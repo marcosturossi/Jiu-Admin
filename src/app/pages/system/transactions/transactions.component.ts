@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/cor
 import { DatePipe, CurrencyPipe } from '@angular/common';
 import { FinancialTransactionService } from '../../../generated_services/api/financialTransaction.service';
 import { TransactionCategoryService } from '../../../generated_services/api/transactionCategory.service';
-import { PaginationTransactionDTO, ShowTransactionDTO, ShowTransactionCategoryDTO, TransactionType } from '../../../generated_services';
+import { CarlonGracieBackendFinancesApplicationDTOsShowTransactionDTO as ShowTransactionDTO, CarlonGracieBackendFinancesApplicationDTOsShowTransactionCategoryDTO as ShowTransactionCategoryDTO, CarlonGracieBackendSharedDomainEnumsTransactionType as TransactionType } from '../../../generated_services';
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
 import { FilterComponent } from '../../../shared/filter/filter.component';
@@ -10,6 +10,7 @@ import { FilterField, FilterOutput } from '../../../shared/filter/filter.types';
 import { PaginationComponent } from '../../../shared/pagination/pagination.component';
 import { CreateTransactionComponent } from './create-transaction/create-transaction.component';
 import { UpdateTransactionComponent } from './update-transaction/update-transaction.component';
+import { ODataPage, parseODataPage, buildODataFilter } from '../../../utils/odata.utils';
 
 @Component({
   selector: 'app-transactions',
@@ -33,13 +34,13 @@ export class TransactionsComponent {
   private readonly ns = inject(NotificationService);
 
   protected readonly isLoading = signal(false);
-  protected readonly items = signal<PaginationTransactionDTO | null>(null);
+  protected readonly items = signal<ODataPage<ShowTransactionDTO> | null>(null);
   protected readonly openedCreate = signal(false);
   protected readonly openedUpdate = signal(false);
   protected readonly selected = signal<ShowTransactionDTO | null>(null);
   protected readonly currentPage = signal(1);
   protected readonly pageSize = signal(10);
-  protected readonly filterType = signal<TransactionType | undefined>(undefined);
+  protected readonly filterType = signal<string | undefined>(undefined);
   protected readonly searchTerm = signal('');
   protected readonly categories = signal<ShowTransactionCategoryDTO[]>([]);
 
@@ -67,13 +68,14 @@ export class TransactionsComponent {
 
   protected load(): void {
     this.isLoading.set(true);
-    this.transactionService.apiFinancialTransactionGet(
-      this.filterType(),
-      undefined, undefined, undefined,
-      this.searchTerm() || undefined,
-      this.currentPage(), this.pageSize(),
-    ).subscribe({
-      next: result => { this.items.set(result); this.isLoading.set(false); },
+    const skip = (this.currentPage() - 1) * this.pageSize();
+    let filter = buildODataFilter(this.searchTerm(), ['description']);
+    if (this.filterType()) {
+      const enumFilter = `type eq '${this.filterType()}'`;
+      filter = filter ? `${filter} and ${enumFilter}` : enumFilter;
+    }
+    this.transactionService.apiFinancialTransactionGet(filter, undefined, String(this.pageSize()), String(skip), 'true').subscribe({
+      next: (body: any) => { this.items.set(parseODataPage<ShowTransactionDTO>(body, this.pageSize())); this.isLoading.set(false); },
       error: () => { this.isLoading.set(false); this.ns.showError('Erro', 'Não foi possível carregar as transações.'); },
     });
   }
@@ -118,7 +120,7 @@ export class TransactionsComponent {
   protected onFilterChange(output: FilterOutput): void {
     this.searchTerm.set(output.text);
     const typeCond = output.conditions.find(c => c.field.key === 'type');
-    this.filterType.set(typeCond ? Number(typeCond.value) as unknown as TransactionType : undefined);
+    this.filterType.set(typeCond?.value ?? undefined);
     this.currentPage.set(1);
     this.load();
   }
@@ -129,8 +131,12 @@ export class TransactionsComponent {
   protected onUpdated(): void { this.openedUpdate.set(false); this.load(); }
 
   private loadCategories(term = ''): void {
-    this.categoryService.apiTransactionCategoryGet(term || undefined, true, 1, 200).subscribe({
-      next: result => this.categories.set(result.items ?? []),
+    const filter = term ? `contains(name,'${term.replace(/'/g, "''")}')` : undefined;
+    this.categoryService.apiTransactionCategoryGet(filter, undefined, '200', undefined, 'true').subscribe({
+      next: (body: any) => {
+        const items = Array.isArray(body) ? body : (body?.value ?? []);
+        this.categories.set(items);
+      },
     });
   }
 
