@@ -22,17 +22,17 @@ import { CommonModule } from '@angular/common';
       <nav>
         <ul class="pagination pagination-sm mb-0">
           <li class="page-item" [class.disabled]="currentPage() <= 1">
-            <button class="page-link" (click)="goTo(currentPage() - 1)" [disabled]="currentPage() <= 1">
+            <button type="button" class="page-link" (click)="goTo(currentPage() - 1)" [disabled]="currentPage() <= 1">
               &laquo;
             </button>
           </li>
           @for (p of visiblePages(); track p) {
             <li class="page-item" [class.active]="p === currentPage()">
-              <button class="page-link" (click)="goTo(p)">{{ p }}</button>
+              <button type="button" class="page-link" (click)="goTo(p)">{{ p }}</button>
             </li>
           }
           <li class="page-item" [class.disabled]="currentPage() >= totalPages()">
-            <button class="page-link" (click)="goTo(currentPage() + 1)" [disabled]="currentPage() >= totalPages()">
+            <button type="button" class="page-link" (click)="goTo(currentPage() + 1)" [disabled]="currentPage() >= totalPages()">
               &raquo;
             </button>
           </li>
