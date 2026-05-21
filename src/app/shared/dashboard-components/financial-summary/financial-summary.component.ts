@@ -61,7 +61,7 @@ export class FinancialSummaryComponent implements OnInit {
       .toISOString()
       .split('T')[0];
     const dateTo = now.toISOString().split('T')[0];
-    const filter = `transactionDate ge ${dateFrom} and transactionDate le ${dateTo}`;
+    const filter = `transactionDate ge '${dateFrom}' and transactionDate le '${dateTo}'`;
 
     this.transactionService
       .apiFinancialTransactionGet(
