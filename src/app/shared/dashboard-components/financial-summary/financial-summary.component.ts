@@ -61,7 +61,7 @@ export class FinancialSummaryComponent implements OnInit {
     const currentMonth = now.getMonth();
 
     this.transactionService
-      .apiFinancialTransactionGet(undefined, undefined, '5000')
+      .apiFinancialTransactionGet(undefined, undefined, undefined)
       .subscribe({
         next: (body: any) => {
           const items = Array.isArray(body) ? body : (body?.value ?? []);

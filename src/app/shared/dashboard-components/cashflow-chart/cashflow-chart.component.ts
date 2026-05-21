@@ -117,7 +117,7 @@ export class CashflowChartComponent implements AfterViewInit, OnDestroy {
     }
 
     this.transactionService
-      .apiFinancialTransactionGet(undefined, undefined, '5000')
+      .apiFinancialTransactionGet(undefined, undefined, undefined)
       .subscribe({
         next: (data: any) => {
           const items = Array.isArray(data) ? data : (data?.value ?? []);
