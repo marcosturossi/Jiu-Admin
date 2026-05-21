@@ -57,30 +57,25 @@ export class FinancialSummaryComponent implements OnInit {
 
   private loadTransactionSummary(): void {
     const now = new Date();
-    const dateFrom = new Date(now.getFullYear(), now.getMonth(), 1)
-      .toISOString()
-      .split('T')[0];
-    const dateTo = now.toISOString().split('T')[0];
-    const filter = `transactionDate ge '${dateFrom}' and transactionDate le '${dateTo}'`;
+    const currentYear = now.getFullYear();
+    const currentMonth = now.getMonth();
 
     this.transactionService
-      .apiFinancialTransactionGet(
-        filter,
-        undefined,
-        '1000',
-        '0',
-        'true'
-      )
+      .apiFinancialTransactionGet(undefined, undefined, '5000')
       .subscribe({
         next: (body: any) => {
           const items = Array.isArray(body) ? body : (body?.value ?? []);
-          const income = items
+          const thisMonth = items.filter((t: any) => {
+            const d = new Date(t.transactionDate ?? '');
+            return d.getFullYear() === currentYear && d.getMonth() === currentMonth;
+          });
+          const income = thisMonth
             .filter((t: any) => {
               const type = normalizeTransactionType(t.type);
               return type === TransactionType.Income || type === TransactionType.Credit;
             })
             .reduce((sum: number, t: any) => sum + (t.amount ?? 0), 0);
-          const expenses = items
+          const expenses = thisMonth
             .filter((t: any) => {
               const type = normalizeTransactionType(t.type);
               return type === TransactionType.Expense || type === TransactionType.Debit;

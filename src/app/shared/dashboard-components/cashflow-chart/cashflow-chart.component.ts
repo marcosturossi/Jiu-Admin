@@ -116,12 +116,8 @@ export class CashflowChartComponent implements AfterViewInit, OnDestroy {
       months.push({ label: PT_MONTHS[d.getMonth()], year: d.getFullYear(), month: d.getMonth() });
     }
 
-    const dateFrom = new Date(months[0].year, months[0].month, 1).toISOString().split('T')[0];
-    const dateTo = now.toISOString().split('T')[0];
-
-    const filter = `transactionDate ge '${dateFrom}' and transactionDate le '${dateTo}'`;
     this.transactionService
-      .apiFinancialTransactionGet(filter, undefined, '2000')
+      .apiFinancialTransactionGet(undefined, undefined, '5000')
       .subscribe({
         next: (data: any) => {
           const items = Array.isArray(data) ? data : (data?.value ?? []);
