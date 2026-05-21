@@ -109,16 +109,16 @@ describe('TransactionsComponent', () => {
   it('should reset to page 1 and reload on onFilterChange', () => {
     (component as any).currentPage.set(3);
     transactionService.apiFinancialTransactionGet.calls.reset();
-    (component as any).onFilterChange({ text: '', conditions: [] });
+    (component as any).onFilterChange({ text: '', conditions: [], odataFilter: undefined });
     expect((component as any).currentPage()).toBe(1);
     expect(transactionService.apiFinancialTransactionGet).toHaveBeenCalled();
   });
 
-  it('should update search term and reload on onFilterChange with text', () => {
+  it('should update OData filter and reload on onFilterChange with text', () => {
     (component as any).currentPage.set(2);
     transactionService.apiFinancialTransactionGet.calls.reset();
-    (component as any).onFilterChange({ text: 'teste', conditions: [] });
-    expect((component as any).searchTerm()).toBe('teste');
+    (component as any).onFilterChange({ text: 'teste', conditions: [], odataFilter: "contains(description,'teste')" });
+    expect((component as any).filterQuery()).toBe("contains(description,'teste')");
     expect((component as any).currentPage()).toBe(1);
     expect(transactionService.apiFinancialTransactionGet).toHaveBeenCalled();
   });

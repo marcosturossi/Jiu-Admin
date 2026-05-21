@@ -7,7 +7,7 @@ import { NotificationService } from '../../../services/notification.service';
 import { FilterComponent } from '../../../shared/filter/filter.component';
 import { FilterOutput } from '../../../shared/filter/filter.types';
 import { PaginationComponent } from '../../../shared/pagination/pagination.component';
-import { ODataPage, parseODataPage, buildODataFilter } from '../../../utils/odata.utils';
+import { ODataPage, parseODataPage } from '../../../utils/odata.utils';
 import { CreateStudentComponent } from './create-student/create-student.component';
 import { UpdateStudentComponent } from './update-student/update-student.component';
 
@@ -36,7 +36,7 @@ export class StudentsComponent {
   protected readonly selected = signal<ShowStudentDTO | null>(null);
   protected readonly currentPage = signal(1);
   protected readonly pageSize = signal(10);
-  protected readonly filterText = signal('');
+  protected readonly filterQuery = signal<string | undefined>(undefined);
 
   constructor() {
     this.subnavService.setTitle('Estudantes');
@@ -46,7 +46,7 @@ export class StudentsComponent {
   protected load(): void {
     this.isLoading.set(true);
     const skip = (this.currentPage() - 1) * this.pageSize();
-    const filter = buildODataFilter(this.filterText(), ['firstName', 'lastName']);
+    const filter = this.filterQuery();
     this.studentsService.apiStudentsGet(filter, undefined, String(this.pageSize()), String(skip), 'true').subscribe({
       next: (body: any) => { this.items.set(parseODataPage<ShowStudentDTO>(body, this.pageSize())); this.isLoading.set(false); },
       error: () => { this.isLoading.set(false); this.notificationService.showError('Erro de Carregamento', 'Não foi possível carregar a lista de alunos.'); }
@@ -55,7 +55,7 @@ export class StudentsComponent {
 
   protected onPageChange(page: number): void { this.currentPage.set(page); this.load(); }
   protected onPageSizeChange(size: number): void { this.pageSize.set(size); this.currentPage.set(1); this.load(); }
-  protected onFilterChange(output: FilterOutput): void { this.filterText.set(output.text); this.currentPage.set(1); this.load(); }
+  protected onFilterChange(output: FilterOutput): void { this.filterQuery.set(output.odataFilter); this.currentPage.set(1); this.load(); }
   protected openCreate(): void { this.openedCreate.set(true); }
   protected openEdit(item: ShowStudentDTO): void { this.selected.set(item); this.openedUpdate.set(true); }
   protected onCreated(): void { this.openedCreate.set(false); this.load(); }

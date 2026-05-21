@@ -1,6 +1,6 @@
 <section class="page-section">
   <div class="page-toolbar">
-    <app-filter [placeholder]="'Buscar plano'" (filterChange)="onFilterChange($event)" />
+    <app-filter [placeholder]="'Buscar plano'" [odataTextFields]="['name']" (filterChange)="onFilterChange($event)" />
     <button type="button" class="btn btn-primary" (click)="openCreate()">
       <i class="bi bi-plus-lg me-1"></i>Novo Plano
     </button>

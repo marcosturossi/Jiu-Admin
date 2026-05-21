@@ -1,6 +1,6 @@
 <section class="page-section">
   <div class="page-toolbar">
-    <app-filter [placeholder]="'Buscar graduação'" (filterChange)="onFilterChange($event)" />
+    <app-filter [placeholder]="'Buscar graduação'" [odataTextFields]="['fullName']" (filterChange)="onFilterChange($event)" />
     <button type="button" class="btn btn-primary" (click)="openCreate()">
       <i class="bi bi-plus-lg me-1"></i>Nova Graduação
     </button>

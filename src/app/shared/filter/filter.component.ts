@@ -10,6 +10,7 @@ import {
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Subject, debounceTime } from 'rxjs';
+import { buildODataFilter } from '../../utils/odata.utils';
 import {
   FilterCondition,
   FilterField,
@@ -33,6 +34,7 @@ import {
 export class FilterComponent {
   readonly placeholder = input<string>('Buscar...');
   readonly fields = input<FilterField[]>([]);
+  readonly odataTextFields = input<string[]>([]);
 
   readonly filterChange = output<FilterOutput>();
 
@@ -45,6 +47,7 @@ export class FilterComponent {
   protected readonly draftConditions = signal<FilterCondition[]>([]);
 
   protected readonly activeCount = computed(() => this.conditions().length);
+  protected readonly hasFilters = computed(() => this.inputValue().trim() !== '' || this.conditions().length > 0);
 
   constructor() {
     this.searchSubject
@@ -61,6 +64,13 @@ export class FilterComponent {
 
   protected onClear(): void {
     this.inputValue.set('');
+    this.emit();
+  }
+
+  protected clearAll(): void {
+    this.inputValue.set('');
+    this.conditions.set([]);
+    this.draftConditions.set([]);
     this.emit();
   }
 
@@ -82,7 +92,8 @@ export class FilterComponent {
   }
 
   protected clearDraft(): void {
-    this.draftConditions.set([]);
+    this.clearAll();
+    this.modalOpen.set(false);
   }
 
   // ── Condition builder (draft) ─────────────────────────────────────────────
@@ -145,12 +156,22 @@ export class FilterComponent {
     if (cond.field.type === 'select' && cond.field.options) {
       return cond.field.options.find(o => o.value === cond.value)?.label ?? cond.value;
     }
+    if (cond.field.type === 'date' && cond.value) {
+      const date = new Date(cond.value);
+      if (!Number.isNaN(date.getTime())) {
+        return new Intl.DateTimeFormat('pt-BR').format(date);
+      }
+    }
     return cond.value;
   }
 
   // ─────────────────────────────────────────────────────────────────────────
 
   private emit(): void {
-    this.filterChange.emit({ text: this.inputValue(), conditions: this.conditions() });
+    this.filterChange.emit({
+      text: this.inputValue(),
+      conditions: this.conditions(),
+      odataFilter: buildODataFilter(this.inputValue(), this.odataTextFields(), this.conditions()),
+    });
   }
 }

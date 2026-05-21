@@ -9,7 +9,7 @@ import { PaginationComponent } from '../../../shared/pagination/pagination.compo
 import { BlobViewerComponent } from '../../../shared/blob-viewer/blob-viewer.component';
 import { FilterComponent } from '../../../shared/filter/filter.component';
 import { FilterOutput } from '../../../shared/filter/filter.types';
-import { ODataPage, parseODataPage, buildODataFilter } from '../../../utils/odata.utils';
+import { ODataPage, parseODataPage } from '../../../utils/odata.utils';
 
 @Component({
   selector: 'app-medical-clearances',
@@ -28,7 +28,7 @@ export class MedicalClearancesComponent {
   protected readonly openedCreate = signal(false);
   protected readonly currentPage = signal(1);
   protected readonly pageSize = signal(10);
-  protected readonly filterText = signal('');
+  protected readonly filterQuery = signal<string | undefined>(undefined);
   protected readonly attachmentBlob = signal<Blob | undefined>(undefined);
   protected readonly attachmentMimeType = signal<string | undefined>(undefined);
   protected readonly attachmentDialogVisible = signal(false);
@@ -41,14 +41,14 @@ export class MedicalClearancesComponent {
   protected load(): void {
     this.isLoading.set(true);
     const skip = (this.currentPage() - 1) * this.pageSize();
-    const filter = buildODataFilter(this.filterText(), ['student/firstName', 'student/lastName']);
+    const filter = this.filterQuery();
     this.medicalClearanceService.apiMedicalClearanceGet(filter, undefined, String(this.pageSize()), String(skip), 'true').subscribe({
       next: (body: any) => { this.items.set(parseODataPage<ShowMedicalClearanceDTO>(body, this.pageSize())); this.isLoading.set(false); },
       error: () => { this.isLoading.set(false); this.ns.showError('Erro de Carregamento', 'Não foi possível carregar a lista de atestados médicos.'); }
     });
   }
 
-  protected onFilterChange(output: FilterOutput): void { this.filterText.set(output.text); this.currentPage.set(1); this.load(); }
+  protected onFilterChange(output: FilterOutput): void { this.filterQuery.set(output.odataFilter); this.currentPage.set(1); this.load(); }
 
   protected onPageChange(p: number): void { this.currentPage.set(p); this.load(); }
   protected onPageSizeChange(s: number): void { this.pageSize.set(s); this.currentPage.set(1); this.load(); }

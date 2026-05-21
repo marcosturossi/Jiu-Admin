@@ -109,7 +109,7 @@ describe('ContractsComponent', () => {
   it('should reset to page 1 and reload on onFilterChange', () => {
     (component as any).currentPage.set(3);
     contractService.apiContractGet.calls.reset();
-    (component as any).onFilterChange({ text: '', conditions: [] });
+    (component as any).onFilterChange({ text: '', conditions: [], odataFilter: undefined });
     expect((component as any).currentPage()).toBe(1);
     expect(contractService.apiContractGet).toHaveBeenCalled();
   });

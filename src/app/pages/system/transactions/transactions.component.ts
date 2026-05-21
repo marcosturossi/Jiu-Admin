@@ -10,7 +10,7 @@ import { FilterField, FilterOutput } from '../../../shared/filter/filter.types';
 import { PaginationComponent } from '../../../shared/pagination/pagination.component';
 import { CreateTransactionComponent } from './create-transaction/create-transaction.component';
 import { UpdateTransactionComponent } from './update-transaction/update-transaction.component';
-import { ODataPage, parseODataPage, buildODataFilter } from '../../../utils/odata.utils';
+import { ODataPage, parseODataPage } from '../../../utils/odata.utils';
 
 @Component({
   selector: 'app-transactions',
@@ -40,8 +40,7 @@ export class TransactionsComponent {
   protected readonly selected = signal<ShowTransactionDTO | null>(null);
   protected readonly currentPage = signal(1);
   protected readonly pageSize = signal(10);
-  protected readonly filterType = signal<string | undefined>(undefined);
-  protected readonly searchTerm = signal('');
+  protected readonly filterQuery = signal<string | undefined>(undefined);
   protected readonly categories = signal<ShowTransactionCategoryDTO[]>([]);
 
   protected readonly filterFields: FilterField[] = [
@@ -69,11 +68,7 @@ export class TransactionsComponent {
   protected load(): void {
     this.isLoading.set(true);
     const skip = (this.currentPage() - 1) * this.pageSize();
-    let filter = buildODataFilter(this.searchTerm(), ['description']);
-    if (this.filterType()) {
-      const enumFilter = `type eq '${this.filterType()}'`;
-      filter = filter ? `${filter} and ${enumFilter}` : enumFilter;
-    }
+    const filter = this.filterQuery();
     this.transactionService.apiFinancialTransactionGet(filter, undefined, String(this.pageSize()), String(skip), 'true').subscribe({
       next: (body: any) => { this.items.set(parseODataPage<ShowTransactionDTO>(body, this.pageSize())); this.isLoading.set(false); },
       error: () => { this.isLoading.set(false); this.ns.showError('Erro', 'Não foi possível carregar as transações.'); },
@@ -117,13 +112,7 @@ export class TransactionsComponent {
 
   protected onPageChange(page: number): void { this.currentPage.set(page); this.load(); }
   protected onPageSizeChange(size: number): void { this.pageSize.set(size); this.currentPage.set(1); this.load(); }
-  protected onFilterChange(output: FilterOutput): void {
-    this.searchTerm.set(output.text);
-    const typeCond = output.conditions.find(c => c.field.key === 'type');
-    this.filterType.set(typeCond?.value ?? undefined);
-    this.currentPage.set(1);
-    this.load();
-  }
+  protected onFilterChange(output: FilterOutput): void { this.filterQuery.set(output.odataFilter); this.currentPage.set(1); this.load(); }
   protected onCategorySearch(term: string): void { this.loadCategories(term); }
   protected openCreate(): void { this.openedCreate.set(true); }
   protected openEdit(item: ShowTransactionDTO): void { this.selected.set(item); this.openedUpdate.set(true); }

@@ -9,7 +9,7 @@ import { FilterComponent } from '../../../shared/filter/filter.component';
 import { FilterField, FilterOutput } from '../../../shared/filter/filter.types';
 import { PaginationComponent } from '../../../shared/pagination/pagination.component';
 import { dateStringToIso, todayDateString } from '../../../utils/date.utils';
-import { ODataPage, parseODataPage, buildODataFilter } from '../../../utils/odata.utils';
+import { ODataPage, parseODataPage } from '../../../utils/odata.utils';
 
 @Component({
   selector: 'app-monthly-fees',
@@ -44,8 +44,7 @@ export class MonthlyFeesComponent {
   protected readonly pixResult = signal<ChargeResult | null>(null);
   protected readonly currentPage = signal(1);
   protected readonly pageSize = signal(10);
-  protected readonly filterStatus = signal<string | undefined>(undefined);
-  protected readonly filterText = signal('');
+  protected readonly filterQuery = signal<string | undefined>(undefined);
 
   protected readonly FeeStatus = FeeStatus;
 
@@ -85,11 +84,7 @@ export class MonthlyFeesComponent {
   protected load(): void {
     this.isLoading.set(true);
     const skip = (this.currentPage() - 1) * this.pageSize();
-    let filter = buildODataFilter(this.filterText(), ['studentName']);
-    if (this.filterStatus()) {
-      const enumFilter = `status eq '${this.filterStatus()}'`;
-      filter = filter ? `${filter} and ${enumFilter}` : enumFilter;
-    }
+    const filter = this.filterQuery();
     this.feeService.apiMonthlyFeeGet(filter, undefined, String(this.pageSize()), String(skip), 'true').subscribe({
       next: (body: any) => { this.items.set(parseODataPage<ShowMonthlyFeeDTO>(body, this.pageSize())); this.isLoading.set(false); },
       error: () => { this.isLoading.set(false); this.ns.showError('Erro', 'Não foi possível carregar as mensalidades.'); },
@@ -118,13 +113,7 @@ export class MonthlyFeesComponent {
 
   protected onPageChange(page: number): void { this.currentPage.set(page); this.load(); }
   protected onPageSizeChange(size: number): void { this.pageSize.set(size); this.currentPage.set(1); this.load(); }
-  protected onFilterChange(output: FilterOutput): void {
-    this.filterText.set(output.text);
-    const statusCond = output.conditions.find(c => c.field.key === 'status');
-    this.filterStatus.set(statusCond?.value ?? undefined);
-    this.currentPage.set(1);
-    this.load();
-  }
+  protected onFilterChange(output: FilterOutput): void { this.filterQuery.set(output.odataFilter); this.currentPage.set(1); this.load(); }
 
   protected openPay(fee: ShowMonthlyFeeDTO): void {
     this.selected.set(fee);
