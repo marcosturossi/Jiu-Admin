@@ -103,6 +103,11 @@ describe('StudentsComponent', () => {
     expect(studentsService.apiStudentsGet).toHaveBeenCalled();
   });
 
+  it('should build a status filter on onFilterChange', () => {
+    (component as any).onFilterChange({ text: '', conditions: [{ field: { key: 'isActive', label: 'Status', type: 'select', options: [{ value: 'true', label: 'Ativo' }, { value: 'false', label: 'Inativo' }] }, operator: 'eq', value: 'true' }], odataFilter: 'isActive eq true' });
+    expect((component as any).filterQuery()).toBe('isActive eq true');
+  });
+
   describe('delete', () => {
     beforeEach(() => {
       spyOn(window, 'confirm').and.returnValue(true);

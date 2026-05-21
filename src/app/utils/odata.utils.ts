@@ -30,8 +30,9 @@ export function buildODataFilter(
     const field = c.field.key;
     const isNumeric = c.field.type === 'number';
     const isDate = c.field.type === 'date';
+    const isBooleanString = c.value === 'true' || c.value === 'false';
     const val = c.value.replace(/'/g, "''");
-    const escapedVal = isNumeric || isDate ? val : `'${val}'`;
+    const escapedVal = isNumeric || isDate || isBooleanString ? val : `'${val}'`;
 
     switch (c.operator) {
       case 'contains':     parts.push(`contains(${field},${escapedVal})`);     break;
