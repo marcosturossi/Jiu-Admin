@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, effect, inject, input, output } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
-import { BeltService, CarlonGracieBackendProgressionApplicationDTOsShowBeltDTO as ShowBeltDTO, CarlonGracieBackendProgressionApplicationDTOsUpdateBeltDTO as UpdateBeltDTO } from '../../../../generated_services';
+import { BeltService, ShowBeltDTO as ShowBeltDTO, UpdateBeltDTO as UpdateBeltDTO } from '../../../../generated_services';
 import { NotificationService } from '../../../../services/notification.service';
 
 @Component({

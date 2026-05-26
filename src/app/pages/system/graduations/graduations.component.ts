@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
-import { GraduationService, CarlonGracieBackendProgressionApplicationDTOsShowGraduationDTO as ShowGraduationDTO } from '../../../generated_services';
+import { GraduationService, ShowGraduationDTO as ShowGraduationDTO } from '../../../generated_services';
 import { CreateGraduationComponent } from './create-graduation/create-graduation.component';
 import { UpdateGraduationComponent } from './update-graduation/update-graduation.component';
 import { SubnavService } from '../../../services/subnav.service';

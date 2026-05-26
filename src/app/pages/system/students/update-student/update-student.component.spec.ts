@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { of, throwError } from 'rxjs';
 import { ComponentRef } from '@angular/core';
 import { UpdateStudentComponent } from './update-student.component';
-import { StudentsService, CarlonGracieBackendStudentsApplicationDTOsShowStudentDTO as ShowStudentDTO } from '../../../../generated_services';
+import { StudentsService, ShowStudentDTO as ShowStudentDTO } from '../../../../generated_services';
 import { NotificationService } from '../../../../services/notification.service';
 
 const MOCK_STUDENT: ShowStudentDTO = { id: 's1', userName: 'joao', email: 'joao@test.com', firstName: 'João', lastName: 'Silva', isActive: true };

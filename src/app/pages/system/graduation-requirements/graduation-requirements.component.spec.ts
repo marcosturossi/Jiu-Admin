@@ -1,11 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { of, throwError } from 'rxjs';
 import { GraduationRequirementsComponent } from './graduation-requirements.component';
-import { GraduationRequirementsService, CarlonGracieBackendProgressionApplicationDTOsShowGraduationRequirementDTO as ShowGraduationRequirementsDTO } from '../../../generated_services';
+import { GraduationRequirementsService, ShowGraduationRequirementDTO as ShowGraduationRequirementsDTO } from '../../../generated_services';
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
 
 const MOCK_REQUIREMENT: ShowGraduationRequirementsDTO = { id: 'r1', beltId: 'belt-1', description: 'Mínimo 100 aulas', minimumClasses: 100 };
+const MOCK_ITEMS = Array.from({ length: 25 }, (_, i) => ({ ...MOCK_REQUIREMENT, id: `r${i + 1}` }));
+const buildResponse = (page = 1, pageSize = 10) => ({
+  items: MOCK_ITEMS.slice((page - 1) * pageSize, page * pageSize),
+  totalCount: MOCK_ITEMS.length,
+  totalPages: Math.ceil(MOCK_ITEMS.length / pageSize),
+});
 
 describe('GraduationRequirementsComponent', () => {
   let component: GraduationRequirementsComponent;
@@ -18,7 +24,7 @@ describe('GraduationRequirementsComponent', () => {
     const reqSpy = jasmine.createSpyObj('GraduationRequirementsService', ['apiGraduationRequirementsGet', 'apiGraduationRequirementsIdDelete']);
     const nsSpy = jasmine.createSpyObj('NotificationService', ['showSuccess', 'showError']);
     const subnavSpy = jasmine.createSpyObj('SubnavService', ['setTitle']);
-    reqSpy.apiGraduationRequirementsGet.and.returnValue(of([MOCK_REQUIREMENT]));
+    reqSpy.apiGraduationRequirementsGet.and.callFake((...args: any[]) => of(buildResponse(Number(args[4] ?? 1), Number(args[5] ?? 10))));
 
     await TestBed.configureTestingModule({
       imports: [GraduationRequirementsComponent],
@@ -43,7 +49,7 @@ describe('GraduationRequirementsComponent', () => {
 
   it('should load requirements on init', () => {
     expect(requirementsService.apiGraduationRequirementsGet).toHaveBeenCalled();
-    expect((component as any).items()).toEqual([MOCK_REQUIREMENT]);
+    expect((component as any).items()).toEqual(buildResponse());
   });
 
   it('should set isLoading to false after successful load', () => {

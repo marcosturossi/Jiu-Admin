@@ -3,7 +3,7 @@ import { of, throwError } from 'rxjs';
 import { ComponentRef } from '@angular/core';
 import { UpdateNotificationComponent } from './update-notification.component';
 import { NotificationService as ApiNotificationService } from '../../../../generated_services/api/notification.service';
-import { ShowNotificationDTO } from '../../../../generated_services/model/showNotificationDTO';
+import { ShowNotificationDto as ShowNotificationDTO } from '../../../../generated_services/model/showNotificationDto';
 import { NotificationType } from '../../../../generated_services/model/notificationType';
 import { NotificationService } from '../../../../services/notification.service';
 

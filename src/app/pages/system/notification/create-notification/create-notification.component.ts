@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject, output } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NotificationService as ApiNotificationService } from '../../../../generated_services/api/notification.service';
-import { CreateNotificationDTO } from '../../../../generated_services/model/createNotificationDTO';
+import { CreateNotificationDto } from '../../../../generated_services/model/createNotificationDto';
 import { NotificationType } from '../../../../generated_services/model/notificationType';
 import { NotificationService } from '../../../../services/notification.service';
 import { datetimeLocalToIso } from '../../../../utils/date.utils';
@@ -39,8 +39,6 @@ export class CreateNotificationComponent {
     userId: [''],
     isActive: [true],
     expiresAt: [null as string | null],
-    actionUrl: [''],
-    metadata: ['']
   });
 
   protected close(): void { this.closeEvent.emit(); }
@@ -59,7 +57,7 @@ export class CreateNotificationComponent {
     });
   }
 
-  private toDTO(): CreateNotificationDTO {
+  private toDTO(): CreateNotificationDto {
     const v = this.form.value;
     return {
       title: v.title,
@@ -68,8 +66,6 @@ export class CreateNotificationComponent {
       studentIds: v.userId ? [v.userId] : [],
       isActive: v.isActive,
       expiresAt: datetimeLocalToIso(v.expiresAt),
-      actionUrl: v.actionUrl || null,
-      metadata: v.metadata || null
-    } as CreateNotificationDTO;
+    } as CreateNotificationDto;
   }
 }

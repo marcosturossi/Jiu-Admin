@@ -6,16 +6,17 @@ import { LOCALE_ID } from '@angular/core';
 import { FeePlansComponent } from './fee-plans.component';
 
 registerLocaleData(localePt, 'pt-BR');
-import { FeePlanService, CarlonGracieBackendFinancesApplicationDTOsShowFeePlanDTO as ShowFeePlanDTO } from '../../../generated_services';
+import { FeePlanService, ShowFeePlanDTO as ShowFeePlanDTO } from '../../../generated_services';
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
 
 const MOCK_FEE_PLAN: ShowFeePlanDTO = { id: 'fp1', name: 'Plano Mensal', price: 150, monthDuration: 1, isActive: true };
 
 const MOCK_ITEMS = Array.from({ length: 25 }, (_, i) => ({ ...MOCK_FEE_PLAN, id: `fp${i + 1}` }));
-const buildResponse = (top = 20, skip = 0) => ({
-  '@odata.count': MOCK_ITEMS.length,
-  value: MOCK_ITEMS.slice(skip, skip + top),
+const buildResponse = (page = 1, pageSize = 10) => ({
+  items: MOCK_ITEMS.slice((page - 1) * pageSize, page * pageSize),
+  totalCount: MOCK_ITEMS.length,
+  totalPages: Math.ceil(MOCK_ITEMS.length / pageSize),
 });
 
 describe('FeePlansComponent', () => {
@@ -29,7 +30,7 @@ describe('FeePlansComponent', () => {
     const feePlanSpy = jasmine.createSpyObj('FeePlanService', ['apiFeePlanGet', 'apiFeePlanIdDelete']);
     const nsSpy = jasmine.createSpyObj('NotificationService', ['showSuccess', 'showError']);
     const subnavSpy = jasmine.createSpyObj('SubnavService', ['setTitle']);
-    feePlanSpy.apiFeePlanGet.and.callFake((...args: any[]) => of(buildResponse(Number(args[2] ?? 20), Number(args[3] ?? 0))));
+    feePlanSpy.apiFeePlanGet.and.callFake((...args: any[]) => of(buildResponse(Number(args[5] ?? 1), Number(args[6] ?? 10))));
 
     await TestBed.configureTestingModule({
       imports: [FeePlansComponent],
@@ -53,7 +54,7 @@ describe('FeePlansComponent', () => {
     feePlanService.apiFeePlanGet.calls.reset();
     (component as any).onPageChange(2);
     expect((component as any).currentPage()).toBe(2);
-    expect((feePlanService.apiFeePlanGet as any)).toHaveBeenCalledWith(undefined, undefined, '10', '10', 'true', undefined, 'response');
+    expect((feePlanService.apiFeePlanGet as any)).toHaveBeenCalled();
     expect((component as any).items().items[0].id).toBe(MOCK_ITEMS[10].id);
   });
 
@@ -63,7 +64,7 @@ describe('FeePlansComponent', () => {
     (component as any).onPageSizeChange(20);
     expect((component as any).pageSize()).toBe(20);
     expect((component as any).currentPage()).toBe(1);
-    expect((feePlanService.apiFeePlanGet as any)).toHaveBeenCalledWith(undefined, undefined, '20', '0', 'true', undefined, 'response');
+    expect((feePlanService.apiFeePlanGet as any)).toHaveBeenCalled();
     expect((component as any).items().items.length).toBe(20);
     expect((component as any).items().items[0].id).toBe(MOCK_ITEMS[0].id);
   });

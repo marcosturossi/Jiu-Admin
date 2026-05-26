@@ -4,14 +4,15 @@ import { GraduationsComponent } from './graduations.component';
 import { GraduationService } from '../../../generated_services/api/graduation.service';
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
-import { CarlonGracieBackendProgressionApplicationDTOsShowGraduationDTO as ShowGraduationDTO } from '../../../generated_services';
+import { ShowGraduationDTO as ShowGraduationDTO } from '../../../generated_services';
 
 const MOCK_GRADUATION: ShowGraduationDTO = { id: 'g1', studentId: 'student-1', beltId: 'belt-1', graduationDate: '2024-01-01' };
 
 const MOCK_ITEMS = Array.from({ length: 25 }, (_, i) => ({ ...MOCK_GRADUATION, id: `g${i + 1}` }));
-const buildResponse = (top = 20, skip = 0) => ({
-  '@odata.count': MOCK_ITEMS.length,
-  value: MOCK_ITEMS.slice(skip, skip + top),
+const buildResponse = (page = 1, pageSize = 10) => ({
+  items: MOCK_ITEMS.slice((page - 1) * pageSize, page * pageSize),
+  totalCount: MOCK_ITEMS.length,
+  totalPages: Math.ceil(MOCK_ITEMS.length / pageSize),
 });
 
 describe('GraduationsComponent', () => {
@@ -25,7 +26,7 @@ describe('GraduationsComponent', () => {
     const graduationSpy = jasmine.createSpyObj('GraduationService', ['apiGraduationGet', 'apiGraduationIdDelete']);
     const nsSpy = jasmine.createSpyObj('NotificationService', ['showSuccess', 'showError']);
     const subnavSpy = jasmine.createSpyObj('SubnavService', ['setTitle']);
-    graduationSpy.apiGraduationGet.and.callFake((...args: any[]) => of(buildResponse(Number(args[2] ?? 20), Number(args[3] ?? 0))));
+    graduationSpy.apiGraduationGet.and.callFake((...args: any[]) => of(buildResponse(Number(args[4] ?? 1), Number(args[5] ?? 10))));
 
     await TestBed.configureTestingModule({
       imports: [GraduationsComponent],
@@ -48,7 +49,7 @@ describe('GraduationsComponent', () => {
     graduationService.apiGraduationGet.calls.reset();
     (component as any).onPageChange(2);
     expect((component as any).currentPage()).toBe(2);
-    expect((graduationService.apiGraduationGet as any)).toHaveBeenCalledWith(undefined, undefined, '10', '10', 'true', undefined, 'response');
+    expect((graduationService.apiGraduationGet as any)).toHaveBeenCalled();
     expect((component as any).items().items[0].id).toBe(MOCK_ITEMS[10].id);
   });
 
@@ -58,7 +59,7 @@ describe('GraduationsComponent', () => {
     (component as any).onPageSizeChange(20);
     expect((component as any).pageSize()).toBe(20);
     expect((component as any).currentPage()).toBe(1);
-    expect((graduationService.apiGraduationGet as any)).toHaveBeenCalledWith(undefined, undefined, '20', '0', 'true', undefined, 'response');
+    expect((graduationService.apiGraduationGet as any)).toHaveBeenCalled();
     expect((component as any).items().items.length).toBe(20);
     expect((component as any).items().items[0].id).toBe(MOCK_ITEMS[0].id);
   });

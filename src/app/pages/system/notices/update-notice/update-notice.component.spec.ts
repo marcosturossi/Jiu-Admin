@@ -3,10 +3,10 @@ import { of, throwError } from 'rxjs';
 import { ComponentRef } from '@angular/core';
 import { UpdateNoticeComponent } from './update-notice.component';
 import { NoticesService } from '../../../../generated_services/api/notices.service';
-import { ShowNoticesDTO } from '../../../../generated_services/model/showNoticesDTO';
+import { ShowNoticeDto } from '../../../../generated_services/model/showNoticeDto';
 import { NotificationService } from '../../../../services/notification.service';
 
-const MOCK_NOTICE: ShowNoticesDTO = { id: 'n1', description: 'Aviso importante', isActive: true };
+const MOCK_NOTICE: ShowNoticeDto = { id: 'n1', description: 'Aviso importante', isActive: true };
 
 describe('UpdateNoticeComponent', () => {
   let component: UpdateNoticeComponent;

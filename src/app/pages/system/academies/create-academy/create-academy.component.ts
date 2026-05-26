@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject, output } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { AcademyService } from '../../../../generated_services/api/academy.service';
-import { CreateAcademyDTO } from '../../../../generated_services/model/createAcademyDTO';
+import { CreateAcademyDto } from '../../../../generated_services/model/createAcademyDto';
 import { NotificationService } from '../../../../services/notification.service';
 
 @Component({
@@ -49,7 +49,7 @@ export class CreateAcademyComponent {
     });
   }
 
-  private toDTO(): CreateAcademyDTO {
+  private toDTO(): CreateAcademyDto {
     const v = this.form.getRawValue();
     return {
       name: v.name ?? '',

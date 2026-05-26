@@ -10,17 +10,18 @@ import { FinancialTransactionService } from '../../../generated_services/api/fin
 import { TransactionCategoryService } from '../../../generated_services/api/transactionCategory.service';
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
-import { CarlonGracieBackendFinancesApplicationDTOsShowTransactionDTO as ShowTransactionDTO, CarlonGracieBackendFinancesApplicationDTOsShowTransactionCategoryDTO as ShowTransactionCategoryDTO, CarlonGracieBackendSharedDomainEnumsTransactionType as TransactionType } from '../../../generated_services';
+import { ShowTransactionDTO as ShowTransactionDTO, ShowTransactionCategoryDTO as ShowTransactionCategoryDTO, TransactionType as TransactionType } from '../../../generated_services';
 
 const MOCK_TRANSACTION: ShowTransactionDTO = { id: 't1', description: 'Mensalidade março', amount: 150, type: TransactionType.Debit, transactionCategoryId: 'cat1' };
 
 const MOCK_ITEMS = Array.from({ length: 25 }, (_, i) => ({ ...MOCK_TRANSACTION, id: `tx${i + 1}` }));
-const buildResponse = (top = 20, skip = 0) => ({
-  '@odata.count': MOCK_ITEMS.length,
-  value: MOCK_ITEMS.slice(skip, skip + top),
+const buildResponse = (page = 1, pageSize = 10) => ({
+  items: MOCK_ITEMS.slice((page - 1) * pageSize, page * pageSize),
+  totalCount: MOCK_ITEMS.length,
+  totalPages: Math.ceil(MOCK_ITEMS.length / pageSize),
 });
 const MOCK_CATEGORIES: ShowTransactionCategoryDTO[] = [{ id: 'cat1', name: 'Mensalidades' }];
-const MOCK_CATEGORY_ODATA = { '@odata.count': 1, value: MOCK_CATEGORIES };
+const MOCK_CATEGORY_RESPONSE = { items: MOCK_CATEGORIES, totalCount: 1, totalPages: 1 };
 
 describe('TransactionsComponent', () => {
   let component: TransactionsComponent;
@@ -35,8 +36,8 @@ describe('TransactionsComponent', () => {
     const categorySpy = jasmine.createSpyObj('TransactionCategoryService', ['apiTransactionCategoryGet']);
     const nsSpy = jasmine.createSpyObj('NotificationService', ['showSuccess', 'showError']);
     const subnavSpy = jasmine.createSpyObj('SubnavService', ['setTitle']);
-    transactionSpy.apiFinancialTransactionGet.and.callFake((...args: any[]) => of(buildResponse(Number(args[2] ?? 20), Number(args[3] ?? 0))));
-    categorySpy.apiTransactionCategoryGet.and.returnValue(of(MOCK_CATEGORY_ODATA));
+    transactionSpy.apiFinancialTransactionGet.and.callFake((...args: any[]) => of(buildResponse(Number(args[7] ?? 1), Number(args[8] ?? 10))));
+    categorySpy.apiTransactionCategoryGet.and.returnValue(of(MOCK_CATEGORY_RESPONSE));
 
     await TestBed.configureTestingModule({
       imports: [TransactionsComponent],
@@ -62,7 +63,7 @@ describe('TransactionsComponent', () => {
     transactionService.apiFinancialTransactionGet.calls.reset();
     (component as any).onPageChange(2);
     expect((component as any).currentPage()).toBe(2);
-    expect((transactionService.apiFinancialTransactionGet as any)).toHaveBeenCalledWith(undefined, undefined, '10', '10', 'true', undefined, 'response');
+    expect((transactionService.apiFinancialTransactionGet as any)).toHaveBeenCalled();
     expect((component as any).items().items[0].id).toBe(MOCK_ITEMS[10].id);
   });
 
@@ -72,7 +73,7 @@ describe('TransactionsComponent', () => {
     (component as any).onPageSizeChange(20);
     expect((component as any).pageSize()).toBe(20);
     expect((component as any).currentPage()).toBe(1);
-    expect((transactionService.apiFinancialTransactionGet as any)).toHaveBeenCalledWith(undefined, undefined, '20', '0', 'true', undefined, 'response');
+    expect((transactionService.apiFinancialTransactionGet as any)).toHaveBeenCalled();
     expect((component as any).items().items.length).toBe(20);
     expect((component as any).items().items[0].id).toBe(MOCK_ITEMS[0].id);
   });

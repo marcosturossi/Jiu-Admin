@@ -69,23 +69,6 @@ describe('FilterComponent', () => {
     expect(emitted.length).toBe(1);
     expect(emitted[0].text).toBe('test');
     expect(emitted[0].conditions).toEqual([]);
-    expect(emitted[0].odataFilter).toBeUndefined();
-  }));
-
-  it('should emit an OData filter when search fields are provided', fakeAsync(() => {
-    fixture.componentRef.setInput('odataTextFields', ['name', 'email']);
-    fixture.detectChanges();
-
-    const emitted: FilterOutput[] = [];
-    component.filterChange.subscribe(v => emitted.push(v));
-
-    const input: HTMLInputElement = fixture.nativeElement.querySelector('.filter-bar__input');
-    input.value = 'marcos';
-    input.dispatchEvent(new Event('input'));
-    tick(400);
-
-    expect(emitted.length).toBe(1);
-    expect(emitted[0].odataFilter).toBe("(contains(name,'marcos') or contains(email,'marcos'))");
   }));
 
   it('should clear inputValue and emit filterChange when clear button clicked', fakeAsync(() => {
@@ -174,7 +157,6 @@ describe('FilterComponent', () => {
     expect(emitted[0].conditions.length).toBe(1);
     expect(emitted[0].conditions[0].field.key).toBe('status');
     expect(emitted[0].conditions[0].value).toBe('active');
-    expect(emitted[0].odataFilter).toBe("status eq 'active'");
   }));
 
   it('should show badge with condition count on advanced button', fakeAsync(() => {
@@ -219,12 +201,10 @@ describe('FilterComponent', () => {
 
     expect(emitted.length).toBe(2); // apply + remove
     expect(emitted[1].conditions).toEqual([]);
-    expect(emitted[1].odataFilter).toBeUndefined();
   }));
 
   it('should clear all filters when the reset button is clicked', fakeAsync(() => {
     fixture.componentRef.setInput('fields', [STATUS_FIELD]);
-    fixture.componentRef.setInput('odataTextFields', ['name']);
     fixture.detectChanges();
 
     const emitted: FilterOutput[] = [];

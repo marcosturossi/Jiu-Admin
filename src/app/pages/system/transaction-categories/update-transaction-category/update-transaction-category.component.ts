@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, effect, inject, input, output } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
-import { TransactionCategoryService, CarlonGracieBackendFinancesApplicationDTOsShowTransactionCategoryDTO as ShowTransactionCategoryDTO, CarlonGracieBackendFinancesApplicationDTOsUpdateTransactionCategoryDTO as UpdateTransactionCategoryDTO } from '../../../../generated_services';
+import { TransactionCategoryService, ShowTransactionCategoryDTO as ShowTransactionCategoryDTO, UpdateTransactionCategoryDTO as UpdateTransactionCategoryDTO } from '../../../../generated_services';
 import { NotificationService } from '../../../../services/notification.service';
 
 @Component({

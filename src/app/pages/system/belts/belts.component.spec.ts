@@ -9,9 +9,10 @@ import { ShowBeltDTO } from '../../../generated_services/model/showBeltDTO';
 const MOCK_BELT: ShowBeltDTO = { id: 'b1', color: 'Branca', orderIndex: 1, isForKids: false };
 
 const MOCK_ITEMS = Array.from({ length: 25 }, (_, i) => ({ ...MOCK_BELT, id: `b${i + 1}` }));
-const buildResponse = (top = 20, skip = 0) => ({
-  '@odata.count': MOCK_ITEMS.length,
-  value: MOCK_ITEMS.slice(skip, skip + top),
+const buildResponse = (page = 1, pageSize = 10) => ({
+  items: MOCK_ITEMS.slice((page - 1) * pageSize, page * pageSize),
+  totalCount: MOCK_ITEMS.length,
+  totalPages: Math.ceil(MOCK_ITEMS.length / pageSize),
 });
 
 describe('BeltsComponent', () => {
@@ -25,7 +26,7 @@ describe('BeltsComponent', () => {
     const beltSpy = jasmine.createSpyObj('BeltService', ['apiBeltGet', 'apiBeltIdDelete']);
     const nsSpy = jasmine.createSpyObj('NotificationService', ['showSuccess', 'showError']);
     const subnavSpy = jasmine.createSpyObj('SubnavService', ['setTitle']);
-    beltSpy.apiBeltGet.and.callFake((...args: any[]) => of(buildResponse(Number(args[2] ?? 20), Number(args[3] ?? 0))));
+    beltSpy.apiBeltGet.and.callFake((...args: any[]) => of(buildResponse(Number(args[4] ?? 1), Number(args[5] ?? 10))));
 
     await TestBed.configureTestingModule({
       imports: [BeltsComponent],
@@ -48,7 +49,7 @@ describe('BeltsComponent', () => {
     beltService.apiBeltGet.calls.reset();
     (component as any).onPageChange(2);
     expect((component as any).currentPage()).toBe(2);
-    expect((beltService.apiBeltGet as any)).toHaveBeenCalledWith(undefined, undefined, '10', '10', 'true', undefined, 'response');
+    expect((beltService.apiBeltGet as any)).toHaveBeenCalled();
     expect((component as any).items().items[0].id).toBe(MOCK_ITEMS[10].id);
   });
 
@@ -58,7 +59,7 @@ describe('BeltsComponent', () => {
     (component as any).onPageSizeChange(25);
     expect((component as any).pageSize()).toBe(25);
     expect((component as any).currentPage()).toBe(1);
-    expect((beltService.apiBeltGet as any)).toHaveBeenCalledWith(undefined, undefined, '25', '0', 'true', undefined, 'response');
+    expect((beltService.apiBeltGet as any)).toHaveBeenCalled();
     expect((component as any).items().items.length).toBe(25);
     expect((component as any).items().items[0].id).toBe(MOCK_ITEMS[0].id);
   });

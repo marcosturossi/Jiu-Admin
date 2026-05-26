@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { of, throwError } from 'rxjs';
 import { ComponentRef } from '@angular/core';
 import { UpdateBeltComponent } from './update-belt.component';
-import { BeltService, CarlonGracieBackendProgressionApplicationDTOsShowBeltDTO as ShowBeltDTO } from '../../../../generated_services';
+import { BeltService, ShowBeltDTO as ShowBeltDTO } from '../../../../generated_services';
 import { NotificationService } from '../../../../services/notification.service';
 
 const MOCK_BELT: ShowBeltDTO = { id: 'b1', color: 'Azul', orderIndex: 2, isForKids: false };

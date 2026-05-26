@@ -12,12 +12,12 @@ describe('CreateFrequencyComponent', () => {
 
   beforeEach(async () => {
     const freqSpy = jasmine.createSpyObj('FrequencyService', ['apiFrequencyPost']);
-    const studentsSpy = jasmine.createSpyObj('StudentsService', ['apiStudentsActiveGet']);
-    const lessonSpy = jasmine.createSpyObj('LessonService', ['apiLessonActiveGet']);
+    const studentsSpy = jasmine.createSpyObj('StudentsService', ['apiStudentsGet']);
+    const lessonSpy = jasmine.createSpyObj('LessonService', ['apiLessonGet']);
     const personsSpy = jasmine.createSpyObj('PersonsService', ['listPersonsApiV1PersonsGet', 'recognizeFacesApiV1RecognizePost']);
     const nsSpy = jasmine.createSpyObj('NotificationService', ['showSuccess', 'showError', 'showWarning', 'showInfo']);
-    studentsSpy.apiStudentsActiveGet.and.returnValue(of([{ id: 'stu1', firstName: 'João', lastName: 'Silva' }]));
-    lessonSpy.apiLessonActiveGet.and.returnValue(of([{ id: 'l1', title: 'Aula 1' }]));
+    studentsSpy.apiStudentsGet.and.returnValue(of({ items: [{ id: 'stu1', firstName: 'João', lastName: 'Silva' }], totalCount: 1, totalPages: 1 }));
+    lessonSpy.apiLessonGet.and.returnValue(of({ items: [{ id: 'l1', title: 'Aula 1' }], totalCount: 1, totalPages: 1 }));
     personsSpy.listPersonsApiV1PersonsGet.and.returnValue(of({ persons: [], total: 0, page: 1, page_size: 10 }));
     await TestBed.configureTestingModule({
       imports: [CreateFrequencyComponent],

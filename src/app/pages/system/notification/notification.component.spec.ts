@@ -4,12 +4,12 @@ import { NotificationComponent } from './notification.component';
 import { NotificationService as ApiNotificationService } from '../../../generated_services/api/notification.service';
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
-import { CarlonGracieBackendCommunicationsApplicationDTOsPaginationNotificationDto as PaginationNotificationDTO } from '../../../generated_services';
-import { CarlonGracieBackendCommunicationsApplicationDTOsShowNotificationDto as ShowNotificationDTO } from '../../../generated_services/model/carlonGracieBackendCommunicationsApplicationDTOsShowNotificationDto';
-import { CarlonGracieBackendCommunicationsDomainNotificationType as NotificationType } from '../../../generated_services/model/carlonGracieBackendCommunicationsDomainNotificationType';
+import { ShowNotificationDto as ShowNotificationDTO } from '../../../generated_services/model/showNotificationDto';
+import { NotificationType } from '../../../generated_services/model/notificationType';
 
 const MOCK_NOTIFICATION: ShowNotificationDTO = { id: 'notif-1', title: 'Aviso', message: 'Mensagem', type: NotificationType.Info, isActive: true };
-const MOCK_PAGINATION: PaginationNotificationDTO = { items: [MOCK_NOTIFICATION], totalCount: 1, pageNumber: 1, pageSize: 10, totalPages: 1 };
+const MOCK_ITEMS = Array.from({ length: 25 }, (_, i) => ({ ...MOCK_NOTIFICATION, id: `notif-${i + 1}` }));
+const buildResponse = (page = 1, pageSize = 10) => MOCK_ITEMS.slice((page - 1) * pageSize, page * pageSize);
 
 describe('NotificationComponent', () => {
   let component: NotificationComponent;
@@ -22,7 +22,7 @@ describe('NotificationComponent', () => {
     const apiNotifSpy = jasmine.createSpyObj('ApiNotificationService', ['apiNotificationGet', 'apiNotificationIdDelete']);
     const nsSpy = jasmine.createSpyObj('NotificationService', ['showSuccess', 'showError']);
     const subnavSpy = jasmine.createSpyObj('SubnavService', ['setTitle']);
-    apiNotifSpy.apiNotificationGet.and.returnValue(of(MOCK_PAGINATION));
+    apiNotifSpy.apiNotificationGet.and.callFake((...args: any[]) => of(buildResponse(Number(args[0] ?? 1), Number(args[1] ?? 10))));
 
     await TestBed.configureTestingModule({
       imports: [NotificationComponent],
@@ -47,7 +47,8 @@ describe('NotificationComponent', () => {
 
   it('should load notifications on init', () => {
     expect(apiNotificationService.apiNotificationGet).toHaveBeenCalled();
-    expect((component as any).items()).toEqual(MOCK_PAGINATION);
+    expect((component as any).items()?.items.length).toBe(10);
+    expect((component as any).items()?.items[0].id).toBe(MOCK_ITEMS[0].id);
   });
 
   it('should set isLoading to false after successful load', () => {
@@ -93,6 +94,7 @@ describe('NotificationComponent', () => {
     (component as any).onPageChange(2);
     expect((component as any).currentPage()).toBe(2);
     expect(apiNotificationService.apiNotificationGet).toHaveBeenCalled();
+    expect((component as any).items()?.items[0].id).toBe(MOCK_ITEMS[10].id);
   });
 
   it('should reset to page 1 and reload on onPageSizeChange', () => {
@@ -102,6 +104,7 @@ describe('NotificationComponent', () => {
     expect((component as any).pageSize()).toBe(20);
     expect((component as any).currentPage()).toBe(1);
     expect(apiNotificationService.apiNotificationGet).toHaveBeenCalled();
+    expect((component as any).items()?.items.length).toBe(20);
   });
 
   describe('delete', () => {

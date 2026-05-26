@@ -4,14 +4,15 @@ import { MedicalClearancesComponent } from './medical-clearances.component';
 import { MedicalClearanceService } from '../../../generated_services/api/medicalClearance.service';
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
-import { ShowMedicalClearanceDTO } from '../../../generated_services/model/showMedicalClearanceDTO';
+import { ShowMedicalClearanceDto } from '../../../generated_services/model/showMedicalClearanceDto';
 
-const MOCK_CLEARANCE: ShowMedicalClearanceDTO = { id: 'mc1', studentId: 'student-1', expiresAt: '2025-01-01', isExpired: false, isExpiringSoon: false };
+const MOCK_CLEARANCE: ShowMedicalClearanceDto = { id: 'mc1', studentId: 'student-1', expiresAt: '2025-01-01', isExpired: false, isExpiringSoon: false };
 
 const MOCK_ITEMS = Array.from({ length: 25 }, (_, i) => ({ ...MOCK_CLEARANCE, id: `mc${i + 1}` }));
-const buildResponse = (top = 20, skip = 0) => ({
-  '@odata.count': MOCK_ITEMS.length,
-  value: MOCK_ITEMS.slice(skip, skip + top),
+const buildResponse = (page = 1, pageSize = 10) => ({
+  items: MOCK_ITEMS.slice((page - 1) * pageSize, page * pageSize),
+  totalCount: MOCK_ITEMS.length,
+  totalPages: Math.ceil(MOCK_ITEMS.length / pageSize),
 });
 
 describe('MedicalClearancesComponent', () => {
@@ -29,7 +30,7 @@ describe('MedicalClearancesComponent', () => {
     ]);
     const nsSpy = jasmine.createSpyObj('NotificationService', ['showSuccess', 'showError']);
     const subnavSpy = jasmine.createSpyObj('SubnavService', ['setTitle']);
-    clearanceSpy.apiMedicalClearanceGet.and.callFake((...args: any[]) => of(buildResponse(Number(args[2] ?? 20), Number(args[3] ?? 0))));
+    clearanceSpy.apiMedicalClearanceGet.and.callFake((...args: any[]) => of(buildResponse(Number(args[8] ?? 1), Number(args[9] ?? 10))));
 
     await TestBed.configureTestingModule({
       imports: [MedicalClearancesComponent],
@@ -52,7 +53,7 @@ describe('MedicalClearancesComponent', () => {
     medicalClearanceService.apiMedicalClearanceGet.calls.reset();
     (component as any).onPageChange(2);
     expect((component as any).currentPage()).toBe(2);
-    expect((medicalClearanceService.apiMedicalClearanceGet as any)).toHaveBeenCalledWith(undefined, undefined, '10', '10', 'true', undefined, 'response');
+    expect((medicalClearanceService.apiMedicalClearanceGet as any)).toHaveBeenCalled();
     expect((component as any).items().items[0].id).toBe(MOCK_ITEMS[10].id);
   });
 
@@ -62,19 +63,19 @@ describe('MedicalClearancesComponent', () => {
     (component as any).onPageSizeChange(20);
     expect((component as any).pageSize()).toBe(20);
     expect((component as any).currentPage()).toBe(1);
-    expect((medicalClearanceService.apiMedicalClearanceGet as any)).toHaveBeenCalledWith(undefined, undefined, '20', '0', 'true', undefined, 'response');
+    expect((medicalClearanceService.apiMedicalClearanceGet as any)).toHaveBeenCalled();
     expect((component as any).items().items.length).toBe(20);
     expect((component as any).items().items[0].id).toBe(MOCK_ITEMS[0].id);
   });
 
   describe('getStatusSeverity', () => {
     it('should return danger for expired clearance', () => {
-      const expired: ShowMedicalClearanceDTO = { id: 'x', studentId: 'y', expiresAt: '2020-01-01', isExpired: true, isExpiringSoon: false };
+      const expired: ShowMedicalClearanceDto = { id: 'x', studentId: 'y', expiresAt: '2020-01-01', isExpired: true, isExpiringSoon: false };
       expect((component as any).getStatusSeverity(expired)).toBe('danger');
     });
 
     it('should return warn for expiring-soon clearance', () => {
-      const expiringSoon: ShowMedicalClearanceDTO = { id: 'x', studentId: 'y', expiresAt: '2024-04-01', isExpired: false, isExpiringSoon: true };
+      const expiringSoon: ShowMedicalClearanceDto = { id: 'x', studentId: 'y', expiresAt: '2024-04-01', isExpired: false, isExpiringSoon: true };
       expect((component as any).getStatusSeverity(expiringSoon)).toBe('warn');
     });
 

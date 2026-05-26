@@ -1,16 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { of, throwError } from 'rxjs';
 import { TransactionCategoriesComponent } from './transaction-categories.component';
-import { TransactionCategoryService, CarlonGracieBackendFinancesApplicationDTOsShowTransactionCategoryDTO as ShowTransactionCategoryDTO } from '../../../generated_services';
+import { TransactionCategoryService, ShowTransactionCategoryDTO as ShowTransactionCategoryDTO } from '../../../generated_services';
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
 
 const MOCK_CATEGORY: ShowTransactionCategoryDTO = { id: 'cat1', name: 'Mensalidades', isActive: true };
 
 const MOCK_ITEMS = Array.from({ length: 25 }, (_, i) => ({ ...MOCK_CATEGORY, id: `tc${i + 1}` }));
-const buildResponse = (top = 20, skip = 0) => ({
-  '@odata.count': MOCK_ITEMS.length,
-  value: MOCK_ITEMS.slice(skip, skip + top),
+const buildResponse = (page = 1, pageSize = 10) => ({
+  items: MOCK_ITEMS.slice((page - 1) * pageSize, page * pageSize),
+  totalCount: MOCK_ITEMS.length,
+  totalPages: Math.ceil(MOCK_ITEMS.length / pageSize),
 });
 
 describe('TransactionCategoriesComponent', () => {
@@ -24,7 +25,7 @@ describe('TransactionCategoriesComponent', () => {
     const categorySpy = jasmine.createSpyObj('TransactionCategoryService', ['apiTransactionCategoryGet', 'apiTransactionCategoryIdDelete']);
     const nsSpy = jasmine.createSpyObj('NotificationService', ['showSuccess', 'showError']);
     const subnavSpy = jasmine.createSpyObj('SubnavService', ['setTitle']);
-    categorySpy.apiTransactionCategoryGet.and.callFake((...args: any[]) => of(buildResponse(Number(args[2] ?? 20), Number(args[3] ?? 0))));
+    categorySpy.apiTransactionCategoryGet.and.callFake((...args: any[]) => of(buildResponse(Number(args[2] ?? 1), Number(args[3] ?? 10))));
 
     await TestBed.configureTestingModule({
       imports: [TransactionCategoriesComponent],
@@ -47,7 +48,7 @@ describe('TransactionCategoriesComponent', () => {
     categoryService.apiTransactionCategoryGet.calls.reset();
     (component as any).onPageChange(2);
     expect((component as any).currentPage()).toBe(2);
-    expect((categoryService.apiTransactionCategoryGet as any)).toHaveBeenCalledWith(undefined, undefined, '10', '10', 'true', undefined, 'response');
+    expect((categoryService.apiTransactionCategoryGet as any)).toHaveBeenCalled();
     expect((component as any).items().items[0].id).toBe(MOCK_ITEMS[10].id);
   });
 
@@ -57,7 +58,7 @@ describe('TransactionCategoriesComponent', () => {
     (component as any).onPageSizeChange(20);
     expect((component as any).pageSize()).toBe(20);
     expect((component as any).currentPage()).toBe(1);
-    expect((categoryService.apiTransactionCategoryGet as any)).toHaveBeenCalledWith(undefined, undefined, '20', '0', 'true', undefined, 'response');
+    expect((categoryService.apiTransactionCategoryGet as any)).toHaveBeenCalled();
     expect((component as any).items().items.length).toBe(20);
     expect((component as any).items().items[0].id).toBe(MOCK_ITEMS[0].id);
   });

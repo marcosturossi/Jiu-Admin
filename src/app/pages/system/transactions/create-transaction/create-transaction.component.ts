@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input, output, signal } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { FinancialTransactionService } from '../../../../generated_services/api/financialTransaction.service';
-import { CarlonGracieBackendFinancesApplicationDTOsShowTransactionCategoryDTO as ShowTransactionCategoryDTO, CarlonGracieBackendSharedDomainEnumsTransactionType as TransactionType } from '../../../../generated_services';
+import { ShowTransactionCategoryDTO as ShowTransactionCategoryDTO, TransactionType as TransactionType } from '../../../../generated_services';
 import { NotificationService } from '../../../../services/notification.service';
 import { todayDateString } from '../../../../utils/date.utils';
 import { SearchOption } from '../../../../shared/search-select/search-option';

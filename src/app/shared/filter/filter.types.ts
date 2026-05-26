@@ -18,7 +18,6 @@ export interface FilterCondition {
 export interface FilterOutput {
   text: string;
   conditions: FilterCondition[];
-  odataFilter?: string;
 }
 
 export interface FilterOperatorOption {

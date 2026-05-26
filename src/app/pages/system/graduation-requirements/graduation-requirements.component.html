@@ -42,6 +42,13 @@
         </tbody>
       </table>
     </div>
+    <app-pagination
+      [currentPage]="currentPage()"
+      [totalPages]="items()?.totalPages ?? 0"
+      [pageSize]="pageSize()"
+      [totalItems]="items()?.totalCount ?? 0"
+      (pageChange)="onPageChange($event)"
+      (pageSizeChange)="onPageSizeChange($event)" />
   }
 </section>
 

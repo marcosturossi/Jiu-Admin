@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal } from '
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { DatePipe } from '@angular/common';
 import { Subject, debounceTime } from 'rxjs';
-import { FrequencyService, CarlonGracieBackendAttendanceApplicationDTOsShowFrequencyDTO as ShowFrequencyDTO } from '../../../generated_services';
+import { FrequencyService, ShowFrequencyDTO as ShowFrequencyDTO } from '../../../generated_services';
 import { CreateFrequencyComponent } from './create-frequency/create-frequency.component';
 import { UpdateFrequencyComponent } from './update-frequency/update-frequency.component';
 import { SubnavService } from '../../../services/subnav.service';

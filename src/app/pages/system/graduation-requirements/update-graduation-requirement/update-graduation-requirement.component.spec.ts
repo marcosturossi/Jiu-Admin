@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { of, throwError } from 'rxjs';
 import { ComponentRef } from '@angular/core';
 import { UpdateGraduationRequirementComponent } from './update-graduation-requirement.component';
-import { GraduationRequirementsService, BeltService, CarlonGracieBackendProgressionApplicationDTOsShowGraduationRequirementDTO as ShowGraduationRequirementsDTO } from '../../../../generated_services';
+import { GraduationRequirementsService, BeltService, ShowGraduationRequirementDTO as ShowGraduationRequirementsDTO } from '../../../../generated_services';
 import { NotificationService } from '../../../../services/notification.service';
 
 const MOCK_REQUIREMENT: ShowGraduationRequirementsDTO = { id: 'r1', beltId: 'belt1', description: 'Mínimo 100 aulas', minimumClasses: 100 };

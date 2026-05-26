@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { CurrencyPipe } from '@angular/common';
-import { FeePlanService, CarlonGracieBackendFinancesApplicationDTOsShowFeePlanDTO as ShowFeePlanDTO } from '../../../generated_services';
+import { FeePlanService, ShowFeePlanDTO as ShowFeePlanDTO } from '../../../generated_services';
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
 import { FilterComponent } from '../../../shared/filter/filter.component';

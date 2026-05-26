@@ -6,7 +6,7 @@ import {
 } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { AcademyService } from '../../../generated_services/api/academy.service';
-import { ShowAcademyDTO } from '../../../generated_services/model/showAcademyDTO';
+import { ShowAcademyDto } from '../../../generated_services/model/showAcademyDto';
 import { PageResult } from '../../../utils/page-result';
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
@@ -33,10 +33,10 @@ export class AcademiesComponent {
   private readonly notificationService = inject(NotificationService);
 
   protected readonly isLoading = signal(false);
-  protected readonly items = signal<PageResult<ShowAcademyDTO> | null>(null);
+  protected readonly items = signal<PageResult<ShowAcademyDto> | null>(null);
   protected readonly openedCreate = signal(false);
   protected readonly openedUpdate = signal(false);
-  protected readonly selected = signal<ShowAcademyDTO | null>(null);
+  protected readonly selected = signal<ShowAcademyDto | null>(null);
   protected readonly currentPage = signal(1);
   protected readonly pageSize = signal(10);
   protected readonly searchName = signal('');
@@ -91,7 +91,7 @@ export class AcademiesComponent {
     this.openedCreate.set(true);
   }
 
-  protected openEdit(item: ShowAcademyDTO): void {
+  protected openEdit(item: ShowAcademyDto): void {
     this.selected.set(item);
     this.openedUpdate.set(true);
   }
@@ -106,7 +106,7 @@ export class AcademiesComponent {
     this.load();
   }
 
-  protected delete(item: ShowAcademyDTO): void {
+  protected delete(item: ShowAcademyDto): void {
     if (!confirm(`Tem certeza que deseja excluir a academia "${item.name}"? Esta ação não pode ser desfeita.`)) return;
     this.academyService.apiAdminAcademiesIdDelete(item.id!).subscribe({
       next: () => {

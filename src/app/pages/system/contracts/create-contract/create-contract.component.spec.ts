@@ -5,7 +5,7 @@ import { ContractService } from '../../../../generated_services/api/contract.ser
 import { FeePlanService } from '../../../../generated_services/api/feePlan.service';
 import { StudentsService } from '../../../../generated_services/api/students.service';
 import { NotificationService } from '../../../../services/notification.service';
-import { CarlonGracieBackendDTOsShowStudentDTO as ShowStudentDTO, CarlonGracieBackendFinancesApplicationDTOsShowFeePlanDTO as ShowFeePlanDTO } from '../../../../generated_services';
+import { ShowStudentDTO as ShowStudentDTO, ShowFeePlanDTO as ShowFeePlanDTO } from '../../../../generated_services';
 
 const MOCK_STUDENTS: ShowStudentDTO[] = [
   { id: 's1', firstName: 'João', lastName: 'Silva', userName: 'joao', email: 'j@test.com' },
@@ -22,11 +22,11 @@ describe('CreateContractComponent', () => {
   beforeEach(async () => {
     contractSvc = jasmine.createSpyObj('ContractService', ['apiContractPost']);
     const feePlanSvc = jasmine.createSpyObj('FeePlanService', ['apiFeePlanGet']);
-    const studentsSvc = jasmine.createSpyObj('StudentsService', ['apiStudentsActiveGet']);
+    const studentsSvc = jasmine.createSpyObj('StudentsService', ['apiStudentsGet']);
     ns = jasmine.createSpyObj('NotificationService', ['showSuccess', 'showError']);
 
-    studentsSvc.apiStudentsActiveGet.and.returnValue(of(MOCK_STUDENTS));
-    feePlanSvc.apiFeePlanGet.and.returnValue(of(MOCK_FEE_PLANS));
+    studentsSvc.apiStudentsGet.and.returnValue(of({ items: MOCK_STUDENTS } as any));
+    feePlanSvc.apiFeePlanGet.and.returnValue(of({ items: MOCK_FEE_PLANS } as any));
 
     await TestBed.configureTestingModule({
       imports: [CreateContractComponent],

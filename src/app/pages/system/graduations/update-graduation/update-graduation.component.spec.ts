@@ -5,7 +5,7 @@ import { UpdateGraduationComponent } from './update-graduation.component';
 import { GraduationService } from '../../../../generated_services/api/graduation.service';
 import { BeltService } from '../../../../generated_services/api/belt.service';
 import { StudentsService } from '../../../../generated_services/api/students.service';
-import { CarlonGracieBackendProgressionApplicationDTOsShowGraduationDTO as ShowGraduationDTO } from '../../../../generated_services';
+import { ShowGraduationDTO as ShowGraduationDTO } from '../../../../generated_services';
 import { NotificationService } from '../../../../services/notification.service';
 
 const MOCK_GRADUATION: ShowGraduationDTO = { id: 'g1', studentId: 'stu1', beltId: 'belt1', graduationDate: '2024-03-01' };

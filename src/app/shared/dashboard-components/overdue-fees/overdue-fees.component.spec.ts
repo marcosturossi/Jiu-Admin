@@ -15,7 +15,7 @@ describe('OverdueFeesComponent', () => {
 
   beforeEach(async () => {
     monthlyFeeSvc = jasmine.createSpyObj('MonthlyFeeService', ['apiMonthlyFeeOverdueGet']);
-    monthlyFeeSvc.apiMonthlyFeeOverdueGet.and.returnValue(of(MOCK_FEES) as any);
+    monthlyFeeSvc.apiMonthlyFeeOverdueGet.and.returnValue(of({ items: MOCK_FEES } as any));
 
     await TestBed.configureTestingModule({
       imports: [OverdueFeesComponent],
@@ -51,7 +51,7 @@ describe('OverdueFeesComponent', () => {
   });
 
   it('should show empty state when no overdue fees', () => {
-    monthlyFeeSvc.apiMonthlyFeeOverdueGet.and.returnValue(of([]) as any);
+    monthlyFeeSvc.apiMonthlyFeeOverdueGet.and.returnValue(of({ items: [] } as any));
     const f2 = TestBed.createComponent(OverdueFeesComponent);
     f2.detectChanges();
     const emptyState = f2.nativeElement.querySelector('.empty-state');

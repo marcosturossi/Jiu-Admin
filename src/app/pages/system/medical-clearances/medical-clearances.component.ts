@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { MedicalClearanceService } from '../../../generated_services/api/medicalClearance.service';
-import { ShowMedicalClearanceDTO } from '../../../generated_services/model/showMedicalClearanceDTO';
+import { ShowMedicalClearanceDto } from '../../../generated_services/model/showMedicalClearanceDto';
 import { CreateMedicalClearanceComponent } from './create-medical-clearance/create-medical-clearance.component';
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
@@ -24,7 +24,7 @@ export class MedicalClearancesComponent {
   private readonly ns = inject(NotificationService);
 
   protected readonly isLoading = signal(false);
-  protected readonly items = signal<PageResult<ShowMedicalClearanceDTO> | null>(null);
+  protected readonly items = signal<PageResult<ShowMedicalClearanceDto> | null>(null);
   protected readonly openedCreate = signal(false);
   protected readonly currentPage = signal(1);
   protected readonly pageSize = signal(10);
@@ -73,7 +73,7 @@ export class MedicalClearancesComponent {
   protected openCreate(): void { this.openedCreate.set(true); }
   protected onCreated(): void { this.openedCreate.set(false); this.load(); }
 
-  protected deleteMedicalClearance(clearance: ShowMedicalClearanceDTO): void {
+  protected deleteMedicalClearance(clearance: ShowMedicalClearanceDto): void {
     if (!confirm('Tem certeza que deseja excluir este atestado médico?')) return;
     this.medicalClearanceService.apiMedicalClearanceIdDelete(clearance.id!).subscribe({
       next: () => { this.ns.showSuccess('Atestado Excluído!', 'O atestado médico foi excluído com sucesso.'); this.load(); },
@@ -81,7 +81,7 @@ export class MedicalClearancesComponent {
     });
   }
 
-  protected openAttachment(clearance: ShowMedicalClearanceDTO): void {
+  protected openAttachment(clearance: ShowMedicalClearanceDto): void {
     if (!clearance.id) return;
     this.isLoading.set(true);
     this.medicalClearanceService.apiMedicalClearanceIdAttachmentGet(
@@ -104,13 +104,13 @@ export class MedicalClearancesComponent {
     this.attachmentMimeType.set(undefined);
   }
 
-  protected getStatusSeverity(clearance: ShowMedicalClearanceDTO): 'warn' | 'success' | 'danger' | 'secondary' | 'info' {
+  protected getStatusSeverity(clearance: ShowMedicalClearanceDto): 'warn' | 'success' | 'danger' | 'secondary' | 'info' {
     if (clearance.isExpired) return 'danger';
     if (clearance.isExpiringSoon) return 'warn';
     return 'success';
   }
 
-  protected getStatusLabel(clearance: ShowMedicalClearanceDTO): string {
+  protected getStatusLabel(clearance: ShowMedicalClearanceDto): string {
     if (clearance.isExpired) return 'Expirado';
     if (clearance.isExpiringSoon) return 'Expira em breve';
     return 'Válido';

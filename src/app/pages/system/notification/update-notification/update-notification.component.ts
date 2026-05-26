@@ -1,9 +1,9 @@
 import { ChangeDetectionStrategy, Component, inject, input, output, effect } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NotificationService as ApiNotificationService } from '../../../../generated_services/api/notification.service';
-import { CarlonGracieBackendCommunicationsApplicationDTOsShowNotificationDto as ShowNotificationDTO } from '../../../../generated_services/model/carlonGracieBackendCommunicationsApplicationDTOsShowNotificationDto';
-import { UpdateNotificationDTO } from '../../../../generated_services/model/updateNotificationDTO';
-import { CarlonGracieBackendCommunicationsDomainNotificationType as NotificationType } from '../../../../generated_services/model/carlonGracieBackendCommunicationsDomainNotificationType';
+import { ShowNotificationDto as ShowNotificationDTO } from '../../../../generated_services/model/showNotificationDto';
+import { UpdateNotificationDto } from '../../../../generated_services/model/updateNotificationDto';
+import { NotificationType as NotificationType } from '../../../../generated_services/model/notificationType';
 import { NotificationService } from '../../../../services/notification.service';
 import { datetimeLocalToIso, isoToDatetimeLocal } from '../../../../utils/date.utils';
 
@@ -41,8 +41,6 @@ export class UpdateNotificationComponent {
     userId: [''],
     isActive: [true],
     expiresAt: [null as string | null],
-    actionUrl: [''],
-    metadata: ['']
   });
 
   constructor() {
@@ -55,8 +53,6 @@ export class UpdateNotificationComponent {
           type: n.type,
           isActive: n.isActive,
           expiresAt: isoToDatetimeLocal(n.expiresAt),
-          actionUrl: (n as any).actionUrl ?? '',
-          metadata: (n as any).metadata ?? ''
         });
       }
     });
@@ -79,7 +75,7 @@ export class UpdateNotificationComponent {
     });
   }
 
-  private toDTO(): UpdateNotificationDTO {
+  private toDTO(): UpdateNotificationDto {
     const v = this.form.value;
     return {
       title: v.title,
@@ -87,8 +83,6 @@ export class UpdateNotificationComponent {
       type: v.type,
       isActive: v.isActive,
       expiresAt: datetimeLocalToIso(v.expiresAt),
-      actionUrl: v.actionUrl || null,
-      metadata: v.metadata || null
-    } as UpdateNotificationDTO;
+    } as UpdateNotificationDto;
   }
 }

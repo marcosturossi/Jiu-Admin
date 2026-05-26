@@ -4,9 +4,15 @@ import { NoticesComponent } from './notices.component';
 import { NoticesService } from '../../../generated_services/api/notices.service';
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
-import { ShowNoticesDTO } from '../../../generated_services/model/showNoticesDTO';
+import { ShowNoticeDto } from '../../../generated_services/model/showNoticeDto';
 
-const MOCK_NOTICE: ShowNoticesDTO = { id: 'n1', description: 'Treino cancelado sexta-feira', isActive: true, createdAt: '2024-03-01' };
+const MOCK_NOTICE: ShowNoticeDto = { id: 'n1', description: 'Treino cancelado sexta-feira', isActive: true, createdAt: '2024-03-01' };
+const MOCK_ITEMS = Array.from({ length: 25 }, (_, i) => ({ ...MOCK_NOTICE, id: `n${i + 1}` }));
+const buildResponse = (page = 1, pageSize = 10) => ({
+  items: MOCK_ITEMS.slice((page - 1) * pageSize, page * pageSize),
+  totalCount: MOCK_ITEMS.length,
+  totalPages: Math.ceil(MOCK_ITEMS.length / pageSize),
+});
 
 describe('NoticesComponent', () => {
   let component: NoticesComponent;
@@ -19,7 +25,7 @@ describe('NoticesComponent', () => {
     const noticesSpy = jasmine.createSpyObj('NoticesService', ['apiNoticesGet', 'apiNoticesIdDelete']);
     const nsSpy = jasmine.createSpyObj('NotificationService', ['showSuccess', 'showError']);
     const subnavSpy = jasmine.createSpyObj('SubnavService', ['setTitle']);
-    noticesSpy.apiNoticesGet.and.returnValue(of([MOCK_NOTICE]));
+    noticesSpy.apiNoticesGet.and.callFake((...args: any[]) => of(buildResponse(Number(args[4] ?? 1), Number(args[5] ?? 10))));
 
     await TestBed.configureTestingModule({
       imports: [NoticesComponent],
@@ -44,7 +50,7 @@ describe('NoticesComponent', () => {
 
   it('should load notices on init', () => {
     expect(noticesService.apiNoticesGet).toHaveBeenCalled();
-    expect((component as any).items()).toEqual([MOCK_NOTICE]);
+    expect((component as any).items()).toEqual(buildResponse());
   });
 
   it('should set isLoading to false after successful load', () => {

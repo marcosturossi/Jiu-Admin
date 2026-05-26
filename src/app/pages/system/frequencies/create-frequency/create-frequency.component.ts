@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, DestroyRef, inject, output, signal } from '@angular/core';
-import { FrequencyService, StudentsService, CarlonGracieBackendStudentsApplicationDTOsShowStudentDTO as ShowStudentDTO, CarlonGracieBackendAttendanceApplicationDTOsShowLessonDTO as ShowLessonDTO, LessonService } from '../../../../generated_services';
+import { FrequencyService, StudentsService, ShowStudentDTO as ShowStudentDTO, ShowLessonDTO as ShowLessonDTO, LessonService } from '../../../../generated_services';
 import { FormBuilder, FormArray, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CreateFrequencyDTO } from '../../../../generated_services/model/createFrequencyDTO';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -191,10 +191,10 @@ export class CreateFrequencyComponent {
   }
 
   private loadLessons(term = ''): void {
-    this.lessonService.apiLessonActiveGet(term || undefined, undefined, undefined, undefined, undefined, undefined, 1, 100).subscribe({
+    this.lessonService.apiLessonGet(term || undefined, 1, 100).subscribe({
       next: result => {
-        this.lessons.set(result);
-        this.lessonOptions.set(result.map(l => ({ id: l.id ?? '', label: l.title ?? '' })));
+        this.lessons.set(result?.items ?? []);
+        this.lessonOptions.set((result?.items ?? []).map(l => ({ id: l.id ?? '', label: l.title ?? '' })));
       },
       error: () => this.ns.showError('Erro ao Carregar Aulas!', 'Não foi possível carregar a lista de aulas. Tente novamente.')
     });

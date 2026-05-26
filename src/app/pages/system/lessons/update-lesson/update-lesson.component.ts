@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, effect, inject, input, output } fro
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { LessonService } from '../../../../generated_services/api/lesson.service';
 import { ShowLessonDTO } from '../../../../generated_services/model/showLessonDTO';
-import { CarlonGracieBackendAttendanceApplicationDTOsUpdateLessonDTO as UpdateLessonDTO } from '../../../../generated_services/model/carlonGracieBackendAttendanceApplicationDTOsUpdateLessonDTO';
+import { UpdateLessonDTO as UpdateLessonDTO } from '../../../../generated_services/model/updateLessonDTO';
 import { NotificationService } from '../../../../services/notification.service';
 
 @Component({

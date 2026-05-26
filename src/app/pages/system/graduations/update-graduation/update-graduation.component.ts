@@ -5,7 +5,7 @@ import { Subject, debounceTime } from 'rxjs';
 import { GraduationService } from '../../../../generated_services/api/graduation.service';
 import { BeltService } from '../../../../generated_services/api/belt.service';
 import { StudentsService } from '../../../../generated_services/api/students.service';
-import { CarlonGracieBackendProgressionApplicationDTOsShowGraduationDTO as ShowGraduationDTO, CarlonGracieBackendProgressionApplicationDTOsShowBeltDTO as ShowBeltDTO, CarlonGracieBackendStudentsApplicationDTOsShowStudentDTO as ShowStudentDTO, CarlonGracieBackendProgressionApplicationDTOsUpdateGraduationDTO as UpdateGraduationDTO } from '../../../../generated_services';
+import { ShowGraduationDTO as ShowGraduationDTO, ShowBeltDTO as ShowBeltDTO, ShowStudentDTO as ShowStudentDTO, UpdateGraduationDTO as UpdateGraduationDTO } from '../../../../generated_services';
 import { NotificationService } from '../../../../services/notification.service';
 import { todayDateString } from '../../../../utils/date.utils';
 import { SearchOption } from '../../../../shared/search-select/search-option';

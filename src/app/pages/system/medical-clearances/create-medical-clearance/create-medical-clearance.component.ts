@@ -4,7 +4,7 @@ import { MedicalClearanceService } from '../../../../generated_services/api/medi
 import { StudentsService } from '../../../../generated_services/api/students.service';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Subject, debounceTime } from 'rxjs';
-import { CreateMedicalClearanceDTO } from '../../../../generated_services/model/createMedicalClearanceDTO';
+import { CreateMedicalClearanceDto } from '../../../../generated_services/model/createMedicalClearanceDto';
 import { ShowStudentDTO } from '../../../../generated_services/model/showStudentDTO';
 import { NotificationService } from '../../../../services/notification.service';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
@@ -133,13 +133,13 @@ export class CreateMedicalClearanceComponent implements OnDestroy {
 
   protected finishCreate(): void { this.medicalClearanceCreated.emit(); this.close(); }
 
-  private toDTO(): CreateMedicalClearanceDTO {
+  private toDTO(): CreateMedicalClearanceDto {
     const v = this.form.value;
     return {
       studentId: v.studentId,
       expiresAt: v.expiresAt ?? '',
       isApproved: v.isApproved,
       isActive: v.isActive
-    } as CreateMedicalClearanceDTO;
+    } as CreateMedicalClearanceDto;
   }
 }

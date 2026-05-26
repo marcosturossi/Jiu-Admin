@@ -10,7 +10,6 @@ import {
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Subject, debounceTime } from 'rxjs';
-import { buildODataFilter } from '../../utils/odata.utils';
 import {
   FilterCondition,
   FilterField,
@@ -34,7 +33,6 @@ import {
 export class FilterComponent {
   readonly placeholder = input<string>('Buscar...');
   readonly fields = input<FilterField[]>([]);
-  readonly odataTextFields = input<string[]>([]);
 
   readonly filterChange = output<FilterOutput>();
 
@@ -171,7 +169,6 @@ export class FilterComponent {
     this.filterChange.emit({
       text: this.inputValue(),
       conditions: this.conditions(),
-      odataFilter: buildODataFilter(this.inputValue(), this.odataTextFields(), this.conditions()),
     });
   }
 }

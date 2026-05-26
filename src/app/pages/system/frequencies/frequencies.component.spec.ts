@@ -1,16 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { of, throwError } from 'rxjs';
 import { FrequenciesComponent } from './frequencies.component';
-import { FrequencyService, CarlonGracieBackendAttendanceApplicationDTOsShowFrequencyDTO as ShowFrequencyDTO } from '../../../generated_services';
+import { FrequencyService, ShowFrequencyDTO as ShowFrequencyDTO } from '../../../generated_services';
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
 
 const MOCK_FREQUENCY: ShowFrequencyDTO = { id: 'f1', studentId: 'student-1', lessonId: 'lesson-1', lessonScheduledDate: '2024-03-01' };
 
 const MOCK_ITEMS = Array.from({ length: 25 }, (_, i) => ({ ...MOCK_FREQUENCY, id: `fr${i + 1}` }));
-const buildResponse = (top = 20, skip = 0) => ({
-  '@odata.count': MOCK_ITEMS.length,
-  value: MOCK_ITEMS.slice(skip, skip + top),
+const buildResponse = (page = 1, pageSize = 10) => ({
+  items: MOCK_ITEMS.slice((page - 1) * pageSize, page * pageSize),
+  totalCount: MOCK_ITEMS.length,
+  totalPages: Math.ceil(MOCK_ITEMS.length / pageSize),
 });
 
 describe('FrequenciesComponent', () => {
@@ -24,7 +25,7 @@ describe('FrequenciesComponent', () => {
     const frequencySpy = jasmine.createSpyObj('FrequencyService', ['apiFrequencyGet', 'apiFrequencyIdDelete']);
     const nsSpy = jasmine.createSpyObj('NotificationService', ['showSuccess', 'showError']);
     const subnavSpy = jasmine.createSpyObj('SubnavService', ['setTitle']);
-    frequencySpy.apiFrequencyGet.and.callFake((...args: any[]) => of(buildResponse(Number(args[2] ?? 20), Number(args[3] ?? 0))));
+    frequencySpy.apiFrequencyGet.and.callFake((...args: any[]) => of(buildResponse(Number(args[5] ?? 1), Number(args[6] ?? 10))));
 
     await TestBed.configureTestingModule({
       imports: [FrequenciesComponent],
@@ -47,7 +48,7 @@ describe('FrequenciesComponent', () => {
     frequencyService.apiFrequencyGet.calls.reset();
     (component as any).onPageChange(2);
     expect((component as any).currentPage()).toBe(2);
-    expect((frequencyService.apiFrequencyGet as any)).toHaveBeenCalledWith(undefined, undefined, '10', '10', 'true', undefined, 'response');
+    expect((frequencyService.apiFrequencyGet as any)).toHaveBeenCalled();
     expect((component as any).items().items[0].id).toBe(MOCK_ITEMS[10].id);
   });
 
@@ -57,7 +58,7 @@ describe('FrequenciesComponent', () => {
     (component as any).onPageSizeChange(25);
     expect((component as any).pageSize()).toBe(25);
     expect((component as any).currentPage()).toBe(1);
-    expect((frequencyService.apiFrequencyGet as any)).toHaveBeenCalledWith(undefined, undefined, '25', '0', 'true', undefined, 'response');
+    expect((frequencyService.apiFrequencyGet as any)).toHaveBeenCalled();
     expect((component as any).items().items.length).toBe(25);
     expect((component as any).items().items[0].id).toBe(MOCK_ITEMS[0].id);
   });

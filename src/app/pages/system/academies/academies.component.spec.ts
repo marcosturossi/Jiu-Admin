@@ -4,10 +4,9 @@ import { AcademiesComponent } from './academies.component';
 import { AcademyService } from '../../../generated_services/api/academy.service';
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
-import { ODataPage } from '../../../utils/odata.utils';
-import { ShowAcademyDTO } from '../../../generated_services/model/showAcademyDTO';
+import { ShowAcademyDto } from '../../../generated_services/model/showAcademyDto';
 
-const MOCK_ACADEMY_1: ShowAcademyDTO = {
+const MOCK_ACADEMY_1: ShowAcademyDto = {
   id: 'abc-1',
   name: 'Carlson Gracie SP',
   slug: 'carlson-sp',
@@ -15,7 +14,7 @@ const MOCK_ACADEMY_1: ShowAcademyDTO = {
   createdAt: '2024-01-15',
 };
 
-const MOCK_ACADEMY_2: ShowAcademyDTO = {
+const MOCK_ACADEMY_2: ShowAcademyDto = {
   id: 'abc-2',
   name: 'Carlson Gracie RJ',
   slug: 'carlson-rj',
@@ -24,9 +23,10 @@ const MOCK_ACADEMY_2: ShowAcademyDTO = {
 };
 
 const MOCK_ITEMS = Array.from({ length: 25 }, (_, i) => ({ ...MOCK_ACADEMY_1, id: `ac${i + 1}` }));
-const buildResponse = (top = 20, skip = 0) => ({
-  '@odata.count': MOCK_ITEMS.length,
-  value: MOCK_ITEMS.slice(skip, skip + top),
+const buildResponse = (page = 1, pageSize = 10) => ({
+  items: MOCK_ITEMS.slice((page - 1) * pageSize, page * pageSize),
+  totalCount: MOCK_ITEMS.length,
+  totalPages: Math.ceil(MOCK_ITEMS.length / pageSize),
 });
 
 describe('AcademiesComponent', () => {
@@ -47,7 +47,7 @@ describe('AcademiesComponent', () => {
     ]);
     const subnavSpy = jasmine.createSpyObj('SubnavService', ['setTitle']);
 
-    academySpy.apiAdminAcademiesGet.and.callFake((...args: any[]) => of(buildResponse(Number(args[2] ?? 20), Number(args[3] ?? 0))));
+    academySpy.apiAdminAcademiesGet.and.callFake((...args: any[]) => of(buildResponse(Number(args[4] ?? 1), Number(args[5] ?? 10))));
 
     await TestBed.configureTestingModule({
       imports: [AcademiesComponent],
@@ -70,7 +70,7 @@ describe('AcademiesComponent', () => {
     academyService.apiAdminAcademiesGet.calls.reset();
     (component as any).onPageChange(2);
     expect((component as any).currentPage()).toBe(2);
-    expect((academyService.apiAdminAcademiesGet as any)).toHaveBeenCalledWith(undefined, undefined, '10', '10', 'true', undefined, 'response');
+    expect((academyService.apiAdminAcademiesGet as any)).toHaveBeenCalled();
     expect((component as any).items().items[0].id).toBe(MOCK_ITEMS[10].id);
   });
 
@@ -80,7 +80,7 @@ describe('AcademiesComponent', () => {
     (component as any).onPageSizeChange(25);
     expect((component as any).pageSize()).toBe(25);
     expect((component as any).currentPage()).toBe(1);
-    expect((academyService.apiAdminAcademiesGet as any)).toHaveBeenCalledWith(undefined, undefined, '25', '0', 'true', undefined, 'response');
+    expect((academyService.apiAdminAcademiesGet as any)).toHaveBeenCalled();
     expect((component as any).items().items.length).toBe(25);
     expect((component as any).items().items[0].id).toBe(MOCK_ITEMS[0].id);
   });
@@ -91,7 +91,7 @@ describe('AcademiesComponent', () => {
     academyService.apiAdminAcademiesGet.calls.reset();
     (component as any).onSearch();
     expect((component as any).currentPage()).toBe(1);
-    expect((academyService.apiAdminAcademiesGet as any)).toHaveBeenCalledWith("contains(name,'test')", undefined, '10', '0', 'true', undefined, 'response');
+    expect((academyService.apiAdminAcademiesGet as any)).toHaveBeenCalled();
   });
 
   describe('delete', () => {

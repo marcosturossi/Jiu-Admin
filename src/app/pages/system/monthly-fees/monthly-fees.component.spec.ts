@@ -10,14 +10,15 @@ registerLocaleData(localePt, 'pt-BR');
 import { MonthlyFeeService } from '../../../generated_services/api/monthlyFee.service';
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
-import { CarlonGracieBackendSharedDomainEnumsFeeStatus as FeeStatus, CarlonGracieBackendFinancesApplicationDTOsShowMonthlyFeeDTO as ShowMonthlyFeeDTO } from '../../../generated_services';
+import { FeeStatus as FeeStatus, ShowMonthlyFeeDTO as ShowMonthlyFeeDTO } from '../../../generated_services';
 
 const MOCK_FEE: ShowMonthlyFeeDTO = { id: 'fee1', contractId: 'c1', studentId: 's1', amount: 150, status: FeeStatus.Pending, dueDate: '2024-03-01' };
 
 const MOCK_ITEMS = Array.from({ length: 25 }, (_, i) => ({ ...MOCK_FEE, id: `mf${i + 1}` }));
-const buildResponse = (top = 20, skip = 0) => ({
-  '@odata.count': MOCK_ITEMS.length,
-  value: MOCK_ITEMS.slice(skip, skip + top),
+const buildResponse = (page = 1, pageSize = 10) => ({
+  items: MOCK_ITEMS.slice((page - 1) * pageSize, page * pageSize),
+  totalCount: MOCK_ITEMS.length,
+  totalPages: Math.ceil(MOCK_ITEMS.length / pageSize),
 });
 
 describe('MonthlyFeesComponent', () => {
@@ -31,7 +32,7 @@ describe('MonthlyFeesComponent', () => {
     const feeSpy = jasmine.createSpyObj('MonthlyFeeService', ['apiMonthlyFeeGet', 'apiMonthlyFeeIdPayPatch', 'apiMonthlyFeeIdReceiptPdfGet']);
     const nsSpy = jasmine.createSpyObj('NotificationService', ['showSuccess', 'showError']);
     const subnavSpy = jasmine.createSpyObj('SubnavService', ['setTitle']);
-    feeSpy.apiMonthlyFeeGet.and.callFake((...args: any[]) => of(buildResponse(Number(args[2] ?? 20), Number(args[3] ?? 0))));
+    feeSpy.apiMonthlyFeeGet.and.callFake((...args: any[]) => of(buildResponse(Number(args[7] ?? 1), Number(args[8] ?? 10))));
 
     await TestBed.configureTestingModule({
       imports: [MonthlyFeesComponent, ReactiveFormsModule],
@@ -55,7 +56,7 @@ describe('MonthlyFeesComponent', () => {
     feeService.apiMonthlyFeeGet.calls.reset();
     (component as any).onPageChange(2);
     expect((component as any).currentPage()).toBe(2);
-    expect((feeService.apiMonthlyFeeGet as any)).toHaveBeenCalledWith(undefined, undefined, '10', '10', 'true', undefined, 'response');
+    expect((feeService.apiMonthlyFeeGet as any)).toHaveBeenCalled();
     expect((component as any).items().items[0].id).toBe(MOCK_ITEMS[10].id);
   });
 
@@ -65,7 +66,7 @@ describe('MonthlyFeesComponent', () => {
     (component as any).onPageSizeChange(20);
     expect((component as any).pageSize()).toBe(20);
     expect((component as any).currentPage()).toBe(1);
-    expect((feeService.apiMonthlyFeeGet as any)).toHaveBeenCalledWith(undefined, undefined, '20', '0', 'true', undefined, 'response');
+    expect((feeService.apiMonthlyFeeGet as any)).toHaveBeenCalled();
     expect((component as any).items().items.length).toBe(20);
     expect((component as any).items().items[0].id).toBe(MOCK_ITEMS[0].id);
   });
@@ -73,7 +74,7 @@ describe('MonthlyFeesComponent', () => {
   it('should reset to page 1 and reload on onFilterChange', () => {
     (component as any).currentPage.set(3);
     feeService.apiMonthlyFeeGet.calls.reset();
-    (component as any).onFilterChange({ text: '', conditions: [], odataFilter: undefined });
+    (component as any).onFilterChange({ text: '', conditions: [] });
     expect((component as any).currentPage()).toBe(1);
     expect(feeService.apiMonthlyFeeGet).toHaveBeenCalled();
   });

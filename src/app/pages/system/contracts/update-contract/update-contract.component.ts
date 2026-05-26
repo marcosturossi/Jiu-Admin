@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, effect, inject, input, output, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ContractService } from '../../../../generated_services/api/contract.service';
-import { CarlonGracieBackendFinancesApplicationDTOsShowContractDTO as ShowContractDTO, CarlonGracieBackendSharedDomainEnumsContractStatus as ContractStatus } from '../../../../generated_services';
+import { ShowContractDTO as ShowContractDTO, ContractStatus as ContractStatus } from '../../../../generated_services';
 import { NotificationService } from '../../../../services/notification.service';
 
 @Component({
@@ -53,7 +53,7 @@ export class UpdateContractComponent {
     const raw = this.form.getRawValue();
     this.isSaving.set(true);
     this.contractService
-      .apiContractIdStatusPatch(this.contract().id!, { status: raw.status!, notes: raw.notes || null })
+      .apiContractIdStatusPatch(this.contract().id!, { status: raw.status! })
       .subscribe({
         next: () => {
           this.isSaving.set(false);

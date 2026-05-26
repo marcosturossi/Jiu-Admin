@@ -1,8 +1,8 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { DatePipe, CurrencyPipe } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { MonthlyFeeService } from '../../../generated_services/api/monthlyFee.service';
-import { CarlonGracieBackendSharedInterfacesChargeResult as ChargeResult, CarlonGracieBackendSharedDomainEnumsFeeStatus as FeeStatus, CarlonGracieBackendFinancesApplicationDTOsShowMonthlyFeeDTO as ShowMonthlyFeeDTO } from '../../../generated_services';
+import { ChargeResult as ChargeResult, FeeStatus as FeeStatus, ShowMonthlyFeeDTO as ShowMonthlyFeeDTO } from '../../../generated_services';
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
 import { FilterComponent } from '../../../shared/filter/filter.component';
@@ -44,6 +44,14 @@ export class MonthlyFeesComponent {
   protected readonly currentPage = signal(1);
   protected readonly pageSize = signal(10);
   protected readonly filterStatus = signal<FeeStatus | undefined>(undefined);
+  protected readonly filterText = signal('');
+
+  protected readonly filteredItems = computed(() => {
+    const raw = this.items()?.items ?? [];
+    const text = this.filterText().trim().toLowerCase();
+    if (!text) return raw;
+    return raw.filter(fee => fee.studentName?.toLowerCase().includes(text));
+  });
 
   protected readonly FeeStatus = FeeStatus;
 
@@ -132,6 +140,7 @@ export class MonthlyFeesComponent {
   protected onPageSizeChange(size: number): void { this.pageSize.set(size); this.currentPage.set(1); this.load(); }
   protected onFilterChange(output: FilterOutput): void {
     this.filterStatus.set(output.conditions.find(c => c.field.key === 'status')?.value as FeeStatus | undefined);
+    this.filterText.set(output.text ?? '');
     this.currentPage.set(1);
     this.load();
   }

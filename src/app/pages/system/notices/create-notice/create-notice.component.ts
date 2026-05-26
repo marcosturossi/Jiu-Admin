@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject, output } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { NoticesService } from '../../../../generated_services/api/notices.service';
-import { CreateNoticesDTO } from '../../../../generated_services/model/createNoticesDTO';
+import { CreateNoticeDto } from '../../../../generated_services/model/createNoticeDto';
 import { NotificationService } from '../../../../services/notification.service';
 
 @Component({
@@ -37,11 +37,11 @@ export class CreateNoticeComponent {
     });
   }
 
-  private toDTO(): CreateNoticesDTO {
+  private toDTO(): CreateNoticeDto {
     const v = this.form.value;
     return {
       description: v.description!,
       isActive: v.isActive ?? true,
-    } as CreateNoticesDTO;
+    } as CreateNoticeDto;
   }
 }

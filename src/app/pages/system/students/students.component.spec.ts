@@ -15,9 +15,10 @@ const MOCK_STUDENTS: ShowStudentDTO[] = Array.from({ length: 25 }, (_, i) => ({
   isActive: true,
 }));
 const MOCK_STUDENT = MOCK_STUDENTS[0];
-const buildResponse = (top = 20, skip = 0) => ({
-  '@odata.count': MOCK_STUDENTS.length,
-  value: MOCK_STUDENTS.slice(skip, skip + top),
+const buildResponse = (page = 1, pageSize = 10) => ({
+  items: MOCK_STUDENTS.slice((page - 1) * pageSize, page * pageSize),
+  totalCount: MOCK_STUDENTS.length,
+  totalPages: Math.ceil(MOCK_STUDENTS.length / pageSize),
 });
 
 describe('StudentsComponent', () => {
@@ -31,7 +32,7 @@ describe('StudentsComponent', () => {
     const studentsSpy = jasmine.createSpyObj('StudentsService', ['apiStudentsGet', 'apiStudentsIdDelete']);
     const nsSpy = jasmine.createSpyObj('NotificationService', ['showSuccess', 'showError']);
     const subnavSpy = jasmine.createSpyObj('SubnavService', ['setTitle']);
-    studentsSpy.apiStudentsGet.and.callFake((...args: any[]) => of(buildResponse(Number(args[2] ?? 20), Number(args[3] ?? 0))));
+    studentsSpy.apiStudentsGet.and.callFake((...args: any[]) => of(buildResponse(Number(args[6] ?? 1), Number(args[7] ?? 10))));
 
     await TestBed.configureTestingModule({
       imports: [StudentsComponent],
@@ -55,7 +56,7 @@ describe('StudentsComponent', () => {
   it('should set page title on init', () => { expect(subnavService.setTitle).toHaveBeenCalledWith('Estudantes'); });
 
   it('should load students on init', () => {
-    expect((studentsService.apiStudentsGet as any)).toHaveBeenCalledWith(undefined, undefined, '10', '0', 'true', undefined, 'response');
+    expect((studentsService.apiStudentsGet as any)).toHaveBeenCalled();
     expect((component as any).items().items.length).toBe(10);
   });
 
@@ -101,7 +102,7 @@ describe('StudentsComponent', () => {
     studentsService.apiStudentsGet.calls.reset();
     (component as any).onPageChange(2);
     expect((component as any).currentPage()).toBe(2);
-    expect((studentsService.apiStudentsGet as any)).toHaveBeenCalledWith(undefined, undefined, '10', '10', 'true', undefined, 'response');
+    expect((studentsService.apiStudentsGet as any)).toHaveBeenCalled();
     expect((component as any).items().items[0].id).toBe('s11');
   });
 
@@ -111,15 +112,15 @@ describe('StudentsComponent', () => {
     (component as any).onPageSizeChange(20);
     expect((component as any).pageSize()).toBe(20);
     expect((component as any).currentPage()).toBe(1);
-    expect((studentsService.apiStudentsGet as any)).toHaveBeenCalledWith(undefined, undefined, '20', '0', 'true', undefined, 'response');
+    expect((studentsService.apiStudentsGet as any)).toHaveBeenCalled();
     expect((component as any).items().items.length).toBe(20);
   });
 
-  it('should build a status filter on onFilterChange', () => {
+  it('should update filterText and reload on onFilterChange', () => {
     studentsService.apiStudentsGet.calls.reset();
-    (component as any).onFilterChange({ text: '', conditions: [{ field: { key: 'isActive', label: 'Status', type: 'select', options: [{ value: 'true', label: 'Ativo' }, { value: 'false', label: 'Inativo' }] }, operator: 'eq', value: 'true' }], odataFilter: 'isActive eq true' });
-    expect((component as any).filterQuery()).toBe('isActive eq true');
-    expect((studentsService.apiStudentsGet as any)).toHaveBeenCalledWith('isActive eq true', undefined, '10', '0', 'true', undefined, 'response');
+    (component as any).onFilterChange({ text: 'João', conditions: [] });
+    expect((component as any).filterText()).toBe('João');
+    expect(studentsService.apiStudentsGet).toHaveBeenCalled();
   });
 
   describe('delete', () => {

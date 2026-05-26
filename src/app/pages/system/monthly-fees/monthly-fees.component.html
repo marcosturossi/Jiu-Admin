@@ -1,6 +1,6 @@
 <section class="page-section">
   <div class="page-toolbar">
-    <app-filter [placeholder]="'Buscar mensalidade'" [fields]="filterFields" [odataTextFields]="['studentName']" (filterChange)="onFilterChange($event)" />
+    <app-filter [placeholder]="'Buscar mensalidade'" [fields]="filterFields" (filterChange)="onFilterChange($event)" />
   </div>
 
   @if (isLoading()) {
@@ -23,10 +23,10 @@
           </tr>
         </thead>
         <tbody>
-          @if ((items()?.items ?? []).length === 0) {
+          @if (filteredItems().length === 0) {
             <tr><td colspan="8" class="text-center py-5 text-muted">Nenhuma mensalidade encontrada.</td></tr>
           }
-          @for (fee of items()?.items ?? []; track fee.id) {
+          @for (fee of filteredItems(); track fee.id) {
             <tr>
               <td class="student-cell">{{ fee.studentName || '—' }}</td>
               <td>{{ fee.dueDate | date:'dd/MM/yyyy':'UTC' }}</td>

@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component, effect, inject, input, output } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { NoticesService } from '../../../../generated_services/api/notices.service';
-import { ShowNoticesDTO } from '../../../../generated_services/model/showNoticesDTO';
-import { UpdateNoticesDTO } from '../../../../generated_services/model/updateNoticesDTO';
+import { ShowNoticeDto } from '../../../../generated_services/model/showNoticeDto';
+import { UpdateNoticeDto } from '../../../../generated_services/model/updateNoticeDto';
 import { NotificationService } from '../../../../services/notification.service';
 
 @Component({
@@ -15,7 +15,7 @@ import { NotificationService } from '../../../../services/notification.service';
 export class UpdateNoticeComponent {
   readonly closeEvent = output<void>();
   readonly noticeUpdated = output<void>();
-  readonly notice = input.required<ShowNoticesDTO>();
+  readonly notice = input.required<ShowNoticeDto>();
 
   private readonly fb = inject(FormBuilder);
   private readonly noticesService = inject(NoticesService);
@@ -50,11 +50,11 @@ export class UpdateNoticeComponent {
     });
   }
 
-  private toDTO(): UpdateNoticesDTO {
+  private toDTO(): UpdateNoticeDto {
     const v = this.form.value;
     return {
       description: v.description!,
       isActive: v.isActive ?? true,
-    } as UpdateNoticesDTO;
+    } as UpdateNoticeDto;
   }
 }

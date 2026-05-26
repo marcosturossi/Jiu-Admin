@@ -2,8 +2,8 @@ import { ChangeDetectionStrategy, Component, DestroyRef, effect, inject, input, 
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Subject, debounceTime } from 'rxjs';
-import { FrequencyService, StudentsService, CarlonGracieBackendStudentsApplicationDTOsShowStudentDTO as ShowStudentDTO } from '../../../../generated_services';
-import { CarlonGracieBackendAttendanceApplicationDTOsShowFrequencyDTO as ShowFrequencyDTO, CarlonGracieBackendAttendanceApplicationDTOsUpdateFrequencyDTO as UpdateFrequencyDTO } from '../../../../generated_services';
+import { FrequencyService, StudentsService, ShowStudentDTO as ShowStudentDTO } from '../../../../generated_services';
+import { ShowFrequencyDTO as ShowFrequencyDTO, UpdateFrequencyDTO as UpdateFrequencyDTO } from '../../../../generated_services';
 import { NotificationService } from '../../../../services/notification.service';
 import { SearchOption } from '../../../../shared/search-select/search-option';
 import { SearchSelectComponent } from '../../../../shared/search-select/search-select.component';

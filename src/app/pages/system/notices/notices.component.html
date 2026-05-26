@@ -22,10 +22,10 @@
           </tr>
         </thead>
         <tbody>
-          @if (items().length === 0) {
+          @if ((items()?.items ?? []).length === 0) {
             <tr><td colspan="4" class="text-center py-5 text-muted">Nenhum registro encontrado.</td></tr>
           }
-          @for (notice of items(); track notice.id) {
+          @for (notice of items()?.items ?? []; track notice.id) {
             <tr>
               <td>{{ notice.description }}</td>
               <td>
@@ -47,6 +47,13 @@
         </tbody>
       </table>
     </div>
+    <app-pagination
+      [currentPage]="currentPage()"
+      [totalPages]="items()?.totalPages ?? 0"
+      [pageSize]="pageSize()"
+      [totalItems]="items()?.totalCount ?? 0"
+      (pageChange)="onPageChange($event)"
+      (pageSizeChange)="onPageSizeChange($event)" />
   }
 </section>
 

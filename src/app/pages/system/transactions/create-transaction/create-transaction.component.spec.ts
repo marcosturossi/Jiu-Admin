@@ -3,7 +3,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { CreateTransactionComponent } from './create-transaction.component';
 import { FinancialTransactionService } from '../../../../generated_services/api/financialTransaction.service';
 import { NotificationService } from '../../../../services/notification.service';
-import { CarlonGracieBackendSharedDomainEnumsTransactionType as TransactionType } from '../../../../generated_services';
+import { TransactionType as TransactionType } from '../../../../generated_services';
 import { of, throwError } from 'rxjs';
 
 describe('CreateTransactionComponent', () => {

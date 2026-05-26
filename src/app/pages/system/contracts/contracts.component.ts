@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/cor
 import { DatePipe, CurrencyPipe } from '@angular/common';
 import { ContractService } from '../../../generated_services/api/contract.service';
 import { StudentsService } from '../../../generated_services/api/students.service';
-import { CarlonGracieBackendFinancesApplicationDTOsShowContractDTO as ShowContractDTO, CarlonGracieBackendSharedDomainEnumsContractStatus as ContractStatus } from '../../../generated_services';
+import { ShowContractDTO as ShowContractDTO, ContractStatus as ContractStatus } from '../../../generated_services';
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
 import { FilterComponent } from '../../../shared/filter/filter.component';

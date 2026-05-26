@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component, effect, inject, input, output } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { AcademyService } from '../../../../generated_services/api/academy.service';
-import { ShowAcademyDTO } from '../../../../generated_services/model/showAcademyDTO';
-import { UpdateAcademyDTO } from '../../../../generated_services/model/updateAcademyDTO';
+import { ShowAcademyDto } from '../../../../generated_services/model/showAcademyDto';
+import { UpdateAcademyDto } from '../../../../generated_services/model/updateAcademyDto';
 import { NotificationService } from '../../../../services/notification.service';
 
 @Component({
@@ -16,7 +16,7 @@ import { NotificationService } from '../../../../services/notification.service';
 export class UpdateAcademyComponent {
   readonly closeEvent = output<void>();
   readonly academyUpdated = output<void>();
-  readonly academy = input.required<ShowAcademyDTO>();
+  readonly academy = input.required<ShowAcademyDto>();
 
   private readonly fb = inject(FormBuilder);
   private readonly academyService = inject(AcademyService);
@@ -59,11 +59,11 @@ export class UpdateAcademyComponent {
     });
   }
 
-  private toDTO(): UpdateAcademyDTO {
+  private toDTO(): UpdateAcademyDto {
     const v = this.form.value;
     return {
       name: v.name!,
       isActive: v.isActive ?? true,
-    } as UpdateAcademyDTO;
+    } as UpdateAcademyDto;
   }
 }

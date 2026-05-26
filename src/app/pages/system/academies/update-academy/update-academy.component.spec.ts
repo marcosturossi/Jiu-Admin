@@ -3,10 +3,10 @@ import { of, throwError } from 'rxjs';
 import { UpdateAcademyComponent } from './update-academy.component';
 import { AcademyService } from '../../../../generated_services/api/academy.service';
 import { NotificationService } from '../../../../services/notification.service';
-import { ShowAcademyDTO } from '../../../../generated_services/model/showAcademyDTO';
+import { ShowAcademyDto } from '../../../../generated_services/model/showAcademyDto';
 import { ComponentRef } from '@angular/core';
 
-const MOCK_ACADEMY: ShowAcademyDTO = {
+const MOCK_ACADEMY: ShowAcademyDto = {
   id: 'abc-1',
   name: 'Carlson Gracie SP',
   slug: 'carlson-sp',
@@ -58,7 +58,7 @@ describe('UpdateAcademyComponent', () => {
   });
 
   it('should re-patch form when academy input changes', () => {
-    const updated: ShowAcademyDTO = { ...MOCK_ACADEMY, name: 'Nova Academia', isActive: false };
+    const updated: ShowAcademyDto = { ...MOCK_ACADEMY, name: 'Nova Academia', isActive: false };
     componentRef.setInput('academy', updated);
     fixture.detectChanges();
     const form = (component as any).form;

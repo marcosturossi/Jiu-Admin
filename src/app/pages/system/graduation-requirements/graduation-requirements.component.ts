@@ -1,9 +1,10 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
-import { GraduationRequirementsService, CarlonGracieBackendProgressionApplicationDTOsShowGraduationRequirementDTO as ShowGraduationRequirementsDTO } from '../../../generated_services';
+import { GraduationRequirementsService, ShowGraduationRequirementDTO as ShowGraduationRequirementsDTO } from '../../../generated_services';
 import { CreateGraduationRequirementComponent } from './create-graduation-requirement/create-graduation-requirement.component';
 import { UpdateGraduationRequirementComponent } from './update-graduation-requirement/update-graduation-requirement.component';
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
+import { PaginationComponent } from '../../../shared/pagination/pagination.component';
 import { PageResult } from '../../../utils/page-result';
 
 @Component({
@@ -12,6 +13,7 @@ import { PageResult } from '../../../utils/page-result';
   imports: [
     CreateGraduationRequirementComponent,
     UpdateGraduationRequirementComponent,
+    PaginationComponent,
   ],
   templateUrl: './graduation-requirements.component.html',
   styleUrl: './graduation-requirements.component.scss',
@@ -26,6 +28,8 @@ export class GraduationRequirementsComponent {
   protected readonly openedCreate = signal(false);
   protected readonly openedUpdate = signal(false);
   protected readonly selected = signal<ShowGraduationRequirementsDTO | null>(null);
+  protected readonly currentPage = signal(1);
+  protected readonly pageSize = signal(10);
 
   constructor() {
     this.subnavService.setTitle('Requisitos de Graduação');
@@ -34,7 +38,14 @@ export class GraduationRequirementsComponent {
 
   protected load(): void {
     this.isLoading.set(true);
-    this.graduationRequirementsService.apiGraduationRequirementsGet().subscribe({
+    this.graduationRequirementsService.apiGraduationRequirementsGet(
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      this.currentPage(),
+      this.pageSize(),
+    ).subscribe({
       next: result => {
         this.items.set({
           items: result?.items ?? [],
@@ -50,6 +61,8 @@ export class GraduationRequirementsComponent {
     });
   }
 
+  protected onPageChange(page: number): void { this.currentPage.set(page); this.load(); }
+  protected onPageSizeChange(size: number): void { this.pageSize.set(size); this.currentPage.set(1); this.load(); }
   protected openCreate(): void { this.openedCreate.set(true); }
   protected openEdit(item: ShowGraduationRequirementsDTO): void { this.selected.set(item); this.openedUpdate.set(true); }
   protected onCreated(): void { this.openedCreate.set(false); this.load(); }

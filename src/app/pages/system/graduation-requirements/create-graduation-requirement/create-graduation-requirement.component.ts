@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject, output, signal } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
-import { GraduationRequirementsService, BeltService, CarlonGracieBackendProgressionApplicationDTOsShowBeltDTO as ShowBeltDTO } from '../../../../generated_services';
-import { CreateGraduationRequirementsDTO } from '../../../../generated_services/model/createGraduationRequirementsDTO';
+import { GraduationRequirementsService, BeltService, ShowBeltDTO as ShowBeltDTO } from '../../../../generated_services';
+import { CreateGraduationRequirementDTO } from '../../../../generated_services/model/createGraduationRequirementDTO';
 import { NotificationService } from '../../../../services/notification.service';
 
 @Component({
@@ -30,7 +30,7 @@ export class CreateGraduationRequirementComponent {
 
   constructor() {
     this.beltService.apiBeltGet().subscribe({
-      next: r => this.belts.set(r ?? []),
+      next: r => this.belts.set(r?.items ?? []),
       error: () => this.ns.showError('Erro ao Carregar Faixas!', 'Não foi possível carregar a lista de faixas. Tente novamente.'),
     });
   }
@@ -52,8 +52,8 @@ export class CreateGraduationRequirementComponent {
     });
   }
 
-  private toDTO(): CreateGraduationRequirementsDTO {
+  private toDTO(): CreateGraduationRequirementDTO {
     const v = this.form.value;
-    return { beltId: v.beltId, description: v.description, minimumClasses: v.minimumClasses ?? 0 } as CreateGraduationRequirementsDTO;
+    return { beltId: v.beltId, description: v.description, minimumClasses: v.minimumClasses ?? 0 } as CreateGraduationRequirementDTO;
   }
 }

@@ -29,7 +29,7 @@ describe('FinancialSummaryComponent', () => {
     transactionSvc = jasmine.createSpyObj('FinancialTransactionService', ['apiFinancialTransactionGet']);
     monthlyFeeSvc = jasmine.createSpyObj('MonthlyFeeService', ['apiMonthlyFeeOverdueGet']);
     transactionSvc.apiFinancialTransactionGet.and.returnValue(of(MOCK_TRANSACTIONS));
-    monthlyFeeSvc.apiMonthlyFeeOverdueGet.and.returnValue(of(MOCK_OVERDUE) as any);
+    monthlyFeeSvc.apiMonthlyFeeOverdueGet.and.returnValue(of({ items: MOCK_OVERDUE } as any));
 
     await TestBed.configureTestingModule({
       imports: [FinancialSummaryComponent],
@@ -72,7 +72,7 @@ describe('FinancialSummaryComponent', () => {
 
   it('should set loading to false on transaction error', async () => {
     transactionSvc.apiFinancialTransactionGet.and.returnValue(throwError(() => new Error('fail')));
-    monthlyFeeSvc.apiMonthlyFeeOverdueGet.and.returnValue(of([]) as any);
+    monthlyFeeSvc.apiMonthlyFeeOverdueGet.and.returnValue(of({ items: [] } as any));
     const f2 = TestBed.createComponent(FinancialSummaryComponent);
     f2.detectChanges();
     expect((f2.componentInstance as any).loading()).toBeFalse();

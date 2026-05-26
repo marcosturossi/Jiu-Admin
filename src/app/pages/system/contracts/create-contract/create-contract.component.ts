@@ -5,7 +5,7 @@ import { Subject, debounceTime } from 'rxjs';
 import { ContractService } from '../../../../generated_services/api/contract.service';
 import { FeePlanService } from '../../../../generated_services/api/feePlan.service';
 import { StudentsService } from '../../../../generated_services/api/students.service';
-import { CarlonGracieBackendStudentsApplicationDTOsShowStudentDTO as ShowStudentDTO, CarlonGracieBackendFinancesApplicationDTOsShowFeePlanDTO as ShowFeePlanDTO, CarlonGracieBackendFinancesApplicationDTOsShowContractDTO as ShowContractDTO } from '../../../../generated_services';
+import { ShowStudentDTO as ShowStudentDTO, ShowFeePlanDTO as ShowFeePlanDTO, ShowContractDTO as ShowContractDTO } from '../../../../generated_services';
 import { NotificationService } from '../../../../services/notification.service';
 import { SearchOption } from '../../../../shared/search-select/search-option';
 import { SearchSelectComponent } from '../../../../shared/search-select/search-select.component';

@@ -8,9 +8,14 @@
       <label for="type" class="form-label">Tipo *</label>
       <select id="type" formControlName="type" class="form-select">
         <option value="" disabled>Selecione</option>
-        @for (opt of notificationTypes; track opt.value) {
-          <option [value]="opt.value">{{ opt.label }}</option>
-        }
+        <option value="Info">Informação</option>
+        <option value="Success">Sucesso</option>
+        <option value="Warning">Aviso</option>
+        <option value="Error">Erro</option>
+        <option value="Graduation">Graduação</option>
+        <option value="Lesson">Aula</option>
+        <option value="Payment">Pagamento</option>
+        <option value="System">Sistema</option>
       </select>
     </div>
   </div>
@@ -35,17 +40,6 @@
       <input type="datetime-local" id="expiresAt" formControlName="expiresAt" class="form-control" />
       <small class="text-muted">Deixe vazio para notificação sem expiração</small>
     </div>
-    <div class="col mb-3">
-      <label for="actionUrl" class="form-label">URL de Ação</label>
-      <input id="actionUrl" formControlName="actionUrl" placeholder="URL opcional para ação" class="form-control" />
-    </div>
-  </div>
-
-  <div class="mb-3">
-    <label for="metadata" class="form-label">Metadados (JSON)</label>
-    <textarea id="metadata" formControlName="metadata" rows="2"
-      placeholder='{"key": "value"}' class="form-control"></textarea>
-    <small class="text-muted">Dados adicionais em formato JSON (opcional)</small>
   </div>
 
   <div class="form-check mb-3">

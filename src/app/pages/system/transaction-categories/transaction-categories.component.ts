@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
-import { TransactionCategoryService, CarlonGracieBackendFinancesApplicationDTOsShowTransactionCategoryDTO as ShowTransactionCategoryDTO } from '../../../generated_services';
+import { TransactionCategoryService, ShowTransactionCategoryDTO as ShowTransactionCategoryDTO } from '../../../generated_services';
 import { NotificationService } from '../../../services/notification.service';
 import { SubnavService } from '../../../services/subnav.service';
 import { FilterComponent } from '../../../shared/filter/filter.component';

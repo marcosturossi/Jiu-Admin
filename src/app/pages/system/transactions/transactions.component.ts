@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/cor
 import { DatePipe, CurrencyPipe } from '@angular/common';
 import { FinancialTransactionService } from '../../../generated_services/api/financialTransaction.service';
 import { TransactionCategoryService } from '../../../generated_services/api/transactionCategory.service';
-import { CarlonGracieBackendFinancesApplicationDTOsShowTransactionDTO as ShowTransactionDTO, CarlonGracieBackendFinancesApplicationDTOsShowTransactionCategoryDTO as ShowTransactionCategoryDTO, CarlonGracieBackendSharedDomainEnumsTransactionType as TransactionType } from '../../../generated_services';
+import { ShowTransactionDTO as ShowTransactionDTO, ShowTransactionCategoryDTO as ShowTransactionCategoryDTO, TransactionType as TransactionType } from '../../../generated_services';
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
 import { FilterComponent } from '../../../shared/filter/filter.component';

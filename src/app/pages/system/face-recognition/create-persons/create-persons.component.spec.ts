@@ -13,9 +13,9 @@ describe('CreatePersonsComponent', () => {
 
   beforeEach(async () => {
     const personsSpy = jasmine.createSpyObj('PersonsService', ['registerMultiplePhotosApiV1RegisterMultiplePost']);
-    const studentsSpy = jasmine.createSpyObj('StudentsService', ['apiStudentsActiveGet']);
+    const studentsSpy = jasmine.createSpyObj('StudentsService', ['apiStudentsGet']);
     const nsSpy = jasmine.createSpyObj('NotificationService', ['showSuccess', 'showError']);
-    studentsSpy.apiStudentsActiveGet.and.returnValue(of([{ id: 'stu1', firstName: 'João', lastName: 'Silva', userName: 'joao' }]));
+    studentsSpy.apiStudentsGet.and.returnValue(of({ items: [{ id: 'stu1', firstName: 'João', lastName: 'Silva', userName: 'joao' }] } as any));
     await TestBed.configureTestingModule({
       imports: [CreatePersonsComponent],
       providers: [
@@ -34,7 +34,7 @@ describe('CreatePersonsComponent', () => {
   it('should create', () => { expect(component).toBeTruthy(); });
 
   it('should load students on init', () => {
-    expect(studentsService.apiStudentsActiveGet).toHaveBeenCalled();
+    expect(studentsService.apiStudentsGet).toHaveBeenCalled();
     expect((component as any).students().length).toBe(1);
     expect((component as any).studentOptions().length).toBe(1);
   });

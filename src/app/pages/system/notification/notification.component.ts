@@ -1,10 +1,10 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { NotificationService as ApiNotificationService } from '../../../generated_services/api/notification.service';
-import { CarlonGracieBackendCommunicationsApplicationDTOsShowNotificationDto as ShowNotificationDTO } from '../../../generated_services/model/carlonGracieBackendCommunicationsApplicationDTOsShowNotificationDto';
+import { ShowNotificationDto as ShowNotificationDTO } from '../../../generated_services/model/showNotificationDto';
 import { CreateNotificationComponent } from './create-notification/create-notification.component';
 import { UpdateNotificationComponent } from './update-notification/update-notification.component';
-import { CarlonGracieBackendCommunicationsDomainNotificationType as NotificationType } from '../../../generated_services/model/carlonGracieBackendCommunicationsDomainNotificationType';
+import { NotificationType as NotificationType } from '../../../generated_services/model/notificationType';
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
 import { FilterComponent } from '../../../shared/filter/filter.component';

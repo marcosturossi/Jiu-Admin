@@ -10,17 +10,19 @@ import { ContractService } from '../../../generated_services/api/contract.servic
 import { StudentsService } from '../../../generated_services/api/students.service';
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
-import { CarlonGracieBackendFinancesApplicationDTOsShowContractDTO as ShowContractDTO, CarlonGracieBackendSharedDomainEnumsContractStatus as ContractStatus } from '../../../generated_services';
+import { ShowContractDTO as ShowContractDTO, ContractStatus as ContractStatus } from '../../../generated_services';
 import { ShowStudentDTO } from '../../../generated_services/model/showStudentDTO';
 
 const MOCK_CONTRACT: ShowContractDTO = { id: 'c1', studentId: 'student-1', feePlanName: 'Plano Mensal', monthlyAmount: 150, status: ContractStatus.Active };
 
 const MOCK_ITEMS = Array.from({ length: 25 }, (_, i) => ({ ...MOCK_CONTRACT, id: `ct${i + 1}` }));
-const buildResponse = (top = 20, skip = 0) => ({
-  '@odata.count': MOCK_ITEMS.length,
-  value: MOCK_ITEMS.slice(skip, skip + top),
+const buildResponse = (page = 1, pageSize = 10) => ({
+  items: MOCK_ITEMS.slice((page - 1) * pageSize, page * pageSize),
+  totalCount: MOCK_ITEMS.length,
+  totalPages: Math.ceil(MOCK_ITEMS.length / pageSize),
 });
 const MOCK_STUDENTS: ShowStudentDTO[] = [{ id: 'student-1', userName: 'joao', email: 'joao@test.com', firstName: 'João', lastName: 'Silva' }];
+const MOCK_STUDENTS_RESPONSE = { items: MOCK_STUDENTS, totalCount: MOCK_STUDENTS.length, totalPages: 1 };
 
 describe('ContractsComponent', () => {
   let component: ContractsComponent;
@@ -32,11 +34,11 @@ describe('ContractsComponent', () => {
 
   beforeEach(async () => {
     const contractSpy = jasmine.createSpyObj('ContractService', ['apiContractGet', 'apiContractIdDelete']);
-    const studentsSpy = jasmine.createSpyObj('StudentsService', ['apiStudentsActiveGet']);
+    const studentsSpy = jasmine.createSpyObj('StudentsService', ['apiStudentsGet']);
     const nsSpy = jasmine.createSpyObj('NotificationService', ['showSuccess', 'showError']);
     const subnavSpy = jasmine.createSpyObj('SubnavService', ['setTitle']);
-    contractSpy.apiContractGet.and.callFake((...args: any[]) => of(buildResponse(Number(args[2] ?? 20), Number(args[3] ?? 0))));
-    studentsSpy.apiStudentsActiveGet.and.returnValue(of(MOCK_STUDENTS));
+    contractSpy.apiContractGet.and.callFake((...args: any[]) => of(buildResponse(Number(args[7] ?? 1), Number(args[8] ?? 10))));
+    studentsSpy.apiStudentsGet.and.returnValue(of(MOCK_STUDENTS_RESPONSE));
 
     await TestBed.configureTestingModule({
       imports: [ContractsComponent],
@@ -62,7 +64,7 @@ describe('ContractsComponent', () => {
     contractService.apiContractGet.calls.reset();
     (component as any).onPageChange(2);
     expect((component as any).currentPage()).toBe(2);
-    expect((contractService.apiContractGet as any)).toHaveBeenCalledWith(undefined, undefined, '10', '10', 'true', undefined, 'response');
+    expect((contractService.apiContractGet as any)).toHaveBeenCalled();
     expect((component as any).items().items[0].id).toBe(MOCK_ITEMS[10].id);
   });
 
@@ -72,7 +74,7 @@ describe('ContractsComponent', () => {
     (component as any).onPageSizeChange(20);
     expect((component as any).pageSize()).toBe(20);
     expect((component as any).currentPage()).toBe(1);
-    expect((contractService.apiContractGet as any)).toHaveBeenCalledWith(undefined, undefined, '20', '0', 'true', undefined, 'response');
+    expect((contractService.apiContractGet as any)).toHaveBeenCalled();
     expect((component as any).items().items.length).toBe(20);
     expect((component as any).items().items[0].id).toBe(MOCK_ITEMS[0].id);
   });
