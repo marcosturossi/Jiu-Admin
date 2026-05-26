@@ -7,7 +7,7 @@ import {
 import { DatePipe } from '@angular/common';
 import { AcademyService } from '../../../generated_services/api/academy.service';
 import { ShowAcademyDTO } from '../../../generated_services/model/showAcademyDTO';
-import { ODataPage, buildClientPage, parseODataPage } from '../../../utils/odata.utils';
+import { PageResult } from '../../../utils/page-result';
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
 import { PaginationComponent } from '../../../shared/pagination/pagination.component';
@@ -33,8 +33,7 @@ export class AcademiesComponent {
   private readonly notificationService = inject(NotificationService);
 
   protected readonly isLoading = signal(false);
-  protected readonly items = signal<ODataPage<ShowAcademyDTO> | null>(null);
-  protected readonly allItems = signal<ShowAcademyDTO[]>([]);
+  protected readonly items = signal<PageResult<ShowAcademyDTO> | null>(null);
   protected readonly openedCreate = signal(false);
   protected readonly openedUpdate = signal(false);
   protected readonly selected = signal<ShowAcademyDTO | null>(null);
@@ -49,16 +48,26 @@ export class AcademiesComponent {
 
   protected load(): void {
     this.isLoading.set(true);
-    const name = this.searchName().trim() || undefined;
-    const filter = name ? `contains(name,'${name.replace(/'/g, "''")}')` : undefined;
-    this.academyService.apiAdminAcademiesGet(filter, undefined, '200', '0', 'true').subscribe({
-      next: (body: any) => {
-        const page = parseODataPage<ShowAcademyDTO>(body, 200);
-        this.allItems.set(page.items);
-        this.refreshPage();
+    this.academyService.apiAdminAcademiesGet(
+      this.searchName().trim() || undefined,
+      undefined,
+      undefined,
+      undefined,
+      this.currentPage(),
+      this.pageSize(),
+    ).subscribe({
+      next: result => {
+        this.items.set({
+          items: result?.items ?? [],
+          totalCount: result?.totalCount ?? 0,
+          totalPages: result?.totalPages ?? 1,
+        });
         this.isLoading.set(false);
       },
-      error: () => { this.isLoading.set(false); this.notificationService.showError('Erro de Carregamento', 'Não foi possível carregar a lista de academias.'); }
+      error: () => {
+        this.isLoading.set(false);
+        this.notificationService.showError('Erro de Carregamento', 'Não foi possível carregar a lista de academias.');
+      },
     });
   }
 
@@ -67,21 +76,15 @@ export class AcademiesComponent {
     this.load();
   }
 
-  private refreshPage(): void {
-    const page = buildClientPage(this.allItems(), this.currentPage(), this.pageSize());
-    this.currentPage.set(page.currentPage);
-    this.items.set(page);
-  }
-
   protected onPageChange(page: number): void {
     this.currentPage.set(page);
-    this.refreshPage();
+    this.load();
   }
 
   protected onPageSizeChange(size: number): void {
     this.pageSize.set(size);
     this.currentPage.set(1);
-    this.refreshPage();
+    this.load();
   }
 
   protected openCreate(): void {

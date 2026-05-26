@@ -4,6 +4,7 @@ import { CreateGraduationRequirementComponent } from './create-graduation-requir
 import { UpdateGraduationRequirementComponent } from './update-graduation-requirement/update-graduation-requirement.component';
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
+import { PageResult } from '../../../utils/page-result';
 
 @Component({
   selector: 'app-graduation-requirements',
@@ -21,7 +22,7 @@ export class GraduationRequirementsComponent {
   private readonly notificationService = inject(NotificationService);
 
   protected readonly isLoading = signal(false);
-  protected readonly items = signal<ShowGraduationRequirementsDTO[]>([]);
+  protected readonly items = signal<PageResult<ShowGraduationRequirementsDTO> | null>(null);
   protected readonly openedCreate = signal(false);
   protected readonly openedUpdate = signal(false);
   protected readonly selected = signal<ShowGraduationRequirementsDTO | null>(null);
@@ -34,7 +35,14 @@ export class GraduationRequirementsComponent {
   protected load(): void {
     this.isLoading.set(true);
     this.graduationRequirementsService.apiGraduationRequirementsGet().subscribe({
-      next: r => { this.items.set(r); this.isLoading.set(false); },
+      next: result => {
+        this.items.set({
+          items: result?.items ?? [],
+          totalCount: result?.totalCount ?? 0,
+          totalPages: result?.totalPages ?? 1,
+        });
+        this.isLoading.set(false);
+      },
       error: () => {
         this.isLoading.set(false);
         this.notificationService.showError('Erro ao Carregar Requisitos!', 'Não foi possível carregar a lista de requisitos de graduação. Tente novamente.');

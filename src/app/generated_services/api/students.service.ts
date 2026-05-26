@@ -20,21 +20,19 @@ import { Observable }                                        from 'rxjs';
 // @ts-ignore
 import { ApiAdminAcademiesIdGet404Response } from '../model/apiAdminAcademiesIdGet404Response';
 // @ts-ignore
-import { CarlonGracieBackendDTOsShowStudentDTO } from '../model/carlonGracieBackendDTOsShowStudentDTO';
+import { CreateStudentDTO } from '../model/createStudentDTO';
 // @ts-ignore
-import { CarlonGracieBackendDTOsStudentSearchDTO } from '../model/carlonGracieBackendDTOsStudentSearchDTO';
+import { PhotoResponseDTO } from '../model/photoResponseDTO';
 // @ts-ignore
-import { CarlonGracieBackendStudentsApplicationDTOsCreateStudentDTO } from '../model/carlonGracieBackendStudentsApplicationDTOsCreateStudentDTO';
+import { ShowStudentDTO } from '../model/showStudentDTO';
 // @ts-ignore
-import { CarlonGracieBackendStudentsApplicationDTOsPhotoResponseDTO } from '../model/carlonGracieBackendStudentsApplicationDTOsPhotoResponseDTO';
+import { ShowStudentDTOPaginatedResult } from '../model/showStudentDTOPaginatedResult';
 // @ts-ignore
-import { CarlonGracieBackendStudentsApplicationDTOsShowStudentDTO } from '../model/carlonGracieBackendStudentsApplicationDTOsShowStudentDTO';
+import { UpdateStudentDTO } from '../model/updateStudentDTO';
 // @ts-ignore
-import { CarlonGracieBackendStudentsApplicationDTOsUpdateStudentDTO } from '../model/carlonGracieBackendStudentsApplicationDTOsUpdateStudentDTO';
+import { UploadPhotoBase64DTO } from '../model/uploadPhotoBase64DTO';
 // @ts-ignore
-import { CarlonGracieBackendStudentsApplicationDTOsUploadPhotoBase64DTO } from '../model/carlonGracieBackendStudentsApplicationDTOsUploadPhotoBase64DTO';
-// @ts-ignore
-import { MicrosoftAspNetCoreMvcValidationProblemDetails } from '../model/microsoftAspNetCoreMvcValidationProblemDetails';
+import { ValidationProblemDetails } from '../model/validationProblemDetails';
 
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
@@ -124,144 +122,74 @@ export class StudentsService implements StudentsServiceInterface {
     }
 
     /**
-     * @param name 
+     * @param firstName 
+     * @param lastName 
      * @param email 
-     * @param isActive 
-     * @param birthDateFrom 
-     * @param birthDateTo 
-     * @param pageNumber 
+     * @param keycloakUserId 
+     * @param createdAtFrom 
+     * @param createdAtTo 
+     * @param page 
      * @param pageSize 
+     * @param orderBy 
+     * @param orderByDescending 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiStudentsActiveGet(name?: string, email?: string, isActive?: boolean, birthDateFrom?: string, birthDateTo?: string, pageNumber?: number, pageSize?: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Array<CarlonGracieBackendDTOsShowStudentDTO>>;
-    public apiStudentsActiveGet(name?: string, email?: string, isActive?: boolean, birthDateFrom?: string, birthDateTo?: string, pageNumber?: number, pageSize?: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<CarlonGracieBackendDTOsShowStudentDTO>>>;
-    public apiStudentsActiveGet(name?: string, email?: string, isActive?: boolean, birthDateFrom?: string, birthDateTo?: string, pageNumber?: number, pageSize?: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<CarlonGracieBackendDTOsShowStudentDTO>>>;
-    public apiStudentsActiveGet(name?: string, email?: string, isActive?: boolean, birthDateFrom?: string, birthDateTo?: string, pageNumber?: number, pageSize?: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public apiStudentsGet(firstName?: string, lastName?: string, email?: string, keycloakUserId?: string, createdAtFrom?: string, createdAtTo?: string, page?: number, pageSize?: number, orderBy?: string, orderByDescending?: boolean, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<ShowStudentDTOPaginatedResult>;
+    public apiStudentsGet(firstName?: string, lastName?: string, email?: string, keycloakUserId?: string, createdAtFrom?: string, createdAtTo?: string, page?: number, pageSize?: number, orderBy?: string, orderByDescending?: boolean, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<ShowStudentDTOPaginatedResult>>;
+    public apiStudentsGet(firstName?: string, lastName?: string, email?: string, keycloakUserId?: string, createdAtFrom?: string, createdAtTo?: string, page?: number, pageSize?: number, orderBy?: string, orderByDescending?: boolean, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<ShowStudentDTOPaginatedResult>>;
+    public apiStudentsGet(firstName?: string, lastName?: string, email?: string, keycloakUserId?: string, createdAtFrom?: string, createdAtTo?: string, page?: number, pageSize?: number, orderBy?: string, orderByDescending?: boolean, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
 
         let localVarQueryParameters = new HttpParams({encoder: this.encoder});
-        if (name !== undefined && name !== null) {
+        if (firstName !== undefined && firstName !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>name, 'Name');
+            <any>firstName, 'FirstName');
+        }
+        if (lastName !== undefined && lastName !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>lastName, 'LastName');
         }
         if (email !== undefined && email !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
             <any>email, 'Email');
         }
-        if (isActive !== undefined && isActive !== null) {
+        if (keycloakUserId !== undefined && keycloakUserId !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>isActive, 'IsActive');
+            <any>keycloakUserId, 'KeycloakUserId');
         }
-        if (birthDateFrom !== undefined && birthDateFrom !== null) {
+        if (createdAtFrom !== undefined && createdAtFrom !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>birthDateFrom, 'BirthDateFrom');
+            <any>createdAtFrom, 'CreatedAtFrom');
         }
-        if (birthDateTo !== undefined && birthDateTo !== null) {
+        if (createdAtTo !== undefined && createdAtTo !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>birthDateTo, 'BirthDateTo');
+            <any>createdAtTo, 'CreatedAtTo');
         }
-        if (pageNumber !== undefined && pageNumber !== null) {
+        if (page !== undefined && page !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>pageNumber, 'PageNumber');
+            <any>page, 'Page');
         }
         if (pageSize !== undefined && pageSize !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
             <any>pageSize, 'PageSize');
         }
+        if (orderBy !== undefined && orderBy !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>orderBy, 'OrderBy');
+        }
+        if (orderByDescending !== undefined && orderByDescending !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>orderByDescending, 'OrderByDescending');
+        }
 
         let localVarHeaders = this.defaultHeaders;
 
-        let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
-        if (localVarHttpHeaderAcceptSelected === undefined) {
-            // to determine the Accept header
-            const httpHeaderAccepts: string[] = [
-                'application/json'
-            ];
-            localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+        let localVarCredential: string | undefined;
+        // authentication (Bearer) required
+        localVarCredential = this.configuration.lookupCredential('Bearer');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('Authorization', 'Bearer ' + localVarCredential);
         }
-        if (localVarHttpHeaderAcceptSelected !== undefined) {
-            localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
-        }
-
-        let localVarHttpContext: HttpContext | undefined = options && options.context;
-        if (localVarHttpContext === undefined) {
-            localVarHttpContext = new HttpContext();
-        }
-
-        let localVarTransferCache: boolean | undefined = options && options.transferCache;
-        if (localVarTransferCache === undefined) {
-            localVarTransferCache = true;
-        }
-
-
-        let responseType_: 'text' | 'json' | 'blob' = 'json';
-        if (localVarHttpHeaderAcceptSelected) {
-            if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
-                responseType_ = 'text';
-            } else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
-                responseType_ = 'json';
-            } else {
-                responseType_ = 'blob';
-            }
-        }
-
-        let localVarPath = `/api/Students/active`;
-        return this.httpClient.request<Array<CarlonGracieBackendDTOsShowStudentDTO>>('get', `${this.configuration.basePath}${localVarPath}`,
-            {
-                context: localVarHttpContext,
-                params: localVarQueryParameters,
-                responseType: <any>responseType_,
-                withCredentials: this.configuration.withCredentials,
-                headers: localVarHeaders,
-                observe: observe,
-                transferCache: localVarTransferCache,
-                reportProgress: reportProgress
-            }
-        );
-    }
-
-    /**
-     * @param $filter OData filter expression. Examples: contains(name,\&#39;John\&#39;) | status eq \&#39;Active\&#39; | amount gt 100 | createdAt ge 2024-01-01T00:00:00Z
-     * @param $orderby Sort expression. Examples: name asc | createdAt desc | name asc,amount desc
-     * @param $top Page size — number of records to return (default: 20, max: 200). Use with $skip for pagination.
-     * @param $skip Records to skip. Use ($pageNumber - 1) * $top. Example: page 3 with size 20 → $skip&#x3D;40
-     * @param $count Set to \&#39;true\&#39; to include total record count in response as @odata.count
-     * @param $select Return only specific fields. Example: $select&#x3D;id,name,createdAt
-     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
-     * @param reportProgress flag to report request and response progress.
-     */
-    public apiStudentsGet($filter?: string, $orderby?: string, $top?: string, $skip?: string, $count?: string, $select?: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Array<CarlonGracieBackendStudentsApplicationDTOsShowStudentDTO>>;
-    public apiStudentsGet($filter?: string, $orderby?: string, $top?: string, $skip?: string, $count?: string, $select?: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<CarlonGracieBackendStudentsApplicationDTOsShowStudentDTO>>>;
-    public apiStudentsGet($filter?: string, $orderby?: string, $top?: string, $skip?: string, $count?: string, $select?: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<CarlonGracieBackendStudentsApplicationDTOsShowStudentDTO>>>;
-    public apiStudentsGet($filter?: string, $orderby?: string, $top?: string, $skip?: string, $count?: string, $select?: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
-
-        let localVarQueryParameters = new HttpParams({encoder: this.encoder});
-        if ($filter !== undefined && $filter !== null) {
-          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>$filter, '$filter');
-        }
-        if ($orderby !== undefined && $orderby !== null) {
-          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>$orderby, '$orderby');
-        }
-        if ($top !== undefined && $top !== null) {
-          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>$top, '$top');
-        }
-        if ($skip !== undefined && $skip !== null) {
-          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>$skip, '$skip');
-        }
-        if ($count !== undefined && $count !== null) {
-          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>$count, '$count');
-        }
-        if ($select !== undefined && $select !== null) {
-          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>$select, '$select');
-        }
-
-        let localVarHeaders = this.defaultHeaders;
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -298,7 +226,7 @@ export class StudentsService implements StudentsServiceInterface {
         }
 
         let localVarPath = `/api/Students`;
-        return this.httpClient.request<Array<CarlonGracieBackendStudentsApplicationDTOsShowStudentDTO>>('get', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<ShowStudentDTOPaginatedResult>('get', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 params: localVarQueryParameters,
@@ -326,6 +254,13 @@ export class StudentsService implements StudentsServiceInterface {
         }
 
         let localVarHeaders = this.defaultHeaders;
+
+        let localVarCredential: string | undefined;
+        // authentication (Bearer) required
+        localVarCredential = this.configuration.lookupCredential('Bearer');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('Authorization', 'Bearer ' + localVarCredential);
+        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -380,15 +315,22 @@ export class StudentsService implements StudentsServiceInterface {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiStudentsIdGet(id: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<CarlonGracieBackendStudentsApplicationDTOsShowStudentDTO>;
-    public apiStudentsIdGet(id: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<CarlonGracieBackendStudentsApplicationDTOsShowStudentDTO>>;
-    public apiStudentsIdGet(id: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<CarlonGracieBackendStudentsApplicationDTOsShowStudentDTO>>;
+    public apiStudentsIdGet(id: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<ShowStudentDTO>;
+    public apiStudentsIdGet(id: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<ShowStudentDTO>>;
+    public apiStudentsIdGet(id: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<ShowStudentDTO>>;
     public apiStudentsIdGet(id: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         if (id === null || id === undefined) {
             throw new Error('Required parameter id was null or undefined when calling apiStudentsIdGet.');
         }
 
         let localVarHeaders = this.defaultHeaders;
+
+        let localVarCredential: string | undefined;
+        // authentication (Bearer) required
+        localVarCredential = this.configuration.lookupCredential('Bearer');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('Authorization', 'Bearer ' + localVarCredential);
+        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -425,7 +367,7 @@ export class StudentsService implements StudentsServiceInterface {
         }
 
         let localVarPath = `/api/Students/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: "uuid"})}`;
-        return this.httpClient.request<CarlonGracieBackendStudentsApplicationDTOsShowStudentDTO>('get', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<ShowStudentDTO>('get', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 responseType: <any>responseType_,
@@ -440,19 +382,26 @@ export class StudentsService implements StudentsServiceInterface {
 
     /**
      * @param id 
-     * @param carlonGracieBackendStudentsApplicationDTOsUploadPhotoBase64DTO 
+     * @param uploadPhotoBase64DTO 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiStudentsIdPhotoBase64Post(id: string, carlonGracieBackendStudentsApplicationDTOsUploadPhotoBase64DTO?: CarlonGracieBackendStudentsApplicationDTOsUploadPhotoBase64DTO, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<CarlonGracieBackendStudentsApplicationDTOsShowStudentDTO>;
-    public apiStudentsIdPhotoBase64Post(id: string, carlonGracieBackendStudentsApplicationDTOsUploadPhotoBase64DTO?: CarlonGracieBackendStudentsApplicationDTOsUploadPhotoBase64DTO, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<CarlonGracieBackendStudentsApplicationDTOsShowStudentDTO>>;
-    public apiStudentsIdPhotoBase64Post(id: string, carlonGracieBackendStudentsApplicationDTOsUploadPhotoBase64DTO?: CarlonGracieBackendStudentsApplicationDTOsUploadPhotoBase64DTO, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<CarlonGracieBackendStudentsApplicationDTOsShowStudentDTO>>;
-    public apiStudentsIdPhotoBase64Post(id: string, carlonGracieBackendStudentsApplicationDTOsUploadPhotoBase64DTO?: CarlonGracieBackendStudentsApplicationDTOsUploadPhotoBase64DTO, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public apiStudentsIdPhotoBase64Post(id: string, uploadPhotoBase64DTO?: UploadPhotoBase64DTO, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<ShowStudentDTO>;
+    public apiStudentsIdPhotoBase64Post(id: string, uploadPhotoBase64DTO?: UploadPhotoBase64DTO, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<ShowStudentDTO>>;
+    public apiStudentsIdPhotoBase64Post(id: string, uploadPhotoBase64DTO?: UploadPhotoBase64DTO, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<ShowStudentDTO>>;
+    public apiStudentsIdPhotoBase64Post(id: string, uploadPhotoBase64DTO?: UploadPhotoBase64DTO, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         if (id === null || id === undefined) {
             throw new Error('Required parameter id was null or undefined when calling apiStudentsIdPhotoBase64Post.');
         }
 
         let localVarHeaders = this.defaultHeaders;
+
+        let localVarCredential: string | undefined;
+        // authentication (Bearer) required
+        localVarCredential = this.configuration.lookupCredential('Bearer');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('Authorization', 'Bearer ' + localVarCredential);
+        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -479,44 +428,7 @@ export class StudentsService implements StudentsServiceInterface {
 
         // to determine the Content-Type header
         const consumes: string[] = [
-            'application/json;odata.metadata=minimal;odata.streaming=true',
-            'application/json;odata.metadata=minimal;odata.streaming=false',
-            'application/json;odata.metadata=minimal',
-            'application/json;odata.metadata=full;odata.streaming=true',
-            'application/json;odata.metadata=full;odata.streaming=false',
-            'application/json;odata.metadata=full',
-            'application/json;odata.metadata=none;odata.streaming=true',
-            'application/json;odata.metadata=none;odata.streaming=false',
-            'application/json;odata.metadata=none',
-            'application/json;odata.streaming=true',
-            'application/json;odata.streaming=false',
             'application/json',
-            'application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=false',
-            'application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=true',
-            'application/json;odata.metadata=minimal;odata.streaming=false;IEEE754Compatible=false',
-            'application/json;odata.metadata=minimal;odata.streaming=false;IEEE754Compatible=true',
-            'application/json;odata.metadata=minimal;IEEE754Compatible=false',
-            'application/json;odata.metadata=minimal;IEEE754Compatible=true',
-            'application/json;odata.metadata=full;odata.streaming=true;IEEE754Compatible=false',
-            'application/json;odata.metadata=full;odata.streaming=true;IEEE754Compatible=true',
-            'application/json;odata.metadata=full;odata.streaming=false;IEEE754Compatible=false',
-            'application/json;odata.metadata=full;odata.streaming=false;IEEE754Compatible=true',
-            'application/json;odata.metadata=full;IEEE754Compatible=false',
-            'application/json;odata.metadata=full;IEEE754Compatible=true',
-            'application/json;odata.metadata=none;odata.streaming=true;IEEE754Compatible=false',
-            'application/json;odata.metadata=none;odata.streaming=true;IEEE754Compatible=true',
-            'application/json;odata.metadata=none;odata.streaming=false;IEEE754Compatible=true',
-            'application/json;odata.metadata=none;odata.streaming=false;IEEE754Compatible=false',
-            'application/json;odata.metadata=none;IEEE754Compatible=false',
-            'application/json;odata.metadata=none;IEEE754Compatible=true',
-            'application/json;odata.streaming=true;IEEE754Compatible=false',
-            'application/json;odata.streaming=true;IEEE754Compatible=true',
-            'application/json;odata.streaming=false;IEEE754Compatible=false',
-            'application/json;odata.streaming=false;IEEE754Compatible=true',
-            'application/json;IEEE754Compatible=false',
-            'application/json;IEEE754Compatible=true',
-            'application/xml',
-            'text/plain',
             'text/json',
             'application/*+json'
         ];
@@ -537,10 +449,10 @@ export class StudentsService implements StudentsServiceInterface {
         }
 
         let localVarPath = `/api/Students/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: "uuid"})}/photo/base64`;
-        return this.httpClient.request<CarlonGracieBackendStudentsApplicationDTOsShowStudentDTO>('post', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<ShowStudentDTO>('post', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
-                body: carlonGracieBackendStudentsApplicationDTOsUploadPhotoBase64DTO,
+                body: uploadPhotoBase64DTO,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,
@@ -556,9 +468,9 @@ export class StudentsService implements StudentsServiceInterface {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiStudentsIdPhotoDelete(id: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<CarlonGracieBackendStudentsApplicationDTOsShowStudentDTO>;
-    public apiStudentsIdPhotoDelete(id: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<CarlonGracieBackendStudentsApplicationDTOsShowStudentDTO>>;
-    public apiStudentsIdPhotoDelete(id: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<CarlonGracieBackendStudentsApplicationDTOsShowStudentDTO>>;
+    public apiStudentsIdPhotoDelete(id: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<ShowStudentDTO>;
+    public apiStudentsIdPhotoDelete(id: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<ShowStudentDTO>>;
+    public apiStudentsIdPhotoDelete(id: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<ShowStudentDTO>>;
     public apiStudentsIdPhotoDelete(id: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         if (id === null || id === undefined) {
             throw new Error('Required parameter id was null or undefined when calling apiStudentsIdPhotoDelete.');
@@ -566,6 +478,13 @@ export class StudentsService implements StudentsServiceInterface {
 
         let localVarHeaders = this.defaultHeaders;
 
+        let localVarCredential: string | undefined;
+        // authentication (Bearer) required
+        localVarCredential = this.configuration.lookupCredential('Bearer');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('Authorization', 'Bearer ' + localVarCredential);
+        }
+
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
@@ -601,7 +520,7 @@ export class StudentsService implements StudentsServiceInterface {
         }
 
         let localVarPath = `/api/Students/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: "uuid"})}/photo`;
-        return this.httpClient.request<CarlonGracieBackendStudentsApplicationDTOsShowStudentDTO>('delete', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<ShowStudentDTO>('delete', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 responseType: <any>responseType_,
@@ -619,15 +538,22 @@ export class StudentsService implements StudentsServiceInterface {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiStudentsIdPhotoGet(id: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<CarlonGracieBackendStudentsApplicationDTOsPhotoResponseDTO>;
-    public apiStudentsIdPhotoGet(id: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<CarlonGracieBackendStudentsApplicationDTOsPhotoResponseDTO>>;
-    public apiStudentsIdPhotoGet(id: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<CarlonGracieBackendStudentsApplicationDTOsPhotoResponseDTO>>;
+    public apiStudentsIdPhotoGet(id: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<PhotoResponseDTO>;
+    public apiStudentsIdPhotoGet(id: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<PhotoResponseDTO>>;
+    public apiStudentsIdPhotoGet(id: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<PhotoResponseDTO>>;
     public apiStudentsIdPhotoGet(id: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         if (id === null || id === undefined) {
             throw new Error('Required parameter id was null or undefined when calling apiStudentsIdPhotoGet.');
         }
 
         let localVarHeaders = this.defaultHeaders;
+
+        let localVarCredential: string | undefined;
+        // authentication (Bearer) required
+        localVarCredential = this.configuration.lookupCredential('Bearer');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('Authorization', 'Bearer ' + localVarCredential);
+        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -664,7 +590,7 @@ export class StudentsService implements StudentsServiceInterface {
         }
 
         let localVarPath = `/api/Students/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: "uuid"})}/photo`;
-        return this.httpClient.request<CarlonGracieBackendStudentsApplicationDTOsPhotoResponseDTO>('get', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<PhotoResponseDTO>('get', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 responseType: <any>responseType_,
@@ -683,15 +609,22 @@ export class StudentsService implements StudentsServiceInterface {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiStudentsIdPhotoPost(id: string, photo?: Blob, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<CarlonGracieBackendStudentsApplicationDTOsShowStudentDTO>;
-    public apiStudentsIdPhotoPost(id: string, photo?: Blob, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<CarlonGracieBackendStudentsApplicationDTOsShowStudentDTO>>;
-    public apiStudentsIdPhotoPost(id: string, photo?: Blob, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<CarlonGracieBackendStudentsApplicationDTOsShowStudentDTO>>;
+    public apiStudentsIdPhotoPost(id: string, photo?: Blob, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<ShowStudentDTO>;
+    public apiStudentsIdPhotoPost(id: string, photo?: Blob, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<ShowStudentDTO>>;
+    public apiStudentsIdPhotoPost(id: string, photo?: Blob, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<ShowStudentDTO>>;
     public apiStudentsIdPhotoPost(id: string, photo?: Blob, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         if (id === null || id === undefined) {
             throw new Error('Required parameter id was null or undefined when calling apiStudentsIdPhotoPost.');
         }
 
         let localVarHeaders = this.defaultHeaders;
+
+        let localVarCredential: string | undefined;
+        // authentication (Bearer) required
+        localVarCredential = this.configuration.lookupCredential('Bearer');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('Authorization', 'Bearer ' + localVarCredential);
+        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -750,7 +683,7 @@ export class StudentsService implements StudentsServiceInterface {
         }
 
         let localVarPath = `/api/Students/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: "uuid"})}/photo`;
-        return this.httpClient.request<CarlonGracieBackendStudentsApplicationDTOsShowStudentDTO>('post', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<ShowStudentDTO>('post', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 body: localVarConvertFormParamsToString ? localVarFormParams.toString() : localVarFormParams,
@@ -785,6 +718,13 @@ export class StudentsService implements StudentsServiceInterface {
         }
 
         let localVarHeaders = this.defaultHeaders;
+
+        let localVarCredential: string | undefined;
+        // authentication (Bearer) required
+        localVarCredential = this.configuration.lookupCredential('Bearer');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('Authorization', 'Bearer ' + localVarCredential);
+        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -837,19 +777,26 @@ export class StudentsService implements StudentsServiceInterface {
 
     /**
      * @param id 
-     * @param carlonGracieBackendStudentsApplicationDTOsUpdateStudentDTO 
+     * @param updateStudentDTO 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiStudentsIdPut(id: string, carlonGracieBackendStudentsApplicationDTOsUpdateStudentDTO?: CarlonGracieBackendStudentsApplicationDTOsUpdateStudentDTO, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<CarlonGracieBackendStudentsApplicationDTOsShowStudentDTO>;
-    public apiStudentsIdPut(id: string, carlonGracieBackendStudentsApplicationDTOsUpdateStudentDTO?: CarlonGracieBackendStudentsApplicationDTOsUpdateStudentDTO, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<CarlonGracieBackendStudentsApplicationDTOsShowStudentDTO>>;
-    public apiStudentsIdPut(id: string, carlonGracieBackendStudentsApplicationDTOsUpdateStudentDTO?: CarlonGracieBackendStudentsApplicationDTOsUpdateStudentDTO, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<CarlonGracieBackendStudentsApplicationDTOsShowStudentDTO>>;
-    public apiStudentsIdPut(id: string, carlonGracieBackendStudentsApplicationDTOsUpdateStudentDTO?: CarlonGracieBackendStudentsApplicationDTOsUpdateStudentDTO, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public apiStudentsIdPut(id: string, updateStudentDTO?: UpdateStudentDTO, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<ShowStudentDTO>;
+    public apiStudentsIdPut(id: string, updateStudentDTO?: UpdateStudentDTO, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<ShowStudentDTO>>;
+    public apiStudentsIdPut(id: string, updateStudentDTO?: UpdateStudentDTO, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<ShowStudentDTO>>;
+    public apiStudentsIdPut(id: string, updateStudentDTO?: UpdateStudentDTO, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         if (id === null || id === undefined) {
             throw new Error('Required parameter id was null or undefined when calling apiStudentsIdPut.');
         }
 
         let localVarHeaders = this.defaultHeaders;
+
+        let localVarCredential: string | undefined;
+        // authentication (Bearer) required
+        localVarCredential = this.configuration.lookupCredential('Bearer');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('Authorization', 'Bearer ' + localVarCredential);
+        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -876,44 +823,7 @@ export class StudentsService implements StudentsServiceInterface {
 
         // to determine the Content-Type header
         const consumes: string[] = [
-            'application/json;odata.metadata=minimal;odata.streaming=true',
-            'application/json;odata.metadata=minimal;odata.streaming=false',
-            'application/json;odata.metadata=minimal',
-            'application/json;odata.metadata=full;odata.streaming=true',
-            'application/json;odata.metadata=full;odata.streaming=false',
-            'application/json;odata.metadata=full',
-            'application/json;odata.metadata=none;odata.streaming=true',
-            'application/json;odata.metadata=none;odata.streaming=false',
-            'application/json;odata.metadata=none',
-            'application/json;odata.streaming=true',
-            'application/json;odata.streaming=false',
             'application/json',
-            'application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=false',
-            'application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=true',
-            'application/json;odata.metadata=minimal;odata.streaming=false;IEEE754Compatible=false',
-            'application/json;odata.metadata=minimal;odata.streaming=false;IEEE754Compatible=true',
-            'application/json;odata.metadata=minimal;IEEE754Compatible=false',
-            'application/json;odata.metadata=minimal;IEEE754Compatible=true',
-            'application/json;odata.metadata=full;odata.streaming=true;IEEE754Compatible=false',
-            'application/json;odata.metadata=full;odata.streaming=true;IEEE754Compatible=true',
-            'application/json;odata.metadata=full;odata.streaming=false;IEEE754Compatible=false',
-            'application/json;odata.metadata=full;odata.streaming=false;IEEE754Compatible=true',
-            'application/json;odata.metadata=full;IEEE754Compatible=false',
-            'application/json;odata.metadata=full;IEEE754Compatible=true',
-            'application/json;odata.metadata=none;odata.streaming=true;IEEE754Compatible=false',
-            'application/json;odata.metadata=none;odata.streaming=true;IEEE754Compatible=true',
-            'application/json;odata.metadata=none;odata.streaming=false;IEEE754Compatible=true',
-            'application/json;odata.metadata=none;odata.streaming=false;IEEE754Compatible=false',
-            'application/json;odata.metadata=none;IEEE754Compatible=false',
-            'application/json;odata.metadata=none;IEEE754Compatible=true',
-            'application/json;odata.streaming=true;IEEE754Compatible=false',
-            'application/json;odata.streaming=true;IEEE754Compatible=true',
-            'application/json;odata.streaming=false;IEEE754Compatible=false',
-            'application/json;odata.streaming=false;IEEE754Compatible=true',
-            'application/json;IEEE754Compatible=false',
-            'application/json;IEEE754Compatible=true',
-            'application/xml',
-            'text/plain',
             'text/json',
             'application/*+json'
         ];
@@ -934,10 +844,10 @@ export class StudentsService implements StudentsServiceInterface {
         }
 
         let localVarPath = `/api/Students/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: "uuid"})}`;
-        return this.httpClient.request<CarlonGracieBackendStudentsApplicationDTOsShowStudentDTO>('put', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<ShowStudentDTO>('put', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
-                body: carlonGracieBackendStudentsApplicationDTOsUpdateStudentDTO,
+                body: updateStudentDTO,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,
@@ -953,15 +863,22 @@ export class StudentsService implements StudentsServiceInterface {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiStudentsKeycloakKeycloakUserIdGet(keycloakUserId: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<CarlonGracieBackendStudentsApplicationDTOsShowStudentDTO>;
-    public apiStudentsKeycloakKeycloakUserIdGet(keycloakUserId: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<CarlonGracieBackendStudentsApplicationDTOsShowStudentDTO>>;
-    public apiStudentsKeycloakKeycloakUserIdGet(keycloakUserId: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<CarlonGracieBackendStudentsApplicationDTOsShowStudentDTO>>;
+    public apiStudentsKeycloakKeycloakUserIdGet(keycloakUserId: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<ShowStudentDTO>;
+    public apiStudentsKeycloakKeycloakUserIdGet(keycloakUserId: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<ShowStudentDTO>>;
+    public apiStudentsKeycloakKeycloakUserIdGet(keycloakUserId: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<ShowStudentDTO>>;
     public apiStudentsKeycloakKeycloakUserIdGet(keycloakUserId: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         if (keycloakUserId === null || keycloakUserId === undefined) {
             throw new Error('Required parameter keycloakUserId was null or undefined when calling apiStudentsKeycloakKeycloakUserIdGet.');
         }
 
         let localVarHeaders = this.defaultHeaders;
+
+        let localVarCredential: string | undefined;
+        // authentication (Bearer) required
+        localVarCredential = this.configuration.lookupCredential('Bearer');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('Authorization', 'Bearer ' + localVarCredential);
+        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -998,7 +915,7 @@ export class StudentsService implements StudentsServiceInterface {
         }
 
         let localVarPath = `/api/Students/keycloak/${this.configuration.encodeParam({name: "keycloakUserId", value: keycloakUserId, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`;
-        return this.httpClient.request<CarlonGracieBackendStudentsApplicationDTOsShowStudentDTO>('get', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<ShowStudentDTO>('get', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 responseType: <any>responseType_,
@@ -1012,16 +929,23 @@ export class StudentsService implements StudentsServiceInterface {
     }
 
     /**
-     * @param carlonGracieBackendStudentsApplicationDTOsCreateStudentDTO 
+     * @param createStudentDTO 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiStudentsPost(carlonGracieBackendStudentsApplicationDTOsCreateStudentDTO?: CarlonGracieBackendStudentsApplicationDTOsCreateStudentDTO, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<CarlonGracieBackendStudentsApplicationDTOsShowStudentDTO>;
-    public apiStudentsPost(carlonGracieBackendStudentsApplicationDTOsCreateStudentDTO?: CarlonGracieBackendStudentsApplicationDTOsCreateStudentDTO, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<CarlonGracieBackendStudentsApplicationDTOsShowStudentDTO>>;
-    public apiStudentsPost(carlonGracieBackendStudentsApplicationDTOsCreateStudentDTO?: CarlonGracieBackendStudentsApplicationDTOsCreateStudentDTO, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<CarlonGracieBackendStudentsApplicationDTOsShowStudentDTO>>;
-    public apiStudentsPost(carlonGracieBackendStudentsApplicationDTOsCreateStudentDTO?: CarlonGracieBackendStudentsApplicationDTOsCreateStudentDTO, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public apiStudentsPost(createStudentDTO?: CreateStudentDTO, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<ShowStudentDTO>;
+    public apiStudentsPost(createStudentDTO?: CreateStudentDTO, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<ShowStudentDTO>>;
+    public apiStudentsPost(createStudentDTO?: CreateStudentDTO, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<ShowStudentDTO>>;
+    public apiStudentsPost(createStudentDTO?: CreateStudentDTO, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
 
         let localVarHeaders = this.defaultHeaders;
+
+        let localVarCredential: string | undefined;
+        // authentication (Bearer) required
+        localVarCredential = this.configuration.lookupCredential('Bearer');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('Authorization', 'Bearer ' + localVarCredential);
+        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -1048,44 +972,7 @@ export class StudentsService implements StudentsServiceInterface {
 
         // to determine the Content-Type header
         const consumes: string[] = [
-            'application/json;odata.metadata=minimal;odata.streaming=true',
-            'application/json;odata.metadata=minimal;odata.streaming=false',
-            'application/json;odata.metadata=minimal',
-            'application/json;odata.metadata=full;odata.streaming=true',
-            'application/json;odata.metadata=full;odata.streaming=false',
-            'application/json;odata.metadata=full',
-            'application/json;odata.metadata=none;odata.streaming=true',
-            'application/json;odata.metadata=none;odata.streaming=false',
-            'application/json;odata.metadata=none',
-            'application/json;odata.streaming=true',
-            'application/json;odata.streaming=false',
             'application/json',
-            'application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=false',
-            'application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=true',
-            'application/json;odata.metadata=minimal;odata.streaming=false;IEEE754Compatible=false',
-            'application/json;odata.metadata=minimal;odata.streaming=false;IEEE754Compatible=true',
-            'application/json;odata.metadata=minimal;IEEE754Compatible=false',
-            'application/json;odata.metadata=minimal;IEEE754Compatible=true',
-            'application/json;odata.metadata=full;odata.streaming=true;IEEE754Compatible=false',
-            'application/json;odata.metadata=full;odata.streaming=true;IEEE754Compatible=true',
-            'application/json;odata.metadata=full;odata.streaming=false;IEEE754Compatible=false',
-            'application/json;odata.metadata=full;odata.streaming=false;IEEE754Compatible=true',
-            'application/json;odata.metadata=full;IEEE754Compatible=false',
-            'application/json;odata.metadata=full;IEEE754Compatible=true',
-            'application/json;odata.metadata=none;odata.streaming=true;IEEE754Compatible=false',
-            'application/json;odata.metadata=none;odata.streaming=true;IEEE754Compatible=true',
-            'application/json;odata.metadata=none;odata.streaming=false;IEEE754Compatible=true',
-            'application/json;odata.metadata=none;odata.streaming=false;IEEE754Compatible=false',
-            'application/json;odata.metadata=none;IEEE754Compatible=false',
-            'application/json;odata.metadata=none;IEEE754Compatible=true',
-            'application/json;odata.streaming=true;IEEE754Compatible=false',
-            'application/json;odata.streaming=true;IEEE754Compatible=true',
-            'application/json;odata.streaming=false;IEEE754Compatible=false',
-            'application/json;odata.streaming=false;IEEE754Compatible=true',
-            'application/json;IEEE754Compatible=false',
-            'application/json;IEEE754Compatible=true',
-            'application/xml',
-            'text/plain',
             'text/json',
             'application/*+json'
         ];
@@ -1106,119 +993,10 @@ export class StudentsService implements StudentsServiceInterface {
         }
 
         let localVarPath = `/api/Students`;
-        return this.httpClient.request<CarlonGracieBackendStudentsApplicationDTOsShowStudentDTO>('post', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<ShowStudentDTO>('post', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
-                body: carlonGracieBackendStudentsApplicationDTOsCreateStudentDTO,
-                responseType: <any>responseType_,
-                withCredentials: this.configuration.withCredentials,
-                headers: localVarHeaders,
-                observe: observe,
-                transferCache: localVarTransferCache,
-                reportProgress: reportProgress
-            }
-        );
-    }
-
-    /**
-     * @param carlonGracieBackendDTOsStudentSearchDTO 
-     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
-     * @param reportProgress flag to report request and response progress.
-     */
-    public apiStudentsSearchPost(carlonGracieBackendDTOsStudentSearchDTO?: CarlonGracieBackendDTOsStudentSearchDTO, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Array<CarlonGracieBackendDTOsShowStudentDTO>>;
-    public apiStudentsSearchPost(carlonGracieBackendDTOsStudentSearchDTO?: CarlonGracieBackendDTOsStudentSearchDTO, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<CarlonGracieBackendDTOsShowStudentDTO>>>;
-    public apiStudentsSearchPost(carlonGracieBackendDTOsStudentSearchDTO?: CarlonGracieBackendDTOsStudentSearchDTO, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<CarlonGracieBackendDTOsShowStudentDTO>>>;
-    public apiStudentsSearchPost(carlonGracieBackendDTOsStudentSearchDTO?: CarlonGracieBackendDTOsStudentSearchDTO, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
-
-        let localVarHeaders = this.defaultHeaders;
-
-        let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
-        if (localVarHttpHeaderAcceptSelected === undefined) {
-            // to determine the Accept header
-            const httpHeaderAccepts: string[] = [
-                'application/json'
-            ];
-            localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
-        }
-        if (localVarHttpHeaderAcceptSelected !== undefined) {
-            localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
-        }
-
-        let localVarHttpContext: HttpContext | undefined = options && options.context;
-        if (localVarHttpContext === undefined) {
-            localVarHttpContext = new HttpContext();
-        }
-
-        let localVarTransferCache: boolean | undefined = options && options.transferCache;
-        if (localVarTransferCache === undefined) {
-            localVarTransferCache = true;
-        }
-
-
-        // to determine the Content-Type header
-        const consumes: string[] = [
-            'application/json;odata.metadata=minimal;odata.streaming=true',
-            'application/json;odata.metadata=minimal;odata.streaming=false',
-            'application/json;odata.metadata=minimal',
-            'application/json;odata.metadata=full;odata.streaming=true',
-            'application/json;odata.metadata=full;odata.streaming=false',
-            'application/json;odata.metadata=full',
-            'application/json;odata.metadata=none;odata.streaming=true',
-            'application/json;odata.metadata=none;odata.streaming=false',
-            'application/json;odata.metadata=none',
-            'application/json;odata.streaming=true',
-            'application/json;odata.streaming=false',
-            'application/json',
-            'application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=false',
-            'application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=true',
-            'application/json;odata.metadata=minimal;odata.streaming=false;IEEE754Compatible=false',
-            'application/json;odata.metadata=minimal;odata.streaming=false;IEEE754Compatible=true',
-            'application/json;odata.metadata=minimal;IEEE754Compatible=false',
-            'application/json;odata.metadata=minimal;IEEE754Compatible=true',
-            'application/json;odata.metadata=full;odata.streaming=true;IEEE754Compatible=false',
-            'application/json;odata.metadata=full;odata.streaming=true;IEEE754Compatible=true',
-            'application/json;odata.metadata=full;odata.streaming=false;IEEE754Compatible=false',
-            'application/json;odata.metadata=full;odata.streaming=false;IEEE754Compatible=true',
-            'application/json;odata.metadata=full;IEEE754Compatible=false',
-            'application/json;odata.metadata=full;IEEE754Compatible=true',
-            'application/json;odata.metadata=none;odata.streaming=true;IEEE754Compatible=false',
-            'application/json;odata.metadata=none;odata.streaming=true;IEEE754Compatible=true',
-            'application/json;odata.metadata=none;odata.streaming=false;IEEE754Compatible=true',
-            'application/json;odata.metadata=none;odata.streaming=false;IEEE754Compatible=false',
-            'application/json;odata.metadata=none;IEEE754Compatible=false',
-            'application/json;odata.metadata=none;IEEE754Compatible=true',
-            'application/json;odata.streaming=true;IEEE754Compatible=false',
-            'application/json;odata.streaming=true;IEEE754Compatible=true',
-            'application/json;odata.streaming=false;IEEE754Compatible=false',
-            'application/json;odata.streaming=false;IEEE754Compatible=true',
-            'application/json;IEEE754Compatible=false',
-            'application/json;IEEE754Compatible=true',
-            'application/xml',
-            'text/plain',
-            'text/json',
-            'application/*+json'
-        ];
-        const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
-        if (httpContentTypeSelected !== undefined) {
-            localVarHeaders = localVarHeaders.set('Content-Type', httpContentTypeSelected);
-        }
-
-        let responseType_: 'text' | 'json' | 'blob' = 'json';
-        if (localVarHttpHeaderAcceptSelected) {
-            if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
-                responseType_ = 'text';
-            } else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
-                responseType_ = 'json';
-            } else {
-                responseType_ = 'blob';
-            }
-        }
-
-        let localVarPath = `/api/Students/search`;
-        return this.httpClient.request<Array<CarlonGracieBackendDTOsShowStudentDTO>>('post', `${this.configuration.basePath}${localVarPath}`,
-            {
-                context: localVarHttpContext,
-                body: carlonGracieBackendDTOsStudentSearchDTO,
+                body: createStudentDTO,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,

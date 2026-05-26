@@ -13,11 +13,12 @@ import { HttpHeaders }                                       from '@angular/comm
 import { Observable }                                        from 'rxjs';
 
 import { ApiAdminAcademiesIdGet404Response } from '../model/models';
-import { CarlonGracieBackendFinancesApplicationDTOsCreateTransactionDTO } from '../model/models';
-import { CarlonGracieBackendFinancesApplicationDTOsFinancialSummaryDTO } from '../model/models';
-import { CarlonGracieBackendFinancesApplicationDTOsShowTransactionDTO } from '../model/models';
-import { CarlonGracieBackendFinancesApplicationDTOsUpdateTransactionDTO } from '../model/models';
-import { MicrosoftAspNetCoreMvcValidationProblemDetails } from '../model/models';
+import { CreateTransactionDTO } from '../model/models';
+import { FinancialSummaryDTO } from '../model/models';
+import { ShowTransactionDTO } from '../model/models';
+import { ShowTransactionDTOPaginatedResult } from '../model/models';
+import { UpdateTransactionDTO } from '../model/models';
+import { ValidationProblemDetails } from '../model/models';
 
 
 import { Configuration }                                     from '../configuration';
@@ -31,14 +32,19 @@ export interface FinancialTransactionServiceInterface {
     /**
      * 
      * 
-     * @param $filter OData filter expression. Examples: contains(name,\&#39;John\&#39;) | status eq \&#39;Active\&#39; | amount gt 100 | createdAt ge 2024-01-01T00:00:00Z
-     * @param $orderby Sort expression. Examples: name asc | createdAt desc | name asc,amount desc
-     * @param $top Page size — number of records to return (default: 20, max: 200). Use with $skip for pagination.
-     * @param $skip Records to skip. Use ($pageNumber - 1) * $top. Example: page 3 with size 20 → $skip&#x3D;40
-     * @param $count Set to \&#39;true\&#39; to include total record count in response as @odata.count
-     * @param $select Return only specific fields. Example: $select&#x3D;id,name,createdAt
+     * @param type 
+     * @param transactionCategoryId 
+     * @param amountMin 
+     * @param amountMax 
+     * @param transactionDateFrom 
+     * @param transactionDateTo 
+     * @param description 
+     * @param page 
+     * @param pageSize 
+     * @param orderBy 
+     * @param orderByDescending 
      */
-    apiFinancialTransactionGet($filter?: string, $orderby?: string, $top?: string, $skip?: string, $count?: string, $select?: string, extraHttpRequestParams?: any): Observable<Array<CarlonGracieBackendFinancesApplicationDTOsShowTransactionDTO>>;
+    apiFinancialTransactionGet(type?: string, transactionCategoryId?: string, amountMin?: number, amountMax?: number, transactionDateFrom?: string, transactionDateTo?: string, description?: string, page?: number, pageSize?: number, orderBy?: string, orderByDescending?: boolean, extraHttpRequestParams?: any): Observable<ShowTransactionDTOPaginatedResult>;
 
     /**
      * 
@@ -52,22 +58,22 @@ export interface FinancialTransactionServiceInterface {
      * 
      * @param id 
      */
-    apiFinancialTransactionIdGet(id: string, extraHttpRequestParams?: any): Observable<CarlonGracieBackendFinancesApplicationDTOsShowTransactionDTO>;
+    apiFinancialTransactionIdGet(id: string, extraHttpRequestParams?: any): Observable<ShowTransactionDTO>;
 
     /**
      * 
      * 
      * @param id 
-     * @param carlonGracieBackendFinancesApplicationDTOsUpdateTransactionDTO 
+     * @param updateTransactionDTO 
      */
-    apiFinancialTransactionIdPut(id: string, carlonGracieBackendFinancesApplicationDTOsUpdateTransactionDTO?: CarlonGracieBackendFinancesApplicationDTOsUpdateTransactionDTO, extraHttpRequestParams?: any): Observable<CarlonGracieBackendFinancesApplicationDTOsShowTransactionDTO>;
+    apiFinancialTransactionIdPut(id: string, updateTransactionDTO?: UpdateTransactionDTO, extraHttpRequestParams?: any): Observable<ShowTransactionDTO>;
 
     /**
      * 
      * 
-     * @param carlonGracieBackendFinancesApplicationDTOsCreateTransactionDTO 
+     * @param createTransactionDTO 
      */
-    apiFinancialTransactionPost(carlonGracieBackendFinancesApplicationDTOsCreateTransactionDTO?: CarlonGracieBackendFinancesApplicationDTOsCreateTransactionDTO, extraHttpRequestParams?: any): Observable<CarlonGracieBackendFinancesApplicationDTOsShowTransactionDTO>;
+    apiFinancialTransactionPost(createTransactionDTO?: CreateTransactionDTO, extraHttpRequestParams?: any): Observable<ShowTransactionDTO>;
 
     /**
      * 
@@ -75,6 +81,6 @@ export interface FinancialTransactionServiceInterface {
      * @param from 
      * @param to 
      */
-    apiFinancialTransactionSummaryGet(from?: string, to?: string, extraHttpRequestParams?: any): Observable<CarlonGracieBackendFinancesApplicationDTOsFinancialSummaryDTO>;
+    apiFinancialTransactionSummaryGet(from?: string, to?: string, extraHttpRequestParams?: any): Observable<FinancialSummaryDTO>;
 
 }

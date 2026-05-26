@@ -13,10 +13,11 @@ import { HttpHeaders }                                       from '@angular/comm
 import { Observable }                                        from 'rxjs';
 
 import { ApiAdminAcademiesIdGet404Response } from '../model/models';
-import { CarlonGracieBackendReportingApplicationDTOsCreateNoticeDto } from '../model/models';
-import { CarlonGracieBackendReportingApplicationDTOsShowNoticeDto } from '../model/models';
-import { CarlonGracieBackendReportingApplicationDTOsUpdateNoticeDto } from '../model/models';
-import { MicrosoftAspNetCoreMvcValidationProblemDetails } from '../model/models';
+import { CreateNoticeDto } from '../model/models';
+import { ShowNoticeDto } from '../model/models';
+import { ShowNoticeDtoPaginatedResult } from '../model/models';
+import { UpdateNoticeDto } from '../model/models';
+import { ValidationProblemDetails } from '../model/models';
 
 
 import { Configuration }                                     from '../configuration';
@@ -34,20 +35,26 @@ export interface NoticesServiceInterface {
      * @param isActive 
      * @param createdFrom 
      * @param createdTo 
+     * @param page 
+     * @param pageSize 
+     * @param orderBy 
+     * @param orderByDescending 
      */
-    apiNoticesActiveGet(description?: string, isActive?: boolean, createdFrom?: string, createdTo?: string, extraHttpRequestParams?: any): Observable<Array<CarlonGracieBackendReportingApplicationDTOsShowNoticeDto>>;
+    apiNoticesActiveGet(description?: string, isActive?: boolean, createdFrom?: string, createdTo?: string, page?: number, pageSize?: number, orderBy?: string, orderByDescending?: boolean, extraHttpRequestParams?: any): Observable<ShowNoticeDtoPaginatedResult>;
 
     /**
      * 
      * 
-     * @param $filter OData filter expression. Examples: contains(name,\&#39;John\&#39;) | status eq \&#39;Active\&#39; | amount gt 100 | createdAt ge 2024-01-01T00:00:00Z
-     * @param $orderby Sort expression. Examples: name asc | createdAt desc | name asc,amount desc
-     * @param $top Page size — number of records to return (default: 20, max: 200). Use with $skip for pagination.
-     * @param $skip Records to skip. Use ($pageNumber - 1) * $top. Example: page 3 with size 20 → $skip&#x3D;40
-     * @param $count Set to \&#39;true\&#39; to include total record count in response as @odata.count
-     * @param $select Return only specific fields. Example: $select&#x3D;id,name,createdAt
+     * @param description 
+     * @param isActive 
+     * @param createdFrom 
+     * @param createdTo 
+     * @param page 
+     * @param pageSize 
+     * @param orderBy 
+     * @param orderByDescending 
      */
-    apiNoticesGet($filter?: string, $orderby?: string, $top?: string, $skip?: string, $count?: string, $select?: string, extraHttpRequestParams?: any): Observable<Array<CarlonGracieBackendReportingApplicationDTOsShowNoticeDto>>;
+    apiNoticesGet(description?: string, isActive?: boolean, createdFrom?: string, createdTo?: string, page?: number, pageSize?: number, orderBy?: string, orderByDescending?: boolean, extraHttpRequestParams?: any): Observable<ShowNoticeDtoPaginatedResult>;
 
     /**
      * 
@@ -61,21 +68,21 @@ export interface NoticesServiceInterface {
      * 
      * @param id 
      */
-    apiNoticesIdGet(id: string, extraHttpRequestParams?: any): Observable<CarlonGracieBackendReportingApplicationDTOsShowNoticeDto>;
+    apiNoticesIdGet(id: string, extraHttpRequestParams?: any): Observable<ShowNoticeDto>;
 
     /**
      * 
      * 
      * @param id 
-     * @param carlonGracieBackendReportingApplicationDTOsUpdateNoticeDto 
+     * @param updateNoticeDto 
      */
-    apiNoticesIdPut(id: string, carlonGracieBackendReportingApplicationDTOsUpdateNoticeDto?: CarlonGracieBackendReportingApplicationDTOsUpdateNoticeDto, extraHttpRequestParams?: any): Observable<CarlonGracieBackendReportingApplicationDTOsShowNoticeDto>;
+    apiNoticesIdPut(id: string, updateNoticeDto?: UpdateNoticeDto, extraHttpRequestParams?: any): Observable<ShowNoticeDto>;
 
     /**
      * 
      * 
-     * @param carlonGracieBackendReportingApplicationDTOsCreateNoticeDto 
+     * @param createNoticeDto 
      */
-    apiNoticesPost(carlonGracieBackendReportingApplicationDTOsCreateNoticeDto?: CarlonGracieBackendReportingApplicationDTOsCreateNoticeDto, extraHttpRequestParams?: any): Observable<CarlonGracieBackendReportingApplicationDTOsShowNoticeDto>;
+    apiNoticesPost(createNoticeDto?: CreateNoticeDto, extraHttpRequestParams?: any): Observable<ShowNoticeDto>;
 
 }

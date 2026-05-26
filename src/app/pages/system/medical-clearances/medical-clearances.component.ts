@@ -9,7 +9,7 @@ import { PaginationComponent } from '../../../shared/pagination/pagination.compo
 import { BlobViewerComponent } from '../../../shared/blob-viewer/blob-viewer.component';
 import { FilterComponent } from '../../../shared/filter/filter.component';
 import { FilterOutput } from '../../../shared/filter/filter.types';
-import { ODataPage, buildClientPage, parseODataPage } from '../../../utils/odata.utils';
+import { PageResult } from '../../../utils/page-result';
 
 @Component({
   selector: 'app-medical-clearances',
@@ -24,12 +24,10 @@ export class MedicalClearancesComponent {
   private readonly ns = inject(NotificationService);
 
   protected readonly isLoading = signal(false);
-  protected readonly items = signal<ODataPage<ShowMedicalClearanceDTO> | null>(null);
-  protected readonly allItems = signal<ShowMedicalClearanceDTO[]>([]);
+  protected readonly items = signal<PageResult<ShowMedicalClearanceDTO> | null>(null);
   protected readonly openedCreate = signal(false);
   protected readonly currentPage = signal(1);
   protected readonly pageSize = signal(10);
-  protected readonly filterQuery = signal<string | undefined>(undefined);
   protected readonly attachmentBlob = signal<Blob | undefined>(undefined);
   protected readonly attachmentMimeType = signal<string | undefined>(undefined);
   protected readonly attachmentDialogVisible = signal(false);
@@ -41,28 +39,37 @@ export class MedicalClearancesComponent {
 
   protected load(): void {
     this.isLoading.set(true);
-    const filter = this.filterQuery();
-    this.medicalClearanceService.apiMedicalClearanceGet(filter, undefined, '200', '0', 'true').subscribe({
-      next: (body: any) => {
-        const page = parseODataPage<ShowMedicalClearanceDTO>(body, 200);
-        this.allItems.set(page.items);
-        this.refreshPage();
+    this.medicalClearanceService.apiMedicalClearanceGet(
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      this.currentPage(),
+      this.pageSize(),
+    ).subscribe({
+      next: result => {
+        this.items.set({
+          items: result?.items ?? [],
+          totalCount: result?.totalCount ?? 0,
+          totalPages: result?.totalPages ?? 1,
+        });
         this.isLoading.set(false);
       },
-      error: () => { this.isLoading.set(false); this.ns.showError('Erro de Carregamento', 'Não foi possível carregar a lista de atestados médicos.'); }
+      error: () => {
+        this.isLoading.set(false);
+        this.ns.showError('Erro de Carregamento', 'Não foi possível carregar a lista de atestados médicos.');
+      },
     });
   }
 
-  protected onFilterChange(output: FilterOutput): void { this.filterQuery.set(output.odataFilter); this.currentPage.set(1); this.load(); }
+  protected onFilterChange(_output: FilterOutput): void { this.currentPage.set(1); this.load(); }
 
-  private refreshPage(): void {
-    const page = buildClientPage(this.allItems(), this.currentPage(), this.pageSize());
-    this.currentPage.set(page.currentPage);
-    this.items.set(page);
-  }
-
-  protected onPageChange(p: number): void { this.currentPage.set(p); this.refreshPage(); }
-  protected onPageSizeChange(s: number): void { this.pageSize.set(s); this.currentPage.set(1); this.refreshPage(); }
+  protected onPageChange(p: number): void { this.currentPage.set(p); this.load(); }
+  protected onPageSizeChange(s: number): void { this.pageSize.set(s); this.currentPage.set(1); this.load(); }
   protected openCreate(): void { this.openedCreate.set(true); }
   protected onCreated(): void { this.openedCreate.set(false); this.load(); }
 

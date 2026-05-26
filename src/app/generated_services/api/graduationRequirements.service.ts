@@ -20,11 +20,13 @@ import { Observable }                                        from 'rxjs';
 // @ts-ignore
 import { ApiAdminAcademiesIdGet404Response } from '../model/apiAdminAcademiesIdGet404Response';
 // @ts-ignore
-import { CarlonGracieBackendProgressionApplicationDTOsCreateGraduationRequirementDTO } from '../model/carlonGracieBackendProgressionApplicationDTOsCreateGraduationRequirementDTO';
+import { CreateGraduationRequirementDTO } from '../model/createGraduationRequirementDTO';
 // @ts-ignore
-import { CarlonGracieBackendProgressionApplicationDTOsShowGraduationRequirementDTO } from '../model/carlonGracieBackendProgressionApplicationDTOsShowGraduationRequirementDTO';
+import { ShowGraduationRequirementDTO } from '../model/showGraduationRequirementDTO';
 // @ts-ignore
-import { CarlonGracieBackendProgressionApplicationDTOsUpdateGraduationRequirementDTO } from '../model/carlonGracieBackendProgressionApplicationDTOsUpdateGraduationRequirementDTO';
+import { ShowGraduationRequirementDTOPaginatedResult } from '../model/showGraduationRequirementDTOPaginatedResult';
+// @ts-ignore
+import { UpdateGraduationRequirementDTO } from '../model/updateGraduationRequirementDTO';
 
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
@@ -102,18 +104,67 @@ export class GraduationRequirementsService implements GraduationRequirementsServ
 
     /**
      * @param beltId 
+     * @param beltId2 
+     * @param description 
+     * @param minimumClassesMin 
+     * @param minimumClassesMax 
+     * @param page 
+     * @param pageSize 
+     * @param orderBy 
+     * @param orderByDescending 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiGraduationRequirementsByBeltBeltIdGet(beltId: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Array<CarlonGracieBackendProgressionApplicationDTOsShowGraduationRequirementDTO>>;
-    public apiGraduationRequirementsByBeltBeltIdGet(beltId: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<CarlonGracieBackendProgressionApplicationDTOsShowGraduationRequirementDTO>>>;
-    public apiGraduationRequirementsByBeltBeltIdGet(beltId: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<CarlonGracieBackendProgressionApplicationDTOsShowGraduationRequirementDTO>>>;
-    public apiGraduationRequirementsByBeltBeltIdGet(beltId: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public apiGraduationRequirementsByBeltBeltIdGet(beltId: string, beltId2?: string, description?: string, minimumClassesMin?: number, minimumClassesMax?: number, page?: number, pageSize?: number, orderBy?: string, orderByDescending?: boolean, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<ShowGraduationRequirementDTOPaginatedResult>;
+    public apiGraduationRequirementsByBeltBeltIdGet(beltId: string, beltId2?: string, description?: string, minimumClassesMin?: number, minimumClassesMax?: number, page?: number, pageSize?: number, orderBy?: string, orderByDescending?: boolean, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<ShowGraduationRequirementDTOPaginatedResult>>;
+    public apiGraduationRequirementsByBeltBeltIdGet(beltId: string, beltId2?: string, description?: string, minimumClassesMin?: number, minimumClassesMax?: number, page?: number, pageSize?: number, orderBy?: string, orderByDescending?: boolean, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<ShowGraduationRequirementDTOPaginatedResult>>;
+    public apiGraduationRequirementsByBeltBeltIdGet(beltId: string, beltId2?: string, description?: string, minimumClassesMin?: number, minimumClassesMax?: number, page?: number, pageSize?: number, orderBy?: string, orderByDescending?: boolean, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         if (beltId === null || beltId === undefined) {
             throw new Error('Required parameter beltId was null or undefined when calling apiGraduationRequirementsByBeltBeltIdGet.');
         }
 
+        let localVarQueryParameters = new HttpParams({encoder: this.encoder});
+        if (beltId2 !== undefined && beltId2 !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>beltId2, 'BeltId');
+        }
+        if (description !== undefined && description !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>description, 'Description');
+        }
+        if (minimumClassesMin !== undefined && minimumClassesMin !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>minimumClassesMin, 'MinimumClassesMin');
+        }
+        if (minimumClassesMax !== undefined && minimumClassesMax !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>minimumClassesMax, 'MinimumClassesMax');
+        }
+        if (page !== undefined && page !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>page, 'Page');
+        }
+        if (pageSize !== undefined && pageSize !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>pageSize, 'PageSize');
+        }
+        if (orderBy !== undefined && orderBy !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>orderBy, 'OrderBy');
+        }
+        if (orderByDescending !== undefined && orderByDescending !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>orderByDescending, 'OrderByDescending');
+        }
+
         let localVarHeaders = this.defaultHeaders;
+
+        let localVarCredential: string | undefined;
+        // authentication (Bearer) required
+        localVarCredential = this.configuration.lookupCredential('Bearer');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('Authorization', 'Bearer ' + localVarCredential);
+        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -150,9 +201,10 @@ export class GraduationRequirementsService implements GraduationRequirementsServ
         }
 
         let localVarPath = `/api/GraduationRequirements/by-belt/${this.configuration.encodeParam({name: "beltId", value: beltId, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: "uuid"})}`;
-        return this.httpClient.request<Array<CarlonGracieBackendProgressionApplicationDTOsShowGraduationRequirementDTO>>('get', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<ShowGraduationRequirementDTOPaginatedResult>('get', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
+                params: localVarQueryParameters,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,
@@ -164,47 +216,64 @@ export class GraduationRequirementsService implements GraduationRequirementsServ
     }
 
     /**
-     * @param $filter OData filter expression. Examples: contains(name,\&#39;John\&#39;) | status eq \&#39;Active\&#39; | amount gt 100 | createdAt ge 2024-01-01T00:00:00Z
-     * @param $orderby Sort expression. Examples: name asc | createdAt desc | name asc,amount desc
-     * @param $top Page size — number of records to return (default: 20, max: 200). Use with $skip for pagination.
-     * @param $skip Records to skip. Use ($pageNumber - 1) * $top. Example: page 3 with size 20 → $skip&#x3D;40
-     * @param $count Set to \&#39;true\&#39; to include total record count in response as @odata.count
-     * @param $select Return only specific fields. Example: $select&#x3D;id,name,createdAt
+     * @param beltId 
+     * @param description 
+     * @param minimumClassesMin 
+     * @param minimumClassesMax 
+     * @param page 
+     * @param pageSize 
+     * @param orderBy 
+     * @param orderByDescending 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiGraduationRequirementsGet($filter?: string, $orderby?: string, $top?: string, $skip?: string, $count?: string, $select?: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Array<CarlonGracieBackendProgressionApplicationDTOsShowGraduationRequirementDTO>>;
-    public apiGraduationRequirementsGet($filter?: string, $orderby?: string, $top?: string, $skip?: string, $count?: string, $select?: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<CarlonGracieBackendProgressionApplicationDTOsShowGraduationRequirementDTO>>>;
-    public apiGraduationRequirementsGet($filter?: string, $orderby?: string, $top?: string, $skip?: string, $count?: string, $select?: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<CarlonGracieBackendProgressionApplicationDTOsShowGraduationRequirementDTO>>>;
-    public apiGraduationRequirementsGet($filter?: string, $orderby?: string, $top?: string, $skip?: string, $count?: string, $select?: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public apiGraduationRequirementsGet(beltId?: string, description?: string, minimumClassesMin?: number, minimumClassesMax?: number, page?: number, pageSize?: number, orderBy?: string, orderByDescending?: boolean, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<ShowGraduationRequirementDTOPaginatedResult>;
+    public apiGraduationRequirementsGet(beltId?: string, description?: string, minimumClassesMin?: number, minimumClassesMax?: number, page?: number, pageSize?: number, orderBy?: string, orderByDescending?: boolean, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<ShowGraduationRequirementDTOPaginatedResult>>;
+    public apiGraduationRequirementsGet(beltId?: string, description?: string, minimumClassesMin?: number, minimumClassesMax?: number, page?: number, pageSize?: number, orderBy?: string, orderByDescending?: boolean, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<ShowGraduationRequirementDTOPaginatedResult>>;
+    public apiGraduationRequirementsGet(beltId?: string, description?: string, minimumClassesMin?: number, minimumClassesMax?: number, page?: number, pageSize?: number, orderBy?: string, orderByDescending?: boolean, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
 
         let localVarQueryParameters = new HttpParams({encoder: this.encoder});
-        if ($filter !== undefined && $filter !== null) {
+        if (beltId !== undefined && beltId !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>$filter, '$filter');
+            <any>beltId, 'BeltId');
         }
-        if ($orderby !== undefined && $orderby !== null) {
+        if (description !== undefined && description !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>$orderby, '$orderby');
+            <any>description, 'Description');
         }
-        if ($top !== undefined && $top !== null) {
+        if (minimumClassesMin !== undefined && minimumClassesMin !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>$top, '$top');
+            <any>minimumClassesMin, 'MinimumClassesMin');
         }
-        if ($skip !== undefined && $skip !== null) {
+        if (minimumClassesMax !== undefined && minimumClassesMax !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>$skip, '$skip');
+            <any>minimumClassesMax, 'MinimumClassesMax');
         }
-        if ($count !== undefined && $count !== null) {
+        if (page !== undefined && page !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>$count, '$count');
+            <any>page, 'Page');
         }
-        if ($select !== undefined && $select !== null) {
+        if (pageSize !== undefined && pageSize !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>$select, '$select');
+            <any>pageSize, 'PageSize');
+        }
+        if (orderBy !== undefined && orderBy !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>orderBy, 'OrderBy');
+        }
+        if (orderByDescending !== undefined && orderByDescending !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>orderByDescending, 'OrderByDescending');
         }
 
         let localVarHeaders = this.defaultHeaders;
+
+        let localVarCredential: string | undefined;
+        // authentication (Bearer) required
+        localVarCredential = this.configuration.lookupCredential('Bearer');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('Authorization', 'Bearer ' + localVarCredential);
+        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -241,7 +310,7 @@ export class GraduationRequirementsService implements GraduationRequirementsServ
         }
 
         let localVarPath = `/api/GraduationRequirements`;
-        return this.httpClient.request<Array<CarlonGracieBackendProgressionApplicationDTOsShowGraduationRequirementDTO>>('get', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<ShowGraduationRequirementDTOPaginatedResult>('get', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 params: localVarQueryParameters,
@@ -269,6 +338,13 @@ export class GraduationRequirementsService implements GraduationRequirementsServ
         }
 
         let localVarHeaders = this.defaultHeaders;
+
+        let localVarCredential: string | undefined;
+        // authentication (Bearer) required
+        localVarCredential = this.configuration.lookupCredential('Bearer');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('Authorization', 'Bearer ' + localVarCredential);
+        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -323,15 +399,22 @@ export class GraduationRequirementsService implements GraduationRequirementsServ
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiGraduationRequirementsIdGet(id: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<CarlonGracieBackendProgressionApplicationDTOsShowGraduationRequirementDTO>;
-    public apiGraduationRequirementsIdGet(id: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<CarlonGracieBackendProgressionApplicationDTOsShowGraduationRequirementDTO>>;
-    public apiGraduationRequirementsIdGet(id: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<CarlonGracieBackendProgressionApplicationDTOsShowGraduationRequirementDTO>>;
+    public apiGraduationRequirementsIdGet(id: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<ShowGraduationRequirementDTO>;
+    public apiGraduationRequirementsIdGet(id: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<ShowGraduationRequirementDTO>>;
+    public apiGraduationRequirementsIdGet(id: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<ShowGraduationRequirementDTO>>;
     public apiGraduationRequirementsIdGet(id: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         if (id === null || id === undefined) {
             throw new Error('Required parameter id was null or undefined when calling apiGraduationRequirementsIdGet.');
         }
 
         let localVarHeaders = this.defaultHeaders;
+
+        let localVarCredential: string | undefined;
+        // authentication (Bearer) required
+        localVarCredential = this.configuration.lookupCredential('Bearer');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('Authorization', 'Bearer ' + localVarCredential);
+        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -368,7 +451,7 @@ export class GraduationRequirementsService implements GraduationRequirementsServ
         }
 
         let localVarPath = `/api/GraduationRequirements/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: "uuid"})}`;
-        return this.httpClient.request<CarlonGracieBackendProgressionApplicationDTOsShowGraduationRequirementDTO>('get', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<ShowGraduationRequirementDTO>('get', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 responseType: <any>responseType_,
@@ -383,19 +466,26 @@ export class GraduationRequirementsService implements GraduationRequirementsServ
 
     /**
      * @param id 
-     * @param carlonGracieBackendProgressionApplicationDTOsUpdateGraduationRequirementDTO 
+     * @param updateGraduationRequirementDTO 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiGraduationRequirementsIdPut(id: string, carlonGracieBackendProgressionApplicationDTOsUpdateGraduationRequirementDTO?: CarlonGracieBackendProgressionApplicationDTOsUpdateGraduationRequirementDTO, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<CarlonGracieBackendProgressionApplicationDTOsShowGraduationRequirementDTO>;
-    public apiGraduationRequirementsIdPut(id: string, carlonGracieBackendProgressionApplicationDTOsUpdateGraduationRequirementDTO?: CarlonGracieBackendProgressionApplicationDTOsUpdateGraduationRequirementDTO, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<CarlonGracieBackendProgressionApplicationDTOsShowGraduationRequirementDTO>>;
-    public apiGraduationRequirementsIdPut(id: string, carlonGracieBackendProgressionApplicationDTOsUpdateGraduationRequirementDTO?: CarlonGracieBackendProgressionApplicationDTOsUpdateGraduationRequirementDTO, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<CarlonGracieBackendProgressionApplicationDTOsShowGraduationRequirementDTO>>;
-    public apiGraduationRequirementsIdPut(id: string, carlonGracieBackendProgressionApplicationDTOsUpdateGraduationRequirementDTO?: CarlonGracieBackendProgressionApplicationDTOsUpdateGraduationRequirementDTO, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public apiGraduationRequirementsIdPut(id: string, updateGraduationRequirementDTO?: UpdateGraduationRequirementDTO, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<ShowGraduationRequirementDTO>;
+    public apiGraduationRequirementsIdPut(id: string, updateGraduationRequirementDTO?: UpdateGraduationRequirementDTO, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<ShowGraduationRequirementDTO>>;
+    public apiGraduationRequirementsIdPut(id: string, updateGraduationRequirementDTO?: UpdateGraduationRequirementDTO, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<ShowGraduationRequirementDTO>>;
+    public apiGraduationRequirementsIdPut(id: string, updateGraduationRequirementDTO?: UpdateGraduationRequirementDTO, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         if (id === null || id === undefined) {
             throw new Error('Required parameter id was null or undefined when calling apiGraduationRequirementsIdPut.');
         }
 
         let localVarHeaders = this.defaultHeaders;
+
+        let localVarCredential: string | undefined;
+        // authentication (Bearer) required
+        localVarCredential = this.configuration.lookupCredential('Bearer');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('Authorization', 'Bearer ' + localVarCredential);
+        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -422,44 +512,7 @@ export class GraduationRequirementsService implements GraduationRequirementsServ
 
         // to determine the Content-Type header
         const consumes: string[] = [
-            'application/json;odata.metadata=minimal;odata.streaming=true',
-            'application/json;odata.metadata=minimal;odata.streaming=false',
-            'application/json;odata.metadata=minimal',
-            'application/json;odata.metadata=full;odata.streaming=true',
-            'application/json;odata.metadata=full;odata.streaming=false',
-            'application/json;odata.metadata=full',
-            'application/json;odata.metadata=none;odata.streaming=true',
-            'application/json;odata.metadata=none;odata.streaming=false',
-            'application/json;odata.metadata=none',
-            'application/json;odata.streaming=true',
-            'application/json;odata.streaming=false',
             'application/json',
-            'application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=false',
-            'application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=true',
-            'application/json;odata.metadata=minimal;odata.streaming=false;IEEE754Compatible=false',
-            'application/json;odata.metadata=minimal;odata.streaming=false;IEEE754Compatible=true',
-            'application/json;odata.metadata=minimal;IEEE754Compatible=false',
-            'application/json;odata.metadata=minimal;IEEE754Compatible=true',
-            'application/json;odata.metadata=full;odata.streaming=true;IEEE754Compatible=false',
-            'application/json;odata.metadata=full;odata.streaming=true;IEEE754Compatible=true',
-            'application/json;odata.metadata=full;odata.streaming=false;IEEE754Compatible=false',
-            'application/json;odata.metadata=full;odata.streaming=false;IEEE754Compatible=true',
-            'application/json;odata.metadata=full;IEEE754Compatible=false',
-            'application/json;odata.metadata=full;IEEE754Compatible=true',
-            'application/json;odata.metadata=none;odata.streaming=true;IEEE754Compatible=false',
-            'application/json;odata.metadata=none;odata.streaming=true;IEEE754Compatible=true',
-            'application/json;odata.metadata=none;odata.streaming=false;IEEE754Compatible=true',
-            'application/json;odata.metadata=none;odata.streaming=false;IEEE754Compatible=false',
-            'application/json;odata.metadata=none;IEEE754Compatible=false',
-            'application/json;odata.metadata=none;IEEE754Compatible=true',
-            'application/json;odata.streaming=true;IEEE754Compatible=false',
-            'application/json;odata.streaming=true;IEEE754Compatible=true',
-            'application/json;odata.streaming=false;IEEE754Compatible=false',
-            'application/json;odata.streaming=false;IEEE754Compatible=true',
-            'application/json;IEEE754Compatible=false',
-            'application/json;IEEE754Compatible=true',
-            'application/xml',
-            'text/plain',
             'text/json',
             'application/*+json'
         ];
@@ -480,10 +533,10 @@ export class GraduationRequirementsService implements GraduationRequirementsServ
         }
 
         let localVarPath = `/api/GraduationRequirements/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: "uuid"})}`;
-        return this.httpClient.request<CarlonGracieBackendProgressionApplicationDTOsShowGraduationRequirementDTO>('put', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<ShowGraduationRequirementDTO>('put', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
-                body: carlonGracieBackendProgressionApplicationDTOsUpdateGraduationRequirementDTO,
+                body: updateGraduationRequirementDTO,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,
@@ -495,16 +548,23 @@ export class GraduationRequirementsService implements GraduationRequirementsServ
     }
 
     /**
-     * @param carlonGracieBackendProgressionApplicationDTOsCreateGraduationRequirementDTO 
+     * @param createGraduationRequirementDTO 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiGraduationRequirementsPost(carlonGracieBackendProgressionApplicationDTOsCreateGraduationRequirementDTO?: CarlonGracieBackendProgressionApplicationDTOsCreateGraduationRequirementDTO, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<CarlonGracieBackendProgressionApplicationDTOsShowGraduationRequirementDTO>;
-    public apiGraduationRequirementsPost(carlonGracieBackendProgressionApplicationDTOsCreateGraduationRequirementDTO?: CarlonGracieBackendProgressionApplicationDTOsCreateGraduationRequirementDTO, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<CarlonGracieBackendProgressionApplicationDTOsShowGraduationRequirementDTO>>;
-    public apiGraduationRequirementsPost(carlonGracieBackendProgressionApplicationDTOsCreateGraduationRequirementDTO?: CarlonGracieBackendProgressionApplicationDTOsCreateGraduationRequirementDTO, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<CarlonGracieBackendProgressionApplicationDTOsShowGraduationRequirementDTO>>;
-    public apiGraduationRequirementsPost(carlonGracieBackendProgressionApplicationDTOsCreateGraduationRequirementDTO?: CarlonGracieBackendProgressionApplicationDTOsCreateGraduationRequirementDTO, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public apiGraduationRequirementsPost(createGraduationRequirementDTO?: CreateGraduationRequirementDTO, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<ShowGraduationRequirementDTO>;
+    public apiGraduationRequirementsPost(createGraduationRequirementDTO?: CreateGraduationRequirementDTO, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<ShowGraduationRequirementDTO>>;
+    public apiGraduationRequirementsPost(createGraduationRequirementDTO?: CreateGraduationRequirementDTO, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<ShowGraduationRequirementDTO>>;
+    public apiGraduationRequirementsPost(createGraduationRequirementDTO?: CreateGraduationRequirementDTO, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
 
         let localVarHeaders = this.defaultHeaders;
+
+        let localVarCredential: string | undefined;
+        // authentication (Bearer) required
+        localVarCredential = this.configuration.lookupCredential('Bearer');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('Authorization', 'Bearer ' + localVarCredential);
+        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -531,44 +591,7 @@ export class GraduationRequirementsService implements GraduationRequirementsServ
 
         // to determine the Content-Type header
         const consumes: string[] = [
-            'application/json;odata.metadata=minimal;odata.streaming=true',
-            'application/json;odata.metadata=minimal;odata.streaming=false',
-            'application/json;odata.metadata=minimal',
-            'application/json;odata.metadata=full;odata.streaming=true',
-            'application/json;odata.metadata=full;odata.streaming=false',
-            'application/json;odata.metadata=full',
-            'application/json;odata.metadata=none;odata.streaming=true',
-            'application/json;odata.metadata=none;odata.streaming=false',
-            'application/json;odata.metadata=none',
-            'application/json;odata.streaming=true',
-            'application/json;odata.streaming=false',
             'application/json',
-            'application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=false',
-            'application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=true',
-            'application/json;odata.metadata=minimal;odata.streaming=false;IEEE754Compatible=false',
-            'application/json;odata.metadata=minimal;odata.streaming=false;IEEE754Compatible=true',
-            'application/json;odata.metadata=minimal;IEEE754Compatible=false',
-            'application/json;odata.metadata=minimal;IEEE754Compatible=true',
-            'application/json;odata.metadata=full;odata.streaming=true;IEEE754Compatible=false',
-            'application/json;odata.metadata=full;odata.streaming=true;IEEE754Compatible=true',
-            'application/json;odata.metadata=full;odata.streaming=false;IEEE754Compatible=false',
-            'application/json;odata.metadata=full;odata.streaming=false;IEEE754Compatible=true',
-            'application/json;odata.metadata=full;IEEE754Compatible=false',
-            'application/json;odata.metadata=full;IEEE754Compatible=true',
-            'application/json;odata.metadata=none;odata.streaming=true;IEEE754Compatible=false',
-            'application/json;odata.metadata=none;odata.streaming=true;IEEE754Compatible=true',
-            'application/json;odata.metadata=none;odata.streaming=false;IEEE754Compatible=true',
-            'application/json;odata.metadata=none;odata.streaming=false;IEEE754Compatible=false',
-            'application/json;odata.metadata=none;IEEE754Compatible=false',
-            'application/json;odata.metadata=none;IEEE754Compatible=true',
-            'application/json;odata.streaming=true;IEEE754Compatible=false',
-            'application/json;odata.streaming=true;IEEE754Compatible=true',
-            'application/json;odata.streaming=false;IEEE754Compatible=false',
-            'application/json;odata.streaming=false;IEEE754Compatible=true',
-            'application/json;IEEE754Compatible=false',
-            'application/json;IEEE754Compatible=true',
-            'application/xml',
-            'text/plain',
             'text/json',
             'application/*+json'
         ];
@@ -589,10 +612,10 @@ export class GraduationRequirementsService implements GraduationRequirementsServ
         }
 
         let localVarPath = `/api/GraduationRequirements`;
-        return this.httpClient.request<CarlonGracieBackendProgressionApplicationDTOsShowGraduationRequirementDTO>('post', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<ShowGraduationRequirementDTO>('post', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
-                body: carlonGracieBackendProgressionApplicationDTOsCreateGraduationRequirementDTO,
+                body: createGraduationRequirementDTO,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,

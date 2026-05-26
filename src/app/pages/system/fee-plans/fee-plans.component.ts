@@ -8,7 +8,7 @@ import { FilterOutput } from '../../../shared/filter/filter.types';
 import { PaginationComponent } from '../../../shared/pagination/pagination.component';
 import { CreateFeePlanComponent } from './create-fee-plan/create-fee-plan.component';
 import { UpdateFeePlanComponent } from './update-fee-plan/update-fee-plan.component';
-import { ODataPage, buildClientPage, parseODataPage } from '../../../utils/odata.utils';
+import { PageResult } from '../../../utils/page-result';
 
 @Component({
   selector: 'app-fee-plans',
@@ -30,14 +30,13 @@ export class FeePlansComponent {
   private readonly notificationService = inject(NotificationService);
 
   protected readonly isLoading = signal(false);
-  protected readonly items = signal<ODataPage<ShowFeePlanDTO> | null>(null);
-  protected readonly allItems = signal<ShowFeePlanDTO[]>([]);
+  protected readonly items = signal<PageResult<ShowFeePlanDTO> | null>(null);
   protected readonly openedCreate = signal(false);
   protected readonly openedUpdate = signal(false);
   protected readonly selected = signal<ShowFeePlanDTO | null>(null);
   protected readonly currentPage = signal(1);
   protected readonly pageSize = signal(10);
-  protected readonly filterQuery = signal<string | undefined>(undefined);
+  protected readonly filterText = signal<string | undefined>(undefined);
 
   constructor() {
     this.subnavService.setTitle('Planos de Mensalidade');
@@ -46,27 +45,33 @@ export class FeePlansComponent {
 
   protected load(): void {
     this.isLoading.set(true);
-    const filter = this.filterQuery();
-    this.service.apiFeePlanGet(filter, undefined, '200', '0', 'true').subscribe({
-      next: (body: any) => {
-        const page = parseODataPage<ShowFeePlanDTO>(body, 200);
-        this.allItems.set(page.items);
-        this.refreshPage();
+    this.service.apiFeePlanGet(
+      this.filterText() || undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      this.currentPage(),
+      this.pageSize(),
+    ).subscribe({
+      next: result => {
+        this.items.set({
+          items: result?.items ?? [],
+          totalCount: result?.totalCount ?? 0,
+          totalPages: result?.totalPages ?? 1,
+        });
         this.isLoading.set(false);
       },
-      error: () => { this.isLoading.set(false); this.notificationService.showError('Erro', 'Não foi possível carregar.'); }
+      error: () => {
+        this.isLoading.set(false);
+        this.notificationService.showError('Erro', 'Não foi possível carregar.');
+      },
     });
   }
 
-  private refreshPage(): void {
-    const page = buildClientPage(this.allItems(), this.currentPage(), this.pageSize());
-    this.currentPage.set(page.currentPage);
-    this.items.set(page);
-  }
-
-  protected onPageChange(page: number): void { this.currentPage.set(page); this.refreshPage(); }
-  protected onPageSizeChange(size: number): void { this.pageSize.set(size); this.currentPage.set(1); this.refreshPage(); }
-  protected onFilterChange(output: FilterOutput): void { this.filterQuery.set(output.odataFilter); this.currentPage.set(1); this.load(); }
+  protected onPageChange(page: number): void { this.currentPage.set(page); this.load(); }
+  protected onPageSizeChange(size: number): void { this.pageSize.set(size); this.currentPage.set(1); this.load(); }
+  protected onFilterChange(output: FilterOutput): void { this.filterText.set(output.text || undefined); this.currentPage.set(1); this.load(); }
   protected openCreate(): void { this.openedCreate.set(true); }
   protected openEdit(item: ShowFeePlanDTO): void { this.selected.set(item); this.openedUpdate.set(true); }
   protected onCreated(): void { this.openedCreate.set(false); this.load(); }

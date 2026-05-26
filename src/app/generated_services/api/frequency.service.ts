@@ -20,17 +20,15 @@ import { Observable }                                        from 'rxjs';
 // @ts-ignore
 import { ApiAdminAcademiesIdGet404Response } from '../model/apiAdminAcademiesIdGet404Response';
 // @ts-ignore
-import { CarlonGracieBackendAttendanceApplicationDTOsCreateFrequencyDTO } from '../model/carlonGracieBackendAttendanceApplicationDTOsCreateFrequencyDTO';
+import { CreateFrequencyDTO } from '../model/createFrequencyDTO';
 // @ts-ignore
-import { CarlonGracieBackendAttendanceApplicationDTOsShowFrequencyDTO } from '../model/carlonGracieBackendAttendanceApplicationDTOsShowFrequencyDTO';
+import { ShowFrequencyDTO } from '../model/showFrequencyDTO';
 // @ts-ignore
-import { CarlonGracieBackendAttendanceApplicationDTOsUpdateFrequencyDTO } from '../model/carlonGracieBackendAttendanceApplicationDTOsUpdateFrequencyDTO';
+import { ShowFrequencyDTOPaginatedResult } from '../model/showFrequencyDTOPaginatedResult';
 // @ts-ignore
-import { CarlonGracieBackendDTOsPaginationFrequencyDTO } from '../model/carlonGracieBackendDTOsPaginationFrequencyDTO';
+import { ShowFrequencyUntilNextGraduationDTO } from '../model/showFrequencyUntilNextGraduationDTO';
 // @ts-ignore
-import { CarlonGracieBackendDTOsShowFrequencyDTO } from '../model/carlonGracieBackendDTOsShowFrequencyDTO';
-// @ts-ignore
-import { CarlonGracieBackendDTOsShowFrequencyUntilNextGraduation } from '../model/carlonGracieBackendDTOsShowFrequencyUntilNextGraduation';
+import { UpdateFrequencyDTO } from '../model/updateFrequencyDTO';
 
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
@@ -109,23 +107,22 @@ export class FrequencyService implements FrequencyServiceInterface {
     /**
      * @param startDate 
      * @param endDate 
-     * @param searchTerm 
      * @param studentId 
-     * @param graduationId 
      * @param lessonId 
-     * @param createdFrom 
-     * @param createdTo 
-     * @param lessonScheduledFrom 
-     * @param lessonScheduledTo 
-     * @param pageNumber 
+     * @param graduationId 
+     * @param startDate2 
+     * @param endDate2 
+     * @param page 
      * @param pageSize 
+     * @param orderBy 
+     * @param orderByDescending 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiFrequencyDateRangeGet(startDate?: string, endDate?: string, searchTerm?: string, studentId?: string, graduationId?: string, lessonId?: string, createdFrom?: string, createdTo?: string, lessonScheduledFrom?: string, lessonScheduledTo?: string, pageNumber?: number, pageSize?: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<CarlonGracieBackendDTOsPaginationFrequencyDTO>;
-    public apiFrequencyDateRangeGet(startDate?: string, endDate?: string, searchTerm?: string, studentId?: string, graduationId?: string, lessonId?: string, createdFrom?: string, createdTo?: string, lessonScheduledFrom?: string, lessonScheduledTo?: string, pageNumber?: number, pageSize?: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<CarlonGracieBackendDTOsPaginationFrequencyDTO>>;
-    public apiFrequencyDateRangeGet(startDate?: string, endDate?: string, searchTerm?: string, studentId?: string, graduationId?: string, lessonId?: string, createdFrom?: string, createdTo?: string, lessonScheduledFrom?: string, lessonScheduledTo?: string, pageNumber?: number, pageSize?: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<CarlonGracieBackendDTOsPaginationFrequencyDTO>>;
-    public apiFrequencyDateRangeGet(startDate?: string, endDate?: string, searchTerm?: string, studentId?: string, graduationId?: string, lessonId?: string, createdFrom?: string, createdTo?: string, lessonScheduledFrom?: string, lessonScheduledTo?: string, pageNumber?: number, pageSize?: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public apiFrequencyDateRangeGet(startDate?: string, endDate?: string, studentId?: string, lessonId?: string, graduationId?: string, startDate2?: string, endDate2?: string, page?: number, pageSize?: number, orderBy?: string, orderByDescending?: boolean, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<ShowFrequencyDTOPaginatedResult>;
+    public apiFrequencyDateRangeGet(startDate?: string, endDate?: string, studentId?: string, lessonId?: string, graduationId?: string, startDate2?: string, endDate2?: string, page?: number, pageSize?: number, orderBy?: string, orderByDescending?: boolean, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<ShowFrequencyDTOPaginatedResult>>;
+    public apiFrequencyDateRangeGet(startDate?: string, endDate?: string, studentId?: string, lessonId?: string, graduationId?: string, startDate2?: string, endDate2?: string, page?: number, pageSize?: number, orderBy?: string, orderByDescending?: boolean, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<ShowFrequencyDTOPaginatedResult>>;
+    public apiFrequencyDateRangeGet(startDate?: string, endDate?: string, studentId?: string, lessonId?: string, graduationId?: string, startDate2?: string, endDate2?: string, page?: number, pageSize?: number, orderBy?: string, orderByDescending?: boolean, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
 
         let localVarQueryParameters = new HttpParams({encoder: this.encoder});
         if (startDate !== undefined && startDate !== null) {
@@ -136,48 +133,51 @@ export class FrequencyService implements FrequencyServiceInterface {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
             <any>endDate, 'endDate');
         }
-        if (searchTerm !== undefined && searchTerm !== null) {
-          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>searchTerm, 'SearchTerm');
-        }
         if (studentId !== undefined && studentId !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
             <any>studentId, 'StudentId');
-        }
-        if (graduationId !== undefined && graduationId !== null) {
-          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>graduationId, 'GraduationId');
         }
         if (lessonId !== undefined && lessonId !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
             <any>lessonId, 'LessonId');
         }
-        if (createdFrom !== undefined && createdFrom !== null) {
+        if (graduationId !== undefined && graduationId !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>createdFrom, 'CreatedFrom');
+            <any>graduationId, 'GraduationId');
         }
-        if (createdTo !== undefined && createdTo !== null) {
+        if (startDate2 !== undefined && startDate2 !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>createdTo, 'CreatedTo');
+            <any>startDate2, 'StartDate');
         }
-        if (lessonScheduledFrom !== undefined && lessonScheduledFrom !== null) {
+        if (endDate2 !== undefined && endDate2 !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>lessonScheduledFrom, 'LessonScheduledFrom');
+            <any>endDate2, 'EndDate');
         }
-        if (lessonScheduledTo !== undefined && lessonScheduledTo !== null) {
+        if (page !== undefined && page !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>lessonScheduledTo, 'LessonScheduledTo');
-        }
-        if (pageNumber !== undefined && pageNumber !== null) {
-          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>pageNumber, 'PageNumber');
+            <any>page, 'Page');
         }
         if (pageSize !== undefined && pageSize !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
             <any>pageSize, 'PageSize');
         }
+        if (orderBy !== undefined && orderBy !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>orderBy, 'OrderBy');
+        }
+        if (orderByDescending !== undefined && orderByDescending !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>orderByDescending, 'OrderByDescending');
+        }
 
         let localVarHeaders = this.defaultHeaders;
+
+        let localVarCredential: string | undefined;
+        // authentication (Bearer) required
+        localVarCredential = this.configuration.lookupCredential('Bearer');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('Authorization', 'Bearer ' + localVarCredential);
+        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -214,7 +214,7 @@ export class FrequencyService implements FrequencyServiceInterface {
         }
 
         let localVarPath = `/api/Frequency/date-range`;
-        return this.httpClient.request<CarlonGracieBackendDTOsPaginationFrequencyDTO>('get', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<ShowFrequencyDTOPaginatedResult>('get', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 params: localVarQueryParameters,
@@ -229,47 +229,69 @@ export class FrequencyService implements FrequencyServiceInterface {
     }
 
     /**
-     * @param $filter OData filter expression. Examples: contains(name,\&#39;John\&#39;) | status eq \&#39;Active\&#39; | amount gt 100 | createdAt ge 2024-01-01T00:00:00Z
-     * @param $orderby Sort expression. Examples: name asc | createdAt desc | name asc,amount desc
-     * @param $top Page size — number of records to return (default: 20, max: 200). Use with $skip for pagination.
-     * @param $skip Records to skip. Use ($pageNumber - 1) * $top. Example: page 3 with size 20 → $skip&#x3D;40
-     * @param $count Set to \&#39;true\&#39; to include total record count in response as @odata.count
-     * @param $select Return only specific fields. Example: $select&#x3D;id,name,createdAt
+     * @param studentId 
+     * @param lessonId 
+     * @param graduationId 
+     * @param startDate 
+     * @param endDate 
+     * @param page 
+     * @param pageSize 
+     * @param orderBy 
+     * @param orderByDescending 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiFrequencyGet($filter?: string, $orderby?: string, $top?: string, $skip?: string, $count?: string, $select?: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Array<CarlonGracieBackendAttendanceApplicationDTOsShowFrequencyDTO>>;
-    public apiFrequencyGet($filter?: string, $orderby?: string, $top?: string, $skip?: string, $count?: string, $select?: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<CarlonGracieBackendAttendanceApplicationDTOsShowFrequencyDTO>>>;
-    public apiFrequencyGet($filter?: string, $orderby?: string, $top?: string, $skip?: string, $count?: string, $select?: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<CarlonGracieBackendAttendanceApplicationDTOsShowFrequencyDTO>>>;
-    public apiFrequencyGet($filter?: string, $orderby?: string, $top?: string, $skip?: string, $count?: string, $select?: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public apiFrequencyGet(studentId?: string, lessonId?: string, graduationId?: string, startDate?: string, endDate?: string, page?: number, pageSize?: number, orderBy?: string, orderByDescending?: boolean, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<ShowFrequencyDTOPaginatedResult>;
+    public apiFrequencyGet(studentId?: string, lessonId?: string, graduationId?: string, startDate?: string, endDate?: string, page?: number, pageSize?: number, orderBy?: string, orderByDescending?: boolean, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<ShowFrequencyDTOPaginatedResult>>;
+    public apiFrequencyGet(studentId?: string, lessonId?: string, graduationId?: string, startDate?: string, endDate?: string, page?: number, pageSize?: number, orderBy?: string, orderByDescending?: boolean, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<ShowFrequencyDTOPaginatedResult>>;
+    public apiFrequencyGet(studentId?: string, lessonId?: string, graduationId?: string, startDate?: string, endDate?: string, page?: number, pageSize?: number, orderBy?: string, orderByDescending?: boolean, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
 
         let localVarQueryParameters = new HttpParams({encoder: this.encoder});
-        if ($filter !== undefined && $filter !== null) {
+        if (studentId !== undefined && studentId !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>$filter, '$filter');
+            <any>studentId, 'StudentId');
         }
-        if ($orderby !== undefined && $orderby !== null) {
+        if (lessonId !== undefined && lessonId !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>$orderby, '$orderby');
+            <any>lessonId, 'LessonId');
         }
-        if ($top !== undefined && $top !== null) {
+        if (graduationId !== undefined && graduationId !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>$top, '$top');
+            <any>graduationId, 'GraduationId');
         }
-        if ($skip !== undefined && $skip !== null) {
+        if (startDate !== undefined && startDate !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>$skip, '$skip');
+            <any>startDate, 'StartDate');
         }
-        if ($count !== undefined && $count !== null) {
+        if (endDate !== undefined && endDate !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>$count, '$count');
+            <any>endDate, 'EndDate');
         }
-        if ($select !== undefined && $select !== null) {
+        if (page !== undefined && page !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>$select, '$select');
+            <any>page, 'Page');
+        }
+        if (pageSize !== undefined && pageSize !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>pageSize, 'PageSize');
+        }
+        if (orderBy !== undefined && orderBy !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>orderBy, 'OrderBy');
+        }
+        if (orderByDescending !== undefined && orderByDescending !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>orderByDescending, 'OrderByDescending');
         }
 
         let localVarHeaders = this.defaultHeaders;
+
+        let localVarCredential: string | undefined;
+        // authentication (Bearer) required
+        localVarCredential = this.configuration.lookupCredential('Bearer');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('Authorization', 'Bearer ' + localVarCredential);
+        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -306,7 +328,7 @@ export class FrequencyService implements FrequencyServiceInterface {
         }
 
         let localVarPath = `/api/Frequency`;
-        return this.httpClient.request<Array<CarlonGracieBackendAttendanceApplicationDTOsShowFrequencyDTO>>('get', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<ShowFrequencyDTOPaginatedResult>('get', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 params: localVarQueryParameters,
@@ -322,70 +344,72 @@ export class FrequencyService implements FrequencyServiceInterface {
 
     /**
      * @param graduationId 
-     * @param searchTerm 
      * @param studentId 
-     * @param graduationId2 
      * @param lessonId 
-     * @param createdFrom 
-     * @param createdTo 
-     * @param lessonScheduledFrom 
-     * @param lessonScheduledTo 
-     * @param pageNumber 
+     * @param graduationId2 
+     * @param startDate 
+     * @param endDate 
+     * @param page 
      * @param pageSize 
+     * @param orderBy 
+     * @param orderByDescending 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiFrequencyGraduationGraduationIdGet(graduationId: string, searchTerm?: string, studentId?: string, graduationId2?: string, lessonId?: string, createdFrom?: string, createdTo?: string, lessonScheduledFrom?: string, lessonScheduledTo?: string, pageNumber?: number, pageSize?: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<CarlonGracieBackendDTOsPaginationFrequencyDTO>;
-    public apiFrequencyGraduationGraduationIdGet(graduationId: string, searchTerm?: string, studentId?: string, graduationId2?: string, lessonId?: string, createdFrom?: string, createdTo?: string, lessonScheduledFrom?: string, lessonScheduledTo?: string, pageNumber?: number, pageSize?: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<CarlonGracieBackendDTOsPaginationFrequencyDTO>>;
-    public apiFrequencyGraduationGraduationIdGet(graduationId: string, searchTerm?: string, studentId?: string, graduationId2?: string, lessonId?: string, createdFrom?: string, createdTo?: string, lessonScheduledFrom?: string, lessonScheduledTo?: string, pageNumber?: number, pageSize?: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<CarlonGracieBackendDTOsPaginationFrequencyDTO>>;
-    public apiFrequencyGraduationGraduationIdGet(graduationId: string, searchTerm?: string, studentId?: string, graduationId2?: string, lessonId?: string, createdFrom?: string, createdTo?: string, lessonScheduledFrom?: string, lessonScheduledTo?: string, pageNumber?: number, pageSize?: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public apiFrequencyGraduationGraduationIdGet(graduationId: string, studentId?: string, lessonId?: string, graduationId2?: string, startDate?: string, endDate?: string, page?: number, pageSize?: number, orderBy?: string, orderByDescending?: boolean, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<ShowFrequencyDTOPaginatedResult>;
+    public apiFrequencyGraduationGraduationIdGet(graduationId: string, studentId?: string, lessonId?: string, graduationId2?: string, startDate?: string, endDate?: string, page?: number, pageSize?: number, orderBy?: string, orderByDescending?: boolean, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<ShowFrequencyDTOPaginatedResult>>;
+    public apiFrequencyGraduationGraduationIdGet(graduationId: string, studentId?: string, lessonId?: string, graduationId2?: string, startDate?: string, endDate?: string, page?: number, pageSize?: number, orderBy?: string, orderByDescending?: boolean, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<ShowFrequencyDTOPaginatedResult>>;
+    public apiFrequencyGraduationGraduationIdGet(graduationId: string, studentId?: string, lessonId?: string, graduationId2?: string, startDate?: string, endDate?: string, page?: number, pageSize?: number, orderBy?: string, orderByDescending?: boolean, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         if (graduationId === null || graduationId === undefined) {
             throw new Error('Required parameter graduationId was null or undefined when calling apiFrequencyGraduationGraduationIdGet.');
         }
 
         let localVarQueryParameters = new HttpParams({encoder: this.encoder});
-        if (searchTerm !== undefined && searchTerm !== null) {
-          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>searchTerm, 'SearchTerm');
-        }
         if (studentId !== undefined && studentId !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
             <any>studentId, 'StudentId');
-        }
-        if (graduationId2 !== undefined && graduationId2 !== null) {
-          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>graduationId2, 'GraduationId');
         }
         if (lessonId !== undefined && lessonId !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
             <any>lessonId, 'LessonId');
         }
-        if (createdFrom !== undefined && createdFrom !== null) {
+        if (graduationId2 !== undefined && graduationId2 !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>createdFrom, 'CreatedFrom');
+            <any>graduationId2, 'GraduationId');
         }
-        if (createdTo !== undefined && createdTo !== null) {
+        if (startDate !== undefined && startDate !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>createdTo, 'CreatedTo');
+            <any>startDate, 'StartDate');
         }
-        if (lessonScheduledFrom !== undefined && lessonScheduledFrom !== null) {
+        if (endDate !== undefined && endDate !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>lessonScheduledFrom, 'LessonScheduledFrom');
+            <any>endDate, 'EndDate');
         }
-        if (lessonScheduledTo !== undefined && lessonScheduledTo !== null) {
+        if (page !== undefined && page !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>lessonScheduledTo, 'LessonScheduledTo');
-        }
-        if (pageNumber !== undefined && pageNumber !== null) {
-          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>pageNumber, 'PageNumber');
+            <any>page, 'Page');
         }
         if (pageSize !== undefined && pageSize !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
             <any>pageSize, 'PageSize');
         }
+        if (orderBy !== undefined && orderBy !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>orderBy, 'OrderBy');
+        }
+        if (orderByDescending !== undefined && orderByDescending !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>orderByDescending, 'OrderByDescending');
+        }
 
         let localVarHeaders = this.defaultHeaders;
+
+        let localVarCredential: string | undefined;
+        // authentication (Bearer) required
+        localVarCredential = this.configuration.lookupCredential('Bearer');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('Authorization', 'Bearer ' + localVarCredential);
+        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -422,7 +446,7 @@ export class FrequencyService implements FrequencyServiceInterface {
         }
 
         let localVarPath = `/api/Frequency/graduation/${this.configuration.encodeParam({name: "graduationId", value: graduationId, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: "uuid"})}`;
-        return this.httpClient.request<CarlonGracieBackendDTOsPaginationFrequencyDTO>('get', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<ShowFrequencyDTOPaginatedResult>('get', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 params: localVarQueryParameters,
@@ -450,6 +474,13 @@ export class FrequencyService implements FrequencyServiceInterface {
         }
 
         let localVarHeaders = this.defaultHeaders;
+
+        let localVarCredential: string | undefined;
+        // authentication (Bearer) required
+        localVarCredential = this.configuration.lookupCredential('Bearer');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('Authorization', 'Bearer ' + localVarCredential);
+        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -504,15 +535,22 @@ export class FrequencyService implements FrequencyServiceInterface {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiFrequencyIdGet(id: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<CarlonGracieBackendAttendanceApplicationDTOsShowFrequencyDTO>;
-    public apiFrequencyIdGet(id: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<CarlonGracieBackendAttendanceApplicationDTOsShowFrequencyDTO>>;
-    public apiFrequencyIdGet(id: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<CarlonGracieBackendAttendanceApplicationDTOsShowFrequencyDTO>>;
+    public apiFrequencyIdGet(id: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<ShowFrequencyDTO>;
+    public apiFrequencyIdGet(id: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<ShowFrequencyDTO>>;
+    public apiFrequencyIdGet(id: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<ShowFrequencyDTO>>;
     public apiFrequencyIdGet(id: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         if (id === null || id === undefined) {
             throw new Error('Required parameter id was null or undefined when calling apiFrequencyIdGet.');
         }
 
         let localVarHeaders = this.defaultHeaders;
+
+        let localVarCredential: string | undefined;
+        // authentication (Bearer) required
+        localVarCredential = this.configuration.lookupCredential('Bearer');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('Authorization', 'Bearer ' + localVarCredential);
+        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -549,7 +587,7 @@ export class FrequencyService implements FrequencyServiceInterface {
         }
 
         let localVarPath = `/api/Frequency/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: "uuid"})}`;
-        return this.httpClient.request<CarlonGracieBackendAttendanceApplicationDTOsShowFrequencyDTO>('get', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<ShowFrequencyDTO>('get', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 responseType: <any>responseType_,
@@ -564,19 +602,26 @@ export class FrequencyService implements FrequencyServiceInterface {
 
     /**
      * @param id 
-     * @param carlonGracieBackendAttendanceApplicationDTOsUpdateFrequencyDTO 
+     * @param updateFrequencyDTO 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiFrequencyIdPut(id: string, carlonGracieBackendAttendanceApplicationDTOsUpdateFrequencyDTO?: CarlonGracieBackendAttendanceApplicationDTOsUpdateFrequencyDTO, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<CarlonGracieBackendAttendanceApplicationDTOsShowFrequencyDTO>;
-    public apiFrequencyIdPut(id: string, carlonGracieBackendAttendanceApplicationDTOsUpdateFrequencyDTO?: CarlonGracieBackendAttendanceApplicationDTOsUpdateFrequencyDTO, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<CarlonGracieBackendAttendanceApplicationDTOsShowFrequencyDTO>>;
-    public apiFrequencyIdPut(id: string, carlonGracieBackendAttendanceApplicationDTOsUpdateFrequencyDTO?: CarlonGracieBackendAttendanceApplicationDTOsUpdateFrequencyDTO, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<CarlonGracieBackendAttendanceApplicationDTOsShowFrequencyDTO>>;
-    public apiFrequencyIdPut(id: string, carlonGracieBackendAttendanceApplicationDTOsUpdateFrequencyDTO?: CarlonGracieBackendAttendanceApplicationDTOsUpdateFrequencyDTO, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public apiFrequencyIdPut(id: string, updateFrequencyDTO?: UpdateFrequencyDTO, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<ShowFrequencyDTO>;
+    public apiFrequencyIdPut(id: string, updateFrequencyDTO?: UpdateFrequencyDTO, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<ShowFrequencyDTO>>;
+    public apiFrequencyIdPut(id: string, updateFrequencyDTO?: UpdateFrequencyDTO, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<ShowFrequencyDTO>>;
+    public apiFrequencyIdPut(id: string, updateFrequencyDTO?: UpdateFrequencyDTO, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         if (id === null || id === undefined) {
             throw new Error('Required parameter id was null or undefined when calling apiFrequencyIdPut.');
         }
 
         let localVarHeaders = this.defaultHeaders;
+
+        let localVarCredential: string | undefined;
+        // authentication (Bearer) required
+        localVarCredential = this.configuration.lookupCredential('Bearer');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('Authorization', 'Bearer ' + localVarCredential);
+        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -603,44 +648,7 @@ export class FrequencyService implements FrequencyServiceInterface {
 
         // to determine the Content-Type header
         const consumes: string[] = [
-            'application/json;odata.metadata=minimal;odata.streaming=true',
-            'application/json;odata.metadata=minimal;odata.streaming=false',
-            'application/json;odata.metadata=minimal',
-            'application/json;odata.metadata=full;odata.streaming=true',
-            'application/json;odata.metadata=full;odata.streaming=false',
-            'application/json;odata.metadata=full',
-            'application/json;odata.metadata=none;odata.streaming=true',
-            'application/json;odata.metadata=none;odata.streaming=false',
-            'application/json;odata.metadata=none',
-            'application/json;odata.streaming=true',
-            'application/json;odata.streaming=false',
             'application/json',
-            'application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=false',
-            'application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=true',
-            'application/json;odata.metadata=minimal;odata.streaming=false;IEEE754Compatible=false',
-            'application/json;odata.metadata=minimal;odata.streaming=false;IEEE754Compatible=true',
-            'application/json;odata.metadata=minimal;IEEE754Compatible=false',
-            'application/json;odata.metadata=minimal;IEEE754Compatible=true',
-            'application/json;odata.metadata=full;odata.streaming=true;IEEE754Compatible=false',
-            'application/json;odata.metadata=full;odata.streaming=true;IEEE754Compatible=true',
-            'application/json;odata.metadata=full;odata.streaming=false;IEEE754Compatible=false',
-            'application/json;odata.metadata=full;odata.streaming=false;IEEE754Compatible=true',
-            'application/json;odata.metadata=full;IEEE754Compatible=false',
-            'application/json;odata.metadata=full;IEEE754Compatible=true',
-            'application/json;odata.metadata=none;odata.streaming=true;IEEE754Compatible=false',
-            'application/json;odata.metadata=none;odata.streaming=true;IEEE754Compatible=true',
-            'application/json;odata.metadata=none;odata.streaming=false;IEEE754Compatible=true',
-            'application/json;odata.metadata=none;odata.streaming=false;IEEE754Compatible=false',
-            'application/json;odata.metadata=none;IEEE754Compatible=false',
-            'application/json;odata.metadata=none;IEEE754Compatible=true',
-            'application/json;odata.streaming=true;IEEE754Compatible=false',
-            'application/json;odata.streaming=true;IEEE754Compatible=true',
-            'application/json;odata.streaming=false;IEEE754Compatible=false',
-            'application/json;odata.streaming=false;IEEE754Compatible=true',
-            'application/json;IEEE754Compatible=false',
-            'application/json;IEEE754Compatible=true',
-            'application/xml',
-            'text/plain',
             'text/json',
             'application/*+json'
         ];
@@ -661,10 +669,10 @@ export class FrequencyService implements FrequencyServiceInterface {
         }
 
         let localVarPath = `/api/Frequency/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: "uuid"})}`;
-        return this.httpClient.request<CarlonGracieBackendAttendanceApplicationDTOsShowFrequencyDTO>('put', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<ShowFrequencyDTO>('put', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
-                body: carlonGracieBackendAttendanceApplicationDTOsUpdateFrequencyDTO,
+                body: updateFrequencyDTO,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,
@@ -680,15 +688,22 @@ export class FrequencyService implements FrequencyServiceInterface {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiFrequencyNextGraduationRequirementsStudentIdGet(studentId: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<CarlonGracieBackendDTOsShowFrequencyUntilNextGraduation>;
-    public apiFrequencyNextGraduationRequirementsStudentIdGet(studentId: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<CarlonGracieBackendDTOsShowFrequencyUntilNextGraduation>>;
-    public apiFrequencyNextGraduationRequirementsStudentIdGet(studentId: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<CarlonGracieBackendDTOsShowFrequencyUntilNextGraduation>>;
+    public apiFrequencyNextGraduationRequirementsStudentIdGet(studentId: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<ShowFrequencyUntilNextGraduationDTO>;
+    public apiFrequencyNextGraduationRequirementsStudentIdGet(studentId: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<ShowFrequencyUntilNextGraduationDTO>>;
+    public apiFrequencyNextGraduationRequirementsStudentIdGet(studentId: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<ShowFrequencyUntilNextGraduationDTO>>;
     public apiFrequencyNextGraduationRequirementsStudentIdGet(studentId: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         if (studentId === null || studentId === undefined) {
             throw new Error('Required parameter studentId was null or undefined when calling apiFrequencyNextGraduationRequirementsStudentIdGet.');
         }
 
         let localVarHeaders = this.defaultHeaders;
+
+        let localVarCredential: string | undefined;
+        // authentication (Bearer) required
+        localVarCredential = this.configuration.lookupCredential('Bearer');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('Authorization', 'Bearer ' + localVarCredential);
+        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -725,7 +740,7 @@ export class FrequencyService implements FrequencyServiceInterface {
         }
 
         let localVarPath = `/api/Frequency/next-graduation-requirements/${this.configuration.encodeParam({name: "studentId", value: studentId, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: "uuid"})}`;
-        return this.httpClient.request<CarlonGracieBackendDTOsShowFrequencyUntilNextGraduation>('get', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<ShowFrequencyUntilNextGraduationDTO>('get', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 responseType: <any>responseType_,
@@ -739,16 +754,23 @@ export class FrequencyService implements FrequencyServiceInterface {
     }
 
     /**
-     * @param carlonGracieBackendAttendanceApplicationDTOsCreateFrequencyDTO 
+     * @param createFrequencyDTO 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiFrequencyPost(carlonGracieBackendAttendanceApplicationDTOsCreateFrequencyDTO?: CarlonGracieBackendAttendanceApplicationDTOsCreateFrequencyDTO, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<CarlonGracieBackendAttendanceApplicationDTOsShowFrequencyDTO>;
-    public apiFrequencyPost(carlonGracieBackendAttendanceApplicationDTOsCreateFrequencyDTO?: CarlonGracieBackendAttendanceApplicationDTOsCreateFrequencyDTO, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<CarlonGracieBackendAttendanceApplicationDTOsShowFrequencyDTO>>;
-    public apiFrequencyPost(carlonGracieBackendAttendanceApplicationDTOsCreateFrequencyDTO?: CarlonGracieBackendAttendanceApplicationDTOsCreateFrequencyDTO, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<CarlonGracieBackendAttendanceApplicationDTOsShowFrequencyDTO>>;
-    public apiFrequencyPost(carlonGracieBackendAttendanceApplicationDTOsCreateFrequencyDTO?: CarlonGracieBackendAttendanceApplicationDTOsCreateFrequencyDTO, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public apiFrequencyPost(createFrequencyDTO?: CreateFrequencyDTO, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<ShowFrequencyDTO>;
+    public apiFrequencyPost(createFrequencyDTO?: CreateFrequencyDTO, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<ShowFrequencyDTO>>;
+    public apiFrequencyPost(createFrequencyDTO?: CreateFrequencyDTO, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<ShowFrequencyDTO>>;
+    public apiFrequencyPost(createFrequencyDTO?: CreateFrequencyDTO, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
 
         let localVarHeaders = this.defaultHeaders;
+
+        let localVarCredential: string | undefined;
+        // authentication (Bearer) required
+        localVarCredential = this.configuration.lookupCredential('Bearer');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('Authorization', 'Bearer ' + localVarCredential);
+        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -775,44 +797,7 @@ export class FrequencyService implements FrequencyServiceInterface {
 
         // to determine the Content-Type header
         const consumes: string[] = [
-            'application/json;odata.metadata=minimal;odata.streaming=true',
-            'application/json;odata.metadata=minimal;odata.streaming=false',
-            'application/json;odata.metadata=minimal',
-            'application/json;odata.metadata=full;odata.streaming=true',
-            'application/json;odata.metadata=full;odata.streaming=false',
-            'application/json;odata.metadata=full',
-            'application/json;odata.metadata=none;odata.streaming=true',
-            'application/json;odata.metadata=none;odata.streaming=false',
-            'application/json;odata.metadata=none',
-            'application/json;odata.streaming=true',
-            'application/json;odata.streaming=false',
             'application/json',
-            'application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=false',
-            'application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=true',
-            'application/json;odata.metadata=minimal;odata.streaming=false;IEEE754Compatible=false',
-            'application/json;odata.metadata=minimal;odata.streaming=false;IEEE754Compatible=true',
-            'application/json;odata.metadata=minimal;IEEE754Compatible=false',
-            'application/json;odata.metadata=minimal;IEEE754Compatible=true',
-            'application/json;odata.metadata=full;odata.streaming=true;IEEE754Compatible=false',
-            'application/json;odata.metadata=full;odata.streaming=true;IEEE754Compatible=true',
-            'application/json;odata.metadata=full;odata.streaming=false;IEEE754Compatible=false',
-            'application/json;odata.metadata=full;odata.streaming=false;IEEE754Compatible=true',
-            'application/json;odata.metadata=full;IEEE754Compatible=false',
-            'application/json;odata.metadata=full;IEEE754Compatible=true',
-            'application/json;odata.metadata=none;odata.streaming=true;IEEE754Compatible=false',
-            'application/json;odata.metadata=none;odata.streaming=true;IEEE754Compatible=true',
-            'application/json;odata.metadata=none;odata.streaming=false;IEEE754Compatible=true',
-            'application/json;odata.metadata=none;odata.streaming=false;IEEE754Compatible=false',
-            'application/json;odata.metadata=none;IEEE754Compatible=false',
-            'application/json;odata.metadata=none;IEEE754Compatible=true',
-            'application/json;odata.streaming=true;IEEE754Compatible=false',
-            'application/json;odata.streaming=true;IEEE754Compatible=true',
-            'application/json;odata.streaming=false;IEEE754Compatible=false',
-            'application/json;odata.streaming=false;IEEE754Compatible=true',
-            'application/json;IEEE754Compatible=false',
-            'application/json;IEEE754Compatible=true',
-            'application/xml',
-            'text/plain',
             'text/json',
             'application/*+json'
         ];
@@ -833,10 +818,10 @@ export class FrequencyService implements FrequencyServiceInterface {
         }
 
         let localVarPath = `/api/Frequency`;
-        return this.httpClient.request<CarlonGracieBackendAttendanceApplicationDTOsShowFrequencyDTO>('post', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<ShowFrequencyDTO>('post', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
-                body: carlonGracieBackendAttendanceApplicationDTOsCreateFrequencyDTO,
+                body: createFrequencyDTO,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,
@@ -849,70 +834,72 @@ export class FrequencyService implements FrequencyServiceInterface {
 
     /**
      * @param userId 
-     * @param searchTerm 
      * @param studentId 
-     * @param graduationId 
      * @param lessonId 
-     * @param createdFrom 
-     * @param createdTo 
-     * @param lessonScheduledFrom 
-     * @param lessonScheduledTo 
-     * @param pageNumber 
+     * @param graduationId 
+     * @param startDate 
+     * @param endDate 
+     * @param page 
      * @param pageSize 
+     * @param orderBy 
+     * @param orderByDescending 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiFrequencyUserUserIdGet(userId: string, searchTerm?: string, studentId?: string, graduationId?: string, lessonId?: string, createdFrom?: string, createdTo?: string, lessonScheduledFrom?: string, lessonScheduledTo?: string, pageNumber?: number, pageSize?: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Array<CarlonGracieBackendDTOsShowFrequencyDTO>>;
-    public apiFrequencyUserUserIdGet(userId: string, searchTerm?: string, studentId?: string, graduationId?: string, lessonId?: string, createdFrom?: string, createdTo?: string, lessonScheduledFrom?: string, lessonScheduledTo?: string, pageNumber?: number, pageSize?: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<CarlonGracieBackendDTOsShowFrequencyDTO>>>;
-    public apiFrequencyUserUserIdGet(userId: string, searchTerm?: string, studentId?: string, graduationId?: string, lessonId?: string, createdFrom?: string, createdTo?: string, lessonScheduledFrom?: string, lessonScheduledTo?: string, pageNumber?: number, pageSize?: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<CarlonGracieBackendDTOsShowFrequencyDTO>>>;
-    public apiFrequencyUserUserIdGet(userId: string, searchTerm?: string, studentId?: string, graduationId?: string, lessonId?: string, createdFrom?: string, createdTo?: string, lessonScheduledFrom?: string, lessonScheduledTo?: string, pageNumber?: number, pageSize?: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public apiFrequencyUserUserIdGet(userId: string, studentId?: string, lessonId?: string, graduationId?: string, startDate?: string, endDate?: string, page?: number, pageSize?: number, orderBy?: string, orderByDescending?: boolean, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<ShowFrequencyDTOPaginatedResult>;
+    public apiFrequencyUserUserIdGet(userId: string, studentId?: string, lessonId?: string, graduationId?: string, startDate?: string, endDate?: string, page?: number, pageSize?: number, orderBy?: string, orderByDescending?: boolean, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<ShowFrequencyDTOPaginatedResult>>;
+    public apiFrequencyUserUserIdGet(userId: string, studentId?: string, lessonId?: string, graduationId?: string, startDate?: string, endDate?: string, page?: number, pageSize?: number, orderBy?: string, orderByDescending?: boolean, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<ShowFrequencyDTOPaginatedResult>>;
+    public apiFrequencyUserUserIdGet(userId: string, studentId?: string, lessonId?: string, graduationId?: string, startDate?: string, endDate?: string, page?: number, pageSize?: number, orderBy?: string, orderByDescending?: boolean, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         if (userId === null || userId === undefined) {
             throw new Error('Required parameter userId was null or undefined when calling apiFrequencyUserUserIdGet.');
         }
 
         let localVarQueryParameters = new HttpParams({encoder: this.encoder});
-        if (searchTerm !== undefined && searchTerm !== null) {
-          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>searchTerm, 'SearchTerm');
-        }
         if (studentId !== undefined && studentId !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
             <any>studentId, 'StudentId');
-        }
-        if (graduationId !== undefined && graduationId !== null) {
-          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>graduationId, 'GraduationId');
         }
         if (lessonId !== undefined && lessonId !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
             <any>lessonId, 'LessonId');
         }
-        if (createdFrom !== undefined && createdFrom !== null) {
+        if (graduationId !== undefined && graduationId !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>createdFrom, 'CreatedFrom');
+            <any>graduationId, 'GraduationId');
         }
-        if (createdTo !== undefined && createdTo !== null) {
+        if (startDate !== undefined && startDate !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>createdTo, 'CreatedTo');
+            <any>startDate, 'StartDate');
         }
-        if (lessonScheduledFrom !== undefined && lessonScheduledFrom !== null) {
+        if (endDate !== undefined && endDate !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>lessonScheduledFrom, 'LessonScheduledFrom');
+            <any>endDate, 'EndDate');
         }
-        if (lessonScheduledTo !== undefined && lessonScheduledTo !== null) {
+        if (page !== undefined && page !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>lessonScheduledTo, 'LessonScheduledTo');
-        }
-        if (pageNumber !== undefined && pageNumber !== null) {
-          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>pageNumber, 'PageNumber');
+            <any>page, 'Page');
         }
         if (pageSize !== undefined && pageSize !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
             <any>pageSize, 'PageSize');
         }
+        if (orderBy !== undefined && orderBy !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>orderBy, 'OrderBy');
+        }
+        if (orderByDescending !== undefined && orderByDescending !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>orderByDescending, 'OrderByDescending');
+        }
 
         let localVarHeaders = this.defaultHeaders;
+
+        let localVarCredential: string | undefined;
+        // authentication (Bearer) required
+        localVarCredential = this.configuration.lookupCredential('Bearer');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('Authorization', 'Bearer ' + localVarCredential);
+        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -949,7 +936,7 @@ export class FrequencyService implements FrequencyServiceInterface {
         }
 
         let localVarPath = `/api/Frequency/user/${this.configuration.encodeParam({name: "userId", value: userId, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: "uuid"})}`;
-        return this.httpClient.request<Array<CarlonGracieBackendDTOsShowFrequencyDTO>>('get', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<ShowFrequencyDTOPaginatedResult>('get', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 params: localVarQueryParameters,

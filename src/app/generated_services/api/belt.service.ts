@@ -20,13 +20,15 @@ import { Observable }                                        from 'rxjs';
 // @ts-ignore
 import { ApiAdminAcademiesIdGet404Response } from '../model/apiAdminAcademiesIdGet404Response';
 // @ts-ignore
-import { CarlonGracieBackendProgressionApplicationDTOsCreateBeltDTO } from '../model/carlonGracieBackendProgressionApplicationDTOsCreateBeltDTO';
+import { CreateBeltDTO } from '../model/createBeltDTO';
 // @ts-ignore
-import { CarlonGracieBackendProgressionApplicationDTOsShowBeltDTO } from '../model/carlonGracieBackendProgressionApplicationDTOsShowBeltDTO';
+import { ShowBeltDTO } from '../model/showBeltDTO';
 // @ts-ignore
-import { CarlonGracieBackendProgressionApplicationDTOsUpdateBeltDTO } from '../model/carlonGracieBackendProgressionApplicationDTOsUpdateBeltDTO';
+import { ShowBeltDTOPaginatedResult } from '../model/showBeltDTOPaginatedResult';
 // @ts-ignore
-import { MicrosoftAspNetCoreMvcValidationProblemDetails } from '../model/microsoftAspNetCoreMvcValidationProblemDetails';
+import { UpdateBeltDTO } from '../model/updateBeltDTO';
+// @ts-ignore
+import { ValidationProblemDetails } from '../model/validationProblemDetails';
 
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
@@ -103,47 +105,64 @@ export class BeltService implements BeltServiceInterface {
     }
 
     /**
-     * @param $filter OData filter expression. Examples: contains(name,\&#39;John\&#39;) | status eq \&#39;Active\&#39; | amount gt 100 | createdAt ge 2024-01-01T00:00:00Z
-     * @param $orderby Sort expression. Examples: name asc | createdAt desc | name asc,amount desc
-     * @param $top Page size — number of records to return (default: 20, max: 200). Use with $skip for pagination.
-     * @param $skip Records to skip. Use ($pageNumber - 1) * $top. Example: page 3 with size 20 → $skip&#x3D;40
-     * @param $count Set to \&#39;true\&#39; to include total record count in response as @odata.count
-     * @param $select Return only specific fields. Example: $select&#x3D;id,name,createdAt
+     * @param color 
+     * @param orderIndexMin 
+     * @param orderIndexMax 
+     * @param isForKids 
+     * @param page 
+     * @param pageSize 
+     * @param orderBy 
+     * @param orderByDescending 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiBeltGet($filter?: string, $orderby?: string, $top?: string, $skip?: string, $count?: string, $select?: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Array<CarlonGracieBackendProgressionApplicationDTOsShowBeltDTO>>;
-    public apiBeltGet($filter?: string, $orderby?: string, $top?: string, $skip?: string, $count?: string, $select?: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<CarlonGracieBackendProgressionApplicationDTOsShowBeltDTO>>>;
-    public apiBeltGet($filter?: string, $orderby?: string, $top?: string, $skip?: string, $count?: string, $select?: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<CarlonGracieBackendProgressionApplicationDTOsShowBeltDTO>>>;
-    public apiBeltGet($filter?: string, $orderby?: string, $top?: string, $skip?: string, $count?: string, $select?: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public apiBeltGet(color?: string, orderIndexMin?: number, orderIndexMax?: number, isForKids?: boolean, page?: number, pageSize?: number, orderBy?: string, orderByDescending?: boolean, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<ShowBeltDTOPaginatedResult>;
+    public apiBeltGet(color?: string, orderIndexMin?: number, orderIndexMax?: number, isForKids?: boolean, page?: number, pageSize?: number, orderBy?: string, orderByDescending?: boolean, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<ShowBeltDTOPaginatedResult>>;
+    public apiBeltGet(color?: string, orderIndexMin?: number, orderIndexMax?: number, isForKids?: boolean, page?: number, pageSize?: number, orderBy?: string, orderByDescending?: boolean, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<ShowBeltDTOPaginatedResult>>;
+    public apiBeltGet(color?: string, orderIndexMin?: number, orderIndexMax?: number, isForKids?: boolean, page?: number, pageSize?: number, orderBy?: string, orderByDescending?: boolean, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
 
         let localVarQueryParameters = new HttpParams({encoder: this.encoder});
-        if ($filter !== undefined && $filter !== null) {
+        if (color !== undefined && color !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>$filter, '$filter');
+            <any>color, 'Color');
         }
-        if ($orderby !== undefined && $orderby !== null) {
+        if (orderIndexMin !== undefined && orderIndexMin !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>$orderby, '$orderby');
+            <any>orderIndexMin, 'OrderIndexMin');
         }
-        if ($top !== undefined && $top !== null) {
+        if (orderIndexMax !== undefined && orderIndexMax !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>$top, '$top');
+            <any>orderIndexMax, 'OrderIndexMax');
         }
-        if ($skip !== undefined && $skip !== null) {
+        if (isForKids !== undefined && isForKids !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>$skip, '$skip');
+            <any>isForKids, 'IsForKids');
         }
-        if ($count !== undefined && $count !== null) {
+        if (page !== undefined && page !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>$count, '$count');
+            <any>page, 'Page');
         }
-        if ($select !== undefined && $select !== null) {
+        if (pageSize !== undefined && pageSize !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>$select, '$select');
+            <any>pageSize, 'PageSize');
+        }
+        if (orderBy !== undefined && orderBy !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>orderBy, 'OrderBy');
+        }
+        if (orderByDescending !== undefined && orderByDescending !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>orderByDescending, 'OrderByDescending');
         }
 
         let localVarHeaders = this.defaultHeaders;
+
+        let localVarCredential: string | undefined;
+        // authentication (Bearer) required
+        localVarCredential = this.configuration.lookupCredential('Bearer');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('Authorization', 'Bearer ' + localVarCredential);
+        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -180,7 +199,7 @@ export class BeltService implements BeltServiceInterface {
         }
 
         let localVarPath = `/api/Belt`;
-        return this.httpClient.request<Array<CarlonGracieBackendProgressionApplicationDTOsShowBeltDTO>>('get', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<ShowBeltDTOPaginatedResult>('get', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 params: localVarQueryParameters,
@@ -208,6 +227,13 @@ export class BeltService implements BeltServiceInterface {
         }
 
         let localVarHeaders = this.defaultHeaders;
+
+        let localVarCredential: string | undefined;
+        // authentication (Bearer) required
+        localVarCredential = this.configuration.lookupCredential('Bearer');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('Authorization', 'Bearer ' + localVarCredential);
+        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -262,15 +288,22 @@ export class BeltService implements BeltServiceInterface {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiBeltIdGet(id: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<CarlonGracieBackendProgressionApplicationDTOsShowBeltDTO>;
-    public apiBeltIdGet(id: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<CarlonGracieBackendProgressionApplicationDTOsShowBeltDTO>>;
-    public apiBeltIdGet(id: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<CarlonGracieBackendProgressionApplicationDTOsShowBeltDTO>>;
+    public apiBeltIdGet(id: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<ShowBeltDTO>;
+    public apiBeltIdGet(id: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<ShowBeltDTO>>;
+    public apiBeltIdGet(id: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<ShowBeltDTO>>;
     public apiBeltIdGet(id: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         if (id === null || id === undefined) {
             throw new Error('Required parameter id was null or undefined when calling apiBeltIdGet.');
         }
 
         let localVarHeaders = this.defaultHeaders;
+
+        let localVarCredential: string | undefined;
+        // authentication (Bearer) required
+        localVarCredential = this.configuration.lookupCredential('Bearer');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('Authorization', 'Bearer ' + localVarCredential);
+        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -307,7 +340,7 @@ export class BeltService implements BeltServiceInterface {
         }
 
         let localVarPath = `/api/Belt/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: "uuid"})}`;
-        return this.httpClient.request<CarlonGracieBackendProgressionApplicationDTOsShowBeltDTO>('get', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<ShowBeltDTO>('get', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 responseType: <any>responseType_,
@@ -322,19 +355,26 @@ export class BeltService implements BeltServiceInterface {
 
     /**
      * @param id 
-     * @param carlonGracieBackendProgressionApplicationDTOsUpdateBeltDTO 
+     * @param updateBeltDTO 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiBeltIdPut(id: string, carlonGracieBackendProgressionApplicationDTOsUpdateBeltDTO?: CarlonGracieBackendProgressionApplicationDTOsUpdateBeltDTO, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<CarlonGracieBackendProgressionApplicationDTOsShowBeltDTO>;
-    public apiBeltIdPut(id: string, carlonGracieBackendProgressionApplicationDTOsUpdateBeltDTO?: CarlonGracieBackendProgressionApplicationDTOsUpdateBeltDTO, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<CarlonGracieBackendProgressionApplicationDTOsShowBeltDTO>>;
-    public apiBeltIdPut(id: string, carlonGracieBackendProgressionApplicationDTOsUpdateBeltDTO?: CarlonGracieBackendProgressionApplicationDTOsUpdateBeltDTO, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<CarlonGracieBackendProgressionApplicationDTOsShowBeltDTO>>;
-    public apiBeltIdPut(id: string, carlonGracieBackendProgressionApplicationDTOsUpdateBeltDTO?: CarlonGracieBackendProgressionApplicationDTOsUpdateBeltDTO, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public apiBeltIdPut(id: string, updateBeltDTO?: UpdateBeltDTO, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<ShowBeltDTO>;
+    public apiBeltIdPut(id: string, updateBeltDTO?: UpdateBeltDTO, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<ShowBeltDTO>>;
+    public apiBeltIdPut(id: string, updateBeltDTO?: UpdateBeltDTO, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<ShowBeltDTO>>;
+    public apiBeltIdPut(id: string, updateBeltDTO?: UpdateBeltDTO, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         if (id === null || id === undefined) {
             throw new Error('Required parameter id was null or undefined when calling apiBeltIdPut.');
         }
 
         let localVarHeaders = this.defaultHeaders;
+
+        let localVarCredential: string | undefined;
+        // authentication (Bearer) required
+        localVarCredential = this.configuration.lookupCredential('Bearer');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('Authorization', 'Bearer ' + localVarCredential);
+        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -361,44 +401,7 @@ export class BeltService implements BeltServiceInterface {
 
         // to determine the Content-Type header
         const consumes: string[] = [
-            'application/json;odata.metadata=minimal;odata.streaming=true',
-            'application/json;odata.metadata=minimal;odata.streaming=false',
-            'application/json;odata.metadata=minimal',
-            'application/json;odata.metadata=full;odata.streaming=true',
-            'application/json;odata.metadata=full;odata.streaming=false',
-            'application/json;odata.metadata=full',
-            'application/json;odata.metadata=none;odata.streaming=true',
-            'application/json;odata.metadata=none;odata.streaming=false',
-            'application/json;odata.metadata=none',
-            'application/json;odata.streaming=true',
-            'application/json;odata.streaming=false',
             'application/json',
-            'application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=false',
-            'application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=true',
-            'application/json;odata.metadata=minimal;odata.streaming=false;IEEE754Compatible=false',
-            'application/json;odata.metadata=minimal;odata.streaming=false;IEEE754Compatible=true',
-            'application/json;odata.metadata=minimal;IEEE754Compatible=false',
-            'application/json;odata.metadata=minimal;IEEE754Compatible=true',
-            'application/json;odata.metadata=full;odata.streaming=true;IEEE754Compatible=false',
-            'application/json;odata.metadata=full;odata.streaming=true;IEEE754Compatible=true',
-            'application/json;odata.metadata=full;odata.streaming=false;IEEE754Compatible=false',
-            'application/json;odata.metadata=full;odata.streaming=false;IEEE754Compatible=true',
-            'application/json;odata.metadata=full;IEEE754Compatible=false',
-            'application/json;odata.metadata=full;IEEE754Compatible=true',
-            'application/json;odata.metadata=none;odata.streaming=true;IEEE754Compatible=false',
-            'application/json;odata.metadata=none;odata.streaming=true;IEEE754Compatible=true',
-            'application/json;odata.metadata=none;odata.streaming=false;IEEE754Compatible=true',
-            'application/json;odata.metadata=none;odata.streaming=false;IEEE754Compatible=false',
-            'application/json;odata.metadata=none;IEEE754Compatible=false',
-            'application/json;odata.metadata=none;IEEE754Compatible=true',
-            'application/json;odata.streaming=true;IEEE754Compatible=false',
-            'application/json;odata.streaming=true;IEEE754Compatible=true',
-            'application/json;odata.streaming=false;IEEE754Compatible=false',
-            'application/json;odata.streaming=false;IEEE754Compatible=true',
-            'application/json;IEEE754Compatible=false',
-            'application/json;IEEE754Compatible=true',
-            'application/xml',
-            'text/plain',
             'text/json',
             'application/*+json'
         ];
@@ -419,10 +422,10 @@ export class BeltService implements BeltServiceInterface {
         }
 
         let localVarPath = `/api/Belt/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: "uuid"})}`;
-        return this.httpClient.request<CarlonGracieBackendProgressionApplicationDTOsShowBeltDTO>('put', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<ShowBeltDTO>('put', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
-                body: carlonGracieBackendProgressionApplicationDTOsUpdateBeltDTO,
+                body: updateBeltDTO,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,
@@ -434,16 +437,23 @@ export class BeltService implements BeltServiceInterface {
     }
 
     /**
-     * @param carlonGracieBackendProgressionApplicationDTOsCreateBeltDTO 
+     * @param createBeltDTO 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiBeltPost(carlonGracieBackendProgressionApplicationDTOsCreateBeltDTO?: CarlonGracieBackendProgressionApplicationDTOsCreateBeltDTO, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<CarlonGracieBackendProgressionApplicationDTOsShowBeltDTO>;
-    public apiBeltPost(carlonGracieBackendProgressionApplicationDTOsCreateBeltDTO?: CarlonGracieBackendProgressionApplicationDTOsCreateBeltDTO, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<CarlonGracieBackendProgressionApplicationDTOsShowBeltDTO>>;
-    public apiBeltPost(carlonGracieBackendProgressionApplicationDTOsCreateBeltDTO?: CarlonGracieBackendProgressionApplicationDTOsCreateBeltDTO, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<CarlonGracieBackendProgressionApplicationDTOsShowBeltDTO>>;
-    public apiBeltPost(carlonGracieBackendProgressionApplicationDTOsCreateBeltDTO?: CarlonGracieBackendProgressionApplicationDTOsCreateBeltDTO, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public apiBeltPost(createBeltDTO?: CreateBeltDTO, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<ShowBeltDTO>;
+    public apiBeltPost(createBeltDTO?: CreateBeltDTO, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<ShowBeltDTO>>;
+    public apiBeltPost(createBeltDTO?: CreateBeltDTO, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<ShowBeltDTO>>;
+    public apiBeltPost(createBeltDTO?: CreateBeltDTO, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
 
         let localVarHeaders = this.defaultHeaders;
+
+        let localVarCredential: string | undefined;
+        // authentication (Bearer) required
+        localVarCredential = this.configuration.lookupCredential('Bearer');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('Authorization', 'Bearer ' + localVarCredential);
+        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -470,44 +480,7 @@ export class BeltService implements BeltServiceInterface {
 
         // to determine the Content-Type header
         const consumes: string[] = [
-            'application/json;odata.metadata=minimal;odata.streaming=true',
-            'application/json;odata.metadata=minimal;odata.streaming=false',
-            'application/json;odata.metadata=minimal',
-            'application/json;odata.metadata=full;odata.streaming=true',
-            'application/json;odata.metadata=full;odata.streaming=false',
-            'application/json;odata.metadata=full',
-            'application/json;odata.metadata=none;odata.streaming=true',
-            'application/json;odata.metadata=none;odata.streaming=false',
-            'application/json;odata.metadata=none',
-            'application/json;odata.streaming=true',
-            'application/json;odata.streaming=false',
             'application/json',
-            'application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=false',
-            'application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=true',
-            'application/json;odata.metadata=minimal;odata.streaming=false;IEEE754Compatible=false',
-            'application/json;odata.metadata=minimal;odata.streaming=false;IEEE754Compatible=true',
-            'application/json;odata.metadata=minimal;IEEE754Compatible=false',
-            'application/json;odata.metadata=minimal;IEEE754Compatible=true',
-            'application/json;odata.metadata=full;odata.streaming=true;IEEE754Compatible=false',
-            'application/json;odata.metadata=full;odata.streaming=true;IEEE754Compatible=true',
-            'application/json;odata.metadata=full;odata.streaming=false;IEEE754Compatible=false',
-            'application/json;odata.metadata=full;odata.streaming=false;IEEE754Compatible=true',
-            'application/json;odata.metadata=full;IEEE754Compatible=false',
-            'application/json;odata.metadata=full;IEEE754Compatible=true',
-            'application/json;odata.metadata=none;odata.streaming=true;IEEE754Compatible=false',
-            'application/json;odata.metadata=none;odata.streaming=true;IEEE754Compatible=true',
-            'application/json;odata.metadata=none;odata.streaming=false;IEEE754Compatible=true',
-            'application/json;odata.metadata=none;odata.streaming=false;IEEE754Compatible=false',
-            'application/json;odata.metadata=none;IEEE754Compatible=false',
-            'application/json;odata.metadata=none;IEEE754Compatible=true',
-            'application/json;odata.streaming=true;IEEE754Compatible=false',
-            'application/json;odata.streaming=true;IEEE754Compatible=true',
-            'application/json;odata.streaming=false;IEEE754Compatible=false',
-            'application/json;odata.streaming=false;IEEE754Compatible=true',
-            'application/json;IEEE754Compatible=false',
-            'application/json;IEEE754Compatible=true',
-            'application/xml',
-            'text/plain',
             'text/json',
             'application/*+json'
         ];
@@ -528,10 +501,10 @@ export class BeltService implements BeltServiceInterface {
         }
 
         let localVarPath = `/api/Belt`;
-        return this.httpClient.request<CarlonGracieBackendProgressionApplicationDTOsShowBeltDTO>('post', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<ShowBeltDTO>('post', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
-                body: carlonGracieBackendProgressionApplicationDTOsCreateBeltDTO,
+                body: createBeltDTO,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,

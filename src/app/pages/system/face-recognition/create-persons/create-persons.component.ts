@@ -110,8 +110,9 @@ export class CreatePersonsComponent {
   }
 
   private loadStudents(term = ''): void {
-    this.studentsService.apiStudentsActiveGet(term || undefined, undefined, undefined, undefined, undefined, 1, 100).subscribe({
-      next: students => {
+    this.studentsService.apiStudentsGet(term || undefined, undefined, undefined, undefined, undefined, undefined, 1, 100).subscribe({
+      next: result => {
+        const students = result?.items ?? [];
         this.students.set(students);
         this.studentOptions.set(students.map(s => ({
           id: s.id ?? '',

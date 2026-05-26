@@ -16,8 +16,10 @@ import { ShowStudentDTO } from '../../../generated_services/model/showStudentDTO
 const MOCK_CONTRACT: ShowContractDTO = { id: 'c1', studentId: 'student-1', feePlanName: 'Plano Mensal', monthlyAmount: 150, status: ContractStatus.Active };
 
 const MOCK_ITEMS = Array.from({ length: 25 }, (_, i) => ({ ...MOCK_CONTRACT, id: `ct${i + 1}` }));
-const MOCK_ODATA_RESPONSE = { value: MOCK_ITEMS };
-const MOCK_PAGE = { items: MOCK_ITEMS.slice(0, 10), totalCount: 25, totalPages: 3, currentPage: 1 };
+const buildResponse = (top = 20, skip = 0) => ({
+  '@odata.count': MOCK_ITEMS.length,
+  value: MOCK_ITEMS.slice(skip, skip + top),
+});
 const MOCK_STUDENTS: ShowStudentDTO[] = [{ id: 'student-1', userName: 'joao', email: 'joao@test.com', firstName: 'João', lastName: 'Silva' }];
 
 describe('ContractsComponent', () => {
@@ -33,7 +35,7 @@ describe('ContractsComponent', () => {
     const studentsSpy = jasmine.createSpyObj('StudentsService', ['apiStudentsActiveGet']);
     const nsSpy = jasmine.createSpyObj('NotificationService', ['showSuccess', 'showError']);
     const subnavSpy = jasmine.createSpyObj('SubnavService', ['setTitle']);
-    contractSpy.apiContractGet.and.returnValue(of(MOCK_ODATA_RESPONSE));
+    contractSpy.apiContractGet.and.callFake((...args: any[]) => of(buildResponse(Number(args[2] ?? 20), Number(args[3] ?? 0))));
     studentsSpy.apiStudentsActiveGet.and.returnValue(of(MOCK_STUDENTS));
 
     await TestBed.configureTestingModule({
@@ -60,10 +62,8 @@ describe('ContractsComponent', () => {
     contractService.apiContractGet.calls.reset();
     (component as any).onPageChange(2);
     expect((component as any).currentPage()).toBe(2);
-    const page = (component as any).items();
-    expect(page.currentPage).toBe(2);
-    expect(page.items[0].id).toBe(MOCK_ITEMS[10].id);
-    expect(contractService.apiContractGet).not.toHaveBeenCalled();
+    expect((contractService.apiContractGet as any)).toHaveBeenCalledWith(undefined, undefined, '10', '10', 'true', undefined, 'response');
+    expect((component as any).items().items[0].id).toBe(MOCK_ITEMS[10].id);
   });
 
   it('should reset to page 1 and reload on onPageSizeChange', () => {
@@ -72,11 +72,9 @@ describe('ContractsComponent', () => {
     (component as any).onPageSizeChange(20);
     expect((component as any).pageSize()).toBe(20);
     expect((component as any).currentPage()).toBe(1);
-    const page = (component as any).items();
-    expect(page.currentPage).toBe(1);
-    expect(page.items.length).toBe(20);
-    expect(page.items[0].id).toBe(MOCK_ITEMS[0].id);
-    expect(contractService.apiContractGet).not.toHaveBeenCalled();
+    expect((contractService.apiContractGet as any)).toHaveBeenCalledWith(undefined, undefined, '20', '0', 'true', undefined, 'response');
+    expect((component as any).items().items.length).toBe(20);
+    expect((component as any).items().items[0].id).toBe(MOCK_ITEMS[0].id);
   });
 
   describe('getStatusLabel', () => {

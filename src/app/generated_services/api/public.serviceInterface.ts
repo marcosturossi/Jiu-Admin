@@ -13,8 +13,8 @@ import { HttpHeaders }                                       from '@angular/comm
 import { Observable }                                        from 'rxjs';
 
 import { ApiAdminAcademiesIdGet404Response } from '../model/models';
-import { CarlonGracieBackendAuthenticationApplicationDTOsPublicAcademyDto } from '../model/models';
-import { CarlonGracieBackendAuthenticationApplicationDTOsShowRealmInfoDto } from '../model/models';
+import { PublicAcademyDto } from '../model/models';
+import { ShowRealmInfoDto } from '../model/models';
 
 
 import { Configuration }                                     from '../configuration';
@@ -30,13 +30,13 @@ export interface PublicServiceInterface {
      * 
      * @param q 
      */
-    apiPublicAcademiesGet(q?: string, extraHttpRequestParams?: any): Observable<Array<CarlonGracieBackendAuthenticationApplicationDTOsPublicAcademyDto>>;
+    apiPublicAcademiesGet(q?: string, extraHttpRequestParams?: any): Observable<Array<PublicAcademyDto>>;
 
     /**
      * 
      * 
      * @param slug 
      */
-    apiPublicAcademiesSlugRealmGet(slug: string, extraHttpRequestParams?: any): Observable<CarlonGracieBackendAuthenticationApplicationDTOsShowRealmInfoDto>;
+    apiPublicAcademiesSlugRealmGet(slug: string, extraHttpRequestParams?: any): Observable<ShowRealmInfoDto>;
 
 }

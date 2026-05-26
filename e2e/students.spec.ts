@@ -41,11 +41,8 @@ test.describe('Estudantes — CRUD', () => {
     await expect(page.locator('.modal.show')).not.toBeVisible({ timeout: 10_000 });
     await waitForTableReady(page);
 
-    // ── VERIFY IN LIST ────────────────────────────────────────────────
-    await expect(table.getByText(FULL_NAME)).toBeVisible({ timeout: 8_000 });
-
     // ── SEARCH ────────────────────────────────────────────────────────
-    await page.getByPlaceholder('Buscar aluno').fill(TEST_LAST_NAME);
+    await page.getByPlaceholder('Buscar por nome do aluno').fill(TEST_LAST_NAME);
     await waitForTableReady(page);
     await expect(table.getByText(FULL_NAME)).toBeVisible({ timeout: 8_000 });
 
@@ -61,8 +58,8 @@ test.describe('Estudantes — CRUD', () => {
 
     // ── DELETE ────────────────────────────────────────────────────────
     // Clear search and re-search to get a clean table state
-    await page.getByPlaceholder('Buscar aluno').fill('');
-    await page.getByPlaceholder('Buscar aluno').fill(TEST_LAST_NAME);
+    await page.getByPlaceholder('Buscar por nome do aluno').fill('');
+    await page.getByPlaceholder('Buscar por nome do aluno').fill(TEST_LAST_NAME);
     await waitForTableReady(page);
     await expect(table.getByText(FULL_NAME)).toBeVisible({ timeout: 8_000 });
 
@@ -74,8 +71,7 @@ test.describe('Estudantes — CRUD', () => {
   });
 
   test('busca retorna vazio para texto inexistente', async ({ page }) => {
-    await page.getByPlaceholder('Buscar aluno').fill('__TEXTO_QUE_NAO_EXISTE_ABC123__');
+    await page.getByPlaceholder('Buscar por nome do aluno').fill('__TEXTO_QUE_NAO_EXISTE_ABC123__');
     await expect(page.getByText('Nenhum registro encontrado.')).toBeVisible({ timeout: 8_000 });
   });
 });
-

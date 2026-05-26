@@ -48,7 +48,7 @@ export class CreateGraduationComponent {
     this.studentSearchSubject.pipe(debounceTime(400), takeUntilDestroyed(this.destroyRef))
       .subscribe(term => this.loadStudents(term));
     this.beltService.apiBeltGet().subscribe({
-      next: r => this.belts.set(r ?? []),
+      next: r => this.belts.set(r?.items ?? []),
       error: () => this.ns.showError('Erro ao Carregar Faixas', 'Não foi possível carregar a lista de faixas.'),
     });
     this.loadStudents();
@@ -66,8 +66,8 @@ export class CreateGraduationComponent {
   }
 
   private loadStudents(term = ''): void {
-    this.studentsService.apiStudentsGet(term || undefined, undefined, '100').subscribe({
-      next: r => this.students.set(r ?? []),
+    this.studentsService.apiStudentsGet(term || undefined, undefined, undefined, undefined, undefined, undefined, 1, 100).subscribe({
+      next: r => this.students.set(r?.items ?? []),
       error: () => this.ns.showError('Erro ao Carregar Alunos', 'Não foi possível carregar a lista de alunos.'),
     });
   }

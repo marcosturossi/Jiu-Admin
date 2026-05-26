@@ -13,12 +13,11 @@ import { HttpHeaders }                                       from '@angular/comm
 import { Observable }                                        from 'rxjs';
 
 import { ApiAdminAcademiesIdGet404Response } from '../model/models';
-import { CarlonGracieBackendAttendanceApplicationDTOsCreateFrequencyDTO } from '../model/models';
-import { CarlonGracieBackendAttendanceApplicationDTOsShowFrequencyDTO } from '../model/models';
-import { CarlonGracieBackendAttendanceApplicationDTOsUpdateFrequencyDTO } from '../model/models';
-import { CarlonGracieBackendDTOsPaginationFrequencyDTO } from '../model/models';
-import { CarlonGracieBackendDTOsShowFrequencyDTO } from '../model/models';
-import { CarlonGracieBackendDTOsShowFrequencyUntilNextGraduation } from '../model/models';
+import { CreateFrequencyDTO } from '../model/models';
+import { ShowFrequencyDTO } from '../model/models';
+import { ShowFrequencyDTOPaginatedResult } from '../model/models';
+import { ShowFrequencyUntilNextGraduationDTO } from '../model/models';
+import { UpdateFrequencyDTO } from '../model/models';
 
 
 import { Configuration }                                     from '../configuration';
@@ -34,47 +33,48 @@ export interface FrequencyServiceInterface {
      * 
      * @param startDate 
      * @param endDate 
-     * @param searchTerm 
      * @param studentId 
-     * @param graduationId 
      * @param lessonId 
-     * @param createdFrom 
-     * @param createdTo 
-     * @param lessonScheduledFrom 
-     * @param lessonScheduledTo 
-     * @param pageNumber 
+     * @param graduationId 
+     * @param startDate2 
+     * @param endDate2 
+     * @param page 
      * @param pageSize 
+     * @param orderBy 
+     * @param orderByDescending 
      */
-    apiFrequencyDateRangeGet(startDate?: string, endDate?: string, searchTerm?: string, studentId?: string, graduationId?: string, lessonId?: string, createdFrom?: string, createdTo?: string, lessonScheduledFrom?: string, lessonScheduledTo?: string, pageNumber?: number, pageSize?: number, extraHttpRequestParams?: any): Observable<CarlonGracieBackendDTOsPaginationFrequencyDTO>;
+    apiFrequencyDateRangeGet(startDate?: string, endDate?: string, studentId?: string, lessonId?: string, graduationId?: string, startDate2?: string, endDate2?: string, page?: number, pageSize?: number, orderBy?: string, orderByDescending?: boolean, extraHttpRequestParams?: any): Observable<ShowFrequencyDTOPaginatedResult>;
 
     /**
      * 
      * 
-     * @param $filter OData filter expression. Examples: contains(name,\&#39;John\&#39;) | status eq \&#39;Active\&#39; | amount gt 100 | createdAt ge 2024-01-01T00:00:00Z
-     * @param $orderby Sort expression. Examples: name asc | createdAt desc | name asc,amount desc
-     * @param $top Page size — number of records to return (default: 20, max: 200). Use with $skip for pagination.
-     * @param $skip Records to skip. Use ($pageNumber - 1) * $top. Example: page 3 with size 20 → $skip&#x3D;40
-     * @param $count Set to \&#39;true\&#39; to include total record count in response as @odata.count
-     * @param $select Return only specific fields. Example: $select&#x3D;id,name,createdAt
+     * @param studentId 
+     * @param lessonId 
+     * @param graduationId 
+     * @param startDate 
+     * @param endDate 
+     * @param page 
+     * @param pageSize 
+     * @param orderBy 
+     * @param orderByDescending 
      */
-    apiFrequencyGet($filter?: string, $orderby?: string, $top?: string, $skip?: string, $count?: string, $select?: string, extraHttpRequestParams?: any): Observable<Array<CarlonGracieBackendAttendanceApplicationDTOsShowFrequencyDTO>>;
+    apiFrequencyGet(studentId?: string, lessonId?: string, graduationId?: string, startDate?: string, endDate?: string, page?: number, pageSize?: number, orderBy?: string, orderByDescending?: boolean, extraHttpRequestParams?: any): Observable<ShowFrequencyDTOPaginatedResult>;
 
     /**
      * 
      * 
      * @param graduationId 
-     * @param searchTerm 
      * @param studentId 
+     * @param lessonId 
      * @param graduationId2 
-     * @param lessonId 
-     * @param createdFrom 
-     * @param createdTo 
-     * @param lessonScheduledFrom 
-     * @param lessonScheduledTo 
-     * @param pageNumber 
+     * @param startDate 
+     * @param endDate 
+     * @param page 
      * @param pageSize 
+     * @param orderBy 
+     * @param orderByDescending 
      */
-    apiFrequencyGraduationGraduationIdGet(graduationId: string, searchTerm?: string, studentId?: string, graduationId2?: string, lessonId?: string, createdFrom?: string, createdTo?: string, lessonScheduledFrom?: string, lessonScheduledTo?: string, pageNumber?: number, pageSize?: number, extraHttpRequestParams?: any): Observable<CarlonGracieBackendDTOsPaginationFrequencyDTO>;
+    apiFrequencyGraduationGraduationIdGet(graduationId: string, studentId?: string, lessonId?: string, graduationId2?: string, startDate?: string, endDate?: string, page?: number, pageSize?: number, orderBy?: string, orderByDescending?: boolean, extraHttpRequestParams?: any): Observable<ShowFrequencyDTOPaginatedResult>;
 
     /**
      * 
@@ -88,45 +88,44 @@ export interface FrequencyServiceInterface {
      * 
      * @param id 
      */
-    apiFrequencyIdGet(id: string, extraHttpRequestParams?: any): Observable<CarlonGracieBackendAttendanceApplicationDTOsShowFrequencyDTO>;
+    apiFrequencyIdGet(id: string, extraHttpRequestParams?: any): Observable<ShowFrequencyDTO>;
 
     /**
      * 
      * 
      * @param id 
-     * @param carlonGracieBackendAttendanceApplicationDTOsUpdateFrequencyDTO 
+     * @param updateFrequencyDTO 
      */
-    apiFrequencyIdPut(id: string, carlonGracieBackendAttendanceApplicationDTOsUpdateFrequencyDTO?: CarlonGracieBackendAttendanceApplicationDTOsUpdateFrequencyDTO, extraHttpRequestParams?: any): Observable<CarlonGracieBackendAttendanceApplicationDTOsShowFrequencyDTO>;
+    apiFrequencyIdPut(id: string, updateFrequencyDTO?: UpdateFrequencyDTO, extraHttpRequestParams?: any): Observable<ShowFrequencyDTO>;
 
     /**
      * 
      * 
      * @param studentId 
      */
-    apiFrequencyNextGraduationRequirementsStudentIdGet(studentId: string, extraHttpRequestParams?: any): Observable<CarlonGracieBackendDTOsShowFrequencyUntilNextGraduation>;
+    apiFrequencyNextGraduationRequirementsStudentIdGet(studentId: string, extraHttpRequestParams?: any): Observable<ShowFrequencyUntilNextGraduationDTO>;
 
     /**
      * 
      * 
-     * @param carlonGracieBackendAttendanceApplicationDTOsCreateFrequencyDTO 
+     * @param createFrequencyDTO 
      */
-    apiFrequencyPost(carlonGracieBackendAttendanceApplicationDTOsCreateFrequencyDTO?: CarlonGracieBackendAttendanceApplicationDTOsCreateFrequencyDTO, extraHttpRequestParams?: any): Observable<CarlonGracieBackendAttendanceApplicationDTOsShowFrequencyDTO>;
+    apiFrequencyPost(createFrequencyDTO?: CreateFrequencyDTO, extraHttpRequestParams?: any): Observable<ShowFrequencyDTO>;
 
     /**
      * 
      * 
      * @param userId 
-     * @param searchTerm 
      * @param studentId 
-     * @param graduationId 
      * @param lessonId 
-     * @param createdFrom 
-     * @param createdTo 
-     * @param lessonScheduledFrom 
-     * @param lessonScheduledTo 
-     * @param pageNumber 
+     * @param graduationId 
+     * @param startDate 
+     * @param endDate 
+     * @param page 
      * @param pageSize 
+     * @param orderBy 
+     * @param orderByDescending 
      */
-    apiFrequencyUserUserIdGet(userId: string, searchTerm?: string, studentId?: string, graduationId?: string, lessonId?: string, createdFrom?: string, createdTo?: string, lessonScheduledFrom?: string, lessonScheduledTo?: string, pageNumber?: number, pageSize?: number, extraHttpRequestParams?: any): Observable<Array<CarlonGracieBackendDTOsShowFrequencyDTO>>;
+    apiFrequencyUserUserIdGet(userId: string, studentId?: string, lessonId?: string, graduationId?: string, startDate?: string, endDate?: string, page?: number, pageSize?: number, orderBy?: string, orderByDescending?: boolean, extraHttpRequestParams?: any): Observable<ShowFrequencyDTOPaginatedResult>;
 
 }

@@ -12,7 +12,7 @@ import { HttpHeaders }                                       from '@angular/comm
 
 import { Observable }                                        from 'rxjs';
 
-import { CarlonGracieBackendControllersRenewalWarningsResultDTO } from '../model/models';
+import { RenewalWarningsResultDTO } from '../model/models';
 
 
 import { Configuration }                                     from '../configuration';
@@ -28,6 +28,6 @@ export interface AdminContractServiceInterface {
      * 
      * @param daysAhead 
      */
-    apiAdminContractsSendRenewalWarningsPost(daysAhead?: number, extraHttpRequestParams?: any): Observable<CarlonGracieBackendControllersRenewalWarningsResultDTO>;
+    apiAdminContractsSendRenewalWarningsPost(daysAhead?: number, extraHttpRequestParams?: any): Observable<RenewalWarningsResultDTO>;
 
 }

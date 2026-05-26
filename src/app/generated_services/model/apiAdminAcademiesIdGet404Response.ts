@@ -8,13 +8,13 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { MicrosoftAspNetCoreMvcProblemDetails } from './microsoftAspNetCoreMvcProblemDetails';
-import { MicrosoftAspNetCoreHttpHttpValidationProblemDetails } from './microsoftAspNetCoreHttpHttpValidationProblemDetails';
+import { HttpValidationProblemDetails } from './httpValidationProblemDetails';
+import { ProblemDetails } from './problemDetails';
 
 
 /**
  * @type ApiAdminAcademiesIdGet404Response
  * @export
  */
-export type ApiAdminAcademiesIdGet404Response = MicrosoftAspNetCoreHttpHttpValidationProblemDetails | MicrosoftAspNetCoreMvcProblemDetails;
+export type ApiAdminAcademiesIdGet404Response = HttpValidationProblemDetails | ProblemDetails;
 

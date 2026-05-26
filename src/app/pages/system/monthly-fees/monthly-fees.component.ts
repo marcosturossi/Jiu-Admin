@@ -2,14 +2,14 @@ import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/cor
 import { DatePipe, CurrencyPipe } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { MonthlyFeeService } from '../../../generated_services/api/monthlyFee.service';
-import { CarlonGracieBackendApplicationInterfacesInfrastructureChargeResult as ChargeResult, CarlonGracieBackendSharedDomainEnumsFeeStatus as FeeStatus, CarlonGracieBackendFinancesApplicationDTOsShowMonthlyFeeDTO as ShowMonthlyFeeDTO } from '../../../generated_services';
+import { CarlonGracieBackendSharedInterfacesChargeResult as ChargeResult, CarlonGracieBackendSharedDomainEnumsFeeStatus as FeeStatus, CarlonGracieBackendFinancesApplicationDTOsShowMonthlyFeeDTO as ShowMonthlyFeeDTO } from '../../../generated_services';
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
 import { FilterComponent } from '../../../shared/filter/filter.component';
 import { FilterField, FilterOutput } from '../../../shared/filter/filter.types';
 import { PaginationComponent } from '../../../shared/pagination/pagination.component';
 import { dateStringToIso, todayDateString } from '../../../utils/date.utils';
-import { ODataPage, buildClientPage, parseODataPage } from '../../../utils/odata.utils';
+import { PageResult } from '../../../utils/page-result';
 
 @Component({
   selector: 'app-monthly-fees',
@@ -32,20 +32,18 @@ export class MonthlyFeesComponent {
   private readonly ns = inject(NotificationService);
   private readonly fb = inject(FormBuilder);
 
-
   protected readonly isLoading = signal(false);
   protected readonly isPaying = signal(false);
   protected readonly isCharging = signal(false);
   protected readonly isDownloading = signal(false);
-  protected readonly items = signal<ODataPage<ShowMonthlyFeeDTO> | null>(null);
-  protected readonly allItems = signal<ShowMonthlyFeeDTO[]>([]);
+  protected readonly items = signal<PageResult<ShowMonthlyFeeDTO> | null>(null);
   protected readonly openedPay = signal(false);
   protected readonly openedPix = signal(false);
   protected readonly selected = signal<ShowMonthlyFeeDTO | null>(null);
   protected readonly pixResult = signal<ChargeResult | null>(null);
   protected readonly currentPage = signal(1);
   protected readonly pageSize = signal(10);
-  protected readonly filterQuery = signal<string | undefined>(undefined);
+  protected readonly filterStatus = signal<FeeStatus | undefined>(undefined);
 
   protected readonly FeeStatus = FeeStatus;
 
@@ -84,15 +82,29 @@ export class MonthlyFeesComponent {
 
   protected load(): void {
     this.isLoading.set(true);
-    const filter = this.filterQuery();
-    this.feeService.apiMonthlyFeeGet(filter, undefined, '200', '0', 'true').subscribe({
-      next: (body: any) => {
-        const page = parseODataPage<ShowMonthlyFeeDTO>(body, 200);
-        this.allItems.set(page.items);
-        this.refreshPage();
+    this.feeService.apiMonthlyFeeGet(
+      undefined,
+      undefined,
+      this.filterStatus(),
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      this.currentPage(),
+      this.pageSize(),
+    ).subscribe({
+      next: result => {
+        this.items.set({
+          items: result?.items ?? [],
+          totalCount: result?.totalCount ?? 0,
+          totalPages: result?.totalPages ?? 1,
+        });
         this.isLoading.set(false);
       },
-      error: () => { this.isLoading.set(false); this.ns.showError('Erro', 'Não foi possível carregar as mensalidades.'); }
+      error: () => {
+        this.isLoading.set(false);
+        this.ns.showError('Erro', 'Não foi possível carregar as mensalidades.');
+      },
     });
   }
 
@@ -116,15 +128,13 @@ export class MonthlyFeesComponent {
     }
   }
 
-  private refreshPage(): void {
-    const page = buildClientPage(this.allItems(), this.currentPage(), this.pageSize());
-    this.currentPage.set(page.currentPage);
-    this.items.set(page);
+  protected onPageChange(page: number): void { this.currentPage.set(page); this.load(); }
+  protected onPageSizeChange(size: number): void { this.pageSize.set(size); this.currentPage.set(1); this.load(); }
+  protected onFilterChange(output: FilterOutput): void {
+    this.filterStatus.set(output.conditions.find(c => c.field.key === 'status')?.value as FeeStatus | undefined);
+    this.currentPage.set(1);
+    this.load();
   }
-
-  protected onPageChange(page: number): void { this.currentPage.set(page); this.refreshPage(); }
-  protected onPageSizeChange(size: number): void { this.pageSize.set(size); this.currentPage.set(1); this.refreshPage(); }
-  protected onFilterChange(output: FilterOutput): void { this.filterQuery.set(output.odataFilter); this.currentPage.set(1); this.load(); }
 
   protected openPay(fee: ShowMonthlyFeeDTO): void {
     this.selected.set(fee);

@@ -8,7 +8,7 @@ import { UpdateFrequencyComponent } from './update-frequency/update-frequency.co
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
 import { PaginationComponent } from '../../../shared/pagination/pagination.component';
-import { ODataPage, buildClientPage, parseODataPage, buildODataFilter } from '../../../utils/odata.utils';
+import { PageResult } from '../../../utils/page-result';
 
 @Component({
   selector: 'app-frequencies',
@@ -25,8 +25,7 @@ export class FrequenciesComponent {
   private readonly searchSubject = new Subject<string>();
 
   protected readonly isLoading = signal(false);
-  protected readonly items = signal<ODataPage<ShowFrequencyDTO> | null>(null);
-  protected readonly allItems = signal<ShowFrequencyDTO[]>([]);
+  protected readonly items = signal<PageResult<ShowFrequencyDTO> | null>(null);
   protected readonly openedCreate = signal(false);
   protected readonly openedUpdate = signal(false);
   protected readonly selected = signal<ShowFrequencyDTO | null>(null);
@@ -46,26 +45,24 @@ export class FrequenciesComponent {
 
   protected load(): void {
     this.isLoading.set(true);
-    const filter = buildODataFilter(this.filterText(), ['studentName', 'lessonTitle']);
-    this.frequencyService.apiFrequencyGet(filter, undefined, '200', '0', 'true').subscribe({
-      next: (body: any) => {
-        const page = parseODataPage<ShowFrequencyDTO>(body, 200);
-        this.allItems.set(page.items);
-        this.refreshPage();
+    this.frequencyService.apiFrequencyGet(undefined, undefined, undefined, undefined, undefined, this.currentPage(), this.pageSize()).subscribe({
+      next: result => {
+        this.items.set({
+          items: result?.items ?? [],
+          totalCount: result?.totalCount ?? 0,
+          totalPages: result?.totalPages ?? 1,
+        });
         this.isLoading.set(false);
       },
-      error: () => { this.isLoading.set(false); this.ns.showError('Erro ao Carregar Frequências!', 'Não foi possível carregar a lista de frequências. Tente novamente.'); }
+      error: () => {
+        this.isLoading.set(false);
+        this.ns.showError('Erro ao Carregar Frequências!', 'Não foi possível carregar a lista de frequências. Tente novamente.');
+      },
     });
   }
 
-  private refreshPage(): void {
-    const page = buildClientPage(this.allItems(), this.currentPage(), this.pageSize());
-    this.currentPage.set(page.currentPage);
-    this.items.set(page);
-  }
-
-  protected onPageChange(p: number): void { this.currentPage.set(p); this.refreshPage(); }
-  protected onPageSizeChange(s: number): void { this.pageSize.set(s); this.currentPage.set(1); this.refreshPage(); }
+  protected onPageChange(p: number): void { this.currentPage.set(p); this.load(); }
+  protected onPageSizeChange(s: number): void { this.pageSize.set(s); this.currentPage.set(1); this.load(); }
   protected onSearch(term: string): void { this.searchSubject.next(term); }
   protected openCreate(): void { this.openedCreate.set(true); }
   protected openEdit(item: ShowFrequencyDTO): void { this.selected.set(item); this.openedUpdate.set(true); }

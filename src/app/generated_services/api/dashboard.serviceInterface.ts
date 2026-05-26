@@ -12,10 +12,10 @@ import { HttpHeaders }                                       from '@angular/comm
 
 import { Observable }                                        from 'rxjs';
 
-import { CarlonGracieBackendDTOsBarChartDataDTO } from '../model/models';
-import { CarlonGracieBackendDTOsMonthlyNewStudentsDTO } from '../model/models';
-import { CarlonGracieBackendDTOsStudentsBirthDay } from '../model/models';
-import { CarlonGracieBackendDTOsTopStudentDTO } from '../model/models';
+import { BarChartDataDTO } from '../model/models';
+import { MonthlyNewStudentsDTO } from '../model/models';
+import { StudentsBirthDay } from '../model/models';
+import { TopStudentDTO } from '../model/models';
 
 
 import { Configuration }                                     from '../configuration';
@@ -31,34 +31,34 @@ export interface DashboardServiceInterface {
      * 
      * @param days 
      */
-    apiDashboardAttendanceGet(days?: number, extraHttpRequestParams?: any): Observable<{}>;
+    apiDashboardAttendanceGet(days?: number, extraHttpRequestParams?: any): Observable<BarChartDataDTO>;
 
     /**
      * 
      * 
      * @param days 
      */
-    apiDashboardBirthdaysGet(days?: number, extraHttpRequestParams?: any): Observable<Array<CarlonGracieBackendDTOsStudentsBirthDay>>;
+    apiDashboardBirthdaysGet(days?: number, extraHttpRequestParams?: any): Observable<Array<StudentsBirthDay>>;
 
     /**
      * 
      * 
      * @param days 
      */
-    apiDashboardFrequencyBeltsDistributionGet(days?: number, extraHttpRequestParams?: any): Observable<CarlonGracieBackendDTOsBarChartDataDTO>;
+    apiDashboardFrequencyBeltsDistributionGet(days?: number, extraHttpRequestParams?: any): Observable<BarChartDataDTO>;
 
     /**
      * 
      * 
      * @param months 
      */
-    apiDashboardNewStudentsGet(months?: number, extraHttpRequestParams?: any): Observable<CarlonGracieBackendDTOsMonthlyNewStudentsDTO>;
+    apiDashboardNewStudentsGet(months?: number, extraHttpRequestParams?: any): Observable<MonthlyNewStudentsDTO>;
 
     /**
      * 
      * 
      * @param days 
      */
-    apiDashboardTopStudentsGet(days?: number, extraHttpRequestParams?: any): Observable<Array<CarlonGracieBackendDTOsTopStudentDTO>>;
+    apiDashboardTopStudentsGet(days?: number, extraHttpRequestParams?: any): Observable<Array<TopStudentDTO>>;
 
 }

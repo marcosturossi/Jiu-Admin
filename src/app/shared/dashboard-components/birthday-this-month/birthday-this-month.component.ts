@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
-import { DashboardService, CarlonGracieBackendDTOsStudentsBirthDay as StudentsBirthDay } from '../../../generated_services';
+import { DashboardService, CarlonGracieBackendReportingApplicationDTOsStudentsBirthDay as StudentsBirthDay } from '../../../generated_services';
 
 @Component({
   selector: 'app-birthday-this-month',

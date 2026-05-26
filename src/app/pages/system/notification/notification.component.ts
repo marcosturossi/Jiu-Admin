@@ -7,10 +7,10 @@ import { UpdateNotificationComponent } from './update-notification/update-notifi
 import { CarlonGracieBackendCommunicationsDomainNotificationType as NotificationType } from '../../../generated_services/model/carlonGracieBackendCommunicationsDomainNotificationType';
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
-import { CarlonGracieBackendCommunicationsApplicationDTOsPaginationNotificationDto as PaginationNotificationDTO } from '../../../generated_services';
 import { FilterComponent } from '../../../shared/filter/filter.component';
 import { FilterOutput } from '../../../shared/filter/filter.types';
 import { PaginationComponent } from '../../../shared/pagination/pagination.component';
+import { PageResult } from '../../../utils/page-result';
 
 @Component({
   selector: 'app-notification',
@@ -25,7 +25,7 @@ export class NotificationComponent {
   private readonly ns = inject(NotificationService);
 
   protected readonly isLoading = signal(false);
-  protected readonly items = signal<PaginationNotificationDTO | null>(null);
+  protected readonly items = signal<PageResult<ShowNotificationDTO> | null>(null);
   protected readonly openedCreate = signal(false);
   protected readonly openedUpdate = signal(false);
   protected readonly selected = signal<ShowNotificationDTO | null>(null);
@@ -41,11 +41,24 @@ export class NotificationComponent {
   protected load(): void {
     this.isLoading.set(true);
     this.apiNotificationService.apiNotificationGet(
-      this.currentPage(), this.pageSize(),
+      this.currentPage(),
+      this.pageSize(),
       this.filterText() || undefined,
     ).subscribe({
-      next: r => { this.items.set(r); this.isLoading.set(false); },
-      error: () => { this.isLoading.set(false); this.ns.showError('Erro ao Carregar Notificações!', 'Não foi possível carregar a lista de notificações. Tente novamente.'); }
+      next: data => {
+        const arr = data ?? [];
+        const hasMore = arr.length === this.pageSize();
+        this.items.set({
+          items: arr,
+          totalCount: (this.currentPage() - 1) * this.pageSize() + arr.length + (hasMore ? 1 : 0),
+          totalPages: hasMore ? this.currentPage() + 1 : this.currentPage(),
+        });
+        this.isLoading.set(false);
+      },
+      error: () => {
+        this.isLoading.set(false);
+        this.ns.showError('Erro ao Carregar Notificações!', 'Não foi possível carregar a lista de notificações. Tente novamente.');
+      },
     });
   }
 

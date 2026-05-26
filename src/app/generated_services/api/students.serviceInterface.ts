@@ -13,14 +13,13 @@ import { HttpHeaders }                                       from '@angular/comm
 import { Observable }                                        from 'rxjs';
 
 import { ApiAdminAcademiesIdGet404Response } from '../model/models';
-import { CarlonGracieBackendDTOsShowStudentDTO } from '../model/models';
-import { CarlonGracieBackendDTOsStudentSearchDTO } from '../model/models';
-import { CarlonGracieBackendStudentsApplicationDTOsCreateStudentDTO } from '../model/models';
-import { CarlonGracieBackendStudentsApplicationDTOsPhotoResponseDTO } from '../model/models';
-import { CarlonGracieBackendStudentsApplicationDTOsShowStudentDTO } from '../model/models';
-import { CarlonGracieBackendStudentsApplicationDTOsUpdateStudentDTO } from '../model/models';
-import { CarlonGracieBackendStudentsApplicationDTOsUploadPhotoBase64DTO } from '../model/models';
-import { MicrosoftAspNetCoreMvcValidationProblemDetails } from '../model/models';
+import { CreateStudentDTO } from '../model/models';
+import { PhotoResponseDTO } from '../model/models';
+import { ShowStudentDTO } from '../model/models';
+import { ShowStudentDTOPaginatedResult } from '../model/models';
+import { UpdateStudentDTO } from '../model/models';
+import { UploadPhotoBase64DTO } from '../model/models';
+import { ValidationProblemDetails } from '../model/models';
 
 
 import { Configuration }                                     from '../configuration';
@@ -34,27 +33,18 @@ export interface StudentsServiceInterface {
     /**
      * 
      * 
-     * @param name 
+     * @param firstName 
+     * @param lastName 
      * @param email 
-     * @param isActive 
-     * @param birthDateFrom 
-     * @param birthDateTo 
-     * @param pageNumber 
+     * @param keycloakUserId 
+     * @param createdAtFrom 
+     * @param createdAtTo 
+     * @param page 
      * @param pageSize 
+     * @param orderBy 
+     * @param orderByDescending 
      */
-    apiStudentsActiveGet(name?: string, email?: string, isActive?: boolean, birthDateFrom?: string, birthDateTo?: string, pageNumber?: number, pageSize?: number, extraHttpRequestParams?: any): Observable<Array<CarlonGracieBackendDTOsShowStudentDTO>>;
-
-    /**
-     * 
-     * 
-     * @param $filter OData filter expression. Examples: contains(name,\&#39;John\&#39;) | status eq \&#39;Active\&#39; | amount gt 100 | createdAt ge 2024-01-01T00:00:00Z
-     * @param $orderby Sort expression. Examples: name asc | createdAt desc | name asc,amount desc
-     * @param $top Page size — number of records to return (default: 20, max: 200). Use with $skip for pagination.
-     * @param $skip Records to skip. Use ($pageNumber - 1) * $top. Example: page 3 with size 20 → $skip&#x3D;40
-     * @param $count Set to \&#39;true\&#39; to include total record count in response as @odata.count
-     * @param $select Return only specific fields. Example: $select&#x3D;id,name,createdAt
-     */
-    apiStudentsGet($filter?: string, $orderby?: string, $top?: string, $skip?: string, $count?: string, $select?: string, extraHttpRequestParams?: any): Observable<Array<CarlonGracieBackendStudentsApplicationDTOsShowStudentDTO>>;
+    apiStudentsGet(firstName?: string, lastName?: string, email?: string, keycloakUserId?: string, createdAtFrom?: string, createdAtTo?: string, page?: number, pageSize?: number, orderBy?: string, orderByDescending?: boolean, extraHttpRequestParams?: any): Observable<ShowStudentDTOPaginatedResult>;
 
     /**
      * 
@@ -68,29 +58,29 @@ export interface StudentsServiceInterface {
      * 
      * @param id 
      */
-    apiStudentsIdGet(id: string, extraHttpRequestParams?: any): Observable<CarlonGracieBackendStudentsApplicationDTOsShowStudentDTO>;
+    apiStudentsIdGet(id: string, extraHttpRequestParams?: any): Observable<ShowStudentDTO>;
 
     /**
      * 
      * 
      * @param id 
-     * @param carlonGracieBackendStudentsApplicationDTOsUploadPhotoBase64DTO 
+     * @param uploadPhotoBase64DTO 
      */
-    apiStudentsIdPhotoBase64Post(id: string, carlonGracieBackendStudentsApplicationDTOsUploadPhotoBase64DTO?: CarlonGracieBackendStudentsApplicationDTOsUploadPhotoBase64DTO, extraHttpRequestParams?: any): Observable<CarlonGracieBackendStudentsApplicationDTOsShowStudentDTO>;
-
-    /**
-     * 
-     * 
-     * @param id 
-     */
-    apiStudentsIdPhotoDelete(id: string, extraHttpRequestParams?: any): Observable<CarlonGracieBackendStudentsApplicationDTOsShowStudentDTO>;
+    apiStudentsIdPhotoBase64Post(id: string, uploadPhotoBase64DTO?: UploadPhotoBase64DTO, extraHttpRequestParams?: any): Observable<ShowStudentDTO>;
 
     /**
      * 
      * 
      * @param id 
      */
-    apiStudentsIdPhotoGet(id: string, extraHttpRequestParams?: any): Observable<CarlonGracieBackendStudentsApplicationDTOsPhotoResponseDTO>;
+    apiStudentsIdPhotoDelete(id: string, extraHttpRequestParams?: any): Observable<ShowStudentDTO>;
+
+    /**
+     * 
+     * 
+     * @param id 
+     */
+    apiStudentsIdPhotoGet(id: string, extraHttpRequestParams?: any): Observable<PhotoResponseDTO>;
 
     /**
      * 
@@ -98,7 +88,7 @@ export interface StudentsServiceInterface {
      * @param id 
      * @param photo 
      */
-    apiStudentsIdPhotoPost(id: string, photo?: Blob, extraHttpRequestParams?: any): Observable<CarlonGracieBackendStudentsApplicationDTOsShowStudentDTO>;
+    apiStudentsIdPhotoPost(id: string, photo?: Blob, extraHttpRequestParams?: any): Observable<ShowStudentDTO>;
 
     /**
      * 
@@ -112,29 +102,22 @@ export interface StudentsServiceInterface {
      * 
      * 
      * @param id 
-     * @param carlonGracieBackendStudentsApplicationDTOsUpdateStudentDTO 
+     * @param updateStudentDTO 
      */
-    apiStudentsIdPut(id: string, carlonGracieBackendStudentsApplicationDTOsUpdateStudentDTO?: CarlonGracieBackendStudentsApplicationDTOsUpdateStudentDTO, extraHttpRequestParams?: any): Observable<CarlonGracieBackendStudentsApplicationDTOsShowStudentDTO>;
+    apiStudentsIdPut(id: string, updateStudentDTO?: UpdateStudentDTO, extraHttpRequestParams?: any): Observable<ShowStudentDTO>;
 
     /**
      * 
      * 
      * @param keycloakUserId 
      */
-    apiStudentsKeycloakKeycloakUserIdGet(keycloakUserId: string, extraHttpRequestParams?: any): Observable<CarlonGracieBackendStudentsApplicationDTOsShowStudentDTO>;
+    apiStudentsKeycloakKeycloakUserIdGet(keycloakUserId: string, extraHttpRequestParams?: any): Observable<ShowStudentDTO>;
 
     /**
      * 
      * 
-     * @param carlonGracieBackendStudentsApplicationDTOsCreateStudentDTO 
+     * @param createStudentDTO 
      */
-    apiStudentsPost(carlonGracieBackendStudentsApplicationDTOsCreateStudentDTO?: CarlonGracieBackendStudentsApplicationDTOsCreateStudentDTO, extraHttpRequestParams?: any): Observable<CarlonGracieBackendStudentsApplicationDTOsShowStudentDTO>;
-
-    /**
-     * 
-     * 
-     * @param carlonGracieBackendDTOsStudentSearchDTO 
-     */
-    apiStudentsSearchPost(carlonGracieBackendDTOsStudentSearchDTO?: CarlonGracieBackendDTOsStudentSearchDTO, extraHttpRequestParams?: any): Observable<Array<CarlonGracieBackendDTOsShowStudentDTO>>;
+    apiStudentsPost(createStudentDTO?: CreateStudentDTO, extraHttpRequestParams?: any): Observable<ShowStudentDTO>;
 
 }

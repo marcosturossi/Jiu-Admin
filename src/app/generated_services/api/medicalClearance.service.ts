@@ -22,13 +22,15 @@ import { ApiAdminAcademiesIdGet404Response } from '../model/apiAdminAcademiesIdG
 // @ts-ignore
 import { ApiMedicalClearanceIdAttachmentGet200Response } from '../model/apiMedicalClearanceIdAttachmentGet200Response';
 // @ts-ignore
-import { CarlonGracieBackendHealthComplianceApplicationDTOsCreateMedicalClearanceDto } from '../model/carlonGracieBackendHealthComplianceApplicationDTOsCreateMedicalClearanceDto';
+import { CreateMedicalClearanceDto } from '../model/createMedicalClearanceDto';
 // @ts-ignore
-import { CarlonGracieBackendHealthComplianceApplicationDTOsMedicalClearanceAttachmentResponseDto } from '../model/carlonGracieBackendHealthComplianceApplicationDTOsMedicalClearanceAttachmentResponseDto';
+import { MedicalClearanceAttachmentResponseDto } from '../model/medicalClearanceAttachmentResponseDto';
 // @ts-ignore
-import { CarlonGracieBackendHealthComplianceApplicationDTOsShowMedicalClearanceDto } from '../model/carlonGracieBackendHealthComplianceApplicationDTOsShowMedicalClearanceDto';
+import { ShowMedicalClearanceDto } from '../model/showMedicalClearanceDto';
 // @ts-ignore
-import { CarlonGracieBackendHealthComplianceApplicationDTOsUpdateMedicalClearanceDto } from '../model/carlonGracieBackendHealthComplianceApplicationDTOsUpdateMedicalClearanceDto';
+import { ShowMedicalClearanceDtoPaginatedResult } from '../model/showMedicalClearanceDtoPaginatedResult';
+// @ts-ignore
+import { UpdateMedicalClearanceDto } from '../model/updateMedicalClearanceDto';
 
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
@@ -118,15 +120,74 @@ export class MedicalClearanceService implements MedicalClearanceServiceInterface
     }
 
     /**
+     * @param studentId 
+     * @param isApproved 
+     * @param isActive 
+     * @param hasAttachment 
+     * @param isExpired 
+     * @param isExpiringSoon 
+     * @param expiresFrom 
+     * @param expiresTo 
+     * @param pageNumber 
+     * @param pageSize 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiMedicalClearanceExpiredGet(observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Array<CarlonGracieBackendHealthComplianceApplicationDTOsShowMedicalClearanceDto>>;
-    public apiMedicalClearanceExpiredGet(observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<CarlonGracieBackendHealthComplianceApplicationDTOsShowMedicalClearanceDto>>>;
-    public apiMedicalClearanceExpiredGet(observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<CarlonGracieBackendHealthComplianceApplicationDTOsShowMedicalClearanceDto>>>;
-    public apiMedicalClearanceExpiredGet(observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public apiMedicalClearanceExpiredGet(studentId?: string, isApproved?: boolean, isActive?: boolean, hasAttachment?: boolean, isExpired?: boolean, isExpiringSoon?: boolean, expiresFrom?: string, expiresTo?: string, pageNumber?: number, pageSize?: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<ShowMedicalClearanceDtoPaginatedResult>;
+    public apiMedicalClearanceExpiredGet(studentId?: string, isApproved?: boolean, isActive?: boolean, hasAttachment?: boolean, isExpired?: boolean, isExpiringSoon?: boolean, expiresFrom?: string, expiresTo?: string, pageNumber?: number, pageSize?: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<ShowMedicalClearanceDtoPaginatedResult>>;
+    public apiMedicalClearanceExpiredGet(studentId?: string, isApproved?: boolean, isActive?: boolean, hasAttachment?: boolean, isExpired?: boolean, isExpiringSoon?: boolean, expiresFrom?: string, expiresTo?: string, pageNumber?: number, pageSize?: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<ShowMedicalClearanceDtoPaginatedResult>>;
+    public apiMedicalClearanceExpiredGet(studentId?: string, isApproved?: boolean, isActive?: boolean, hasAttachment?: boolean, isExpired?: boolean, isExpiringSoon?: boolean, expiresFrom?: string, expiresTo?: string, pageNumber?: number, pageSize?: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+
+        let localVarQueryParameters = new HttpParams({encoder: this.encoder});
+        if (studentId !== undefined && studentId !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>studentId, 'StudentId');
+        }
+        if (isApproved !== undefined && isApproved !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>isApproved, 'IsApproved');
+        }
+        if (isActive !== undefined && isActive !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>isActive, 'IsActive');
+        }
+        if (hasAttachment !== undefined && hasAttachment !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>hasAttachment, 'HasAttachment');
+        }
+        if (isExpired !== undefined && isExpired !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>isExpired, 'IsExpired');
+        }
+        if (isExpiringSoon !== undefined && isExpiringSoon !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>isExpiringSoon, 'IsExpiringSoon');
+        }
+        if (expiresFrom !== undefined && expiresFrom !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>expiresFrom, 'ExpiresFrom');
+        }
+        if (expiresTo !== undefined && expiresTo !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>expiresTo, 'ExpiresTo');
+        }
+        if (pageNumber !== undefined && pageNumber !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>pageNumber, 'PageNumber');
+        }
+        if (pageSize !== undefined && pageSize !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>pageSize, 'PageSize');
+        }
 
         let localVarHeaders = this.defaultHeaders;
+
+        let localVarCredential: string | undefined;
+        // authentication (Bearer) required
+        localVarCredential = this.configuration.lookupCredential('Bearer');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('Authorization', 'Bearer ' + localVarCredential);
+        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -163,9 +224,10 @@ export class MedicalClearanceService implements MedicalClearanceServiceInterface
         }
 
         let localVarPath = `/api/MedicalClearance/expired`;
-        return this.httpClient.request<Array<CarlonGracieBackendHealthComplianceApplicationDTOsShowMedicalClearanceDto>>('get', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<ShowMedicalClearanceDtoPaginatedResult>('get', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
+                params: localVarQueryParameters,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,
@@ -177,22 +239,74 @@ export class MedicalClearanceService implements MedicalClearanceServiceInterface
     }
 
     /**
-     * @param daysThreshold 
+     * @param studentId 
+     * @param isApproved 
+     * @param isActive 
+     * @param hasAttachment 
+     * @param isExpired 
+     * @param isExpiringSoon 
+     * @param expiresFrom 
+     * @param expiresTo 
+     * @param pageNumber 
+     * @param pageSize 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiMedicalClearanceExpiringSoonGet(daysThreshold?: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Array<CarlonGracieBackendHealthComplianceApplicationDTOsShowMedicalClearanceDto>>;
-    public apiMedicalClearanceExpiringSoonGet(daysThreshold?: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<CarlonGracieBackendHealthComplianceApplicationDTOsShowMedicalClearanceDto>>>;
-    public apiMedicalClearanceExpiringSoonGet(daysThreshold?: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<CarlonGracieBackendHealthComplianceApplicationDTOsShowMedicalClearanceDto>>>;
-    public apiMedicalClearanceExpiringSoonGet(daysThreshold?: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public apiMedicalClearanceExpiringSoonGet(studentId?: string, isApproved?: boolean, isActive?: boolean, hasAttachment?: boolean, isExpired?: boolean, isExpiringSoon?: boolean, expiresFrom?: string, expiresTo?: string, pageNumber?: number, pageSize?: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<ShowMedicalClearanceDtoPaginatedResult>;
+    public apiMedicalClearanceExpiringSoonGet(studentId?: string, isApproved?: boolean, isActive?: boolean, hasAttachment?: boolean, isExpired?: boolean, isExpiringSoon?: boolean, expiresFrom?: string, expiresTo?: string, pageNumber?: number, pageSize?: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<ShowMedicalClearanceDtoPaginatedResult>>;
+    public apiMedicalClearanceExpiringSoonGet(studentId?: string, isApproved?: boolean, isActive?: boolean, hasAttachment?: boolean, isExpired?: boolean, isExpiringSoon?: boolean, expiresFrom?: string, expiresTo?: string, pageNumber?: number, pageSize?: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<ShowMedicalClearanceDtoPaginatedResult>>;
+    public apiMedicalClearanceExpiringSoonGet(studentId?: string, isApproved?: boolean, isActive?: boolean, hasAttachment?: boolean, isExpired?: boolean, isExpiringSoon?: boolean, expiresFrom?: string, expiresTo?: string, pageNumber?: number, pageSize?: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
 
         let localVarQueryParameters = new HttpParams({encoder: this.encoder});
-        if (daysThreshold !== undefined && daysThreshold !== null) {
+        if (studentId !== undefined && studentId !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>daysThreshold, 'daysThreshold');
+            <any>studentId, 'StudentId');
+        }
+        if (isApproved !== undefined && isApproved !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>isApproved, 'IsApproved');
+        }
+        if (isActive !== undefined && isActive !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>isActive, 'IsActive');
+        }
+        if (hasAttachment !== undefined && hasAttachment !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>hasAttachment, 'HasAttachment');
+        }
+        if (isExpired !== undefined && isExpired !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>isExpired, 'IsExpired');
+        }
+        if (isExpiringSoon !== undefined && isExpiringSoon !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>isExpiringSoon, 'IsExpiringSoon');
+        }
+        if (expiresFrom !== undefined && expiresFrom !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>expiresFrom, 'ExpiresFrom');
+        }
+        if (expiresTo !== undefined && expiresTo !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>expiresTo, 'ExpiresTo');
+        }
+        if (pageNumber !== undefined && pageNumber !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>pageNumber, 'PageNumber');
+        }
+        if (pageSize !== undefined && pageSize !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>pageSize, 'PageSize');
         }
 
         let localVarHeaders = this.defaultHeaders;
+
+        let localVarCredential: string | undefined;
+        // authentication (Bearer) required
+        localVarCredential = this.configuration.lookupCredential('Bearer');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('Authorization', 'Bearer ' + localVarCredential);
+        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -229,7 +343,7 @@ export class MedicalClearanceService implements MedicalClearanceServiceInterface
         }
 
         let localVarPath = `/api/MedicalClearance/expiring-soon`;
-        return this.httpClient.request<Array<CarlonGracieBackendHealthComplianceApplicationDTOsShowMedicalClearanceDto>>('get', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<ShowMedicalClearanceDtoPaginatedResult>('get', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 params: localVarQueryParameters,
@@ -244,47 +358,74 @@ export class MedicalClearanceService implements MedicalClearanceServiceInterface
     }
 
     /**
-     * @param $filter OData filter expression. Examples: contains(name,\&#39;John\&#39;) | status eq \&#39;Active\&#39; | amount gt 100 | createdAt ge 2024-01-01T00:00:00Z
-     * @param $orderby Sort expression. Examples: name asc | createdAt desc | name asc,amount desc
-     * @param $top Page size — number of records to return (default: 20, max: 200). Use with $skip for pagination.
-     * @param $skip Records to skip. Use ($pageNumber - 1) * $top. Example: page 3 with size 20 → $skip&#x3D;40
-     * @param $count Set to \&#39;true\&#39; to include total record count in response as @odata.count
-     * @param $select Return only specific fields. Example: $select&#x3D;id,name,createdAt
+     * @param studentId 
+     * @param isApproved 
+     * @param isActive 
+     * @param hasAttachment 
+     * @param isExpired 
+     * @param isExpiringSoon 
+     * @param expiresFrom 
+     * @param expiresTo 
+     * @param pageNumber 
+     * @param pageSize 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiMedicalClearanceGet($filter?: string, $orderby?: string, $top?: string, $skip?: string, $count?: string, $select?: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Array<CarlonGracieBackendHealthComplianceApplicationDTOsShowMedicalClearanceDto>>;
-    public apiMedicalClearanceGet($filter?: string, $orderby?: string, $top?: string, $skip?: string, $count?: string, $select?: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<CarlonGracieBackendHealthComplianceApplicationDTOsShowMedicalClearanceDto>>>;
-    public apiMedicalClearanceGet($filter?: string, $orderby?: string, $top?: string, $skip?: string, $count?: string, $select?: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<CarlonGracieBackendHealthComplianceApplicationDTOsShowMedicalClearanceDto>>>;
-    public apiMedicalClearanceGet($filter?: string, $orderby?: string, $top?: string, $skip?: string, $count?: string, $select?: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public apiMedicalClearanceGet(studentId?: string, isApproved?: boolean, isActive?: boolean, hasAttachment?: boolean, isExpired?: boolean, isExpiringSoon?: boolean, expiresFrom?: string, expiresTo?: string, pageNumber?: number, pageSize?: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<ShowMedicalClearanceDtoPaginatedResult>;
+    public apiMedicalClearanceGet(studentId?: string, isApproved?: boolean, isActive?: boolean, hasAttachment?: boolean, isExpired?: boolean, isExpiringSoon?: boolean, expiresFrom?: string, expiresTo?: string, pageNumber?: number, pageSize?: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<ShowMedicalClearanceDtoPaginatedResult>>;
+    public apiMedicalClearanceGet(studentId?: string, isApproved?: boolean, isActive?: boolean, hasAttachment?: boolean, isExpired?: boolean, isExpiringSoon?: boolean, expiresFrom?: string, expiresTo?: string, pageNumber?: number, pageSize?: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<ShowMedicalClearanceDtoPaginatedResult>>;
+    public apiMedicalClearanceGet(studentId?: string, isApproved?: boolean, isActive?: boolean, hasAttachment?: boolean, isExpired?: boolean, isExpiringSoon?: boolean, expiresFrom?: string, expiresTo?: string, pageNumber?: number, pageSize?: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
 
         let localVarQueryParameters = new HttpParams({encoder: this.encoder});
-        if ($filter !== undefined && $filter !== null) {
+        if (studentId !== undefined && studentId !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>$filter, '$filter');
+            <any>studentId, 'StudentId');
         }
-        if ($orderby !== undefined && $orderby !== null) {
+        if (isApproved !== undefined && isApproved !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>$orderby, '$orderby');
+            <any>isApproved, 'IsApproved');
         }
-        if ($top !== undefined && $top !== null) {
+        if (isActive !== undefined && isActive !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>$top, '$top');
+            <any>isActive, 'IsActive');
         }
-        if ($skip !== undefined && $skip !== null) {
+        if (hasAttachment !== undefined && hasAttachment !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>$skip, '$skip');
+            <any>hasAttachment, 'HasAttachment');
         }
-        if ($count !== undefined && $count !== null) {
+        if (isExpired !== undefined && isExpired !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>$count, '$count');
+            <any>isExpired, 'IsExpired');
         }
-        if ($select !== undefined && $select !== null) {
+        if (isExpiringSoon !== undefined && isExpiringSoon !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>$select, '$select');
+            <any>isExpiringSoon, 'IsExpiringSoon');
+        }
+        if (expiresFrom !== undefined && expiresFrom !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>expiresFrom, 'ExpiresFrom');
+        }
+        if (expiresTo !== undefined && expiresTo !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>expiresTo, 'ExpiresTo');
+        }
+        if (pageNumber !== undefined && pageNumber !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>pageNumber, 'PageNumber');
+        }
+        if (pageSize !== undefined && pageSize !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>pageSize, 'PageSize');
         }
 
         let localVarHeaders = this.defaultHeaders;
+
+        let localVarCredential: string | undefined;
+        // authentication (Bearer) required
+        localVarCredential = this.configuration.lookupCredential('Bearer');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('Authorization', 'Bearer ' + localVarCredential);
+        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -321,7 +462,7 @@ export class MedicalClearanceService implements MedicalClearanceServiceInterface
         }
 
         let localVarPath = `/api/MedicalClearance`;
-        return this.httpClient.request<Array<CarlonGracieBackendHealthComplianceApplicationDTOsShowMedicalClearanceDto>>('get', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<ShowMedicalClearanceDtoPaginatedResult>('get', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 params: localVarQueryParameters,
@@ -349,6 +490,13 @@ export class MedicalClearanceService implements MedicalClearanceServiceInterface
         }
 
         let localVarHeaders = this.defaultHeaders;
+
+        let localVarCredential: string | undefined;
+        // authentication (Bearer) required
+        localVarCredential = this.configuration.lookupCredential('Bearer');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('Authorization', 'Bearer ' + localVarCredential);
+        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -405,15 +553,22 @@ export class MedicalClearanceService implements MedicalClearanceServiceInterface
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiMedicalClearanceIdAttachmentPost(id: string, file?: Blob, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<CarlonGracieBackendHealthComplianceApplicationDTOsMedicalClearanceAttachmentResponseDto>;
-    public apiMedicalClearanceIdAttachmentPost(id: string, file?: Blob, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<CarlonGracieBackendHealthComplianceApplicationDTOsMedicalClearanceAttachmentResponseDto>>;
-    public apiMedicalClearanceIdAttachmentPost(id: string, file?: Blob, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<CarlonGracieBackendHealthComplianceApplicationDTOsMedicalClearanceAttachmentResponseDto>>;
+    public apiMedicalClearanceIdAttachmentPost(id: string, file?: Blob, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<MedicalClearanceAttachmentResponseDto>;
+    public apiMedicalClearanceIdAttachmentPost(id: string, file?: Blob, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<MedicalClearanceAttachmentResponseDto>>;
+    public apiMedicalClearanceIdAttachmentPost(id: string, file?: Blob, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<MedicalClearanceAttachmentResponseDto>>;
     public apiMedicalClearanceIdAttachmentPost(id: string, file?: Blob, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         if (id === null || id === undefined) {
             throw new Error('Required parameter id was null or undefined when calling apiMedicalClearanceIdAttachmentPost.');
         }
 
         let localVarHeaders = this.defaultHeaders;
+
+        let localVarCredential: string | undefined;
+        // authentication (Bearer) required
+        localVarCredential = this.configuration.lookupCredential('Bearer');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('Authorization', 'Bearer ' + localVarCredential);
+        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -472,7 +627,7 @@ export class MedicalClearanceService implements MedicalClearanceServiceInterface
         }
 
         let localVarPath = `/api/MedicalClearance/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: "uuid"})}/attachment`;
-        return this.httpClient.request<CarlonGracieBackendHealthComplianceApplicationDTOsMedicalClearanceAttachmentResponseDto>('post', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<MedicalClearanceAttachmentResponseDto>('post', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 body: localVarConvertFormParamsToString ? localVarFormParams.toString() : localVarFormParams,
@@ -507,6 +662,13 @@ export class MedicalClearanceService implements MedicalClearanceServiceInterface
         }
 
         let localVarHeaders = this.defaultHeaders;
+
+        let localVarCredential: string | undefined;
+        // authentication (Bearer) required
+        localVarCredential = this.configuration.lookupCredential('Bearer');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('Authorization', 'Bearer ' + localVarCredential);
+        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -572,6 +734,13 @@ export class MedicalClearanceService implements MedicalClearanceServiceInterface
 
         let localVarHeaders = this.defaultHeaders;
 
+        let localVarCredential: string | undefined;
+        // authentication (Bearer) required
+        localVarCredential = this.configuration.lookupCredential('Bearer');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('Authorization', 'Bearer ' + localVarCredential);
+        }
+
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
@@ -625,15 +794,22 @@ export class MedicalClearanceService implements MedicalClearanceServiceInterface
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiMedicalClearanceIdGet(id: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<CarlonGracieBackendHealthComplianceApplicationDTOsShowMedicalClearanceDto>;
-    public apiMedicalClearanceIdGet(id: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<CarlonGracieBackendHealthComplianceApplicationDTOsShowMedicalClearanceDto>>;
-    public apiMedicalClearanceIdGet(id: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<CarlonGracieBackendHealthComplianceApplicationDTOsShowMedicalClearanceDto>>;
+    public apiMedicalClearanceIdGet(id: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<ShowMedicalClearanceDto>;
+    public apiMedicalClearanceIdGet(id: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<ShowMedicalClearanceDto>>;
+    public apiMedicalClearanceIdGet(id: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<ShowMedicalClearanceDto>>;
     public apiMedicalClearanceIdGet(id: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         if (id === null || id === undefined) {
             throw new Error('Required parameter id was null or undefined when calling apiMedicalClearanceIdGet.');
         }
 
         let localVarHeaders = this.defaultHeaders;
+
+        let localVarCredential: string | undefined;
+        // authentication (Bearer) required
+        localVarCredential = this.configuration.lookupCredential('Bearer');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('Authorization', 'Bearer ' + localVarCredential);
+        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -670,7 +846,7 @@ export class MedicalClearanceService implements MedicalClearanceServiceInterface
         }
 
         let localVarPath = `/api/MedicalClearance/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: "uuid"})}`;
-        return this.httpClient.request<CarlonGracieBackendHealthComplianceApplicationDTOsShowMedicalClearanceDto>('get', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<ShowMedicalClearanceDto>('get', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 responseType: <any>responseType_,
@@ -685,19 +861,26 @@ export class MedicalClearanceService implements MedicalClearanceServiceInterface
 
     /**
      * @param id 
-     * @param carlonGracieBackendHealthComplianceApplicationDTOsUpdateMedicalClearanceDto 
+     * @param updateMedicalClearanceDto 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiMedicalClearanceIdPut(id: string, carlonGracieBackendHealthComplianceApplicationDTOsUpdateMedicalClearanceDto?: CarlonGracieBackendHealthComplianceApplicationDTOsUpdateMedicalClearanceDto, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<CarlonGracieBackendHealthComplianceApplicationDTOsShowMedicalClearanceDto>;
-    public apiMedicalClearanceIdPut(id: string, carlonGracieBackendHealthComplianceApplicationDTOsUpdateMedicalClearanceDto?: CarlonGracieBackendHealthComplianceApplicationDTOsUpdateMedicalClearanceDto, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<CarlonGracieBackendHealthComplianceApplicationDTOsShowMedicalClearanceDto>>;
-    public apiMedicalClearanceIdPut(id: string, carlonGracieBackendHealthComplianceApplicationDTOsUpdateMedicalClearanceDto?: CarlonGracieBackendHealthComplianceApplicationDTOsUpdateMedicalClearanceDto, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<CarlonGracieBackendHealthComplianceApplicationDTOsShowMedicalClearanceDto>>;
-    public apiMedicalClearanceIdPut(id: string, carlonGracieBackendHealthComplianceApplicationDTOsUpdateMedicalClearanceDto?: CarlonGracieBackendHealthComplianceApplicationDTOsUpdateMedicalClearanceDto, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public apiMedicalClearanceIdPut(id: string, updateMedicalClearanceDto?: UpdateMedicalClearanceDto, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<ShowMedicalClearanceDto>;
+    public apiMedicalClearanceIdPut(id: string, updateMedicalClearanceDto?: UpdateMedicalClearanceDto, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<ShowMedicalClearanceDto>>;
+    public apiMedicalClearanceIdPut(id: string, updateMedicalClearanceDto?: UpdateMedicalClearanceDto, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<ShowMedicalClearanceDto>>;
+    public apiMedicalClearanceIdPut(id: string, updateMedicalClearanceDto?: UpdateMedicalClearanceDto, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         if (id === null || id === undefined) {
             throw new Error('Required parameter id was null or undefined when calling apiMedicalClearanceIdPut.');
         }
 
         let localVarHeaders = this.defaultHeaders;
+
+        let localVarCredential: string | undefined;
+        // authentication (Bearer) required
+        localVarCredential = this.configuration.lookupCredential('Bearer');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('Authorization', 'Bearer ' + localVarCredential);
+        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -724,44 +907,7 @@ export class MedicalClearanceService implements MedicalClearanceServiceInterface
 
         // to determine the Content-Type header
         const consumes: string[] = [
-            'application/json;odata.metadata=minimal;odata.streaming=true',
-            'application/json;odata.metadata=minimal;odata.streaming=false',
-            'application/json;odata.metadata=minimal',
-            'application/json;odata.metadata=full;odata.streaming=true',
-            'application/json;odata.metadata=full;odata.streaming=false',
-            'application/json;odata.metadata=full',
-            'application/json;odata.metadata=none;odata.streaming=true',
-            'application/json;odata.metadata=none;odata.streaming=false',
-            'application/json;odata.metadata=none',
-            'application/json;odata.streaming=true',
-            'application/json;odata.streaming=false',
             'application/json',
-            'application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=false',
-            'application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=true',
-            'application/json;odata.metadata=minimal;odata.streaming=false;IEEE754Compatible=false',
-            'application/json;odata.metadata=minimal;odata.streaming=false;IEEE754Compatible=true',
-            'application/json;odata.metadata=minimal;IEEE754Compatible=false',
-            'application/json;odata.metadata=minimal;IEEE754Compatible=true',
-            'application/json;odata.metadata=full;odata.streaming=true;IEEE754Compatible=false',
-            'application/json;odata.metadata=full;odata.streaming=true;IEEE754Compatible=true',
-            'application/json;odata.metadata=full;odata.streaming=false;IEEE754Compatible=false',
-            'application/json;odata.metadata=full;odata.streaming=false;IEEE754Compatible=true',
-            'application/json;odata.metadata=full;IEEE754Compatible=false',
-            'application/json;odata.metadata=full;IEEE754Compatible=true',
-            'application/json;odata.metadata=none;odata.streaming=true;IEEE754Compatible=false',
-            'application/json;odata.metadata=none;odata.streaming=true;IEEE754Compatible=true',
-            'application/json;odata.metadata=none;odata.streaming=false;IEEE754Compatible=true',
-            'application/json;odata.metadata=none;odata.streaming=false;IEEE754Compatible=false',
-            'application/json;odata.metadata=none;IEEE754Compatible=false',
-            'application/json;odata.metadata=none;IEEE754Compatible=true',
-            'application/json;odata.streaming=true;IEEE754Compatible=false',
-            'application/json;odata.streaming=true;IEEE754Compatible=true',
-            'application/json;odata.streaming=false;IEEE754Compatible=false',
-            'application/json;odata.streaming=false;IEEE754Compatible=true',
-            'application/json;IEEE754Compatible=false',
-            'application/json;IEEE754Compatible=true',
-            'application/xml',
-            'text/plain',
             'text/json',
             'application/*+json'
         ];
@@ -782,10 +928,10 @@ export class MedicalClearanceService implements MedicalClearanceServiceInterface
         }
 
         let localVarPath = `/api/MedicalClearance/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: "uuid"})}`;
-        return this.httpClient.request<CarlonGracieBackendHealthComplianceApplicationDTOsShowMedicalClearanceDto>('put', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<ShowMedicalClearanceDto>('put', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
-                body: carlonGracieBackendHealthComplianceApplicationDTOsUpdateMedicalClearanceDto,
+                body: updateMedicalClearanceDto,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,
@@ -797,15 +943,74 @@ export class MedicalClearanceService implements MedicalClearanceServiceInterface
     }
 
     /**
+     * @param studentId 
+     * @param isApproved 
+     * @param isActive 
+     * @param hasAttachment 
+     * @param isExpired 
+     * @param isExpiringSoon 
+     * @param expiresFrom 
+     * @param expiresTo 
+     * @param pageNumber 
+     * @param pageSize 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiMedicalClearancePendingReviewGet(observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Array<CarlonGracieBackendHealthComplianceApplicationDTOsShowMedicalClearanceDto>>;
-    public apiMedicalClearancePendingReviewGet(observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<CarlonGracieBackendHealthComplianceApplicationDTOsShowMedicalClearanceDto>>>;
-    public apiMedicalClearancePendingReviewGet(observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<CarlonGracieBackendHealthComplianceApplicationDTOsShowMedicalClearanceDto>>>;
-    public apiMedicalClearancePendingReviewGet(observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public apiMedicalClearancePendingReviewGet(studentId?: string, isApproved?: boolean, isActive?: boolean, hasAttachment?: boolean, isExpired?: boolean, isExpiringSoon?: boolean, expiresFrom?: string, expiresTo?: string, pageNumber?: number, pageSize?: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<ShowMedicalClearanceDtoPaginatedResult>;
+    public apiMedicalClearancePendingReviewGet(studentId?: string, isApproved?: boolean, isActive?: boolean, hasAttachment?: boolean, isExpired?: boolean, isExpiringSoon?: boolean, expiresFrom?: string, expiresTo?: string, pageNumber?: number, pageSize?: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<ShowMedicalClearanceDtoPaginatedResult>>;
+    public apiMedicalClearancePendingReviewGet(studentId?: string, isApproved?: boolean, isActive?: boolean, hasAttachment?: boolean, isExpired?: boolean, isExpiringSoon?: boolean, expiresFrom?: string, expiresTo?: string, pageNumber?: number, pageSize?: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<ShowMedicalClearanceDtoPaginatedResult>>;
+    public apiMedicalClearancePendingReviewGet(studentId?: string, isApproved?: boolean, isActive?: boolean, hasAttachment?: boolean, isExpired?: boolean, isExpiringSoon?: boolean, expiresFrom?: string, expiresTo?: string, pageNumber?: number, pageSize?: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+
+        let localVarQueryParameters = new HttpParams({encoder: this.encoder});
+        if (studentId !== undefined && studentId !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>studentId, 'StudentId');
+        }
+        if (isApproved !== undefined && isApproved !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>isApproved, 'IsApproved');
+        }
+        if (isActive !== undefined && isActive !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>isActive, 'IsActive');
+        }
+        if (hasAttachment !== undefined && hasAttachment !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>hasAttachment, 'HasAttachment');
+        }
+        if (isExpired !== undefined && isExpired !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>isExpired, 'IsExpired');
+        }
+        if (isExpiringSoon !== undefined && isExpiringSoon !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>isExpiringSoon, 'IsExpiringSoon');
+        }
+        if (expiresFrom !== undefined && expiresFrom !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>expiresFrom, 'ExpiresFrom');
+        }
+        if (expiresTo !== undefined && expiresTo !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>expiresTo, 'ExpiresTo');
+        }
+        if (pageNumber !== undefined && pageNumber !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>pageNumber, 'PageNumber');
+        }
+        if (pageSize !== undefined && pageSize !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>pageSize, 'PageSize');
+        }
 
         let localVarHeaders = this.defaultHeaders;
+
+        let localVarCredential: string | undefined;
+        // authentication (Bearer) required
+        localVarCredential = this.configuration.lookupCredential('Bearer');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('Authorization', 'Bearer ' + localVarCredential);
+        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -842,9 +1047,10 @@ export class MedicalClearanceService implements MedicalClearanceServiceInterface
         }
 
         let localVarPath = `/api/MedicalClearance/pending-review`;
-        return this.httpClient.request<Array<CarlonGracieBackendHealthComplianceApplicationDTOsShowMedicalClearanceDto>>('get', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<ShowMedicalClearanceDtoPaginatedResult>('get', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
+                params: localVarQueryParameters,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,
@@ -856,16 +1062,23 @@ export class MedicalClearanceService implements MedicalClearanceServiceInterface
     }
 
     /**
-     * @param carlonGracieBackendHealthComplianceApplicationDTOsCreateMedicalClearanceDto 
+     * @param createMedicalClearanceDto 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiMedicalClearancePost(carlonGracieBackendHealthComplianceApplicationDTOsCreateMedicalClearanceDto?: CarlonGracieBackendHealthComplianceApplicationDTOsCreateMedicalClearanceDto, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<CarlonGracieBackendHealthComplianceApplicationDTOsShowMedicalClearanceDto>;
-    public apiMedicalClearancePost(carlonGracieBackendHealthComplianceApplicationDTOsCreateMedicalClearanceDto?: CarlonGracieBackendHealthComplianceApplicationDTOsCreateMedicalClearanceDto, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<CarlonGracieBackendHealthComplianceApplicationDTOsShowMedicalClearanceDto>>;
-    public apiMedicalClearancePost(carlonGracieBackendHealthComplianceApplicationDTOsCreateMedicalClearanceDto?: CarlonGracieBackendHealthComplianceApplicationDTOsCreateMedicalClearanceDto, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<CarlonGracieBackendHealthComplianceApplicationDTOsShowMedicalClearanceDto>>;
-    public apiMedicalClearancePost(carlonGracieBackendHealthComplianceApplicationDTOsCreateMedicalClearanceDto?: CarlonGracieBackendHealthComplianceApplicationDTOsCreateMedicalClearanceDto, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public apiMedicalClearancePost(createMedicalClearanceDto?: CreateMedicalClearanceDto, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<ShowMedicalClearanceDto>;
+    public apiMedicalClearancePost(createMedicalClearanceDto?: CreateMedicalClearanceDto, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<ShowMedicalClearanceDto>>;
+    public apiMedicalClearancePost(createMedicalClearanceDto?: CreateMedicalClearanceDto, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<ShowMedicalClearanceDto>>;
+    public apiMedicalClearancePost(createMedicalClearanceDto?: CreateMedicalClearanceDto, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
 
         let localVarHeaders = this.defaultHeaders;
+
+        let localVarCredential: string | undefined;
+        // authentication (Bearer) required
+        localVarCredential = this.configuration.lookupCredential('Bearer');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('Authorization', 'Bearer ' + localVarCredential);
+        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -892,44 +1105,7 @@ export class MedicalClearanceService implements MedicalClearanceServiceInterface
 
         // to determine the Content-Type header
         const consumes: string[] = [
-            'application/json;odata.metadata=minimal;odata.streaming=true',
-            'application/json;odata.metadata=minimal;odata.streaming=false',
-            'application/json;odata.metadata=minimal',
-            'application/json;odata.metadata=full;odata.streaming=true',
-            'application/json;odata.metadata=full;odata.streaming=false',
-            'application/json;odata.metadata=full',
-            'application/json;odata.metadata=none;odata.streaming=true',
-            'application/json;odata.metadata=none;odata.streaming=false',
-            'application/json;odata.metadata=none',
-            'application/json;odata.streaming=true',
-            'application/json;odata.streaming=false',
             'application/json',
-            'application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=false',
-            'application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=true',
-            'application/json;odata.metadata=minimal;odata.streaming=false;IEEE754Compatible=false',
-            'application/json;odata.metadata=minimal;odata.streaming=false;IEEE754Compatible=true',
-            'application/json;odata.metadata=minimal;IEEE754Compatible=false',
-            'application/json;odata.metadata=minimal;IEEE754Compatible=true',
-            'application/json;odata.metadata=full;odata.streaming=true;IEEE754Compatible=false',
-            'application/json;odata.metadata=full;odata.streaming=true;IEEE754Compatible=true',
-            'application/json;odata.metadata=full;odata.streaming=false;IEEE754Compatible=false',
-            'application/json;odata.metadata=full;odata.streaming=false;IEEE754Compatible=true',
-            'application/json;odata.metadata=full;IEEE754Compatible=false',
-            'application/json;odata.metadata=full;IEEE754Compatible=true',
-            'application/json;odata.metadata=none;odata.streaming=true;IEEE754Compatible=false',
-            'application/json;odata.metadata=none;odata.streaming=true;IEEE754Compatible=true',
-            'application/json;odata.metadata=none;odata.streaming=false;IEEE754Compatible=true',
-            'application/json;odata.metadata=none;odata.streaming=false;IEEE754Compatible=false',
-            'application/json;odata.metadata=none;IEEE754Compatible=false',
-            'application/json;odata.metadata=none;IEEE754Compatible=true',
-            'application/json;odata.streaming=true;IEEE754Compatible=false',
-            'application/json;odata.streaming=true;IEEE754Compatible=true',
-            'application/json;odata.streaming=false;IEEE754Compatible=false',
-            'application/json;odata.streaming=false;IEEE754Compatible=true',
-            'application/json;IEEE754Compatible=false',
-            'application/json;IEEE754Compatible=true',
-            'application/xml',
-            'text/plain',
             'text/json',
             'application/*+json'
         ];
@@ -950,10 +1126,10 @@ export class MedicalClearanceService implements MedicalClearanceServiceInterface
         }
 
         let localVarPath = `/api/MedicalClearance`;
-        return this.httpClient.request<CarlonGracieBackendHealthComplianceApplicationDTOsShowMedicalClearanceDto>('post', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<ShowMedicalClearanceDto>('post', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
-                body: carlonGracieBackendHealthComplianceApplicationDTOsCreateMedicalClearanceDto,
+                body: createMedicalClearanceDto,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,
@@ -969,15 +1145,22 @@ export class MedicalClearanceService implements MedicalClearanceServiceInterface
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiMedicalClearanceStudentStudentIdCurrentGet(studentId: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<CarlonGracieBackendHealthComplianceApplicationDTOsShowMedicalClearanceDto>;
-    public apiMedicalClearanceStudentStudentIdCurrentGet(studentId: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<CarlonGracieBackendHealthComplianceApplicationDTOsShowMedicalClearanceDto>>;
-    public apiMedicalClearanceStudentStudentIdCurrentGet(studentId: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<CarlonGracieBackendHealthComplianceApplicationDTOsShowMedicalClearanceDto>>;
+    public apiMedicalClearanceStudentStudentIdCurrentGet(studentId: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<ShowMedicalClearanceDto>;
+    public apiMedicalClearanceStudentStudentIdCurrentGet(studentId: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<ShowMedicalClearanceDto>>;
+    public apiMedicalClearanceStudentStudentIdCurrentGet(studentId: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<ShowMedicalClearanceDto>>;
     public apiMedicalClearanceStudentStudentIdCurrentGet(studentId: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         if (studentId === null || studentId === undefined) {
             throw new Error('Required parameter studentId was null or undefined when calling apiMedicalClearanceStudentStudentIdCurrentGet.');
         }
 
         let localVarHeaders = this.defaultHeaders;
+
+        let localVarCredential: string | undefined;
+        // authentication (Bearer) required
+        localVarCredential = this.configuration.lookupCredential('Bearer');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('Authorization', 'Bearer ' + localVarCredential);
+        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -1014,7 +1197,7 @@ export class MedicalClearanceService implements MedicalClearanceServiceInterface
         }
 
         let localVarPath = `/api/MedicalClearance/student/${this.configuration.encodeParam({name: "studentId", value: studentId, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: "uuid"})}/current`;
-        return this.httpClient.request<CarlonGracieBackendHealthComplianceApplicationDTOsShowMedicalClearanceDto>('get', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<ShowMedicalClearanceDto>('get', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 responseType: <any>responseType_,
@@ -1042,9 +1225,9 @@ export class MedicalClearanceService implements MedicalClearanceServiceInterface
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiMedicalClearanceStudentStudentIdGet(studentId: string, studentId2?: string, isApproved?: boolean, isActive?: boolean, hasAttachment?: boolean, isExpired?: boolean, isExpiringSoon?: boolean, expiresFrom?: string, expiresTo?: string, pageNumber?: number, pageSize?: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Array<CarlonGracieBackendHealthComplianceApplicationDTOsShowMedicalClearanceDto>>;
-    public apiMedicalClearanceStudentStudentIdGet(studentId: string, studentId2?: string, isApproved?: boolean, isActive?: boolean, hasAttachment?: boolean, isExpired?: boolean, isExpiringSoon?: boolean, expiresFrom?: string, expiresTo?: string, pageNumber?: number, pageSize?: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<CarlonGracieBackendHealthComplianceApplicationDTOsShowMedicalClearanceDto>>>;
-    public apiMedicalClearanceStudentStudentIdGet(studentId: string, studentId2?: string, isApproved?: boolean, isActive?: boolean, hasAttachment?: boolean, isExpired?: boolean, isExpiringSoon?: boolean, expiresFrom?: string, expiresTo?: string, pageNumber?: number, pageSize?: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<CarlonGracieBackendHealthComplianceApplicationDTOsShowMedicalClearanceDto>>>;
+    public apiMedicalClearanceStudentStudentIdGet(studentId: string, studentId2?: string, isApproved?: boolean, isActive?: boolean, hasAttachment?: boolean, isExpired?: boolean, isExpiringSoon?: boolean, expiresFrom?: string, expiresTo?: string, pageNumber?: number, pageSize?: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<ShowMedicalClearanceDtoPaginatedResult>;
+    public apiMedicalClearanceStudentStudentIdGet(studentId: string, studentId2?: string, isApproved?: boolean, isActive?: boolean, hasAttachment?: boolean, isExpired?: boolean, isExpiringSoon?: boolean, expiresFrom?: string, expiresTo?: string, pageNumber?: number, pageSize?: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<ShowMedicalClearanceDtoPaginatedResult>>;
+    public apiMedicalClearanceStudentStudentIdGet(studentId: string, studentId2?: string, isApproved?: boolean, isActive?: boolean, hasAttachment?: boolean, isExpired?: boolean, isExpiringSoon?: boolean, expiresFrom?: string, expiresTo?: string, pageNumber?: number, pageSize?: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<ShowMedicalClearanceDtoPaginatedResult>>;
     public apiMedicalClearanceStudentStudentIdGet(studentId: string, studentId2?: string, isApproved?: boolean, isActive?: boolean, hasAttachment?: boolean, isExpired?: boolean, isExpiringSoon?: boolean, expiresFrom?: string, expiresTo?: string, pageNumber?: number, pageSize?: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         if (studentId === null || studentId === undefined) {
             throw new Error('Required parameter studentId was null or undefined when calling apiMedicalClearanceStudentStudentIdGet.');
@@ -1094,6 +1277,13 @@ export class MedicalClearanceService implements MedicalClearanceServiceInterface
 
         let localVarHeaders = this.defaultHeaders;
 
+        let localVarCredential: string | undefined;
+        // authentication (Bearer) required
+        localVarCredential = this.configuration.lookupCredential('Bearer');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('Authorization', 'Bearer ' + localVarCredential);
+        }
+
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
@@ -1129,7 +1319,7 @@ export class MedicalClearanceService implements MedicalClearanceServiceInterface
         }
 
         let localVarPath = `/api/MedicalClearance/student/${this.configuration.encodeParam({name: "studentId", value: studentId, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: "uuid"})}`;
-        return this.httpClient.request<Array<CarlonGracieBackendHealthComplianceApplicationDTOsShowMedicalClearanceDto>>('get', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<ShowMedicalClearanceDtoPaginatedResult>('get', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 params: localVarQueryParameters,

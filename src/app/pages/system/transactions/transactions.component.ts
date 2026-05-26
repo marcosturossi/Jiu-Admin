@@ -10,7 +10,7 @@ import { FilterField, FilterOutput } from '../../../shared/filter/filter.types';
 import { PaginationComponent } from '../../../shared/pagination/pagination.component';
 import { CreateTransactionComponent } from './create-transaction/create-transaction.component';
 import { UpdateTransactionComponent } from './update-transaction/update-transaction.component';
-import { ODataPage, buildClientPage, parseODataPage } from '../../../utils/odata.utils';
+import { PageResult } from '../../../utils/page-result';
 
 @Component({
   selector: 'app-transactions',
@@ -34,14 +34,13 @@ export class TransactionsComponent {
   private readonly ns = inject(NotificationService);
 
   protected readonly isLoading = signal(false);
-  protected readonly items = signal<ODataPage<ShowTransactionDTO> | null>(null);
-  protected readonly allItems = signal<ShowTransactionDTO[]>([]);
+  protected readonly items = signal<PageResult<ShowTransactionDTO> | null>(null);
   protected readonly openedCreate = signal(false);
   protected readonly openedUpdate = signal(false);
   protected readonly selected = signal<ShowTransactionDTO | null>(null);
   protected readonly currentPage = signal(1);
   protected readonly pageSize = signal(10);
-  protected readonly filterQuery = signal<string | undefined>(undefined);
+  protected readonly filterType = signal<TransactionType | undefined>(undefined);
   protected readonly categories = signal<ShowTransactionCategoryDTO[]>([]);
 
   protected readonly filterFields: FilterField[] = [
@@ -68,15 +67,29 @@ export class TransactionsComponent {
 
   protected load(): void {
     this.isLoading.set(true);
-    const filter = this.filterQuery();
-    this.transactionService.apiFinancialTransactionGet(filter, undefined, '200', '0', 'true').subscribe({
-      next: (body: any) => {
-        const page = parseODataPage<ShowTransactionDTO>(body, 200);
-        this.allItems.set(page.items);
-        this.refreshPage();
+    this.transactionService.apiFinancialTransactionGet(
+      this.filterType(),
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      this.currentPage(),
+      this.pageSize(),
+    ).subscribe({
+      next: result => {
+        this.items.set({
+          items: result?.items ?? [],
+          totalCount: result?.totalCount ?? 0,
+          totalPages: result?.totalPages ?? 1,
+        });
         this.isLoading.set(false);
       },
-      error: () => { this.isLoading.set(false); this.ns.showError('Erro', 'Não foi possível carregar as transações.'); }
+      error: () => {
+        this.isLoading.set(false);
+        this.ns.showError('Erro', 'Não foi possível carregar as transações.');
+      },
     });
   }
 
@@ -115,15 +128,13 @@ export class TransactionsComponent {
     return this.categories().find(c => c.id === id)?.name ?? id;
   }
 
-  private refreshPage(): void {
-    const page = buildClientPage(this.allItems(), this.currentPage(), this.pageSize());
-    this.currentPage.set(page.currentPage);
-    this.items.set(page);
+  protected onPageChange(page: number): void { this.currentPage.set(page); this.load(); }
+  protected onPageSizeChange(size: number): void { this.pageSize.set(size); this.currentPage.set(1); this.load(); }
+  protected onFilterChange(output: FilterOutput): void {
+    this.filterType.set(output.conditions.find(c => c.field.key === 'type')?.value as TransactionType | undefined);
+    this.currentPage.set(1);
+    this.load();
   }
-
-  protected onPageChange(page: number): void { this.currentPage.set(page); this.refreshPage(); }
-  protected onPageSizeChange(size: number): void { this.pageSize.set(size); this.currentPage.set(1); this.refreshPage(); }
-  protected onFilterChange(output: FilterOutput): void { this.filterQuery.set(output.odataFilter); this.currentPage.set(1); this.load(); }
   protected onCategorySearch(term: string): void { this.loadCategories(term); }
   protected openCreate(): void { this.openedCreate.set(true); }
   protected openEdit(item: ShowTransactionDTO): void { this.selected.set(item); this.openedUpdate.set(true); }
@@ -131,11 +142,9 @@ export class TransactionsComponent {
   protected onUpdated(): void { this.openedUpdate.set(false); this.load(); }
 
   private loadCategories(term = ''): void {
-    const filter = term ? `contains(name,'${term.replace(/'/g, "''")}')` : undefined;
-    this.categoryService.apiTransactionCategoryGet(filter, undefined, '200', undefined, 'true').subscribe({
-      next: (body: any) => {
-        const items = Array.isArray(body) ? body : (body?.value ?? []);
-        this.categories.set(items);
+    this.categoryService.apiTransactionCategoryGet(term || undefined, undefined, 1, 200).subscribe({
+      next: result => {
+        this.categories.set(result?.items ?? []);
       },
     });
   }

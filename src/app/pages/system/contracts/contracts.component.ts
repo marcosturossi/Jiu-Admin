@@ -10,7 +10,7 @@ import { FilterField, FilterOutput } from '../../../shared/filter/filter.types';
 import { PaginationComponent } from '../../../shared/pagination/pagination.component';
 import { CreateContractComponent } from './create-contract/create-contract.component';
 import { UpdateContractComponent } from './update-contract/update-contract.component';
-import { ODataPage, buildClientPage, parseODataPage } from '../../../utils/odata.utils';
+import { PageResult } from '../../../utils/page-result';
 
 @Component({
   selector: 'app-contracts',
@@ -34,14 +34,13 @@ export class ContractsComponent {
   private readonly ns = inject(NotificationService);
 
   protected readonly isLoading = signal(false);
-  protected readonly items = signal<ODataPage<ShowContractDTO> | null>(null);
-  protected readonly allItems = signal<ShowContractDTO[]>([]);
+  protected readonly items = signal<PageResult<ShowContractDTO> | null>(null);
   protected readonly openedCreate = signal(false);
   protected readonly openedUpdate = signal(false);
   protected readonly selected = signal<ShowContractDTO | null>(null);
   protected readonly currentPage = signal(1);
   protected readonly pageSize = signal(10);
-  protected readonly filterQuery = signal<string | undefined>(undefined);
+  protected readonly filterStatus = signal<ContractStatus | undefined>(undefined);
   protected readonly studentMap = signal<Map<string, string>>(new Map());
 
   protected readonly filterFields: FilterField[] = [
@@ -63,9 +62,9 @@ export class ContractsComponent {
   constructor() {
     this.subnavService.setTitle('Contratos');
     this.load();
-    this.studentsService.apiStudentsActiveGet().subscribe({
-      next: students => {
-        const map = new Map(students.map(s => [s.id!, `${s.firstName ?? ''} ${s.lastName ?? ''}`.trim()]));
+    this.studentsService.apiStudentsGet(undefined, undefined, undefined, undefined, undefined, undefined, 1, 500).subscribe({
+      next: result => {
+        const map = new Map((result?.items ?? []).map(s => [s.id!, `${s.firstName ?? ''} ${s.lastName ?? ''}`.trim()]));
         this.studentMap.set(map);
       },
     });
@@ -73,12 +72,13 @@ export class ContractsComponent {
 
   protected load(): void {
     this.isLoading.set(true);
-    const filter = this.filterQuery();
-    this.contractService.apiContractGet(filter, undefined, '200', '0', 'true').subscribe({
-      next: (body: any) => {
-        const page = parseODataPage<ShowContractDTO>(body, 200);
-        this.allItems.set(page.items);
-        this.refreshPage();
+    this.contractService.apiContractGet(this.filterStatus(), undefined, undefined, undefined, undefined, undefined, undefined, this.currentPage(), this.pageSize()).subscribe({
+      next: result => {
+        this.items.set({
+          items: result?.items ?? [],
+          totalCount: result?.totalCount ?? 0,
+          totalPages: result?.totalPages ?? 1,
+        });
         this.isLoading.set(false);
       },
       error: () => { this.isLoading.set(false); this.ns.showError('Erro', 'Não foi possível carregar os contratos.'); }
@@ -113,15 +113,13 @@ export class ContractsComponent {
     return id ? (this.studentMap().get(id) ?? id) : '—';
   }
 
-  private refreshPage(): void {
-    const page = buildClientPage(this.allItems(), this.currentPage(), this.pageSize());
-    this.currentPage.set(page.currentPage);
-    this.items.set(page);
+  protected onPageChange(page: number): void { this.currentPage.set(page); this.load(); }
+  protected onPageSizeChange(size: number): void { this.pageSize.set(size); this.currentPage.set(1); this.load(); }
+  protected onFilterChange(output: FilterOutput): void {
+    this.filterStatus.set(output.conditions.find(c => c.field.key === 'status')?.value as ContractStatus | undefined);
+    this.currentPage.set(1);
+    this.load();
   }
-
-  protected onPageChange(page: number): void { this.currentPage.set(page); this.refreshPage(); }
-  protected onPageSizeChange(size: number): void { this.pageSize.set(size); this.currentPage.set(1); this.refreshPage(); }
-  protected onFilterChange(output: FilterOutput): void { this.filterQuery.set(output.odataFilter); this.currentPage.set(1); this.load(); }
   protected openCreate(): void { this.openedCreate.set(true); }
   protected openEdit(item: ShowContractDTO): void { this.selected.set(item); this.openedUpdate.set(true); }
   protected onCreated(): void { this.openedCreate.set(false); this.load(); }

@@ -20,15 +20,17 @@ import { Observable }                                        from 'rxjs';
 // @ts-ignore
 import { ApiAdminAcademiesIdGet404Response } from '../model/apiAdminAcademiesIdGet404Response';
 // @ts-ignore
-import { CarlonGracieBackendFinancesApplicationDTOsCreateTransactionDTO } from '../model/carlonGracieBackendFinancesApplicationDTOsCreateTransactionDTO';
+import { CreateTransactionDTO } from '../model/createTransactionDTO';
 // @ts-ignore
-import { CarlonGracieBackendFinancesApplicationDTOsFinancialSummaryDTO } from '../model/carlonGracieBackendFinancesApplicationDTOsFinancialSummaryDTO';
+import { FinancialSummaryDTO } from '../model/financialSummaryDTO';
 // @ts-ignore
-import { CarlonGracieBackendFinancesApplicationDTOsShowTransactionDTO } from '../model/carlonGracieBackendFinancesApplicationDTOsShowTransactionDTO';
+import { ShowTransactionDTO } from '../model/showTransactionDTO';
 // @ts-ignore
-import { CarlonGracieBackendFinancesApplicationDTOsUpdateTransactionDTO } from '../model/carlonGracieBackendFinancesApplicationDTOsUpdateTransactionDTO';
+import { ShowTransactionDTOPaginatedResult } from '../model/showTransactionDTOPaginatedResult';
 // @ts-ignore
-import { MicrosoftAspNetCoreMvcValidationProblemDetails } from '../model/microsoftAspNetCoreMvcValidationProblemDetails';
+import { UpdateTransactionDTO } from '../model/updateTransactionDTO';
+// @ts-ignore
+import { ValidationProblemDetails } from '../model/validationProblemDetails';
 
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
@@ -105,47 +107,79 @@ export class FinancialTransactionService implements FinancialTransactionServiceI
     }
 
     /**
-     * @param $filter OData filter expression. Examples: contains(name,\&#39;John\&#39;) | status eq \&#39;Active\&#39; | amount gt 100 | createdAt ge 2024-01-01T00:00:00Z
-     * @param $orderby Sort expression. Examples: name asc | createdAt desc | name asc,amount desc
-     * @param $top Page size — number of records to return (default: 20, max: 200). Use with $skip for pagination.
-     * @param $skip Records to skip. Use ($pageNumber - 1) * $top. Example: page 3 with size 20 → $skip&#x3D;40
-     * @param $count Set to \&#39;true\&#39; to include total record count in response as @odata.count
-     * @param $select Return only specific fields. Example: $select&#x3D;id,name,createdAt
+     * @param type 
+     * @param transactionCategoryId 
+     * @param amountMin 
+     * @param amountMax 
+     * @param transactionDateFrom 
+     * @param transactionDateTo 
+     * @param description 
+     * @param page 
+     * @param pageSize 
+     * @param orderBy 
+     * @param orderByDescending 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiFinancialTransactionGet($filter?: string, $orderby?: string, $top?: string, $skip?: string, $count?: string, $select?: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Array<CarlonGracieBackendFinancesApplicationDTOsShowTransactionDTO>>;
-    public apiFinancialTransactionGet($filter?: string, $orderby?: string, $top?: string, $skip?: string, $count?: string, $select?: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<CarlonGracieBackendFinancesApplicationDTOsShowTransactionDTO>>>;
-    public apiFinancialTransactionGet($filter?: string, $orderby?: string, $top?: string, $skip?: string, $count?: string, $select?: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<CarlonGracieBackendFinancesApplicationDTOsShowTransactionDTO>>>;
-    public apiFinancialTransactionGet($filter?: string, $orderby?: string, $top?: string, $skip?: string, $count?: string, $select?: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public apiFinancialTransactionGet(type?: string, transactionCategoryId?: string, amountMin?: number, amountMax?: number, transactionDateFrom?: string, transactionDateTo?: string, description?: string, page?: number, pageSize?: number, orderBy?: string, orderByDescending?: boolean, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<ShowTransactionDTOPaginatedResult>;
+    public apiFinancialTransactionGet(type?: string, transactionCategoryId?: string, amountMin?: number, amountMax?: number, transactionDateFrom?: string, transactionDateTo?: string, description?: string, page?: number, pageSize?: number, orderBy?: string, orderByDescending?: boolean, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<ShowTransactionDTOPaginatedResult>>;
+    public apiFinancialTransactionGet(type?: string, transactionCategoryId?: string, amountMin?: number, amountMax?: number, transactionDateFrom?: string, transactionDateTo?: string, description?: string, page?: number, pageSize?: number, orderBy?: string, orderByDescending?: boolean, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<ShowTransactionDTOPaginatedResult>>;
+    public apiFinancialTransactionGet(type?: string, transactionCategoryId?: string, amountMin?: number, amountMax?: number, transactionDateFrom?: string, transactionDateTo?: string, description?: string, page?: number, pageSize?: number, orderBy?: string, orderByDescending?: boolean, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
 
         let localVarQueryParameters = new HttpParams({encoder: this.encoder});
-        if ($filter !== undefined && $filter !== null) {
+        if (type !== undefined && type !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>$filter, '$filter');
+            <any>type, 'Type');
         }
-        if ($orderby !== undefined && $orderby !== null) {
+        if (transactionCategoryId !== undefined && transactionCategoryId !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>$orderby, '$orderby');
+            <any>transactionCategoryId, 'TransactionCategoryId');
         }
-        if ($top !== undefined && $top !== null) {
+        if (amountMin !== undefined && amountMin !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>$top, '$top');
+            <any>amountMin, 'AmountMin');
         }
-        if ($skip !== undefined && $skip !== null) {
+        if (amountMax !== undefined && amountMax !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>$skip, '$skip');
+            <any>amountMax, 'AmountMax');
         }
-        if ($count !== undefined && $count !== null) {
+        if (transactionDateFrom !== undefined && transactionDateFrom !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>$count, '$count');
+            <any>transactionDateFrom, 'TransactionDateFrom');
         }
-        if ($select !== undefined && $select !== null) {
+        if (transactionDateTo !== undefined && transactionDateTo !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>$select, '$select');
+            <any>transactionDateTo, 'TransactionDateTo');
+        }
+        if (description !== undefined && description !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>description, 'Description');
+        }
+        if (page !== undefined && page !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>page, 'Page');
+        }
+        if (pageSize !== undefined && pageSize !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>pageSize, 'PageSize');
+        }
+        if (orderBy !== undefined && orderBy !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>orderBy, 'OrderBy');
+        }
+        if (orderByDescending !== undefined && orderByDescending !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>orderByDescending, 'OrderByDescending');
         }
 
         let localVarHeaders = this.defaultHeaders;
+
+        let localVarCredential: string | undefined;
+        // authentication (Bearer) required
+        localVarCredential = this.configuration.lookupCredential('Bearer');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('Authorization', 'Bearer ' + localVarCredential);
+        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -182,7 +216,7 @@ export class FinancialTransactionService implements FinancialTransactionServiceI
         }
 
         let localVarPath = `/api/FinancialTransaction`;
-        return this.httpClient.request<Array<CarlonGracieBackendFinancesApplicationDTOsShowTransactionDTO>>('get', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<ShowTransactionDTOPaginatedResult>('get', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 params: localVarQueryParameters,
@@ -210,6 +244,13 @@ export class FinancialTransactionService implements FinancialTransactionServiceI
         }
 
         let localVarHeaders = this.defaultHeaders;
+
+        let localVarCredential: string | undefined;
+        // authentication (Bearer) required
+        localVarCredential = this.configuration.lookupCredential('Bearer');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('Authorization', 'Bearer ' + localVarCredential);
+        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -264,15 +305,22 @@ export class FinancialTransactionService implements FinancialTransactionServiceI
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiFinancialTransactionIdGet(id: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<CarlonGracieBackendFinancesApplicationDTOsShowTransactionDTO>;
-    public apiFinancialTransactionIdGet(id: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<CarlonGracieBackendFinancesApplicationDTOsShowTransactionDTO>>;
-    public apiFinancialTransactionIdGet(id: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<CarlonGracieBackendFinancesApplicationDTOsShowTransactionDTO>>;
+    public apiFinancialTransactionIdGet(id: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<ShowTransactionDTO>;
+    public apiFinancialTransactionIdGet(id: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<ShowTransactionDTO>>;
+    public apiFinancialTransactionIdGet(id: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<ShowTransactionDTO>>;
     public apiFinancialTransactionIdGet(id: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         if (id === null || id === undefined) {
             throw new Error('Required parameter id was null or undefined when calling apiFinancialTransactionIdGet.');
         }
 
         let localVarHeaders = this.defaultHeaders;
+
+        let localVarCredential: string | undefined;
+        // authentication (Bearer) required
+        localVarCredential = this.configuration.lookupCredential('Bearer');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('Authorization', 'Bearer ' + localVarCredential);
+        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -309,7 +357,7 @@ export class FinancialTransactionService implements FinancialTransactionServiceI
         }
 
         let localVarPath = `/api/FinancialTransaction/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: "uuid"})}`;
-        return this.httpClient.request<CarlonGracieBackendFinancesApplicationDTOsShowTransactionDTO>('get', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<ShowTransactionDTO>('get', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 responseType: <any>responseType_,
@@ -324,19 +372,26 @@ export class FinancialTransactionService implements FinancialTransactionServiceI
 
     /**
      * @param id 
-     * @param carlonGracieBackendFinancesApplicationDTOsUpdateTransactionDTO 
+     * @param updateTransactionDTO 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiFinancialTransactionIdPut(id: string, carlonGracieBackendFinancesApplicationDTOsUpdateTransactionDTO?: CarlonGracieBackendFinancesApplicationDTOsUpdateTransactionDTO, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<CarlonGracieBackendFinancesApplicationDTOsShowTransactionDTO>;
-    public apiFinancialTransactionIdPut(id: string, carlonGracieBackendFinancesApplicationDTOsUpdateTransactionDTO?: CarlonGracieBackendFinancesApplicationDTOsUpdateTransactionDTO, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<CarlonGracieBackendFinancesApplicationDTOsShowTransactionDTO>>;
-    public apiFinancialTransactionIdPut(id: string, carlonGracieBackendFinancesApplicationDTOsUpdateTransactionDTO?: CarlonGracieBackendFinancesApplicationDTOsUpdateTransactionDTO, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<CarlonGracieBackendFinancesApplicationDTOsShowTransactionDTO>>;
-    public apiFinancialTransactionIdPut(id: string, carlonGracieBackendFinancesApplicationDTOsUpdateTransactionDTO?: CarlonGracieBackendFinancesApplicationDTOsUpdateTransactionDTO, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public apiFinancialTransactionIdPut(id: string, updateTransactionDTO?: UpdateTransactionDTO, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<ShowTransactionDTO>;
+    public apiFinancialTransactionIdPut(id: string, updateTransactionDTO?: UpdateTransactionDTO, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<ShowTransactionDTO>>;
+    public apiFinancialTransactionIdPut(id: string, updateTransactionDTO?: UpdateTransactionDTO, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<ShowTransactionDTO>>;
+    public apiFinancialTransactionIdPut(id: string, updateTransactionDTO?: UpdateTransactionDTO, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         if (id === null || id === undefined) {
             throw new Error('Required parameter id was null or undefined when calling apiFinancialTransactionIdPut.');
         }
 
         let localVarHeaders = this.defaultHeaders;
+
+        let localVarCredential: string | undefined;
+        // authentication (Bearer) required
+        localVarCredential = this.configuration.lookupCredential('Bearer');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('Authorization', 'Bearer ' + localVarCredential);
+        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -363,44 +418,7 @@ export class FinancialTransactionService implements FinancialTransactionServiceI
 
         // to determine the Content-Type header
         const consumes: string[] = [
-            'application/json;odata.metadata=minimal;odata.streaming=true',
-            'application/json;odata.metadata=minimal;odata.streaming=false',
-            'application/json;odata.metadata=minimal',
-            'application/json;odata.metadata=full;odata.streaming=true',
-            'application/json;odata.metadata=full;odata.streaming=false',
-            'application/json;odata.metadata=full',
-            'application/json;odata.metadata=none;odata.streaming=true',
-            'application/json;odata.metadata=none;odata.streaming=false',
-            'application/json;odata.metadata=none',
-            'application/json;odata.streaming=true',
-            'application/json;odata.streaming=false',
             'application/json',
-            'application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=false',
-            'application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=true',
-            'application/json;odata.metadata=minimal;odata.streaming=false;IEEE754Compatible=false',
-            'application/json;odata.metadata=minimal;odata.streaming=false;IEEE754Compatible=true',
-            'application/json;odata.metadata=minimal;IEEE754Compatible=false',
-            'application/json;odata.metadata=minimal;IEEE754Compatible=true',
-            'application/json;odata.metadata=full;odata.streaming=true;IEEE754Compatible=false',
-            'application/json;odata.metadata=full;odata.streaming=true;IEEE754Compatible=true',
-            'application/json;odata.metadata=full;odata.streaming=false;IEEE754Compatible=false',
-            'application/json;odata.metadata=full;odata.streaming=false;IEEE754Compatible=true',
-            'application/json;odata.metadata=full;IEEE754Compatible=false',
-            'application/json;odata.metadata=full;IEEE754Compatible=true',
-            'application/json;odata.metadata=none;odata.streaming=true;IEEE754Compatible=false',
-            'application/json;odata.metadata=none;odata.streaming=true;IEEE754Compatible=true',
-            'application/json;odata.metadata=none;odata.streaming=false;IEEE754Compatible=true',
-            'application/json;odata.metadata=none;odata.streaming=false;IEEE754Compatible=false',
-            'application/json;odata.metadata=none;IEEE754Compatible=false',
-            'application/json;odata.metadata=none;IEEE754Compatible=true',
-            'application/json;odata.streaming=true;IEEE754Compatible=false',
-            'application/json;odata.streaming=true;IEEE754Compatible=true',
-            'application/json;odata.streaming=false;IEEE754Compatible=false',
-            'application/json;odata.streaming=false;IEEE754Compatible=true',
-            'application/json;IEEE754Compatible=false',
-            'application/json;IEEE754Compatible=true',
-            'application/xml',
-            'text/plain',
             'text/json',
             'application/*+json'
         ];
@@ -421,10 +439,10 @@ export class FinancialTransactionService implements FinancialTransactionServiceI
         }
 
         let localVarPath = `/api/FinancialTransaction/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: "uuid"})}`;
-        return this.httpClient.request<CarlonGracieBackendFinancesApplicationDTOsShowTransactionDTO>('put', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<ShowTransactionDTO>('put', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
-                body: carlonGracieBackendFinancesApplicationDTOsUpdateTransactionDTO,
+                body: updateTransactionDTO,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,
@@ -436,16 +454,23 @@ export class FinancialTransactionService implements FinancialTransactionServiceI
     }
 
     /**
-     * @param carlonGracieBackendFinancesApplicationDTOsCreateTransactionDTO 
+     * @param createTransactionDTO 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiFinancialTransactionPost(carlonGracieBackendFinancesApplicationDTOsCreateTransactionDTO?: CarlonGracieBackendFinancesApplicationDTOsCreateTransactionDTO, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<CarlonGracieBackendFinancesApplicationDTOsShowTransactionDTO>;
-    public apiFinancialTransactionPost(carlonGracieBackendFinancesApplicationDTOsCreateTransactionDTO?: CarlonGracieBackendFinancesApplicationDTOsCreateTransactionDTO, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<CarlonGracieBackendFinancesApplicationDTOsShowTransactionDTO>>;
-    public apiFinancialTransactionPost(carlonGracieBackendFinancesApplicationDTOsCreateTransactionDTO?: CarlonGracieBackendFinancesApplicationDTOsCreateTransactionDTO, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<CarlonGracieBackendFinancesApplicationDTOsShowTransactionDTO>>;
-    public apiFinancialTransactionPost(carlonGracieBackendFinancesApplicationDTOsCreateTransactionDTO?: CarlonGracieBackendFinancesApplicationDTOsCreateTransactionDTO, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public apiFinancialTransactionPost(createTransactionDTO?: CreateTransactionDTO, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<ShowTransactionDTO>;
+    public apiFinancialTransactionPost(createTransactionDTO?: CreateTransactionDTO, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<ShowTransactionDTO>>;
+    public apiFinancialTransactionPost(createTransactionDTO?: CreateTransactionDTO, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<ShowTransactionDTO>>;
+    public apiFinancialTransactionPost(createTransactionDTO?: CreateTransactionDTO, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
 
         let localVarHeaders = this.defaultHeaders;
+
+        let localVarCredential: string | undefined;
+        // authentication (Bearer) required
+        localVarCredential = this.configuration.lookupCredential('Bearer');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('Authorization', 'Bearer ' + localVarCredential);
+        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -472,44 +497,7 @@ export class FinancialTransactionService implements FinancialTransactionServiceI
 
         // to determine the Content-Type header
         const consumes: string[] = [
-            'application/json;odata.metadata=minimal;odata.streaming=true',
-            'application/json;odata.metadata=minimal;odata.streaming=false',
-            'application/json;odata.metadata=minimal',
-            'application/json;odata.metadata=full;odata.streaming=true',
-            'application/json;odata.metadata=full;odata.streaming=false',
-            'application/json;odata.metadata=full',
-            'application/json;odata.metadata=none;odata.streaming=true',
-            'application/json;odata.metadata=none;odata.streaming=false',
-            'application/json;odata.metadata=none',
-            'application/json;odata.streaming=true',
-            'application/json;odata.streaming=false',
             'application/json',
-            'application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=false',
-            'application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=true',
-            'application/json;odata.metadata=minimal;odata.streaming=false;IEEE754Compatible=false',
-            'application/json;odata.metadata=minimal;odata.streaming=false;IEEE754Compatible=true',
-            'application/json;odata.metadata=minimal;IEEE754Compatible=false',
-            'application/json;odata.metadata=minimal;IEEE754Compatible=true',
-            'application/json;odata.metadata=full;odata.streaming=true;IEEE754Compatible=false',
-            'application/json;odata.metadata=full;odata.streaming=true;IEEE754Compatible=true',
-            'application/json;odata.metadata=full;odata.streaming=false;IEEE754Compatible=false',
-            'application/json;odata.metadata=full;odata.streaming=false;IEEE754Compatible=true',
-            'application/json;odata.metadata=full;IEEE754Compatible=false',
-            'application/json;odata.metadata=full;IEEE754Compatible=true',
-            'application/json;odata.metadata=none;odata.streaming=true;IEEE754Compatible=false',
-            'application/json;odata.metadata=none;odata.streaming=true;IEEE754Compatible=true',
-            'application/json;odata.metadata=none;odata.streaming=false;IEEE754Compatible=true',
-            'application/json;odata.metadata=none;odata.streaming=false;IEEE754Compatible=false',
-            'application/json;odata.metadata=none;IEEE754Compatible=false',
-            'application/json;odata.metadata=none;IEEE754Compatible=true',
-            'application/json;odata.streaming=true;IEEE754Compatible=false',
-            'application/json;odata.streaming=true;IEEE754Compatible=true',
-            'application/json;odata.streaming=false;IEEE754Compatible=false',
-            'application/json;odata.streaming=false;IEEE754Compatible=true',
-            'application/json;IEEE754Compatible=false',
-            'application/json;IEEE754Compatible=true',
-            'application/xml',
-            'text/plain',
             'text/json',
             'application/*+json'
         ];
@@ -530,10 +518,10 @@ export class FinancialTransactionService implements FinancialTransactionServiceI
         }
 
         let localVarPath = `/api/FinancialTransaction`;
-        return this.httpClient.request<CarlonGracieBackendFinancesApplicationDTOsShowTransactionDTO>('post', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<ShowTransactionDTO>('post', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
-                body: carlonGracieBackendFinancesApplicationDTOsCreateTransactionDTO,
+                body: createTransactionDTO,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,
@@ -550,9 +538,9 @@ export class FinancialTransactionService implements FinancialTransactionServiceI
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiFinancialTransactionSummaryGet(from?: string, to?: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<CarlonGracieBackendFinancesApplicationDTOsFinancialSummaryDTO>;
-    public apiFinancialTransactionSummaryGet(from?: string, to?: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<CarlonGracieBackendFinancesApplicationDTOsFinancialSummaryDTO>>;
-    public apiFinancialTransactionSummaryGet(from?: string, to?: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<CarlonGracieBackendFinancesApplicationDTOsFinancialSummaryDTO>>;
+    public apiFinancialTransactionSummaryGet(from?: string, to?: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<FinancialSummaryDTO>;
+    public apiFinancialTransactionSummaryGet(from?: string, to?: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<FinancialSummaryDTO>>;
+    public apiFinancialTransactionSummaryGet(from?: string, to?: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<FinancialSummaryDTO>>;
     public apiFinancialTransactionSummaryGet(from?: string, to?: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
 
         let localVarQueryParameters = new HttpParams({encoder: this.encoder});
@@ -566,6 +554,13 @@ export class FinancialTransactionService implements FinancialTransactionServiceI
         }
 
         let localVarHeaders = this.defaultHeaders;
+
+        let localVarCredential: string | undefined;
+        // authentication (Bearer) required
+        localVarCredential = this.configuration.lookupCredential('Bearer');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('Authorization', 'Bearer ' + localVarCredential);
+        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -602,7 +597,7 @@ export class FinancialTransactionService implements FinancialTransactionServiceI
         }
 
         let localVarPath = `/api/FinancialTransaction/summary`;
-        return this.httpClient.request<CarlonGracieBackendFinancesApplicationDTOsFinancialSummaryDTO>('get', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<FinancialSummaryDTO>('get', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 params: localVarQueryParameters,

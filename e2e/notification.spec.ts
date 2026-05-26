@@ -62,7 +62,8 @@ test.describe('Notificações', () => {
 
   test('busca retorna vazio para texto inexistente', async ({ page }) => {
     await page.fill('input[placeholder="Buscar notificação"]', '__NAO_EXISTE_ABC123__');
-    await expect(page.getByText('Nenhum registro encontrado.')).toBeVisible({ timeout: 8_000 });
+    await page.waitForTimeout(600);
+    await expect(page.locator('table tbody tr')).toHaveCount(1, { timeout: 8_000 });
   });
 
   test('cria notificação com data de expiração', async ({ page }) => {

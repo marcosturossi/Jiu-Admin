@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { StudentsService } from '../../../generated_services/api/students.service';
 import { ShowStudentDTO } from '../../../generated_services/model/showStudentDTO';
@@ -7,7 +7,7 @@ import { NotificationService } from '../../../services/notification.service';
 import { FilterComponent } from '../../../shared/filter/filter.component';
 import { FilterField, FilterOutput } from '../../../shared/filter/filter.types';
 import { PaginationComponent } from '../../../shared/pagination/pagination.component';
-import { ODataPage, parseODataPage } from '../../../utils/odata.utils';
+import { PageResult } from '../../../utils/page-result';
 import { CreateStudentComponent } from './create-student/create-student.component';
 import { UpdateStudentComponent } from './update-student/update-student.component';
 
@@ -30,14 +30,13 @@ export class StudentsComponent {
   private readonly notificationService = inject(NotificationService);
 
   protected readonly isLoading = signal(false);
-  protected readonly items = signal<ODataPage<ShowStudentDTO> | null>(null);
-  private readonly allStudents = signal<ShowStudentDTO[]>([]);
+  protected readonly items = signal<PageResult<ShowStudentDTO> | null>(null);
   protected readonly openedCreate = signal(false);
   protected readonly openedUpdate = signal(false);
   protected readonly selected = signal<ShowStudentDTO | null>(null);
   protected readonly currentPage = signal(1);
   protected readonly pageSize = signal(10);
-  protected readonly filterQuery = signal<string | undefined>(undefined);
+  protected readonly filterText = signal<string | undefined>(undefined);
   protected readonly filterFields: FilterField[] = [
     {
       key: 'isActive',
@@ -57,21 +56,34 @@ export class StudentsComponent {
 
   protected load(): void {
     this.isLoading.set(true);
-    const filter = this.filterQuery();
-    this.studentsService.apiStudentsGet(filter, undefined, '200', '0', 'true').subscribe({
-      next: (body: any) => {
-        const page = parseODataPage<ShowStudentDTO>(body, 200);
-        this.allStudents.set(page.items);
-        this.refreshPage();
+    this.studentsService.apiStudentsGet(
+      this.filterText() || undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      this.currentPage(),
+      this.pageSize(),
+    ).subscribe({
+      next: result => {
+        this.items.set({
+          items: result?.items ?? [],
+          totalCount: result?.totalCount ?? 0,
+          totalPages: result?.totalPages ?? 1,
+        });
         this.isLoading.set(false);
       },
-      error: () => { this.isLoading.set(false); this.notificationService.showError('Erro de Carregamento', 'Não foi possível carregar a lista de alunos.'); }
+      error: () => {
+        this.isLoading.set(false);
+        this.notificationService.showError('Erro de Carregamento', 'Não foi possível carregar a lista de alunos.');
+      },
     });
   }
 
-  protected onPageChange(page: number): void { this.currentPage.set(page); this.refreshPage(); }
-  protected onPageSizeChange(size: number): void { this.pageSize.set(size); this.currentPage.set(1); this.refreshPage(); }
-  protected onFilterChange(output: FilterOutput): void { this.filterQuery.set(output.odataFilter); this.currentPage.set(1); this.load(); }
+  protected onPageChange(page: number): void { this.currentPage.set(page); this.load(); }
+  protected onPageSizeChange(size: number): void { this.pageSize.set(size); this.currentPage.set(1); this.load(); }
+  protected onFilterChange(output: FilterOutput): void { this.filterText.set(output.text || undefined); this.currentPage.set(1); this.load(); }
   protected openCreate(): void { this.openedCreate.set(true); }
   protected openEdit(item: ShowStudentDTO): void { this.selected.set(item); this.openedUpdate.set(true); }
   protected onCreated(): void { this.openedCreate.set(false); this.load(); }
@@ -85,14 +97,4 @@ export class StudentsComponent {
     });
   }
 
-  private refreshPage(): void {
-    const all = this.allStudents();
-    const start = (this.currentPage() - 1) * this.pageSize();
-    const items = all.slice(start, start + this.pageSize());
-    this.items.set({
-      items,
-      totalCount: all.length,
-      totalPages: all.length > 0 ? Math.ceil(all.length / this.pageSize()) : 1,
-    });
-  }
 }

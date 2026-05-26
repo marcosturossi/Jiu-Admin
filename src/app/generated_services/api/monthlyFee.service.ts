@@ -22,13 +22,15 @@ import { ApiAdminAcademiesIdGet404Response } from '../model/apiAdminAcademiesIdG
 // @ts-ignore
 import { ApiMedicalClearanceIdAttachmentGet200Response } from '../model/apiMedicalClearanceIdAttachmentGet200Response';
 // @ts-ignore
-import { CarlonGracieBackendApplicationInterfacesInfrastructureChargeResult } from '../model/carlonGracieBackendApplicationInterfacesInfrastructureChargeResult';
+import { ChargeResult } from '../model/chargeResult';
 // @ts-ignore
-import { CarlonGracieBackendApplicationInterfacesInfrastructureChargeStatus } from '../model/carlonGracieBackendApplicationInterfacesInfrastructureChargeStatus';
+import { ChargeStatus } from '../model/chargeStatus';
 // @ts-ignore
-import { CarlonGracieBackendFinancesApplicationDTOsPayMonthlyFeeDTO } from '../model/carlonGracieBackendFinancesApplicationDTOsPayMonthlyFeeDTO';
+import { PayMonthlyFeeDTO } from '../model/payMonthlyFeeDTO';
 // @ts-ignore
-import { CarlonGracieBackendFinancesApplicationDTOsShowMonthlyFeeDTO } from '../model/carlonGracieBackendFinancesApplicationDTOsShowMonthlyFeeDTO';
+import { ShowMonthlyFeeDTO } from '../model/showMonthlyFeeDTO';
+// @ts-ignore
+import { ShowMonthlyFeeDTOPaginatedResult } from '../model/showMonthlyFeeDTOPaginatedResult';
 
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
@@ -106,18 +108,82 @@ export class MonthlyFeeService implements MonthlyFeeServiceInterface {
 
     /**
      * @param contractId 
+     * @param studentId 
+     * @param contractId2 
+     * @param status 
+     * @param dueDateFrom 
+     * @param dueDateTo 
+     * @param amountMin 
+     * @param amountMax 
+     * @param page 
+     * @param pageSize 
+     * @param orderBy 
+     * @param orderByDescending 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiMonthlyFeeContractContractIdGet(contractId: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Array<CarlonGracieBackendFinancesApplicationDTOsShowMonthlyFeeDTO>>;
-    public apiMonthlyFeeContractContractIdGet(contractId: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<CarlonGracieBackendFinancesApplicationDTOsShowMonthlyFeeDTO>>>;
-    public apiMonthlyFeeContractContractIdGet(contractId: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<CarlonGracieBackendFinancesApplicationDTOsShowMonthlyFeeDTO>>>;
-    public apiMonthlyFeeContractContractIdGet(contractId: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public apiMonthlyFeeContractContractIdGet(contractId: string, studentId?: string, contractId2?: string, status?: string, dueDateFrom?: string, dueDateTo?: string, amountMin?: number, amountMax?: number, page?: number, pageSize?: number, orderBy?: string, orderByDescending?: boolean, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<ShowMonthlyFeeDTOPaginatedResult>;
+    public apiMonthlyFeeContractContractIdGet(contractId: string, studentId?: string, contractId2?: string, status?: string, dueDateFrom?: string, dueDateTo?: string, amountMin?: number, amountMax?: number, page?: number, pageSize?: number, orderBy?: string, orderByDescending?: boolean, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<ShowMonthlyFeeDTOPaginatedResult>>;
+    public apiMonthlyFeeContractContractIdGet(contractId: string, studentId?: string, contractId2?: string, status?: string, dueDateFrom?: string, dueDateTo?: string, amountMin?: number, amountMax?: number, page?: number, pageSize?: number, orderBy?: string, orderByDescending?: boolean, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<ShowMonthlyFeeDTOPaginatedResult>>;
+    public apiMonthlyFeeContractContractIdGet(contractId: string, studentId?: string, contractId2?: string, status?: string, dueDateFrom?: string, dueDateTo?: string, amountMin?: number, amountMax?: number, page?: number, pageSize?: number, orderBy?: string, orderByDescending?: boolean, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         if (contractId === null || contractId === undefined) {
             throw new Error('Required parameter contractId was null or undefined when calling apiMonthlyFeeContractContractIdGet.');
         }
 
+        let localVarQueryParameters = new HttpParams({encoder: this.encoder});
+        if (studentId !== undefined && studentId !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>studentId, 'StudentId');
+        }
+        if (contractId2 !== undefined && contractId2 !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>contractId2, 'ContractId');
+        }
+        if (status !== undefined && status !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>status, 'Status');
+        }
+        if (dueDateFrom !== undefined && dueDateFrom !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>dueDateFrom, 'DueDateFrom');
+        }
+        if (dueDateTo !== undefined && dueDateTo !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>dueDateTo, 'DueDateTo');
+        }
+        if (amountMin !== undefined && amountMin !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>amountMin, 'AmountMin');
+        }
+        if (amountMax !== undefined && amountMax !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>amountMax, 'AmountMax');
+        }
+        if (page !== undefined && page !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>page, 'Page');
+        }
+        if (pageSize !== undefined && pageSize !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>pageSize, 'PageSize');
+        }
+        if (orderBy !== undefined && orderBy !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>orderBy, 'OrderBy');
+        }
+        if (orderByDescending !== undefined && orderByDescending !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>orderByDescending, 'OrderByDescending');
+        }
+
         let localVarHeaders = this.defaultHeaders;
+
+        let localVarCredential: string | undefined;
+        // authentication (Bearer) required
+        localVarCredential = this.configuration.lookupCredential('Bearer');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('Authorization', 'Bearer ' + localVarCredential);
+        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -154,9 +220,10 @@ export class MonthlyFeeService implements MonthlyFeeServiceInterface {
         }
 
         let localVarPath = `/api/MonthlyFee/contract/${this.configuration.encodeParam({name: "contractId", value: contractId, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: "uuid"})}`;
-        return this.httpClient.request<Array<CarlonGracieBackendFinancesApplicationDTOsShowMonthlyFeeDTO>>('get', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<ShowMonthlyFeeDTOPaginatedResult>('get', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
+                params: localVarQueryParameters,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,
@@ -168,47 +235,79 @@ export class MonthlyFeeService implements MonthlyFeeServiceInterface {
     }
 
     /**
-     * @param $filter OData filter expression. Examples: contains(name,\&#39;John\&#39;) | status eq \&#39;Active\&#39; | amount gt 100 | createdAt ge 2024-01-01T00:00:00Z
-     * @param $orderby Sort expression. Examples: name asc | createdAt desc | name asc,amount desc
-     * @param $top Page size — number of records to return (default: 20, max: 200). Use with $skip for pagination.
-     * @param $skip Records to skip. Use ($pageNumber - 1) * $top. Example: page 3 with size 20 → $skip&#x3D;40
-     * @param $count Set to \&#39;true\&#39; to include total record count in response as @odata.count
-     * @param $select Return only specific fields. Example: $select&#x3D;id,name,createdAt
+     * @param studentId 
+     * @param contractId 
+     * @param status 
+     * @param dueDateFrom 
+     * @param dueDateTo 
+     * @param amountMin 
+     * @param amountMax 
+     * @param page 
+     * @param pageSize 
+     * @param orderBy 
+     * @param orderByDescending 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiMonthlyFeeGet($filter?: string, $orderby?: string, $top?: string, $skip?: string, $count?: string, $select?: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Array<CarlonGracieBackendFinancesApplicationDTOsShowMonthlyFeeDTO>>;
-    public apiMonthlyFeeGet($filter?: string, $orderby?: string, $top?: string, $skip?: string, $count?: string, $select?: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<CarlonGracieBackendFinancesApplicationDTOsShowMonthlyFeeDTO>>>;
-    public apiMonthlyFeeGet($filter?: string, $orderby?: string, $top?: string, $skip?: string, $count?: string, $select?: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<CarlonGracieBackendFinancesApplicationDTOsShowMonthlyFeeDTO>>>;
-    public apiMonthlyFeeGet($filter?: string, $orderby?: string, $top?: string, $skip?: string, $count?: string, $select?: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public apiMonthlyFeeGet(studentId?: string, contractId?: string, status?: string, dueDateFrom?: string, dueDateTo?: string, amountMin?: number, amountMax?: number, page?: number, pageSize?: number, orderBy?: string, orderByDescending?: boolean, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<ShowMonthlyFeeDTOPaginatedResult>;
+    public apiMonthlyFeeGet(studentId?: string, contractId?: string, status?: string, dueDateFrom?: string, dueDateTo?: string, amountMin?: number, amountMax?: number, page?: number, pageSize?: number, orderBy?: string, orderByDescending?: boolean, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<ShowMonthlyFeeDTOPaginatedResult>>;
+    public apiMonthlyFeeGet(studentId?: string, contractId?: string, status?: string, dueDateFrom?: string, dueDateTo?: string, amountMin?: number, amountMax?: number, page?: number, pageSize?: number, orderBy?: string, orderByDescending?: boolean, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<ShowMonthlyFeeDTOPaginatedResult>>;
+    public apiMonthlyFeeGet(studentId?: string, contractId?: string, status?: string, dueDateFrom?: string, dueDateTo?: string, amountMin?: number, amountMax?: number, page?: number, pageSize?: number, orderBy?: string, orderByDescending?: boolean, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
 
         let localVarQueryParameters = new HttpParams({encoder: this.encoder});
-        if ($filter !== undefined && $filter !== null) {
+        if (studentId !== undefined && studentId !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>$filter, '$filter');
+            <any>studentId, 'StudentId');
         }
-        if ($orderby !== undefined && $orderby !== null) {
+        if (contractId !== undefined && contractId !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>$orderby, '$orderby');
+            <any>contractId, 'ContractId');
         }
-        if ($top !== undefined && $top !== null) {
+        if (status !== undefined && status !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>$top, '$top');
+            <any>status, 'Status');
         }
-        if ($skip !== undefined && $skip !== null) {
+        if (dueDateFrom !== undefined && dueDateFrom !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>$skip, '$skip');
+            <any>dueDateFrom, 'DueDateFrom');
         }
-        if ($count !== undefined && $count !== null) {
+        if (dueDateTo !== undefined && dueDateTo !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>$count, '$count');
+            <any>dueDateTo, 'DueDateTo');
         }
-        if ($select !== undefined && $select !== null) {
+        if (amountMin !== undefined && amountMin !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>$select, '$select');
+            <any>amountMin, 'AmountMin');
+        }
+        if (amountMax !== undefined && amountMax !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>amountMax, 'AmountMax');
+        }
+        if (page !== undefined && page !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>page, 'Page');
+        }
+        if (pageSize !== undefined && pageSize !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>pageSize, 'PageSize');
+        }
+        if (orderBy !== undefined && orderBy !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>orderBy, 'OrderBy');
+        }
+        if (orderByDescending !== undefined && orderByDescending !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>orderByDescending, 'OrderByDescending');
         }
 
         let localVarHeaders = this.defaultHeaders;
+
+        let localVarCredential: string | undefined;
+        // authentication (Bearer) required
+        localVarCredential = this.configuration.lookupCredential('Bearer');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('Authorization', 'Bearer ' + localVarCredential);
+        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -245,7 +344,7 @@ export class MonthlyFeeService implements MonthlyFeeServiceInterface {
         }
 
         let localVarPath = `/api/MonthlyFee`;
-        return this.httpClient.request<Array<CarlonGracieBackendFinancesApplicationDTOsShowMonthlyFeeDTO>>('get', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<ShowMonthlyFeeDTOPaginatedResult>('get', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 params: localVarQueryParameters,
@@ -264,15 +363,22 @@ export class MonthlyFeeService implements MonthlyFeeServiceInterface {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiMonthlyFeeIdChargePost(id: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<CarlonGracieBackendApplicationInterfacesInfrastructureChargeResult>;
-    public apiMonthlyFeeIdChargePost(id: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<CarlonGracieBackendApplicationInterfacesInfrastructureChargeResult>>;
-    public apiMonthlyFeeIdChargePost(id: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<CarlonGracieBackendApplicationInterfacesInfrastructureChargeResult>>;
+    public apiMonthlyFeeIdChargePost(id: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<ChargeResult>;
+    public apiMonthlyFeeIdChargePost(id: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<ChargeResult>>;
+    public apiMonthlyFeeIdChargePost(id: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<ChargeResult>>;
     public apiMonthlyFeeIdChargePost(id: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         if (id === null || id === undefined) {
             throw new Error('Required parameter id was null or undefined when calling apiMonthlyFeeIdChargePost.');
         }
 
         let localVarHeaders = this.defaultHeaders;
+
+        let localVarCredential: string | undefined;
+        // authentication (Bearer) required
+        localVarCredential = this.configuration.lookupCredential('Bearer');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('Authorization', 'Bearer ' + localVarCredential);
+        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -309,7 +415,7 @@ export class MonthlyFeeService implements MonthlyFeeServiceInterface {
         }
 
         let localVarPath = `/api/MonthlyFee/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: "uuid"})}/charge`;
-        return this.httpClient.request<CarlonGracieBackendApplicationInterfacesInfrastructureChargeResult>('post', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<ChargeResult>('post', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 responseType: <any>responseType_,
@@ -327,15 +433,22 @@ export class MonthlyFeeService implements MonthlyFeeServiceInterface {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiMonthlyFeeIdChargeStatusGet(id: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<CarlonGracieBackendApplicationInterfacesInfrastructureChargeStatus>;
-    public apiMonthlyFeeIdChargeStatusGet(id: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<CarlonGracieBackendApplicationInterfacesInfrastructureChargeStatus>>;
-    public apiMonthlyFeeIdChargeStatusGet(id: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<CarlonGracieBackendApplicationInterfacesInfrastructureChargeStatus>>;
+    public apiMonthlyFeeIdChargeStatusGet(id: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<ChargeStatus>;
+    public apiMonthlyFeeIdChargeStatusGet(id: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<ChargeStatus>>;
+    public apiMonthlyFeeIdChargeStatusGet(id: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<ChargeStatus>>;
     public apiMonthlyFeeIdChargeStatusGet(id: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         if (id === null || id === undefined) {
             throw new Error('Required parameter id was null or undefined when calling apiMonthlyFeeIdChargeStatusGet.');
         }
 
         let localVarHeaders = this.defaultHeaders;
+
+        let localVarCredential: string | undefined;
+        // authentication (Bearer) required
+        localVarCredential = this.configuration.lookupCredential('Bearer');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('Authorization', 'Bearer ' + localVarCredential);
+        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -372,7 +485,7 @@ export class MonthlyFeeService implements MonthlyFeeServiceInterface {
         }
 
         let localVarPath = `/api/MonthlyFee/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: "uuid"})}/charge-status`;
-        return this.httpClient.request<CarlonGracieBackendApplicationInterfacesInfrastructureChargeStatus>('get', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<ChargeStatus>('get', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 responseType: <any>responseType_,
@@ -390,15 +503,22 @@ export class MonthlyFeeService implements MonthlyFeeServiceInterface {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiMonthlyFeeIdGet(id: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<CarlonGracieBackendFinancesApplicationDTOsShowMonthlyFeeDTO>;
-    public apiMonthlyFeeIdGet(id: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<CarlonGracieBackendFinancesApplicationDTOsShowMonthlyFeeDTO>>;
-    public apiMonthlyFeeIdGet(id: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<CarlonGracieBackendFinancesApplicationDTOsShowMonthlyFeeDTO>>;
+    public apiMonthlyFeeIdGet(id: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<ShowMonthlyFeeDTO>;
+    public apiMonthlyFeeIdGet(id: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<ShowMonthlyFeeDTO>>;
+    public apiMonthlyFeeIdGet(id: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<ShowMonthlyFeeDTO>>;
     public apiMonthlyFeeIdGet(id: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         if (id === null || id === undefined) {
             throw new Error('Required parameter id was null or undefined when calling apiMonthlyFeeIdGet.');
         }
 
         let localVarHeaders = this.defaultHeaders;
+
+        let localVarCredential: string | undefined;
+        // authentication (Bearer) required
+        localVarCredential = this.configuration.lookupCredential('Bearer');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('Authorization', 'Bearer ' + localVarCredential);
+        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -435,7 +555,7 @@ export class MonthlyFeeService implements MonthlyFeeServiceInterface {
         }
 
         let localVarPath = `/api/MonthlyFee/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: "uuid"})}`;
-        return this.httpClient.request<CarlonGracieBackendFinancesApplicationDTOsShowMonthlyFeeDTO>('get', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<ShowMonthlyFeeDTO>('get', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 responseType: <any>responseType_,
@@ -450,19 +570,26 @@ export class MonthlyFeeService implements MonthlyFeeServiceInterface {
 
     /**
      * @param id 
-     * @param carlonGracieBackendFinancesApplicationDTOsPayMonthlyFeeDTO 
+     * @param payMonthlyFeeDTO 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiMonthlyFeeIdPayPatch(id: string, carlonGracieBackendFinancesApplicationDTOsPayMonthlyFeeDTO?: CarlonGracieBackendFinancesApplicationDTOsPayMonthlyFeeDTO, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<CarlonGracieBackendFinancesApplicationDTOsShowMonthlyFeeDTO>;
-    public apiMonthlyFeeIdPayPatch(id: string, carlonGracieBackendFinancesApplicationDTOsPayMonthlyFeeDTO?: CarlonGracieBackendFinancesApplicationDTOsPayMonthlyFeeDTO, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<CarlonGracieBackendFinancesApplicationDTOsShowMonthlyFeeDTO>>;
-    public apiMonthlyFeeIdPayPatch(id: string, carlonGracieBackendFinancesApplicationDTOsPayMonthlyFeeDTO?: CarlonGracieBackendFinancesApplicationDTOsPayMonthlyFeeDTO, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<CarlonGracieBackendFinancesApplicationDTOsShowMonthlyFeeDTO>>;
-    public apiMonthlyFeeIdPayPatch(id: string, carlonGracieBackendFinancesApplicationDTOsPayMonthlyFeeDTO?: CarlonGracieBackendFinancesApplicationDTOsPayMonthlyFeeDTO, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public apiMonthlyFeeIdPayPatch(id: string, payMonthlyFeeDTO?: PayMonthlyFeeDTO, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<ShowMonthlyFeeDTO>;
+    public apiMonthlyFeeIdPayPatch(id: string, payMonthlyFeeDTO?: PayMonthlyFeeDTO, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<ShowMonthlyFeeDTO>>;
+    public apiMonthlyFeeIdPayPatch(id: string, payMonthlyFeeDTO?: PayMonthlyFeeDTO, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<ShowMonthlyFeeDTO>>;
+    public apiMonthlyFeeIdPayPatch(id: string, payMonthlyFeeDTO?: PayMonthlyFeeDTO, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         if (id === null || id === undefined) {
             throw new Error('Required parameter id was null or undefined when calling apiMonthlyFeeIdPayPatch.');
         }
 
         let localVarHeaders = this.defaultHeaders;
+
+        let localVarCredential: string | undefined;
+        // authentication (Bearer) required
+        localVarCredential = this.configuration.lookupCredential('Bearer');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('Authorization', 'Bearer ' + localVarCredential);
+        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -489,44 +616,7 @@ export class MonthlyFeeService implements MonthlyFeeServiceInterface {
 
         // to determine the Content-Type header
         const consumes: string[] = [
-            'application/json;odata.metadata=minimal;odata.streaming=true',
-            'application/json;odata.metadata=minimal;odata.streaming=false',
-            'application/json;odata.metadata=minimal',
-            'application/json;odata.metadata=full;odata.streaming=true',
-            'application/json;odata.metadata=full;odata.streaming=false',
-            'application/json;odata.metadata=full',
-            'application/json;odata.metadata=none;odata.streaming=true',
-            'application/json;odata.metadata=none;odata.streaming=false',
-            'application/json;odata.metadata=none',
-            'application/json;odata.streaming=true',
-            'application/json;odata.streaming=false',
             'application/json',
-            'application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=false',
-            'application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=true',
-            'application/json;odata.metadata=minimal;odata.streaming=false;IEEE754Compatible=false',
-            'application/json;odata.metadata=minimal;odata.streaming=false;IEEE754Compatible=true',
-            'application/json;odata.metadata=minimal;IEEE754Compatible=false',
-            'application/json;odata.metadata=minimal;IEEE754Compatible=true',
-            'application/json;odata.metadata=full;odata.streaming=true;IEEE754Compatible=false',
-            'application/json;odata.metadata=full;odata.streaming=true;IEEE754Compatible=true',
-            'application/json;odata.metadata=full;odata.streaming=false;IEEE754Compatible=false',
-            'application/json;odata.metadata=full;odata.streaming=false;IEEE754Compatible=true',
-            'application/json;odata.metadata=full;IEEE754Compatible=false',
-            'application/json;odata.metadata=full;IEEE754Compatible=true',
-            'application/json;odata.metadata=none;odata.streaming=true;IEEE754Compatible=false',
-            'application/json;odata.metadata=none;odata.streaming=true;IEEE754Compatible=true',
-            'application/json;odata.metadata=none;odata.streaming=false;IEEE754Compatible=true',
-            'application/json;odata.metadata=none;odata.streaming=false;IEEE754Compatible=false',
-            'application/json;odata.metadata=none;IEEE754Compatible=false',
-            'application/json;odata.metadata=none;IEEE754Compatible=true',
-            'application/json;odata.streaming=true;IEEE754Compatible=false',
-            'application/json;odata.streaming=true;IEEE754Compatible=true',
-            'application/json;odata.streaming=false;IEEE754Compatible=false',
-            'application/json;odata.streaming=false;IEEE754Compatible=true',
-            'application/json;IEEE754Compatible=false',
-            'application/json;IEEE754Compatible=true',
-            'application/xml',
-            'text/plain',
             'text/json',
             'application/*+json'
         ];
@@ -547,10 +637,10 @@ export class MonthlyFeeService implements MonthlyFeeServiceInterface {
         }
 
         let localVarPath = `/api/MonthlyFee/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: "uuid"})}/pay`;
-        return this.httpClient.request<CarlonGracieBackendFinancesApplicationDTOsShowMonthlyFeeDTO>('patch', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<ShowMonthlyFeeDTO>('patch', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
-                body: carlonGracieBackendFinancesApplicationDTOsPayMonthlyFeeDTO,
+                body: payMonthlyFeeDTO,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,
@@ -575,6 +665,13 @@ export class MonthlyFeeService implements MonthlyFeeServiceInterface {
         }
 
         let localVarHeaders = this.defaultHeaders;
+
+        let localVarCredential: string | undefined;
+        // authentication (Bearer) required
+        localVarCredential = this.configuration.lookupCredential('Bearer');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('Authorization', 'Bearer ' + localVarCredential);
+        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -625,15 +722,79 @@ export class MonthlyFeeService implements MonthlyFeeServiceInterface {
     }
 
     /**
+     * @param studentId 
+     * @param contractId 
+     * @param status 
+     * @param dueDateFrom 
+     * @param dueDateTo 
+     * @param amountMin 
+     * @param amountMax 
+     * @param page 
+     * @param pageSize 
+     * @param orderBy 
+     * @param orderByDescending 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiMonthlyFeeOverdueGet(observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Array<CarlonGracieBackendFinancesApplicationDTOsShowMonthlyFeeDTO>>;
-    public apiMonthlyFeeOverdueGet(observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<CarlonGracieBackendFinancesApplicationDTOsShowMonthlyFeeDTO>>>;
-    public apiMonthlyFeeOverdueGet(observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<CarlonGracieBackendFinancesApplicationDTOsShowMonthlyFeeDTO>>>;
-    public apiMonthlyFeeOverdueGet(observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public apiMonthlyFeeOverdueGet(studentId?: string, contractId?: string, status?: string, dueDateFrom?: string, dueDateTo?: string, amountMin?: number, amountMax?: number, page?: number, pageSize?: number, orderBy?: string, orderByDescending?: boolean, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<ShowMonthlyFeeDTOPaginatedResult>;
+    public apiMonthlyFeeOverdueGet(studentId?: string, contractId?: string, status?: string, dueDateFrom?: string, dueDateTo?: string, amountMin?: number, amountMax?: number, page?: number, pageSize?: number, orderBy?: string, orderByDescending?: boolean, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<ShowMonthlyFeeDTOPaginatedResult>>;
+    public apiMonthlyFeeOverdueGet(studentId?: string, contractId?: string, status?: string, dueDateFrom?: string, dueDateTo?: string, amountMin?: number, amountMax?: number, page?: number, pageSize?: number, orderBy?: string, orderByDescending?: boolean, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<ShowMonthlyFeeDTOPaginatedResult>>;
+    public apiMonthlyFeeOverdueGet(studentId?: string, contractId?: string, status?: string, dueDateFrom?: string, dueDateTo?: string, amountMin?: number, amountMax?: number, page?: number, pageSize?: number, orderBy?: string, orderByDescending?: boolean, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+
+        let localVarQueryParameters = new HttpParams({encoder: this.encoder});
+        if (studentId !== undefined && studentId !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>studentId, 'StudentId');
+        }
+        if (contractId !== undefined && contractId !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>contractId, 'ContractId');
+        }
+        if (status !== undefined && status !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>status, 'Status');
+        }
+        if (dueDateFrom !== undefined && dueDateFrom !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>dueDateFrom, 'DueDateFrom');
+        }
+        if (dueDateTo !== undefined && dueDateTo !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>dueDateTo, 'DueDateTo');
+        }
+        if (amountMin !== undefined && amountMin !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>amountMin, 'AmountMin');
+        }
+        if (amountMax !== undefined && amountMax !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>amountMax, 'AmountMax');
+        }
+        if (page !== undefined && page !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>page, 'Page');
+        }
+        if (pageSize !== undefined && pageSize !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>pageSize, 'PageSize');
+        }
+        if (orderBy !== undefined && orderBy !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>orderBy, 'OrderBy');
+        }
+        if (orderByDescending !== undefined && orderByDescending !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>orderByDescending, 'OrderByDescending');
+        }
 
         let localVarHeaders = this.defaultHeaders;
+
+        let localVarCredential: string | undefined;
+        // authentication (Bearer) required
+        localVarCredential = this.configuration.lookupCredential('Bearer');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('Authorization', 'Bearer ' + localVarCredential);
+        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -670,9 +831,10 @@ export class MonthlyFeeService implements MonthlyFeeServiceInterface {
         }
 
         let localVarPath = `/api/MonthlyFee/overdue`;
-        return this.httpClient.request<Array<CarlonGracieBackendFinancesApplicationDTOsShowMonthlyFeeDTO>>('get', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<ShowMonthlyFeeDTOPaginatedResult>('get', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
+                params: localVarQueryParameters,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,
@@ -685,18 +847,82 @@ export class MonthlyFeeService implements MonthlyFeeServiceInterface {
 
     /**
      * @param studentId 
+     * @param studentId2 
+     * @param contractId 
+     * @param status 
+     * @param dueDateFrom 
+     * @param dueDateTo 
+     * @param amountMin 
+     * @param amountMax 
+     * @param page 
+     * @param pageSize 
+     * @param orderBy 
+     * @param orderByDescending 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiMonthlyFeeStudentStudentIdGet(studentId: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Array<CarlonGracieBackendFinancesApplicationDTOsShowMonthlyFeeDTO>>;
-    public apiMonthlyFeeStudentStudentIdGet(studentId: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<CarlonGracieBackendFinancesApplicationDTOsShowMonthlyFeeDTO>>>;
-    public apiMonthlyFeeStudentStudentIdGet(studentId: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<CarlonGracieBackendFinancesApplicationDTOsShowMonthlyFeeDTO>>>;
-    public apiMonthlyFeeStudentStudentIdGet(studentId: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public apiMonthlyFeeStudentStudentIdGet(studentId: string, studentId2?: string, contractId?: string, status?: string, dueDateFrom?: string, dueDateTo?: string, amountMin?: number, amountMax?: number, page?: number, pageSize?: number, orderBy?: string, orderByDescending?: boolean, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<ShowMonthlyFeeDTOPaginatedResult>;
+    public apiMonthlyFeeStudentStudentIdGet(studentId: string, studentId2?: string, contractId?: string, status?: string, dueDateFrom?: string, dueDateTo?: string, amountMin?: number, amountMax?: number, page?: number, pageSize?: number, orderBy?: string, orderByDescending?: boolean, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<ShowMonthlyFeeDTOPaginatedResult>>;
+    public apiMonthlyFeeStudentStudentIdGet(studentId: string, studentId2?: string, contractId?: string, status?: string, dueDateFrom?: string, dueDateTo?: string, amountMin?: number, amountMax?: number, page?: number, pageSize?: number, orderBy?: string, orderByDescending?: boolean, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<ShowMonthlyFeeDTOPaginatedResult>>;
+    public apiMonthlyFeeStudentStudentIdGet(studentId: string, studentId2?: string, contractId?: string, status?: string, dueDateFrom?: string, dueDateTo?: string, amountMin?: number, amountMax?: number, page?: number, pageSize?: number, orderBy?: string, orderByDescending?: boolean, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         if (studentId === null || studentId === undefined) {
             throw new Error('Required parameter studentId was null or undefined when calling apiMonthlyFeeStudentStudentIdGet.');
         }
 
+        let localVarQueryParameters = new HttpParams({encoder: this.encoder});
+        if (studentId2 !== undefined && studentId2 !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>studentId2, 'StudentId');
+        }
+        if (contractId !== undefined && contractId !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>contractId, 'ContractId');
+        }
+        if (status !== undefined && status !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>status, 'Status');
+        }
+        if (dueDateFrom !== undefined && dueDateFrom !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>dueDateFrom, 'DueDateFrom');
+        }
+        if (dueDateTo !== undefined && dueDateTo !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>dueDateTo, 'DueDateTo');
+        }
+        if (amountMin !== undefined && amountMin !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>amountMin, 'AmountMin');
+        }
+        if (amountMax !== undefined && amountMax !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>amountMax, 'AmountMax');
+        }
+        if (page !== undefined && page !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>page, 'Page');
+        }
+        if (pageSize !== undefined && pageSize !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>pageSize, 'PageSize');
+        }
+        if (orderBy !== undefined && orderBy !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>orderBy, 'OrderBy');
+        }
+        if (orderByDescending !== undefined && orderByDescending !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>orderByDescending, 'OrderByDescending');
+        }
+
         let localVarHeaders = this.defaultHeaders;
+
+        let localVarCredential: string | undefined;
+        // authentication (Bearer) required
+        localVarCredential = this.configuration.lookupCredential('Bearer');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('Authorization', 'Bearer ' + localVarCredential);
+        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -733,9 +959,10 @@ export class MonthlyFeeService implements MonthlyFeeServiceInterface {
         }
 
         let localVarPath = `/api/MonthlyFee/student/${this.configuration.encodeParam({name: "studentId", value: studentId, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: "uuid"})}`;
-        return this.httpClient.request<Array<CarlonGracieBackendFinancesApplicationDTOsShowMonthlyFeeDTO>>('get', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<ShowMonthlyFeeDTOPaginatedResult>('get', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
+                params: localVarQueryParameters,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,

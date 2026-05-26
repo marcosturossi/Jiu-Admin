@@ -13,10 +13,11 @@ import { HttpHeaders }                                       from '@angular/comm
 import { Observable }                                        from 'rxjs';
 
 import { ApiAdminAcademiesIdGet404Response } from '../model/models';
-import { CarlonGracieBackendFinancesApplicationDTOsCreateTransactionCategoryDTO } from '../model/models';
-import { CarlonGracieBackendFinancesApplicationDTOsShowTransactionCategoryDTO } from '../model/models';
-import { CarlonGracieBackendFinancesApplicationDTOsUpdateTransactionCategoryDTO } from '../model/models';
-import { MicrosoftAspNetCoreMvcValidationProblemDetails } from '../model/models';
+import { CreateTransactionCategoryDTO } from '../model/models';
+import { ShowTransactionCategoryDTO } from '../model/models';
+import { ShowTransactionCategoryDTOPaginatedResult } from '../model/models';
+import { UpdateTransactionCategoryDTO } from '../model/models';
+import { ValidationProblemDetails } from '../model/models';
 
 
 import { Configuration }                                     from '../configuration';
@@ -30,14 +31,14 @@ export interface TransactionCategoryServiceInterface {
     /**
      * 
      * 
-     * @param $filter OData filter expression. Examples: contains(name,\&#39;John\&#39;) | status eq \&#39;Active\&#39; | amount gt 100 | createdAt ge 2024-01-01T00:00:00Z
-     * @param $orderby Sort expression. Examples: name asc | createdAt desc | name asc,amount desc
-     * @param $top Page size — number of records to return (default: 20, max: 200). Use with $skip for pagination.
-     * @param $skip Records to skip. Use ($pageNumber - 1) * $top. Example: page 3 with size 20 → $skip&#x3D;40
-     * @param $count Set to \&#39;true\&#39; to include total record count in response as @odata.count
-     * @param $select Return only specific fields. Example: $select&#x3D;id,name,createdAt
+     * @param name 
+     * @param isActive 
+     * @param page 
+     * @param pageSize 
+     * @param orderBy 
+     * @param orderByDescending 
      */
-    apiTransactionCategoryGet($filter?: string, $orderby?: string, $top?: string, $skip?: string, $count?: string, $select?: string, extraHttpRequestParams?: any): Observable<Array<CarlonGracieBackendFinancesApplicationDTOsShowTransactionCategoryDTO>>;
+    apiTransactionCategoryGet(name?: string, isActive?: boolean, page?: number, pageSize?: number, orderBy?: string, orderByDescending?: boolean, extraHttpRequestParams?: any): Observable<ShowTransactionCategoryDTOPaginatedResult>;
 
     /**
      * 
@@ -51,21 +52,21 @@ export interface TransactionCategoryServiceInterface {
      * 
      * @param id 
      */
-    apiTransactionCategoryIdGet(id: string, extraHttpRequestParams?: any): Observable<CarlonGracieBackendFinancesApplicationDTOsShowTransactionCategoryDTO>;
+    apiTransactionCategoryIdGet(id: string, extraHttpRequestParams?: any): Observable<ShowTransactionCategoryDTO>;
 
     /**
      * 
      * 
      * @param id 
-     * @param carlonGracieBackendFinancesApplicationDTOsUpdateTransactionCategoryDTO 
+     * @param updateTransactionCategoryDTO 
      */
-    apiTransactionCategoryIdPut(id: string, carlonGracieBackendFinancesApplicationDTOsUpdateTransactionCategoryDTO?: CarlonGracieBackendFinancesApplicationDTOsUpdateTransactionCategoryDTO, extraHttpRequestParams?: any): Observable<CarlonGracieBackendFinancesApplicationDTOsShowTransactionCategoryDTO>;
+    apiTransactionCategoryIdPut(id: string, updateTransactionCategoryDTO?: UpdateTransactionCategoryDTO, extraHttpRequestParams?: any): Observable<ShowTransactionCategoryDTO>;
 
     /**
      * 
      * 
-     * @param carlonGracieBackendFinancesApplicationDTOsCreateTransactionCategoryDTO 
+     * @param createTransactionCategoryDTO 
      */
-    apiTransactionCategoryPost(carlonGracieBackendFinancesApplicationDTOsCreateTransactionCategoryDTO?: CarlonGracieBackendFinancesApplicationDTOsCreateTransactionCategoryDTO, extraHttpRequestParams?: any): Observable<CarlonGracieBackendFinancesApplicationDTOsShowTransactionCategoryDTO>;
+    apiTransactionCategoryPost(createTransactionCategoryDTO?: CreateTransactionCategoryDTO, extraHttpRequestParams?: any): Observable<ShowTransactionCategoryDTO>;
 
 }

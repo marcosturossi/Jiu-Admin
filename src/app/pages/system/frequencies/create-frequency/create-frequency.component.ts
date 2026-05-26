@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, DestroyRef, inject, output, signal } from '@angular/core';
-import { FrequencyService, StudentsService, CarlonGracieBackendDTOsShowStudentDTO as ShowStudentDTO, CarlonGracieBackendAttendanceApplicationDTOsShowLessonDTO as ShowLessonDTO, LessonService } from '../../../../generated_services';
+import { FrequencyService, StudentsService, CarlonGracieBackendStudentsApplicationDTOsShowStudentDTO as ShowStudentDTO, CarlonGracieBackendAttendanceApplicationDTOsShowLessonDTO as ShowLessonDTO, LessonService } from '../../../../generated_services';
 import { FormBuilder, FormArray, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CreateFrequencyDTO } from '../../../../generated_services/model/createFrequencyDTO';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -51,10 +51,11 @@ export class CreateFrequencyComponent {
   constructor() {
     this.lessonSearchSubject.pipe(debounceTime(400), takeUntilDestroyed(this.destroyRef))
       .subscribe(term => this.loadLessons(term));
-    this.studentsService.apiStudentsActiveGet().subscribe({
+    this.studentsService.apiStudentsGet(undefined, undefined, undefined, undefined, undefined, undefined, 1, 500).subscribe({
       next: result => {
-        this.students.set(result);
-        this.initializeStudentFormArray(result);
+        const students = result?.items ?? [];
+        this.students.set(students);
+        this.initializeStudentFormArray(students);
       },
       error: () => this.ns.showError('Erro ao Carregar Alunos!', 'Não foi possível carregar a lista de alunos. Tente novamente.')
     });

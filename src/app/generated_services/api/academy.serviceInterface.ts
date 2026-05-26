@@ -13,9 +13,10 @@ import { HttpHeaders }                                       from '@angular/comm
 import { Observable }                                        from 'rxjs';
 
 import { ApiAdminAcademiesIdGet404Response } from '../model/models';
-import { CarlonGracieBackendAuthenticationApplicationDTOsCreateAcademyDto } from '../model/models';
-import { CarlonGracieBackendAuthenticationApplicationDTOsShowAcademyDto } from '../model/models';
-import { CarlonGracieBackendAuthenticationApplicationDTOsUpdateAcademyDto } from '../model/models';
+import { CreateAcademyDto } from '../model/models';
+import { ShowAcademyDto } from '../model/models';
+import { ShowAcademyDtoPaginatedResult } from '../model/models';
+import { UpdateAcademyDto } from '../model/models';
 
 
 import { Configuration }                                     from '../configuration';
@@ -29,14 +30,14 @@ export interface AcademyServiceInterface {
     /**
      * 
      * 
-     * @param $filter OData filter expression. Examples: contains(name,\&#39;John\&#39;) | status eq \&#39;Active\&#39; | amount gt 100 | createdAt ge 2024-01-01T00:00:00Z
-     * @param $orderby Sort expression. Examples: name asc | createdAt desc | name asc,amount desc
-     * @param $top Page size — number of records to return (default: 20, max: 200). Use with $skip for pagination.
-     * @param $skip Records to skip. Use ($pageNumber - 1) * $top. Example: page 3 with size 20 → $skip&#x3D;40
-     * @param $count Set to \&#39;true\&#39; to include total record count in response as @odata.count
-     * @param $select Return only specific fields. Example: $select&#x3D;id,name,createdAt
+     * @param name 
+     * @param isActive 
+     * @param createdFrom 
+     * @param createdTo 
+     * @param pageNumber 
+     * @param pageSize 
      */
-    apiAdminAcademiesGet($filter?: string, $orderby?: string, $top?: string, $skip?: string, $count?: string, $select?: string, extraHttpRequestParams?: any): Observable<Array<CarlonGracieBackendAuthenticationApplicationDTOsShowAcademyDto>>;
+    apiAdminAcademiesGet(name?: string, isActive?: boolean, createdFrom?: string, createdTo?: string, pageNumber?: number, pageSize?: number, extraHttpRequestParams?: any): Observable<ShowAcademyDtoPaginatedResult>;
 
     /**
      * 
@@ -50,21 +51,21 @@ export interface AcademyServiceInterface {
      * 
      * @param id 
      */
-    apiAdminAcademiesIdGet(id: string, extraHttpRequestParams?: any): Observable<CarlonGracieBackendAuthenticationApplicationDTOsShowAcademyDto>;
+    apiAdminAcademiesIdGet(id: string, extraHttpRequestParams?: any): Observable<ShowAcademyDto>;
 
     /**
      * 
      * 
      * @param id 
-     * @param carlonGracieBackendAuthenticationApplicationDTOsUpdateAcademyDto 
+     * @param updateAcademyDto 
      */
-    apiAdminAcademiesIdPut(id: string, carlonGracieBackendAuthenticationApplicationDTOsUpdateAcademyDto?: CarlonGracieBackendAuthenticationApplicationDTOsUpdateAcademyDto, extraHttpRequestParams?: any): Observable<CarlonGracieBackendAuthenticationApplicationDTOsShowAcademyDto>;
+    apiAdminAcademiesIdPut(id: string, updateAcademyDto?: UpdateAcademyDto, extraHttpRequestParams?: any): Observable<ShowAcademyDto>;
 
     /**
      * 
      * 
-     * @param carlonGracieBackendAuthenticationApplicationDTOsCreateAcademyDto 
+     * @param createAcademyDto 
      */
-    apiAdminAcademiesPost(carlonGracieBackendAuthenticationApplicationDTOsCreateAcademyDto?: CarlonGracieBackendAuthenticationApplicationDTOsCreateAcademyDto, extraHttpRequestParams?: any): Observable<CarlonGracieBackendAuthenticationApplicationDTOsShowAcademyDto>;
+    apiAdminAcademiesPost(createAcademyDto?: CreateAcademyDto, extraHttpRequestParams?: any): Observable<ShowAcademyDto>;
 
 }

@@ -13,10 +13,12 @@ import { HttpHeaders }                                       from '@angular/comm
 import { Observable }                                        from 'rxjs';
 
 import { ApiAdminAcademiesIdGet404Response } from '../model/models';
-import { CarlonGracieBackendDTOsUpdateContractDTO } from '../model/models';
-import { CarlonGracieBackendFinancesApplicationDTOsCreateContractDTO } from '../model/models';
-import { CarlonGracieBackendFinancesApplicationDTOsShowContractDTO } from '../model/models';
-import { MicrosoftAspNetCoreMvcValidationProblemDetails } from '../model/models';
+import { ContractStatus } from '../model/models';
+import { CreateContractDTO } from '../model/models';
+import { ShowContractDTO } from '../model/models';
+import { ShowContractDTOPaginatedResult } from '../model/models';
+import { UpdateContractStatusRequest } from '../model/models';
+import { ValidationProblemDetails } from '../model/models';
 
 
 import { Configuration }                                     from '../configuration';
@@ -30,14 +32,19 @@ export interface ContractServiceInterface {
     /**
      * 
      * 
-     * @param $filter OData filter expression. Examples: contains(name,\&#39;John\&#39;) | status eq \&#39;Active\&#39; | amount gt 100 | createdAt ge 2024-01-01T00:00:00Z
-     * @param $orderby Sort expression. Examples: name asc | createdAt desc | name asc,amount desc
-     * @param $top Page size — number of records to return (default: 20, max: 200). Use with $skip for pagination.
-     * @param $skip Records to skip. Use ($pageNumber - 1) * $top. Example: page 3 with size 20 → $skip&#x3D;40
-     * @param $count Set to \&#39;true\&#39; to include total record count in response as @odata.count
-     * @param $select Return only specific fields. Example: $select&#x3D;id,name,createdAt
+     * @param status 
+     * @param studentId 
+     * @param feePlanId 
+     * @param startDateFrom 
+     * @param startDateTo 
+     * @param endDateFrom 
+     * @param endDateTo 
+     * @param page 
+     * @param pageSize 
+     * @param orderBy 
+     * @param orderByDescending 
      */
-    apiContractGet($filter?: string, $orderby?: string, $top?: string, $skip?: string, $count?: string, $select?: string, extraHttpRequestParams?: any): Observable<Array<CarlonGracieBackendFinancesApplicationDTOsShowContractDTO>>;
+    apiContractGet(status?: ContractStatus, studentId?: string, feePlanId?: string, startDateFrom?: string, startDateTo?: string, endDateFrom?: string, endDateTo?: string, page?: number, pageSize?: number, orderBy?: string, orderByDescending?: boolean, extraHttpRequestParams?: any): Observable<ShowContractDTOPaginatedResult>;
 
     /**
      * 
@@ -51,28 +58,21 @@ export interface ContractServiceInterface {
      * 
      * @param id 
      */
-    apiContractIdGet(id: string, extraHttpRequestParams?: any): Observable<CarlonGracieBackendFinancesApplicationDTOsShowContractDTO>;
+    apiContractIdGet(id: string, extraHttpRequestParams?: any): Observable<ShowContractDTO>;
 
     /**
      * 
      * 
      * @param id 
-     * @param carlonGracieBackendDTOsUpdateContractDTO 
+     * @param updateContractStatusRequest 
      */
-    apiContractIdStatusPatch(id: string, carlonGracieBackendDTOsUpdateContractDTO?: CarlonGracieBackendDTOsUpdateContractDTO, extraHttpRequestParams?: any): Observable<CarlonGracieBackendFinancesApplicationDTOsShowContractDTO>;
+    apiContractIdStatusPatch(id: string, updateContractStatusRequest?: UpdateContractStatusRequest, extraHttpRequestParams?: any): Observable<ShowContractDTO>;
 
     /**
      * 
      * 
-     * @param carlonGracieBackendFinancesApplicationDTOsCreateContractDTO 
+     * @param createContractDTO 
      */
-    apiContractPost(carlonGracieBackendFinancesApplicationDTOsCreateContractDTO?: CarlonGracieBackendFinancesApplicationDTOsCreateContractDTO, extraHttpRequestParams?: any): Observable<CarlonGracieBackendFinancesApplicationDTOsShowContractDTO>;
-
-    /**
-     * 
-     * 
-     * @param studentId 
-     */
-    apiContractStudentStudentIdGet(studentId: string, extraHttpRequestParams?: any): Observable<Array<CarlonGracieBackendFinancesApplicationDTOsShowContractDTO>>;
+    apiContractPost(createContractDTO?: CreateContractDTO, extraHttpRequestParams?: any): Observable<ShowContractDTO>;
 
 }

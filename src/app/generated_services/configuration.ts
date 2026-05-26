@@ -86,6 +86,15 @@ export class Configuration {
         else {
             this.credentials = {};
         }
+
+        // init default Bearer credential
+        if (!this.credentials['Bearer']) {
+            this.credentials['Bearer'] = () => {
+                return typeof this.accessToken === 'function'
+                    ? this.accessToken()
+                    : this.accessToken;
+            };
+        }
     }
 
     /**

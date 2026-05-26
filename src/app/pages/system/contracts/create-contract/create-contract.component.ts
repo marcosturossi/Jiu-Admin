@@ -1,11 +1,11 @@
 import { ChangeDetectionStrategy, Component, DestroyRef, inject, output, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Subject, debounceTime, forkJoin, Observable } from 'rxjs';
+import { Subject, debounceTime } from 'rxjs';
 import { ContractService } from '../../../../generated_services/api/contract.service';
 import { FeePlanService } from '../../../../generated_services/api/feePlan.service';
 import { StudentsService } from '../../../../generated_services/api/students.service';
-import { CarlonGracieBackendDTOsShowStudentDTO as ShowStudentDTO, CarlonGracieBackendFinancesApplicationDTOsShowFeePlanDTO as ShowFeePlanDTO, CarlonGracieBackendFinancesApplicationDTOsShowContractDTO as ShowContractDTO } from '../../../../generated_services';
+import { CarlonGracieBackendStudentsApplicationDTOsShowStudentDTO as ShowStudentDTO, CarlonGracieBackendFinancesApplicationDTOsShowFeePlanDTO as ShowFeePlanDTO, CarlonGracieBackendFinancesApplicationDTOsShowContractDTO as ShowContractDTO } from '../../../../generated_services';
 import { NotificationService } from '../../../../services/notification.service';
 import { SearchOption } from '../../../../shared/search-select/search-option';
 import { SearchSelectComponent } from '../../../../shared/search-select/search-select.component';
@@ -109,8 +109,9 @@ export class CreateContractComponent {
   protected close(): void { this.closeEvent.emit(); }
 
   private loadStudents(term = ''): void {
-    this.studentsService.apiStudentsActiveGet(term || undefined, undefined, undefined, undefined, undefined, 1, 100).subscribe({
-      next: (students: ShowStudentDTO[]) => {
+    this.studentsService.apiStudentsGet(term || undefined, undefined, undefined, undefined, undefined, undefined, 1, 100).subscribe({
+      next: result => {
+        const students: ShowStudentDTO[] = result?.items ?? [];
         this.studentOptions.set(
           students.map(s => ({
             id: s.id!,
@@ -122,8 +123,9 @@ export class CreateContractComponent {
   }
 
   private loadFeePlans(term = ''): void {
-    this.feePlanService.apiFeePlanGet(term || undefined, undefined, '100').subscribe({
-      next: (plans: ShowFeePlanDTO[]) => {
+    this.feePlanService.apiFeePlanGet(term || undefined, undefined, undefined, undefined, undefined, 1, 100).subscribe({
+      next: result => {
+        const plans = result?.items ?? [];
         this.allFeePlans.set(plans);
         this.feePlanOptions.set(
           plans.map((p: ShowFeePlanDTO) => ({

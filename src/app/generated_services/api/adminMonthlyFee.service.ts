@@ -18,7 +18,7 @@ import { CustomHttpParameterCodec }                          from '../encoder';
 import { Observable }                                        from 'rxjs';
 
 // @ts-ignore
-import { CarlonGracieBackendControllersGenerateMonthlyFeesResultDTO } from '../model/carlonGracieBackendControllersGenerateMonthlyFeesResultDTO';
+import { GenerateMonthlyFeesResultDTO } from '../model/generateMonthlyFeesResultDTO';
 
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
@@ -100,9 +100,9 @@ export class AdminMonthlyFeeService implements AdminMonthlyFeeServiceInterface {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiAdminMonthlyFeesGeneratePost(year?: number, month?: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<CarlonGracieBackendControllersGenerateMonthlyFeesResultDTO>;
-    public apiAdminMonthlyFeesGeneratePost(year?: number, month?: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<CarlonGracieBackendControllersGenerateMonthlyFeesResultDTO>>;
-    public apiAdminMonthlyFeesGeneratePost(year?: number, month?: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<CarlonGracieBackendControllersGenerateMonthlyFeesResultDTO>>;
+    public apiAdminMonthlyFeesGeneratePost(year?: number, month?: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<GenerateMonthlyFeesResultDTO>;
+    public apiAdminMonthlyFeesGeneratePost(year?: number, month?: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<GenerateMonthlyFeesResultDTO>>;
+    public apiAdminMonthlyFeesGeneratePost(year?: number, month?: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<GenerateMonthlyFeesResultDTO>>;
     public apiAdminMonthlyFeesGeneratePost(year?: number, month?: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
 
         let localVarQueryParameters = new HttpParams({encoder: this.encoder});
@@ -116,6 +116,13 @@ export class AdminMonthlyFeeService implements AdminMonthlyFeeServiceInterface {
         }
 
         let localVarHeaders = this.defaultHeaders;
+
+        let localVarCredential: string | undefined;
+        // authentication (Bearer) required
+        localVarCredential = this.configuration.lookupCredential('Bearer');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('Authorization', 'Bearer ' + localVarCredential);
+        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -152,7 +159,7 @@ export class AdminMonthlyFeeService implements AdminMonthlyFeeServiceInterface {
         }
 
         let localVarPath = `/api/admin/monthly-fees/generate`;
-        return this.httpClient.request<CarlonGracieBackendControllersGenerateMonthlyFeesResultDTO>('post', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<GenerateMonthlyFeesResultDTO>('post', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 params: localVarQueryParameters,

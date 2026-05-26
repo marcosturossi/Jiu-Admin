@@ -8,6 +8,7 @@ import {
 import { FinancialTransactionService } from '../../../generated_services/api/financialTransaction.service';
 import { MonthlyFeeService } from '../../../generated_services/api/monthlyFee.service';
 import { TransactionType } from '../../../generated_services/model/transactionType';
+import { ShowMonthlyFeeDTO } from '../../../generated_services/model/showMonthlyFeeDTO';
 
 // Map backend values to frontend enum string values
 // The backend might return numeric 0/1 or strings 'Income'/'Expense'
@@ -95,11 +96,11 @@ export class FinancialSummaryComponent implements OnInit {
 
   private loadOverdueFees(): void {
     this.monthlyFeeService.apiMonthlyFeeOverdueGet().subscribe({
-      next: (fees) => {
-        this.overdueFeeCount.set(fees?.length ?? 0);
-        const total = (fees ?? []).reduce(
-          (sum, f) => sum + (f.amount ?? 0),
-          0
+      next: fees => {
+        this.overdueFeeCount.set(fees?.items?.length ?? 0);
+        const total = (fees?.items ?? []).reduce(
+          (sum: number, f: ShowMonthlyFeeDTO) => sum + (f.amount ?? 0),
+          0,
         );
         this.pendingFeeTotal.set(total);
       },

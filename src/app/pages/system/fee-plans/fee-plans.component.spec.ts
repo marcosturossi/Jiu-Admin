@@ -13,8 +13,10 @@ import { NotificationService } from '../../../services/notification.service';
 const MOCK_FEE_PLAN: ShowFeePlanDTO = { id: 'fp1', name: 'Plano Mensal', price: 150, monthDuration: 1, isActive: true };
 
 const MOCK_ITEMS = Array.from({ length: 25 }, (_, i) => ({ ...MOCK_FEE_PLAN, id: `fp${i + 1}` }));
-const MOCK_ODATA_RESPONSE = { value: MOCK_ITEMS };
-const MOCK_PAGE = { items: MOCK_ITEMS.slice(0, 10), totalCount: 25, totalPages: 3, currentPage: 1 };
+const buildResponse = (top = 20, skip = 0) => ({
+  '@odata.count': MOCK_ITEMS.length,
+  value: MOCK_ITEMS.slice(skip, skip + top),
+});
 
 describe('FeePlansComponent', () => {
   let component: FeePlansComponent;
@@ -27,7 +29,7 @@ describe('FeePlansComponent', () => {
     const feePlanSpy = jasmine.createSpyObj('FeePlanService', ['apiFeePlanGet', 'apiFeePlanIdDelete']);
     const nsSpy = jasmine.createSpyObj('NotificationService', ['showSuccess', 'showError']);
     const subnavSpy = jasmine.createSpyObj('SubnavService', ['setTitle']);
-    feePlanSpy.apiFeePlanGet.and.returnValue(of(MOCK_ODATA_RESPONSE));
+    feePlanSpy.apiFeePlanGet.and.callFake((...args: any[]) => of(buildResponse(Number(args[2] ?? 20), Number(args[3] ?? 0))));
 
     await TestBed.configureTestingModule({
       imports: [FeePlansComponent],
@@ -51,10 +53,8 @@ describe('FeePlansComponent', () => {
     feePlanService.apiFeePlanGet.calls.reset();
     (component as any).onPageChange(2);
     expect((component as any).currentPage()).toBe(2);
-    const page = (component as any).items();
-    expect(page.currentPage).toBe(2);
-    expect(page.items[0].id).toBe(MOCK_ITEMS[10].id);
-    expect(feePlanService.apiFeePlanGet).not.toHaveBeenCalled();
+    expect((feePlanService.apiFeePlanGet as any)).toHaveBeenCalledWith(undefined, undefined, '10', '10', 'true', undefined, 'response');
+    expect((component as any).items().items[0].id).toBe(MOCK_ITEMS[10].id);
   });
 
   it('should reset to page 1 and reload on onPageSizeChange', () => {
@@ -63,11 +63,9 @@ describe('FeePlansComponent', () => {
     (component as any).onPageSizeChange(20);
     expect((component as any).pageSize()).toBe(20);
     expect((component as any).currentPage()).toBe(1);
-    const page = (component as any).items();
-    expect(page.currentPage).toBe(1);
-    expect(page.items.length).toBe(20);
-    expect(page.items[0].id).toBe(MOCK_ITEMS[0].id);
-    expect(feePlanService.apiFeePlanGet).not.toHaveBeenCalled();
+    expect((feePlanService.apiFeePlanGet as any)).toHaveBeenCalledWith(undefined, undefined, '20', '0', 'true', undefined, 'response');
+    expect((component as any).items().items.length).toBe(20);
+    expect((component as any).items().items[0].id).toBe(MOCK_ITEMS[0].id);
   });
 
   describe('delete', () => {

@@ -13,11 +13,10 @@ import { HttpHeaders }                                       from '@angular/comm
 import { Observable }                                        from 'rxjs';
 
 import { ApiAdminAcademiesIdGet404Response } from '../model/models';
-import { CarlonGracieBackendAttendanceApplicationDTOsCreateLessonDTO } from '../model/models';
-import { CarlonGracieBackendAttendanceApplicationDTOsShowLessonDTO } from '../model/models';
-import { CarlonGracieBackendAttendanceApplicationDTOsUpdateLessonDTO } from '../model/models';
-import { CarlonGracieBackendDTOsShowLessonDTO } from '../model/models';
-import { MicrosoftAspNetCoreMvcValidationProblemDetails } from '../model/models';
+import { CreateLessonDTO } from '../model/models';
+import { ShowLessonDTO } from '../model/models';
+import { ShowLessonDTOPaginatedResult } from '../model/models';
+import { UpdateLessonDTO } from '../model/models';
 
 
 import { Configuration }                                     from '../configuration';
@@ -31,28 +30,13 @@ export interface LessonServiceInterface {
     /**
      * 
      * 
-     * @param searchTerm 
-     * @param isActive 
-     * @param scheduledFrom 
-     * @param scheduledTo 
-     * @param createdFrom 
-     * @param createdTo 
-     * @param pageNumber 
+     * @param title 
+     * @param page 
      * @param pageSize 
+     * @param orderBy 
+     * @param orderByDescending 
      */
-    apiLessonActiveGet(searchTerm?: string, isActive?: boolean, scheduledFrom?: string, scheduledTo?: string, createdFrom?: string, createdTo?: string, pageNumber?: number, pageSize?: number, extraHttpRequestParams?: any): Observable<Array<CarlonGracieBackendDTOsShowLessonDTO>>;
-
-    /**
-     * 
-     * 
-     * @param $filter OData filter expression. Examples: contains(name,\&#39;John\&#39;) | status eq \&#39;Active\&#39; | amount gt 100 | createdAt ge 2024-01-01T00:00:00Z
-     * @param $orderby Sort expression. Examples: name asc | createdAt desc | name asc,amount desc
-     * @param $top Page size — number of records to return (default: 20, max: 200). Use with $skip for pagination.
-     * @param $skip Records to skip. Use ($pageNumber - 1) * $top. Example: page 3 with size 20 → $skip&#x3D;40
-     * @param $count Set to \&#39;true\&#39; to include total record count in response as @odata.count
-     * @param $select Return only specific fields. Example: $select&#x3D;id,name,createdAt
-     */
-    apiLessonGet($filter?: string, $orderby?: string, $top?: string, $skip?: string, $count?: string, $select?: string, extraHttpRequestParams?: any): Observable<Array<CarlonGracieBackendAttendanceApplicationDTOsShowLessonDTO>>;
+    apiLessonGet(title?: string, page?: number, pageSize?: number, orderBy?: string, orderByDescending?: boolean, extraHttpRequestParams?: any): Observable<ShowLessonDTOPaginatedResult>;
 
     /**
      * 
@@ -66,21 +50,21 @@ export interface LessonServiceInterface {
      * 
      * @param id 
      */
-    apiLessonIdGet(id: string, extraHttpRequestParams?: any): Observable<CarlonGracieBackendAttendanceApplicationDTOsShowLessonDTO>;
+    apiLessonIdGet(id: string, extraHttpRequestParams?: any): Observable<ShowLessonDTO>;
 
     /**
      * 
      * 
      * @param id 
-     * @param carlonGracieBackendAttendanceApplicationDTOsUpdateLessonDTO 
+     * @param updateLessonDTO 
      */
-    apiLessonIdPut(id: string, carlonGracieBackendAttendanceApplicationDTOsUpdateLessonDTO?: CarlonGracieBackendAttendanceApplicationDTOsUpdateLessonDTO, extraHttpRequestParams?: any): Observable<CarlonGracieBackendAttendanceApplicationDTOsShowLessonDTO>;
+    apiLessonIdPut(id: string, updateLessonDTO?: UpdateLessonDTO, extraHttpRequestParams?: any): Observable<ShowLessonDTO>;
 
     /**
      * 
      * 
-     * @param carlonGracieBackendAttendanceApplicationDTOsCreateLessonDTO 
+     * @param createLessonDTO 
      */
-    apiLessonPost(carlonGracieBackendAttendanceApplicationDTOsCreateLessonDTO?: CarlonGracieBackendAttendanceApplicationDTOsCreateLessonDTO, extraHttpRequestParams?: any): Observable<CarlonGracieBackendAttendanceApplicationDTOsShowLessonDTO>;
+    apiLessonPost(createLessonDTO?: CreateLessonDTO, extraHttpRequestParams?: any): Observable<ShowLessonDTO>;
 
 }

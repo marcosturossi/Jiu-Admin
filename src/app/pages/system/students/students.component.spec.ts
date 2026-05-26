@@ -15,8 +15,10 @@ const MOCK_STUDENTS: ShowStudentDTO[] = Array.from({ length: 25 }, (_, i) => ({
   isActive: true,
 }));
 const MOCK_STUDENT = MOCK_STUDENTS[0];
-const MOCK_ODATA_RESPONSE = { value: MOCK_STUDENTS };
-const MOCK_PAGE = { items: MOCK_STUDENTS.slice(0, 10), totalCount: 25, totalPages: 3 };
+const buildResponse = (top = 20, skip = 0) => ({
+  '@odata.count': MOCK_STUDENTS.length,
+  value: MOCK_STUDENTS.slice(skip, skip + top),
+});
 
 describe('StudentsComponent', () => {
   let component: StudentsComponent;
@@ -29,7 +31,7 @@ describe('StudentsComponent', () => {
     const studentsSpy = jasmine.createSpyObj('StudentsService', ['apiStudentsGet', 'apiStudentsIdDelete']);
     const nsSpy = jasmine.createSpyObj('NotificationService', ['showSuccess', 'showError']);
     const subnavSpy = jasmine.createSpyObj('SubnavService', ['setTitle']);
-    studentsSpy.apiStudentsGet.and.returnValue(of(MOCK_ODATA_RESPONSE));
+    studentsSpy.apiStudentsGet.and.callFake((...args: any[]) => of(buildResponse(Number(args[2] ?? 20), Number(args[3] ?? 0))));
 
     await TestBed.configureTestingModule({
       imports: [StudentsComponent],
@@ -53,8 +55,8 @@ describe('StudentsComponent', () => {
   it('should set page title on init', () => { expect(subnavService.setTitle).toHaveBeenCalledWith('Estudantes'); });
 
   it('should load students on init', () => {
-    expect(studentsService.apiStudentsGet).toHaveBeenCalled();
-    expect((component as any).items()).toEqual(MOCK_PAGE);
+    expect((studentsService.apiStudentsGet as any)).toHaveBeenCalledWith(undefined, undefined, '10', '0', 'true', undefined, 'response');
+    expect((component as any).items().items.length).toBe(10);
   });
 
   it('should set isLoading to false after successful load', () => {
@@ -96,22 +98,28 @@ describe('StudentsComponent', () => {
   });
 
   it('should update page and reload on onPageChange', () => {
+    studentsService.apiStudentsGet.calls.reset();
     (component as any).onPageChange(2);
     expect((component as any).currentPage()).toBe(2);
+    expect((studentsService.apiStudentsGet as any)).toHaveBeenCalledWith(undefined, undefined, '10', '10', 'true', undefined, 'response');
     expect((component as any).items().items[0].id).toBe('s11');
   });
 
   it('should reset to page 1 and reload on onPageSizeChange', () => {
     (component as any).currentPage.set(3);
+    studentsService.apiStudentsGet.calls.reset();
     (component as any).onPageSizeChange(20);
     expect((component as any).pageSize()).toBe(20);
     expect((component as any).currentPage()).toBe(1);
+    expect((studentsService.apiStudentsGet as any)).toHaveBeenCalledWith(undefined, undefined, '20', '0', 'true', undefined, 'response');
     expect((component as any).items().items.length).toBe(20);
   });
 
   it('should build a status filter on onFilterChange', () => {
+    studentsService.apiStudentsGet.calls.reset();
     (component as any).onFilterChange({ text: '', conditions: [{ field: { key: 'isActive', label: 'Status', type: 'select', options: [{ value: 'true', label: 'Ativo' }, { value: 'false', label: 'Inativo' }] }, operator: 'eq', value: 'true' }], odataFilter: 'isActive eq true' });
     expect((component as any).filterQuery()).toBe('isActive eq true');
+    expect((studentsService.apiStudentsGet as any)).toHaveBeenCalledWith('isActive eq true', undefined, '10', '0', 'true', undefined, 'response');
   });
 
   describe('delete', () => {

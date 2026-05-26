@@ -26,7 +26,7 @@ export class OverdueFeesComponent implements OnInit {
   ngOnInit(): void {
     this.monthlyFeeService.apiMonthlyFeeOverdueGet().subscribe({
       next: (data) => {
-        this.fees.set(data ?? []);
+        this.fees.set(data?.items ?? []);
         this.loading.set(false);
       },
       error: (err) => {

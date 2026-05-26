@@ -9,8 +9,10 @@ import { ShowBeltDTO } from '../../../generated_services/model/showBeltDTO';
 const MOCK_BELT: ShowBeltDTO = { id: 'b1', color: 'Branca', orderIndex: 1, isForKids: false };
 
 const MOCK_ITEMS = Array.from({ length: 25 }, (_, i) => ({ ...MOCK_BELT, id: `b${i + 1}` }));
-const MOCK_ODATA_RESPONSE = { value: MOCK_ITEMS };
-const MOCK_PAGE = { items: MOCK_ITEMS.slice(0, 10), totalCount: 25, totalPages: 3, currentPage: 1 };
+const buildResponse = (top = 20, skip = 0) => ({
+  '@odata.count': MOCK_ITEMS.length,
+  value: MOCK_ITEMS.slice(skip, skip + top),
+});
 
 describe('BeltsComponent', () => {
   let component: BeltsComponent;
@@ -23,7 +25,7 @@ describe('BeltsComponent', () => {
     const beltSpy = jasmine.createSpyObj('BeltService', ['apiBeltGet', 'apiBeltIdDelete']);
     const nsSpy = jasmine.createSpyObj('NotificationService', ['showSuccess', 'showError']);
     const subnavSpy = jasmine.createSpyObj('SubnavService', ['setTitle']);
-    beltSpy.apiBeltGet.and.returnValue(of(MOCK_ODATA_RESPONSE));
+    beltSpy.apiBeltGet.and.callFake((...args: any[]) => of(buildResponse(Number(args[2] ?? 20), Number(args[3] ?? 0))));
 
     await TestBed.configureTestingModule({
       imports: [BeltsComponent],
@@ -44,12 +46,10 @@ describe('BeltsComponent', () => {
 
   it('should update page and reload on onPageChange', () => {
     beltService.apiBeltGet.calls.reset();
-    (component as any).onPageChange(3);
-    expect((component as any).currentPage()).toBe(3);
-    const page = (component as any).items();
-    expect(page.currentPage).toBe(3);
-    expect(page.items[0].id).toBe(MOCK_ITEMS[20].id);
-    expect(beltService.apiBeltGet).not.toHaveBeenCalled();
+    (component as any).onPageChange(2);
+    expect((component as any).currentPage()).toBe(2);
+    expect((beltService.apiBeltGet as any)).toHaveBeenCalledWith(undefined, undefined, '10', '10', 'true', undefined, 'response');
+    expect((component as any).items().items[0].id).toBe(MOCK_ITEMS[10].id);
   });
 
   it('should reset to page 1 and reload on onPageSizeChange', () => {
@@ -58,11 +58,9 @@ describe('BeltsComponent', () => {
     (component as any).onPageSizeChange(25);
     expect((component as any).pageSize()).toBe(25);
     expect((component as any).currentPage()).toBe(1);
-    const page = (component as any).items();
-    expect(page.currentPage).toBe(1);
-    expect(page.items.length).toBe(25);
-    expect(page.items[0].id).toBe(MOCK_ITEMS[0].id);
-    expect(beltService.apiBeltGet).not.toHaveBeenCalled();
+    expect((beltService.apiBeltGet as any)).toHaveBeenCalledWith(undefined, undefined, '25', '0', 'true', undefined, 'response');
+    expect((component as any).items().items.length).toBe(25);
+    expect((component as any).items().items[0].id).toBe(MOCK_ITEMS[0].id);
   });
 
   describe('delete', () => {

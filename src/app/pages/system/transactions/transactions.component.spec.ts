@@ -15,8 +15,10 @@ import { CarlonGracieBackendFinancesApplicationDTOsShowTransactionDTO as ShowTra
 const MOCK_TRANSACTION: ShowTransactionDTO = { id: 't1', description: 'Mensalidade março', amount: 150, type: TransactionType.Debit, transactionCategoryId: 'cat1' };
 
 const MOCK_ITEMS = Array.from({ length: 25 }, (_, i) => ({ ...MOCK_TRANSACTION, id: `tx${i + 1}` }));
-const MOCK_ODATA_RESPONSE = { value: MOCK_ITEMS };
-const MOCK_PAGE = { items: MOCK_ITEMS.slice(0, 10), totalCount: 25, totalPages: 3, currentPage: 1 };
+const buildResponse = (top = 20, skip = 0) => ({
+  '@odata.count': MOCK_ITEMS.length,
+  value: MOCK_ITEMS.slice(skip, skip + top),
+});
 const MOCK_CATEGORIES: ShowTransactionCategoryDTO[] = [{ id: 'cat1', name: 'Mensalidades' }];
 const MOCK_CATEGORY_ODATA = { '@odata.count': 1, value: MOCK_CATEGORIES };
 
@@ -33,7 +35,7 @@ describe('TransactionsComponent', () => {
     const categorySpy = jasmine.createSpyObj('TransactionCategoryService', ['apiTransactionCategoryGet']);
     const nsSpy = jasmine.createSpyObj('NotificationService', ['showSuccess', 'showError']);
     const subnavSpy = jasmine.createSpyObj('SubnavService', ['setTitle']);
-    transactionSpy.apiFinancialTransactionGet.and.returnValue(of(MOCK_ODATA_RESPONSE));
+    transactionSpy.apiFinancialTransactionGet.and.callFake((...args: any[]) => of(buildResponse(Number(args[2] ?? 20), Number(args[3] ?? 0))));
     categorySpy.apiTransactionCategoryGet.and.returnValue(of(MOCK_CATEGORY_ODATA));
 
     await TestBed.configureTestingModule({
@@ -60,10 +62,8 @@ describe('TransactionsComponent', () => {
     transactionService.apiFinancialTransactionGet.calls.reset();
     (component as any).onPageChange(2);
     expect((component as any).currentPage()).toBe(2);
-    const page = (component as any).items();
-    expect(page.currentPage).toBe(2);
-    expect(page.items[0].id).toBe(MOCK_ITEMS[10].id);
-    expect(transactionService.apiFinancialTransactionGet).not.toHaveBeenCalled();
+    expect((transactionService.apiFinancialTransactionGet as any)).toHaveBeenCalledWith(undefined, undefined, '10', '10', 'true', undefined, 'response');
+    expect((component as any).items().items[0].id).toBe(MOCK_ITEMS[10].id);
   });
 
   it('should reset to page 1 and reload on onPageSizeChange', () => {
@@ -72,11 +72,9 @@ describe('TransactionsComponent', () => {
     (component as any).onPageSizeChange(20);
     expect((component as any).pageSize()).toBe(20);
     expect((component as any).currentPage()).toBe(1);
-    const page = (component as any).items();
-    expect(page.currentPage).toBe(1);
-    expect(page.items.length).toBe(20);
-    expect(page.items[0].id).toBe(MOCK_ITEMS[0].id);
-    expect(transactionService.apiFinancialTransactionGet).not.toHaveBeenCalled();
+    expect((transactionService.apiFinancialTransactionGet as any)).toHaveBeenCalledWith(undefined, undefined, '20', '0', 'true', undefined, 'response');
+    expect((component as any).items().items.length).toBe(20);
+    expect((component as any).items().items[0].id).toBe(MOCK_ITEMS[0].id);
   });
 
   describe('getTypeLabel', () => {

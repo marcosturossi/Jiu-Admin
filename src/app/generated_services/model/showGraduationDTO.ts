@@ -8,18 +8,22 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { ShowStudentDTO } from './showStudentDTO';
 import { ShowBeltDTO } from './showBeltDTO';
+import { StripesEnum } from './stripesEnum';
 
 
 export interface ShowGraduationDTO { 
     id?: string;
-    userName?: string | null;
-    fullName?: string | null;
-    student?: ShowStudentDTO | null;
+    createdAt?: string;
     belt?: ShowBeltDTO | null;
+    studentUserName?: string | null;
+    studentFullName?: string | null;
     studentId: string;
     beltId: string;
     graduationDate: string;
+    stripes?: StripesEnum;
 }
+export namespace ShowGraduationDTO {
+}
+
 

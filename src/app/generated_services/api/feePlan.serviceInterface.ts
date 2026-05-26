@@ -13,10 +13,11 @@ import { HttpHeaders }                                       from '@angular/comm
 import { Observable }                                        from 'rxjs';
 
 import { ApiAdminAcademiesIdGet404Response } from '../model/models';
-import { CarlonGracieBackendFinancesApplicationDTOsCreateFeePlanDTO } from '../model/models';
-import { CarlonGracieBackendFinancesApplicationDTOsShowFeePlanDTO } from '../model/models';
-import { CarlonGracieBackendFinancesApplicationDTOsUpdateFeePlanDTO } from '../model/models';
-import { MicrosoftAspNetCoreMvcValidationProblemDetails } from '../model/models';
+import { CreateFeePlanDTO } from '../model/models';
+import { ShowFeePlanDTO } from '../model/models';
+import { ShowFeePlanDTOPaginatedResult } from '../model/models';
+import { UpdateFeePlanDTO } from '../model/models';
+import { ValidationProblemDetails } from '../model/models';
 
 
 import { Configuration }                                     from '../configuration';
@@ -30,14 +31,17 @@ export interface FeePlanServiceInterface {
     /**
      * 
      * 
-     * @param $filter OData filter expression. Examples: contains(name,\&#39;John\&#39;) | status eq \&#39;Active\&#39; | amount gt 100 | createdAt ge 2024-01-01T00:00:00Z
-     * @param $orderby Sort expression. Examples: name asc | createdAt desc | name asc,amount desc
-     * @param $top Page size — number of records to return (default: 20, max: 200). Use with $skip for pagination.
-     * @param $skip Records to skip. Use ($pageNumber - 1) * $top. Example: page 3 with size 20 → $skip&#x3D;40
-     * @param $count Set to \&#39;true\&#39; to include total record count in response as @odata.count
-     * @param $select Return only specific fields. Example: $select&#x3D;id,name,createdAt
+     * @param name 
+     * @param monthDurationMin 
+     * @param monthDurationMax 
+     * @param priceMin 
+     * @param priceMax 
+     * @param page 
+     * @param pageSize 
+     * @param orderBy 
+     * @param orderByDescending 
      */
-    apiFeePlanGet($filter?: string, $orderby?: string, $top?: string, $skip?: string, $count?: string, $select?: string, extraHttpRequestParams?: any): Observable<Array<CarlonGracieBackendFinancesApplicationDTOsShowFeePlanDTO>>;
+    apiFeePlanGet(name?: string, monthDurationMin?: number, monthDurationMax?: number, priceMin?: number, priceMax?: number, page?: number, pageSize?: number, orderBy?: string, orderByDescending?: boolean, extraHttpRequestParams?: any): Observable<ShowFeePlanDTOPaginatedResult>;
 
     /**
      * 
@@ -51,21 +55,21 @@ export interface FeePlanServiceInterface {
      * 
      * @param id 
      */
-    apiFeePlanIdGet(id: string, extraHttpRequestParams?: any): Observable<CarlonGracieBackendFinancesApplicationDTOsShowFeePlanDTO>;
+    apiFeePlanIdGet(id: string, extraHttpRequestParams?: any): Observable<ShowFeePlanDTO>;
 
     /**
      * 
      * 
      * @param id 
-     * @param carlonGracieBackendFinancesApplicationDTOsUpdateFeePlanDTO 
+     * @param updateFeePlanDTO 
      */
-    apiFeePlanIdPut(id: string, carlonGracieBackendFinancesApplicationDTOsUpdateFeePlanDTO?: CarlonGracieBackendFinancesApplicationDTOsUpdateFeePlanDTO, extraHttpRequestParams?: any): Observable<CarlonGracieBackendFinancesApplicationDTOsShowFeePlanDTO>;
+    apiFeePlanIdPut(id: string, updateFeePlanDTO?: UpdateFeePlanDTO, extraHttpRequestParams?: any): Observable<ShowFeePlanDTO>;
 
     /**
      * 
      * 
-     * @param carlonGracieBackendFinancesApplicationDTOsCreateFeePlanDTO 
+     * @param createFeePlanDTO 
      */
-    apiFeePlanPost(carlonGracieBackendFinancesApplicationDTOsCreateFeePlanDTO?: CarlonGracieBackendFinancesApplicationDTOsCreateFeePlanDTO, extraHttpRequestParams?: any): Observable<CarlonGracieBackendFinancesApplicationDTOsShowFeePlanDTO>;
+    apiFeePlanPost(createFeePlanDTO?: CreateFeePlanDTO, extraHttpRequestParams?: any): Observable<ShowFeePlanDTO>;
 
 }

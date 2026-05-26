@@ -20,9 +20,9 @@ import { Observable }                                        from 'rxjs';
 // @ts-ignore
 import { ApiAdminAcademiesIdGet404Response } from '../model/apiAdminAcademiesIdGet404Response';
 // @ts-ignore
-import { CarlonGracieBackendAuthenticationApplicationDTOsPublicAcademyDto } from '../model/carlonGracieBackendAuthenticationApplicationDTOsPublicAcademyDto';
+import { PublicAcademyDto } from '../model/publicAcademyDto';
 // @ts-ignore
-import { CarlonGracieBackendAuthenticationApplicationDTOsShowRealmInfoDto } from '../model/carlonGracieBackendAuthenticationApplicationDTOsShowRealmInfoDto';
+import { ShowRealmInfoDto } from '../model/showRealmInfoDto';
 
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
@@ -103,9 +103,9 @@ export class PublicService implements PublicServiceInterface {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiPublicAcademiesGet(q?: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Array<CarlonGracieBackendAuthenticationApplicationDTOsPublicAcademyDto>>;
-    public apiPublicAcademiesGet(q?: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<CarlonGracieBackendAuthenticationApplicationDTOsPublicAcademyDto>>>;
-    public apiPublicAcademiesGet(q?: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<CarlonGracieBackendAuthenticationApplicationDTOsPublicAcademyDto>>>;
+    public apiPublicAcademiesGet(q?: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Array<PublicAcademyDto>>;
+    public apiPublicAcademiesGet(q?: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<PublicAcademyDto>>>;
+    public apiPublicAcademiesGet(q?: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<PublicAcademyDto>>>;
     public apiPublicAcademiesGet(q?: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
 
         let localVarQueryParameters = new HttpParams({encoder: this.encoder});
@@ -115,6 +115,13 @@ export class PublicService implements PublicServiceInterface {
         }
 
         let localVarHeaders = this.defaultHeaders;
+
+        let localVarCredential: string | undefined;
+        // authentication (Bearer) required
+        localVarCredential = this.configuration.lookupCredential('Bearer');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('Authorization', 'Bearer ' + localVarCredential);
+        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -151,7 +158,7 @@ export class PublicService implements PublicServiceInterface {
         }
 
         let localVarPath = `/api/public/academies`;
-        return this.httpClient.request<Array<CarlonGracieBackendAuthenticationApplicationDTOsPublicAcademyDto>>('get', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<Array<PublicAcademyDto>>('get', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 params: localVarQueryParameters,
@@ -170,15 +177,22 @@ export class PublicService implements PublicServiceInterface {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiPublicAcademiesSlugRealmGet(slug: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<CarlonGracieBackendAuthenticationApplicationDTOsShowRealmInfoDto>;
-    public apiPublicAcademiesSlugRealmGet(slug: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<CarlonGracieBackendAuthenticationApplicationDTOsShowRealmInfoDto>>;
-    public apiPublicAcademiesSlugRealmGet(slug: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<CarlonGracieBackendAuthenticationApplicationDTOsShowRealmInfoDto>>;
+    public apiPublicAcademiesSlugRealmGet(slug: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<ShowRealmInfoDto>;
+    public apiPublicAcademiesSlugRealmGet(slug: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<ShowRealmInfoDto>>;
+    public apiPublicAcademiesSlugRealmGet(slug: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<ShowRealmInfoDto>>;
     public apiPublicAcademiesSlugRealmGet(slug: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         if (slug === null || slug === undefined) {
             throw new Error('Required parameter slug was null or undefined when calling apiPublicAcademiesSlugRealmGet.');
         }
 
         let localVarHeaders = this.defaultHeaders;
+
+        let localVarCredential: string | undefined;
+        // authentication (Bearer) required
+        localVarCredential = this.configuration.lookupCredential('Bearer');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('Authorization', 'Bearer ' + localVarCredential);
+        }
 
         let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (localVarHttpHeaderAcceptSelected === undefined) {
@@ -215,7 +229,7 @@ export class PublicService implements PublicServiceInterface {
         }
 
         let localVarPath = `/api/public/academies/${this.configuration.encodeParam({name: "slug", value: slug, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}/realm`;
-        return this.httpClient.request<CarlonGracieBackendAuthenticationApplicationDTOsShowRealmInfoDto>('get', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<ShowRealmInfoDto>('get', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 responseType: <any>responseType_,

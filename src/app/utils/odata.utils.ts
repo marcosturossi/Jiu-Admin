@@ -1,13 +1,10 @@
+import { Observable, map, of, switchMap } from 'rxjs';
 import { FilterCondition } from '../shared/filter/filter.types';
 
 export interface ODataPage<T> {
   items: T[];
   totalCount: number;
   totalPages: number;
-}
-
-export interface ClientPage<T> extends ODataPage<T> {
-  currentPage: number;
 }
 
 function readCountFromHeaders(headers: any): number | undefined {
@@ -21,28 +18,41 @@ function readCountFromHeaders(headers: any): number | undefined {
   return Number.isFinite(parsed) ? parsed : undefined;
 }
 
-export function parseODataPage<T>(body: any, pageSize: number): ODataPage<T> {
+export function parseODataPage<T>(body: any, pageSize: number, skip = 0): ODataPage<T> {
   const responseBody = body?.body ?? body;
   const items: T[] = Array.isArray(responseBody) ? responseBody : (responseBody?.value ?? []);
   const headerCount = readCountFromHeaders(body?.headers);
-  const bodyCount = responseBody?.['@odata.count'] ?? responseBody?.['odata.count'];
-  const totalCount: number = headerCount ?? bodyCount ?? items.length;
-  const totalPages = pageSize > 0 ? Math.ceil(totalCount / pageSize) : 1;
+  const bodyCountRaw = responseBody?.['@odata.count'] ?? responseBody?.['odata.count'];
+  const bodyCount = Number(bodyCountRaw);
+  const totalCount: number = headerCount ?? (Number.isFinite(bodyCount) ? bodyCount : undefined) ?? (skip + items.length);
+  const totalPages = pageSize > 0 ? (totalCount > 0 ? Math.ceil(totalCount / pageSize) : 1) : 1;
   return { items, totalCount, totalPages };
 }
 
-export function buildClientPage<T>(items: T[], currentPage: number, pageSize: number): ClientPage<T> {
-  const normalizedPageSize = Math.max(1, pageSize);
-  const totalCount = items.length;
-  const totalPages = totalCount > 0 ? Math.ceil(totalCount / normalizedPageSize) : 1;
-  const currentPageNormalized = Math.min(Math.max(currentPage, 1), totalPages);
-  const start = (currentPageNormalized - 1) * normalizedPageSize;
-  return {
-    items: items.slice(start, start + normalizedPageSize),
-    totalCount,
-    totalPages,
-    currentPage: currentPageNormalized,
-  };
+export function fetchODataPage<T>(
+  request: (top: string, skip: string) => Observable<any>,
+  pageSize: number,
+  skip: number,
+): Observable<ODataPage<T>> {
+  return request(String(pageSize), String(skip)).pipe(
+    switchMap(response => {
+      const page = parseODataPage<T>(response, pageSize, skip);
+      if (page.totalCount > page.items.length || page.items.length < pageSize) {
+        return of(page);
+      }
+
+      return request('1', '0').pipe(
+        map(countResponse => {
+          const count = parseODataPage<T>(countResponse, 1, 0).totalCount;
+          return {
+            ...page,
+            totalCount: count,
+            totalPages: pageSize > 0 ? (count > 0 ? Math.ceil(count / pageSize) : 1) : 1,
+          };
+        }),
+      );
+    }),
+  );
 }
 
 export function buildODataFilter(

@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, DestroyRef, effect, inject, input, 
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Subject, debounceTime } from 'rxjs';
-import { FrequencyService, StudentsService } from '../../../../generated_services';
+import { FrequencyService, StudentsService, CarlonGracieBackendStudentsApplicationDTOsShowStudentDTO as ShowStudentDTO } from '../../../../generated_services';
 import { CarlonGracieBackendAttendanceApplicationDTOsShowFrequencyDTO as ShowFrequencyDTO, CarlonGracieBackendAttendanceApplicationDTOsUpdateFrequencyDTO as UpdateFrequencyDTO } from '../../../../generated_services';
 import { NotificationService } from '../../../../services/notification.service';
 import { SearchOption } from '../../../../shared/search-select/search-option';
@@ -60,8 +60,9 @@ export class UpdateFrequencyComponent {
   }
 
   private loadStudents(term = ''): void {
-    this.studentsService.apiStudentsGet(term || undefined, undefined, '100').subscribe({
-      next: (students: any[]) => {
+    this.studentsService.apiStudentsGet(term || undefined, undefined, undefined, undefined, undefined, undefined, 1, 100).subscribe({
+      next: r => {
+        const students: ShowStudentDTO[] = r?.items ?? [];
         this.studentOptions.set(
           students.map(s => ({ id: s.id ?? '', label: `${s.firstName} ${s.lastName}` }))
         );

@@ -13,14 +13,13 @@ import { HttpHeaders }                                       from '@angular/comm
 import { Observable }                                        from 'rxjs';
 
 import { ApiAdminAcademiesIdGet404Response } from '../model/models';
-import { CarlonGracieBackendCommunicationsApplicationDTOsCreateNotificationDto } from '../model/models';
-import { CarlonGracieBackendCommunicationsApplicationDTOsMarkAsReadDto } from '../model/models';
-import { CarlonGracieBackendCommunicationsApplicationDTOsNotificationStatsDto } from '../model/models';
-import { CarlonGracieBackendCommunicationsApplicationDTOsPaginationNotificationDto } from '../model/models';
-import { CarlonGracieBackendCommunicationsApplicationDTOsShowNotificationDto } from '../model/models';
-import { CarlonGracieBackendCommunicationsApplicationDTOsUpdateNotificationDto } from '../model/models';
-import { CarlonGracieBackendCommunicationsDomainNotificationType } from '../model/models';
-import { MicrosoftAspNetCoreMvcValidationProblemDetails } from '../model/models';
+import { CreateNotificationDto } from '../model/models';
+import { MarkAsReadDto } from '../model/models';
+import { NotificationStatsDto } from '../model/models';
+import { NotificationType } from '../model/models';
+import { ShowNotificationDto } from '../model/models';
+import { UpdateNotificationDto } from '../model/models';
+import { ValidationProblemDetails } from '../model/models';
 
 
 import { Configuration }                                     from '../configuration';
@@ -35,7 +34,7 @@ export interface NotificationServiceInterface {
      * 
      * 
      */
-    apiNotificationActiveGet(extraHttpRequestParams?: any): Observable<Array<CarlonGracieBackendCommunicationsApplicationDTOsShowNotificationDto>>;
+    apiNotificationActiveGet(extraHttpRequestParams?: any): Observable<Array<ShowNotificationDto>>;
 
     /**
      * 
@@ -56,7 +55,7 @@ export interface NotificationServiceInterface {
      * @param createdFrom 
      * @param createdTo 
      */
-    apiNotificationGet(pageNumber?: number, pageSize?: number, searchTerm?: string, type?: CarlonGracieBackendCommunicationsDomainNotificationType, isActive?: boolean, studentId?: string, isExpired?: boolean, createdFrom?: string, createdTo?: string, extraHttpRequestParams?: any): Observable<CarlonGracieBackendCommunicationsApplicationDTOsPaginationNotificationDto>;
+    apiNotificationGet(pageNumber?: number, pageSize?: number, searchTerm?: string, type?: NotificationType, isActive?: boolean, studentId?: string, isExpired?: boolean, createdFrom?: string, createdTo?: string, extraHttpRequestParams?: any): Observable<Array<ShowNotificationDto>>;
 
     /**
      * 
@@ -70,15 +69,15 @@ export interface NotificationServiceInterface {
      * 
      * @param id 
      */
-    apiNotificationIdGet(id: string, extraHttpRequestParams?: any): Observable<CarlonGracieBackendCommunicationsApplicationDTOsShowNotificationDto>;
+    apiNotificationIdGet(id: string, extraHttpRequestParams?: any): Observable<ShowNotificationDto>;
 
     /**
      * 
      * 
      * @param id 
-     * @param carlonGracieBackendCommunicationsApplicationDTOsUpdateNotificationDto 
+     * @param updateNotificationDto 
      */
-    apiNotificationIdPut(id: string, carlonGracieBackendCommunicationsApplicationDTOsUpdateNotificationDto?: CarlonGracieBackendCommunicationsApplicationDTOsUpdateNotificationDto, extraHttpRequestParams?: any): Observable<CarlonGracieBackendCommunicationsApplicationDTOsShowNotificationDto>;
+    apiNotificationIdPut(id: string, updateNotificationDto?: UpdateNotificationDto, extraHttpRequestParams?: any): Observable<ShowNotificationDto>;
 
     /**
      * 
@@ -89,9 +88,9 @@ export interface NotificationServiceInterface {
     /**
      * 
      * 
-     * @param carlonGracieBackendCommunicationsApplicationDTOsMarkAsReadDto 
+     * @param markAsReadDto 
      */
-    apiNotificationMarkAsReadPost(carlonGracieBackendCommunicationsApplicationDTOsMarkAsReadDto?: CarlonGracieBackendCommunicationsApplicationDTOsMarkAsReadDto, extraHttpRequestParams?: any): Observable<{}>;
+    apiNotificationMarkAsReadPost(markAsReadDto?: MarkAsReadDto, extraHttpRequestParams?: any): Observable<{}>;
 
     /**
      * 
@@ -106,13 +105,13 @@ export interface NotificationServiceInterface {
      * @param createdFrom 
      * @param createdTo 
      */
-    apiNotificationMyGet(pageNumber?: number, pageSize?: number, searchTerm?: string, type?: CarlonGracieBackendCommunicationsDomainNotificationType, isActive?: boolean, studentId?: string, isExpired?: boolean, createdFrom?: string, createdTo?: string, extraHttpRequestParams?: any): Observable<Array<CarlonGracieBackendCommunicationsApplicationDTOsShowNotificationDto>>;
+    apiNotificationMyGet(pageNumber?: number, pageSize?: number, searchTerm?: string, type?: NotificationType, isActive?: boolean, studentId?: string, isExpired?: boolean, createdFrom?: string, createdTo?: string, extraHttpRequestParams?: any): Observable<Array<ShowNotificationDto>>;
 
     /**
      * 
      * 
      */
-    apiNotificationMyStatsGet(extraHttpRequestParams?: any): Observable<CarlonGracieBackendCommunicationsApplicationDTOsNotificationStatsDto>;
+    apiNotificationMyStatsGet(extraHttpRequestParams?: any): Observable<NotificationStatsDto>;
 
     /**
      * 
@@ -127,14 +126,14 @@ export interface NotificationServiceInterface {
      * @param createdFrom 
      * @param createdTo 
      */
-    apiNotificationMyUnreadGet(pageNumber?: number, pageSize?: number, searchTerm?: string, type?: CarlonGracieBackendCommunicationsDomainNotificationType, isActive?: boolean, studentId?: string, isExpired?: boolean, createdFrom?: string, createdTo?: string, extraHttpRequestParams?: any): Observable<Array<CarlonGracieBackendCommunicationsApplicationDTOsShowNotificationDto>>;
+    apiNotificationMyUnreadGet(pageNumber?: number, pageSize?: number, searchTerm?: string, type?: NotificationType, isActive?: boolean, studentId?: string, isExpired?: boolean, createdFrom?: string, createdTo?: string, extraHttpRequestParams?: any): Observable<Array<ShowNotificationDto>>;
 
     /**
      * 
      * 
-     * @param carlonGracieBackendCommunicationsApplicationDTOsCreateNotificationDto 
+     * @param createNotificationDto 
      */
-    apiNotificationPost(carlonGracieBackendCommunicationsApplicationDTOsCreateNotificationDto?: CarlonGracieBackendCommunicationsApplicationDTOsCreateNotificationDto, extraHttpRequestParams?: any): Observable<CarlonGracieBackendCommunicationsApplicationDTOsShowNotificationDto>;
+    apiNotificationPost(createNotificationDto?: CreateNotificationDto, extraHttpRequestParams?: any): Observable<ShowNotificationDto>;
 
     /**
      * 
@@ -150,7 +149,7 @@ export interface NotificationServiceInterface {
      * @param createdFrom 
      * @param createdTo 
      */
-    apiNotificationTypeTypeGet(type: CarlonGracieBackendCommunicationsDomainNotificationType, pageNumber?: number, pageSize?: number, searchTerm?: string, type2?: CarlonGracieBackendCommunicationsDomainNotificationType, isActive?: boolean, studentId?: string, isExpired?: boolean, createdFrom?: string, createdTo?: string, extraHttpRequestParams?: any): Observable<Array<CarlonGracieBackendCommunicationsApplicationDTOsShowNotificationDto>>;
+    apiNotificationTypeTypeGet(type: NotificationType, pageNumber?: number, pageSize?: number, searchTerm?: string, type2?: NotificationType, isActive?: boolean, studentId?: string, isExpired?: boolean, createdFrom?: string, createdTo?: string, extraHttpRequestParams?: any): Observable<Array<ShowNotificationDto>>;
 
     /**
      * 
@@ -166,6 +165,6 @@ export interface NotificationServiceInterface {
      * @param createdFrom 
      * @param createdTo 
      */
-    apiNotificationUserUserIdGet(userId: string, pageNumber?: number, pageSize?: number, searchTerm?: string, type?: CarlonGracieBackendCommunicationsDomainNotificationType, isActive?: boolean, studentId?: string, isExpired?: boolean, createdFrom?: string, createdTo?: string, extraHttpRequestParams?: any): Observable<Array<CarlonGracieBackendCommunicationsApplicationDTOsShowNotificationDto>>;
+    apiNotificationUserUserIdGet(userId: string, pageNumber?: number, pageSize?: number, searchTerm?: string, type?: NotificationType, isActive?: boolean, studentId?: string, isExpired?: boolean, createdFrom?: string, createdTo?: string, extraHttpRequestParams?: any): Observable<Array<ShowNotificationDto>>;
 
 }
