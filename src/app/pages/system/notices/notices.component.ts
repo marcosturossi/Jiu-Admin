@@ -13,6 +13,7 @@ import { UpdateNoticeComponent } from './update-notice/update-notice.component';
 
 @Component({
   selector: 'app-notices',
+  standalone: true,
   imports: [
     DatePipe,
     FilterComponent,

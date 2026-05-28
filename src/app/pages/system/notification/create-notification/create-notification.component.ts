@@ -21,7 +21,7 @@ export class CreateNotificationComponent {
   private readonly fb = inject(FormBuilder);
   private readonly ns = inject(NotificationService);
 
-  protected readonly notificationTypes = [
+  readonly notificationTypes = [
     { label: 'Informação', value: NotificationType.Info },
     { label: 'Sucesso', value: NotificationType.Success },
     { label: 'Aviso', value: NotificationType.Warning },
@@ -35,7 +35,7 @@ export class CreateNotificationComponent {
   protected readonly form = this.fb.group({
     title: ['', Validators.required],
     message: ['', Validators.required],
-    type: [NotificationType.Info, Validators.required],
+    type: ['', Validators.required],
     userId: [''],
     isActive: [true],
     expiresAt: [null as string | null],
@@ -45,6 +45,8 @@ export class CreateNotificationComponent {
 
   protected create(): void {
     if (this.form.invalid) {
+      console.log('Formulário inválido:', this.form.errors);
+      console.log('Valores do formulário:', this.form.value);
       this.ns.showError('Formulário Inválido', 'Por favor, preencha todos os campos obrigatórios.');
       return;
     }

@@ -7,15 +7,13 @@
     <div class="col mb-3">
       <label for="type" class="form-label">Tipo *</label>
       <select id="type" formControlName="type" class="form-select">
-        <option value="" disabled>Selecione</option>
-        <option value="Info">Informação</option>
-        <option value="Success">Sucesso</option>
-        <option value="Warning">Aviso</option>
-        <option value="Error">Erro</option>
-        <option value="Graduation">Graduação</option>
-        <option value="Lesson">Aula</option>
-        <option value="Payment">Pagamento</option>
-        <option value="System">Sistema</option>
+        <option [ngValue]="null" disabled>Selecione</option>
+
+        @for (item of notificationTypes; track item.value) {
+        <option [ngValue]="item.value">
+          {{ item.label }}
+        </option>
+        }
       </select>
     </div>
   </div>
@@ -49,7 +47,7 @@
 
   <div class="d-flex gap-2 justify-content-end mt-3">
     <button type="button" class="btn btn-outline-secondary" (click)="close()">Cancelar</button>
-    <button type="button" class="btn btn-primary" (click)="create()" [disabled]="form.invalid">
+    <button type="button" class="btn btn-primary" (click)="create()">
       <i class="bi bi-check-lg me-1"></i>Salvar
     </button>
   </div>

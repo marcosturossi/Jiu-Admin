@@ -6,6 +6,7 @@ import { NotificationService } from '../../../../services/notification.service';
 
 @Component({
   selector: 'app-create-notice',
+  standalone: true,
   imports: [ReactiveFormsModule],
   templateUrl: './create-notice.component.html',
   styleUrl: './create-notice.component.scss',

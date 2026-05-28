@@ -7,7 +7,7 @@
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  flex-wrap: wrap;
+  justify-content: flex-end;
 
   .search-input { flex: 1; min-width: 14rem; }
 }

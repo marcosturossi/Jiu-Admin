@@ -41,6 +41,11 @@ describe('UpdateNoticeComponent', () => {
     expect((component as any).form.get('isActive')?.value).toBeTrue();
   });
 
+  it('should render the notice description in the textarea', () => {
+    const textarea: HTMLTextAreaElement = fixture.nativeElement.querySelector('#description');
+    expect(textarea.value).toBe('Aviso importante');
+  });
+
   it('should emit closeEvent when close() is called', () => {
     let emitted = false;
     component.closeEvent.subscribe(() => (emitted = true));

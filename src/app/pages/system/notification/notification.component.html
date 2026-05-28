@@ -28,7 +28,7 @@
           @if ((items()?.items ?? []).length === 0) {
             <tr><td colspan="7" class="text-center py-5 text-muted">Nenhuma notificação encontrada.</td></tr>
           }
-          @for (notification of items()?.items ?? []; track notification.id) {
+          @for (notification of items()?.items; track notification.id) {
             <tr>
               <td>
                 <strong>{{ notification.title }}</strong>

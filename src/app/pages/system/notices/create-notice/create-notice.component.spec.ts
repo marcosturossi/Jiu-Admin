@@ -38,6 +38,16 @@ describe('CreateNoticeComponent', () => {
     expect((component as any).form.valid).toBeTrue();
   });
 
+  it('should bind textarea value to the form control', () => {
+    const textarea: HTMLTextAreaElement = fixture.nativeElement.querySelector('#description');
+    textarea.value = 'Aviso importante';
+    textarea.dispatchEvent(new Event('input'));
+    fixture.detectChanges();
+
+    expect((component as any).form.get('description')?.value).toBe('Aviso importante');
+    expect((component as any).form.valid).toBeTrue();
+  });
+
   it('should emit closeEvent when close() is called', () => {
     let emitted = false;
     component.closeEvent.subscribe(() => (emitted = true));
