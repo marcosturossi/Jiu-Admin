@@ -13,6 +13,7 @@
 export interface ShowMedicalClearanceDto { 
     id?: string;
     studentId?: string;
+    studentName?: string | null;
     expiresAt?: string;
     isApproved?: boolean;
     isActive?: boolean;

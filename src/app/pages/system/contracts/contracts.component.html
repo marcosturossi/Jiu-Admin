@@ -29,7 +29,7 @@
           }
           @for (contract of items()?.items ?? []; track contract.id) {
             <tr>
-              <td>{{ getStudentName(contract.studentId) }}</td>
+              <td>{{ contract.studentName }}</td>
               <td>{{ contract.feePlanName }}</td>
               <td>{{ contract.startDate | date:'dd/MM/yyyy':'UTC' }}</td>
               <td>{{ contract.endDate | date:'dd/MM/yyyy':'UTC' }}</td>

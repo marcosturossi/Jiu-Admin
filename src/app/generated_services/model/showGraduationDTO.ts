@@ -16,8 +16,7 @@ export interface ShowGraduationDTO {
     id?: string;
     createdAt?: string;
     belt?: ShowBeltDTO | null;
-    studentUserName?: string | null;
-    studentFullName?: string | null;
+    studentName?: string | null;
     studentId: string;
     beltId: string;
     graduationDate: string;

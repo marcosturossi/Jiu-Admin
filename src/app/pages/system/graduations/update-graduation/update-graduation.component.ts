@@ -59,7 +59,7 @@ export class UpdateGraduationComponent {
         beltId: g.beltId,
         graduationDate: g.graduationDate,
       });
-      this.selectedStudent.set(g.studentId ? { id: g.studentId, label: g.studentFullName ?? g.studentId } : null);
+      this.selectedStudent.set(g.studentId ? { id: g.studentId, label: g.studentName ?? g.studentId } : null);
     });
   }
 

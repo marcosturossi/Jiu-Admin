@@ -14,6 +14,7 @@ import { ContractStatus } from './contractStatus';
 export interface ShowContractDTO { 
     id?: string;
     studentId?: string;
+    studentName?: string | null;
     feePlanId?: string;
     feePlanName?: string | null;
     feePlanMonthDuration?: number;

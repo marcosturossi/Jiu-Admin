@@ -35,7 +35,7 @@
                   {{ getTypeLabel(transaction.type) }}
                 </span>
               </td>
-              <td>{{ getCategoryName(transaction.transactionCategoryId) }}</td>
+              <td>{{ transaction.transactionCategoryName }}</td>
               <td class="desc-cell">{{ transaction.description || '—' }}</td>
               <td [class.amount-income]="isPositiveType(transaction.type)" [class.amount-expense]="isNegativeType(transaction.type)">
                 {{ transaction.amount | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}
