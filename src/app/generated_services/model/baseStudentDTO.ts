@@ -15,6 +15,7 @@ export interface BaseStudentDTO {
     email: string;
     phoneNumber?: string | null;
     firstName?: string | null;
+    cpf: string;
     lastName?: string | null;
     birthDay?: string | null;
     isActive?: boolean;

@@ -26,6 +26,7 @@ export class CreateStudentComponent {
     firstName: [''],
     lastName: [''],
     birthDay: [null as string | null],
+    cpf: ['', [Validators.required]],
     isActive: [true],
     preferredUsername: [''],
   });
@@ -52,6 +53,7 @@ export class CreateStudentComponent {
       firstName: v.firstName || null,
       lastName: v.lastName || null,
       birthDay: v.birthDay ?? null,
+      cpf: v.cpf!,
       isActive: v.isActive ?? true,
       preferredUsername: v.preferredUsername || null,
     } as CreateStudentDTO;

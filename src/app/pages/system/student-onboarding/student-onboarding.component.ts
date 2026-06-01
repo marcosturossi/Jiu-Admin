@@ -124,6 +124,7 @@ export class StudentOnboardingComponent implements OnInit {
         userName: basic.email.split('@')[0], // Use email prefix as username
         email: basic.email,
         phoneNumber: basic.phone,
+        cpf: basic.cpf,
         firstName: basic.name.split(' ')[0],
         lastName: basic.name.split(' ').slice(1).join(' '),
         birthDay: basic.dateOfBirth,

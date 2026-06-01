@@ -142,7 +142,7 @@ export class TransactionsComponent {
   protected onUpdated(): void { this.openedUpdate.set(false); this.load(); }
 
   private loadCategories(term = ''): void {
-    this.categoryService.apiTransactionCategoryGet(term || undefined, undefined, 1, 200).subscribe({
+    this.categoryService.apiTransactionCategoryGet(term || undefined, undefined, 1, 100).subscribe({
       next: result => {
         this.categories.set(result?.items ?? []);
       },
