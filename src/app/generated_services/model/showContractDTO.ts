@@ -24,7 +24,6 @@ export interface ShowContractDTO {
     status?: ContractStatus;
     notes?: string | null;
     createdAt?: string;
-    totalFees?: number;
     paidFees?: number;
     pendingFees?: number;
     overdueFees?: number;

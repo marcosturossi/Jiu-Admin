@@ -39,7 +39,7 @@
               </td>
               <td>
                 <span class="fee-progress">
-                  <span class="paid">{{ contract.paidFees }}</span>/{{ contract.totalFees }}
+                  <span class="paid">{{ contract.paidFees }}</span>/{{ contract.feePlanMonthDuration }}
                   @if (contract.overdueFees) {
                     <span class="badge bg-danger ms-1">{{ contract.overdueFees }} vencidas</span>
                   }

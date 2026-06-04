@@ -62,7 +62,7 @@ export class ContractsComponent {
   constructor() {
     this.subnavService.setTitle('Contratos');
     this.load();
-    this.studentsService.apiStudentsGet(undefined, undefined, undefined, undefined, undefined, undefined, 1, 500).subscribe({
+    this.studentsService.apiStudentsGet(undefined, undefined, undefined, undefined, undefined, undefined, 1, 100).subscribe({
       next: result => {
         const map = new Map((result?.items ?? []).map(s => [s.id!, `${s.firstName ?? ''} ${s.lastName ?? ''}`.trim()]));
         this.studentMap.set(map);
