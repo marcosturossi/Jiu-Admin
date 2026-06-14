@@ -50,7 +50,7 @@ export class UpdateNotificationComponent {
         this.form.patchValue({
           title: n.title,
           message: n.message,
-          type: n.type,
+          type: n.type as any,
           isActive: n.isActive,
           expiresAt: isoToDatetimeLocal(n.expiresAt),
         });

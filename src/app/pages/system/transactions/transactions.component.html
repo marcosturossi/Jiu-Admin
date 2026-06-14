@@ -21,7 +21,7 @@
             <th>Valor</th>
             <th>Data</th>
             <th>Referência</th>
-            <th class="text-center" style="width: 8rem">Ações</th>
+            <th class="text-center" style="width: 5rem">Ações</th>
           </tr>
         </thead>
         <tbody>
@@ -38,12 +38,11 @@
               <td>{{ transaction.transactionCategoryName }}</td>
               <td class="desc-cell">{{ transaction.description || '—' }}</td>
               <td [class.amount-income]="isPositiveType(transaction.type)" [class.amount-expense]="isNegativeType(transaction.type)">
-                {{ transaction.amount | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}
+                {{ getAmount(transaction) | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}
               </td>
               <td>{{ transaction.transactionDate | date:'dd/MM/yyyy':'UTC' }}</td>
               <td>{{ transaction.reference || '—' }}</td>
               <td class="text-center">
-                <button type="button" class="btn btn-sm btn-outline-info" (click)="openEdit(transaction)"><i class="bi bi-pencil"></i></button>
                 <button type="button" class="btn btn-sm btn-outline-danger" (click)="delete(transaction)"><i class="bi bi-trash"></i></button>
               </td>
             </tr>
@@ -77,30 +76,6 @@
             (closeEvent)="openedCreate.set(false)"
             (transactionCreated)="onCreated()"
             (categorySearch)="onCategorySearch($event)" />
-        </div>
-      </div>
-    </div>
-  </div>
-}
-
-@if (openedUpdate()) {
-  <div class="modal-backdrop-custom" (click)="openedUpdate.set(false)"></div>
-  <div class="modal show d-block" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title">Atualizar Transação</h5>
-          <button type="button" class="btn-close" (click)="openedUpdate.set(false)" aria-label="Fechar"></button>
-        </div>
-        <div class="modal-body">
-          @if (selected()) {
-            <app-update-transaction
-              [transaction]="selected()!"
-              [categories]="categories()"
-              (closeEvent)="openedUpdate.set(false)"
-              (transactionUpdated)="onUpdated()"
-              (categorySearch)="onCategorySearch($event)" />
-          }
         </div>
       </div>
     </div>

@@ -40,7 +40,7 @@ export class UpdateContractComponent {
   constructor() {
     effect(() => {
       const c = this.contract();
-      this.form.patchValue({ status: c.status ?? ContractStatus.Active, notes: c.notes ?? '' });
+      this.form.patchValue({ status: (c.status as any) ?? ContractStatus.Active, notes: c.notes ?? '' });
     });
   }
 
@@ -53,7 +53,7 @@ export class UpdateContractComponent {
     const raw = this.form.getRawValue();
     this.isSaving.set(true);
     this.contractService
-      .apiContractIdStatusPatch(this.contract().id!, { status: raw.status! })
+      .apiContractIdStatusPatch(this.contract().id!, { status: raw.status as any })
       .subscribe({
         next: () => {
           this.isSaving.set(false);

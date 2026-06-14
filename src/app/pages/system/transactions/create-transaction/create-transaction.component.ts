@@ -1,7 +1,8 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input, output, signal } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { FinancialTransactionService } from '../../../../generated_services/api/financialTransaction.service';
-import { ShowTransactionCategoryDTO as ShowTransactionCategoryDTO, TransactionType as TransactionType } from '../../../../generated_services';
+import { ShowTransactionCategoryDTO } from '../../../../generated_services';
+import { TransactionType } from '../../../../generated_services/model/transactionType';
 import { NotificationService } from '../../../../services/notification.service';
 import { todayDateString } from '../../../../utils/date.utils';
 import { SearchOption } from '../../../../shared/search-select/search-option';
@@ -56,10 +57,10 @@ export class CreateTransactionComponent {
     this.isSaving.set(true);
     const v = this.form.value;
     this.transactionService.apiFinancialTransactionPost({
-      type: v.type ?? undefined,
+      type: v.type as any,
       transactionCategoryId: v.transactionCategoryId ?? undefined,
-      description: v.description || null,
-      amount: v.amount ?? undefined,
+      description: v.description || undefined,
+      amount: v.amount as any,
       transactionDate: v.transactionDate ?? undefined,
       reference: v.reference || null,
     }).subscribe({

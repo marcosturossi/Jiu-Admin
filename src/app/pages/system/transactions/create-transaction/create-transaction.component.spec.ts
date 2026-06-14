@@ -3,7 +3,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { CreateTransactionComponent } from './create-transaction.component';
 import { FinancialTransactionService } from '../../../../generated_services/api/financialTransaction.service';
 import { NotificationService } from '../../../../services/notification.service';
-import { TransactionType as TransactionType } from '../../../../generated_services';
+import { TransactionType } from '../../../../generated_services/model/transactionType';
 import { of, throwError } from 'rxjs';
 
 describe('CreateTransactionComponent', () => {
@@ -50,8 +50,8 @@ describe('CreateTransactionComponent', () => {
     });
     (component as any).save();
     const args = transactionSpy.apiFinancialTransactionPost.calls.mostRecent().args[0]!;
-    expect(typeof args.type).toBe('string');
-    expect(args.type).toBe(TransactionType.Credit);
+    expect(typeof (args.type as any)).toBe('string');
+    expect(args.type as any).toBe(TransactionType.Credit);
   });
 
   it('sends Income for Receita', () => {
@@ -60,7 +60,7 @@ describe('CreateTransactionComponent', () => {
     form.patchValue({ type: TransactionType.Income, amount: 50, transactionDate: '2024-06-15' });
     (component as any).save();
     const args = transactionSpy.apiFinancialTransactionPost.calls.mostRecent().args[0]!;
-    expect(args.type).toBe(TransactionType.Income);
+    expect(args.type as any).toBe(TransactionType.Income);
   });
 
   it('does not submit when form is invalid', () => {

@@ -32,7 +32,7 @@
               <td>{{ item.name }}</td>
               <td>{{ item.description }}</td>
               <td>{{ item.monthDuration }} meses</td>
-              <td>{{ item.price | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}</td>
+              <td>{{ $any(item.price) | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}</td>
               <td>
                 <span [class]="'badge ' + (item.isActive ? 'bg-success' : 'bg-secondary')">
                   {{ item.isActive ? 'Ativo' : 'Inativo' }}

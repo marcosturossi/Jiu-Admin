@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, effect, inject, input, output, signal } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
-import { FinancialTransactionService } from '../../../../generated_services/api/financialTransaction.service';
-import { ShowTransactionCategoryDTO as ShowTransactionCategoryDTO, ShowTransactionDTO as ShowTransactionDTO, TransactionType as TransactionType } from '../../../../generated_services';
+import { ShowFinancialTransactionDTO, ShowTransactionCategoryDTO } from '../../../../generated_services';
+import { TransactionType } from '../../../../generated_services/model/transactionType';
 import { NotificationService } from '../../../../services/notification.service';
 import { SearchOption } from '../../../../shared/search-select/search-option';
 import { SearchSelectComponent } from '../../../../shared/search-select/search-select.component';
@@ -15,11 +15,10 @@ import { SearchSelectComponent } from '../../../../shared/search-select/search-s
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UpdateTransactionComponent {
-  private readonly transactionService = inject(FinancialTransactionService);
   private readonly ns = inject(NotificationService);
   private readonly fb = inject(FormBuilder);
 
-  readonly transaction = input.required<ShowTransactionDTO>();
+  readonly transaction = input.required<ShowFinancialTransactionDTO>();
   readonly categories = input.required<ShowTransactionCategoryDTO[]>();
   readonly closeEvent = output<void>();
   readonly transactionUpdated = output<void>();
@@ -42,7 +41,7 @@ export class UpdateTransactionComponent {
   ];
 
   protected readonly form = this.fb.group({
-    type: [null as TransactionType | null, Validators.required],
+    type: [null as string | null, Validators.required],
     transactionCategoryId: [null as string | null],
     description: [''],
     amount: [null as number | null, [Validators.required, Validators.min(0.01)]],
@@ -54,10 +53,10 @@ export class UpdateTransactionComponent {
     effect(() => {
       const t = this.transaction();
       this.form.patchValue({
-        type: t.type ?? null,
+        type: t.transactionCategoryId ?? null,
         transactionCategoryId: t.transactionCategoryId ?? null,
         description: t.description ?? '',
-        amount: t.amount ?? null,
+        amount: (t.amount as unknown as number) ?? null,
         transactionDate: t.transactionDate ? t.transactionDate.substring(0, 10) : '',
         reference: t.reference ?? '',
       });
@@ -66,27 +65,7 @@ export class UpdateTransactionComponent {
   }
 
   protected save(): void {
-    if (this.form.invalid) return;
-    this.isSaving.set(true);
-    const v = this.form.value;
-    this.transactionService.apiFinancialTransactionIdPut(this.transaction().id!, {
-      type: v.type ?? null,
-      transactionCategoryId: v.transactionCategoryId ?? null,
-      description: v.description || null,
-      amount: v.amount ?? null,
-      transactionDate: v.transactionDate ?? null,
-      reference: v.reference || null,
-    }).subscribe({
-      next: () => {
-        this.ns.showSuccess('Transação Atualizada!', 'A transação foi atualizada com sucesso.');
-        this.transactionUpdated.emit();
-      },
-      error: () => {
-        this.ns.showError('Erro ao Atualizar', 'Não foi possível atualizar a transação.');
-        this.isSaving.set(false);
-      },
-      complete: () => this.isSaving.set(false),
-    });
+    this.ns.showError('Edição Indisponível', 'A edição de transações não está disponível no momento.');
   }
 
   protected close(): void { this.closeEvent.emit(); }

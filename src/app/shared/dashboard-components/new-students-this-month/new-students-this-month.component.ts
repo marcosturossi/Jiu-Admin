@@ -18,7 +18,7 @@ export class NewStudentsThisMonthComponent {
   constructor() {
     this.dashboardService.apiDashboardNewStudentsGet(1).subscribe({
       next: (data) => {
-        this.count.set(data?.newStudentsCount ?? 0);
+        this.count.set((data?.newStudentsCount as unknown as number) ?? 0);
         this.loading.set(false);
       },
       error: () => {

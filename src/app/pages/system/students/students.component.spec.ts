@@ -13,6 +13,7 @@ const MOCK_STUDENTS: ShowStudentDTO[] = Array.from({ length: 25 }, (_, i) => ({
   firstName: `Nome${i + 1}`,
   lastName: `Sobrenome${i + 1}`,
   isActive: true,
+  cpf: null,
 }));
 const MOCK_STUDENT = MOCK_STUDENTS[0];
 const buildResponse = (page = 1, pageSize = 10) => ({

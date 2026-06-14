@@ -33,9 +33,9 @@
               <td>{{ contract.feePlanName }}</td>
               <td>{{ contract.startDate | date:'dd/MM/yyyy':'UTC' }}</td>
               <td>{{ contract.endDate | date:'dd/MM/yyyy':'UTC' }}</td>
-              <td>{{ contract.monthlyAmount | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}</td>
+              <td>{{ $any(contract.monthlyAmount) | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}</td>
               <td>
-                <span [class]="'badge ' + ({'success': 'bg-success', 'warn': 'bg-warning text-dark', 'danger': 'bg-danger', 'info': 'bg-info text-dark', 'secondary': 'bg-secondary'})[getStatusSeverity(contract.status)]">{{ getStatusLabel(contract.status) }}</span>
+                <span [class]="'badge ' + ({'success': 'bg-success', 'warn': 'bg-warning text-dark', 'danger': 'bg-danger', 'info': 'bg-info text-dark', 'secondary': 'bg-secondary'})[getStatusSeverity($any(contract.status))]">{{ getStatusLabel($any(contract.status)) }}</span>
               </td>
               <td>
                 <span class="fee-progress">

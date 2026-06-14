@@ -49,8 +49,8 @@ export class GraduationRequirementsComponent {
       next: result => {
         this.items.set({
           items: result?.items ?? [],
-          totalCount: result?.totalCount ?? 0,
-          totalPages: result?.totalPages ?? 1,
+          totalCount: (result?.totalCount as unknown as number) ?? 0,
+          totalPages: (result?.totalPages as unknown as number) ?? 1,
         });
         this.isLoading.set(false);
       },

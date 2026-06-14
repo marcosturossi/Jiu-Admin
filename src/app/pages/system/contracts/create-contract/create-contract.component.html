@@ -22,10 +22,10 @@
       <div class="fee-plan-info mt-2">
         <i class="bi bi-info-circle me-1"></i>
         <strong>{{ plan.monthDuration }} {{ plan.monthDuration === 1 ? 'mês' : 'meses' }}</strong> de duração
-        · R$ {{ plan.price?.toFixed(2) }}/mês
-        · Total: R$ {{ ((plan.price ?? 0) * (plan.monthDuration ?? 0)).toFixed(2) }}
+        · R$ {{ $any(plan.price)?.toFixed(2) }}/mês
+        · Total: R$ {{ (($any(plan.price) ?? 0) * ($any(plan.monthDuration) ?? 0)).toFixed(2) }}
         <br>
-        <small class="text-muted">{{ plan.monthDuration }} mensalidade{{ (plan.monthDuration ?? 0) > 1 ? 's' : '' }} será{{ (plan.monthDuration ?? 0) > 1 ? 'ão' : '' }} gerada{{ (plan.monthDuration ?? 0) > 1 ? 's' : '' }} automaticamente.</small>
+        <small class="text-muted">{{ plan.monthDuration }} mensalidade{{ ($any(plan.monthDuration) ?? 0) > 1 ? 's' : '' }} será{{ ($any(plan.monthDuration) ?? 0) > 1 ? 'ão' : '' }} gerada{{ ($any(plan.monthDuration) ?? 0) > 1 ? 's' : '' }} automaticamente.</small>
       </div>
     }
   </div>

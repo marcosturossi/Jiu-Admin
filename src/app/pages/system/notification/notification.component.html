@@ -34,7 +34,7 @@
                 <strong>{{ notification.title }}</strong>
                 <br /><small class="text-muted">{{ notification.message }}</small>
               </td>
-              <td>{{ getNotificationTypeText(notification.type) }}</td>
+              <td>{{ getNotificationTypeText($any(notification.type)) }}</td>
               <td>
                 <span [class]="'badge ' + (notification.isActive ? 'bg-success' : 'bg-secondary')">
                   {{ getStatusText(notification.isActive) }}

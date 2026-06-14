@@ -34,8 +34,8 @@ export class UpdateFeePlanComponent {
       this.form.patchValue({
         name: p.name ?? '',
         description: p.description ?? '',
-        monthDuration: p.monthDuration ?? 1,
-        price: p.price ?? null,
+        monthDuration: (p.monthDuration as unknown as number) ?? 1,
+        price: (p.price as unknown as number) ?? null,
         isActive: p.isActive ?? true,
       });
     });

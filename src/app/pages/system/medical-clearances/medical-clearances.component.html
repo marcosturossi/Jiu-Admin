@@ -32,7 +32,7 @@
               </td>
               <td>
                 {{ clearance.expiresAt | date:'dd/MM/yyyy':'UTC' }}
-                @if (clearance.daysUntilExpiry !== undefined && clearance.daysUntilExpiry >= 0) {
+                @if (clearance.daysUntilExpiry !== undefined && $any(clearance.daysUntilExpiry) >= 0) {
                   <small class="text-muted"> ({{ clearance.daysUntilExpiry }} dias)</small>
                 }
               </td>

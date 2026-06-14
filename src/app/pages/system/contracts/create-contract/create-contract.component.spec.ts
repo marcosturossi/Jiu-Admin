@@ -8,7 +8,7 @@ import { NotificationService } from '../../../../services/notification.service';
 import { ShowStudentDTO as ShowStudentDTO, ShowFeePlanDTO as ShowFeePlanDTO } from '../../../../generated_services';
 
 const MOCK_STUDENTS: ShowStudentDTO[] = [
-  { id: 's1', firstName: 'João', lastName: 'Silva', userName: 'joao', email: 'j@test.com' },
+  { id: 's1', firstName: 'João', lastName: 'Silva', userName: 'joao', email: 'j@test.com', cpf: null },
 ];
 
 const MOCK_FEE_PLANS: ShowFeePlanDTO[] = [{ id: 'fp1', name: 'Mensal', price: 150 } as ShowFeePlanDTO];

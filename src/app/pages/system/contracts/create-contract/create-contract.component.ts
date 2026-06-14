@@ -130,7 +130,7 @@ export class CreateContractComponent {
         this.feePlanOptions.set(
           plans.map((p: ShowFeePlanDTO) => ({
             id: p.id!,
-            label: `${p.name ?? ''} — R$ ${p.price?.toFixed(2) ?? '0,00'}`,
+            label: `${p.name ?? ''} — R$ ${(p.price as unknown as number)?.toFixed(2) ?? '0,00'}`,
           })),
         );
       },

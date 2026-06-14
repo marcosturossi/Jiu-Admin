@@ -10,7 +10,8 @@ registerLocaleData(localePt, 'pt-BR');
 import { MonthlyFeeService } from '../../../generated_services/api/monthlyFee.service';
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
-import { FeeStatus as FeeStatus, ShowMonthlyFeeDTO as ShowMonthlyFeeDTO } from '../../../generated_services';
+import { FeeStatus } from '../../../generated_services/model/feeStatus';
+import { ShowMonthlyFeeDTO } from '../../../generated_services/model/showMonthlyFeeDTO';
 
 const MOCK_FEE: ShowMonthlyFeeDTO = { id: 'fee1', contractId: 'c1', studentId: 's1', amount: 150, status: FeeStatus.Pending, dueDate: '2024-03-01' };
 

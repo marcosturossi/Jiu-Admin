@@ -30,7 +30,7 @@ export class UpdateBeltComponent {
       const b = this.belt();
       this.form.patchValue({
         color: b.color,
-        orderIndex: b.orderIndex ?? 0,
+        orderIndex: (b.orderIndex as unknown as number) ?? 0,
         isForKids: b.isForKids ?? false,
       });
     });

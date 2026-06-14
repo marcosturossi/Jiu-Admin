@@ -2,7 +2,9 @@ import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@a
 import { DatePipe, CurrencyPipe } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { MonthlyFeeService } from '../../../generated_services/api/monthlyFee.service';
-import { ChargeResult as ChargeResult, FeeStatus as FeeStatus, ShowMonthlyFeeDTO as ShowMonthlyFeeDTO } from '../../../generated_services';
+import { ChargeResult } from '../../../generated_services';
+import { FeeStatus } from '../../../generated_services/model/feeStatus';
+import { ShowMonthlyFeeDTO } from '../../../generated_services/model/showMonthlyFeeDTO';
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
 import { FilterComponent } from '../../../shared/filter/filter.component';
@@ -104,8 +106,8 @@ export class MonthlyFeesComponent {
       next: result => {
         this.items.set({
           items: result?.items ?? [],
-          totalCount: result?.totalCount ?? 0,
-          totalPages: result?.totalPages ?? 1,
+          totalCount: (result?.totalCount as unknown as number) ?? 0,
+          totalPages: (result?.totalPages as unknown as number) ?? 1,
         });
         this.isLoading.set(false);
       },
@@ -176,7 +178,7 @@ export class MonthlyFeesComponent {
   protected openPix(fee: ShowMonthlyFeeDTO): void {
     this.selected.set(fee);
     if (fee.pixQrCodeBase64 || fee.pixCopyPaste) {
-      this.pixResult.set({ chargeId: fee.externalChargeId, pixQrCodeBase64: fee.pixQrCodeBase64, pixCopyPaste: fee.pixCopyPaste, invoiceUrl: fee.invoiceUrl });
+      this.pixResult.set({ chargeId: fee.externalChargeId ?? '', pixQrCodeBase64: fee.pixQrCodeBase64 ?? null, pixCopyPaste: fee.pixCopyPaste ?? null, invoiceUrl: fee.invoiceUrl ?? null, status: '' });
       this.openedPix.set(true);
     } else {
       this.generatePix(fee);

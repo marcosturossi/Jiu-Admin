@@ -13,7 +13,7 @@ import { NotificationService } from '../../../services/notification.service';
 import { ShowContractDTO as ShowContractDTO, ContractStatus as ContractStatus } from '../../../generated_services';
 import { ShowStudentDTO } from '../../../generated_services/model/showStudentDTO';
 
-const MOCK_CONTRACT: ShowContractDTO = { id: 'c1', studentId: 'student-1', feePlanName: 'Plano Mensal', monthlyAmount: 150, status: ContractStatus.Active };
+const MOCK_CONTRACT: ShowContractDTO = { id: 'c1', studentId: 'student-1', feePlanName: 'Plano Mensal', monthlyAmount: 150, status: ContractStatus.Active as any };
 
 const MOCK_ITEMS = Array.from({ length: 25 }, (_, i) => ({ ...MOCK_CONTRACT, id: `ct${i + 1}` }));
 const buildResponse = (page = 1, pageSize = 10) => ({
@@ -21,7 +21,7 @@ const buildResponse = (page = 1, pageSize = 10) => ({
   totalCount: MOCK_ITEMS.length,
   totalPages: Math.ceil(MOCK_ITEMS.length / pageSize),
 });
-const MOCK_STUDENTS: ShowStudentDTO[] = [{ id: 'student-1', userName: 'joao', email: 'joao@test.com', firstName: 'João', lastName: 'Silva' }];
+const MOCK_STUDENTS: ShowStudentDTO[] = [{ id: 'student-1', userName: 'joao', email: 'joao@test.com', cpf: null, firstName: 'João', lastName: 'Silva' }];
 const MOCK_STUDENTS_RESPONSE = { items: MOCK_STUDENTS, totalCount: MOCK_STUDENTS.length, totalPages: 1 };
 
 describe('ContractsComponent', () => {

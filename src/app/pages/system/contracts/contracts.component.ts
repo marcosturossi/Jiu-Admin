@@ -72,12 +72,12 @@ export class ContractsComponent {
 
   protected load(): void {
     this.isLoading.set(true);
-    this.contractService.apiContractGet(this.filterStatus(), undefined, undefined, undefined, undefined, undefined, undefined, this.currentPage(), this.pageSize()).subscribe({
+    this.contractService.apiContractGet(this.filterStatus() as any, undefined, undefined, undefined, undefined, undefined, undefined, this.currentPage() as any, this.pageSize() as any).subscribe({
       next: result => {
         this.items.set({
           items: result?.items ?? [],
-          totalCount: result?.totalCount ?? 0,
-          totalPages: result?.totalPages ?? 1,
+          totalCount: (result?.totalCount as unknown as number) ?? 0,
+          totalPages: (result?.totalPages as unknown as number) ?? 1,
         });
         this.isLoading.set(false);
       },
@@ -85,7 +85,7 @@ export class ContractsComponent {
     });
   }
 
-  protected getStatusSeverity(status?: ContractStatus): 'success' | 'warn' | 'danger' | 'info' | 'secondary' {
+  protected getStatusSeverity(status?: number | string): 'success' | 'warn' | 'danger' | 'info' | 'secondary' {
     switch (status) {
       case ContractStatus.Active: return 'success';
       case ContractStatus.Inactive:
@@ -97,7 +97,7 @@ export class ContractsComponent {
     }
   }
 
-  protected getStatusLabel(status?: ContractStatus): string {
+  protected getStatusLabel(status?: number | string): string {
     switch (status) {
       case ContractStatus.Active: return 'Ativo';
       case ContractStatus.Inactive: return 'Inativo';

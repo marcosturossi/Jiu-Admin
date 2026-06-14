@@ -38,7 +38,7 @@ export class UpdateGraduationRequirementComponent {
       this.form.patchValue({
         beltId: r.beltId,
         description: r.description,
-        minimumClasses: r.minimumClasses ?? 0,
+        minimumClasses: (r.minimumClasses as unknown as number) ?? 0,
       });
     });
   }

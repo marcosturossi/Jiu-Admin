@@ -2,14 +2,14 @@ import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/cor
 import { DatePipe, CurrencyPipe } from '@angular/common';
 import { FinancialTransactionService } from '../../../generated_services/api/financialTransaction.service';
 import { TransactionCategoryService } from '../../../generated_services/api/transactionCategory.service';
-import { ShowTransactionDTO as ShowTransactionDTO, ShowTransactionCategoryDTO as ShowTransactionCategoryDTO, TransactionType as TransactionType } from '../../../generated_services';
+import { ShowFinancialTransactionDTO, ShowTransactionCategoryDTO } from '../../../generated_services';
+import { TransactionType } from '../../../generated_services/model/transactionType';
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
 import { FilterComponent } from '../../../shared/filter/filter.component';
 import { FilterField, FilterOutput } from '../../../shared/filter/filter.types';
 import { PaginationComponent } from '../../../shared/pagination/pagination.component';
 import { CreateTransactionComponent } from './create-transaction/create-transaction.component';
-import { UpdateTransactionComponent } from './update-transaction/update-transaction.component';
 import { PageResult } from '../../../utils/page-result';
 
 @Component({
@@ -21,7 +21,6 @@ import { PageResult } from '../../../utils/page-result';
     FilterComponent,
     PaginationComponent,
     CreateTransactionComponent,
-    UpdateTransactionComponent,
   ],
   templateUrl: './transactions.component.html',
   styleUrl: './transactions.component.scss',
@@ -34,13 +33,11 @@ export class TransactionsComponent {
   private readonly ns = inject(NotificationService);
 
   protected readonly isLoading = signal(false);
-  protected readonly items = signal<PageResult<ShowTransactionDTO> | null>(null);
+  protected readonly items = signal<PageResult<ShowFinancialTransactionDTO> | null>(null);
   protected readonly openedCreate = signal(false);
-  protected readonly openedUpdate = signal(false);
-  protected readonly selected = signal<ShowTransactionDTO | null>(null);
   protected readonly currentPage = signal(1);
   protected readonly pageSize = signal(10);
-  protected readonly filterType = signal<TransactionType | undefined>(undefined);
+  protected readonly filterType = signal<string | undefined>(undefined);
   protected readonly categories = signal<ShowTransactionCategoryDTO[]>([]);
 
   protected readonly filterFields: FilterField[] = [
@@ -49,12 +46,12 @@ export class TransactionsComponent {
       label: 'Tipo',
       type: 'select',
       options: [
-        { value: String(TransactionType.Debit), label: 'Débito' },
-        { value: String(TransactionType.Credit), label: 'Crédito' },
-        { value: String(TransactionType.Refund), label: 'Reembolso' },
-        { value: String(TransactionType.Adjustment), label: 'Ajuste' },
-        { value: String(TransactionType.Income), label: 'Receita' },
-        { value: String(TransactionType.Expense), label: 'Despesa' },
+        { value: TransactionType.Debit, label: 'Débito' },
+        { value: TransactionType.Credit, label: 'Crédito' },
+        { value: TransactionType.Refund, label: 'Reembolso' },
+        { value: TransactionType.Adjustment, label: 'Ajuste' },
+        { value: TransactionType.Income, label: 'Receita' },
+        { value: TransactionType.Expense, label: 'Despesa' },
       ],
     },
   ];
@@ -75,14 +72,15 @@ export class TransactionsComponent {
       undefined,
       undefined,
       undefined,
-      this.currentPage(),
-      this.pageSize(),
+      undefined,
+      this.currentPage() as any,
+      this.pageSize() as any,
     ).subscribe({
       next: result => {
         this.items.set({
           items: result?.items ?? [],
-          totalCount: result?.totalCount ?? 0,
-          totalPages: result?.totalPages ?? 1,
+          totalCount: (result?.totalCount as unknown as number) ?? 0,
+          totalPages: (result?.totalPages as unknown as number) ?? 1,
         });
         this.isLoading.set(false);
       },
@@ -93,34 +91,38 @@ export class TransactionsComponent {
     });
   }
 
-  protected getTypeSeverity(type?: TransactionType): 'success' | 'danger' | 'secondary' {
+  protected getTypeSeverity(type?: number | string): 'success' | 'danger' | 'secondary' {
     switch (type) {
-      case TransactionType.Credit:
-      case TransactionType.Income: return 'success';
-      case TransactionType.Debit:
-      case TransactionType.Expense: return 'danger';
+      case 1: case TransactionType.Credit:
+      case 4: case TransactionType.Income: return 'success';
+      case 0: case TransactionType.Debit:
+      case 5: case TransactionType.Expense: return 'danger';
       default: return 'secondary';
     }
   }
 
-  protected getTypeLabel(type?: TransactionType): string {
+  protected getTypeLabel(type?: number | string): string {
     switch (type) {
-      case TransactionType.Debit: return 'Débito';
-      case TransactionType.Credit: return 'Crédito';
-      case TransactionType.Refund: return 'Reembolso';
-      case TransactionType.Adjustment: return 'Ajuste';
-      case TransactionType.Income: return 'Receita';
-      case TransactionType.Expense: return 'Despesa';
+      case 0: case TransactionType.Debit: return 'Débito';
+      case 1: case TransactionType.Credit: return 'Crédito';
+      case 2: case TransactionType.Refund: return 'Reembolso';
+      case 3: case TransactionType.Adjustment: return 'Ajuste';
+      case 4: case TransactionType.Income: return 'Receita';
+      case 5: case TransactionType.Expense: return 'Despesa';
       default: return '—';
     }
   }
 
-  protected isPositiveType(type?: TransactionType): boolean {
-    return type === TransactionType.Credit || type === TransactionType.Income;
+  protected isPositiveType(type?: number | string): boolean {
+    return type === 1 || type === TransactionType.Credit || type === 4 || type === TransactionType.Income;
   }
 
-  protected isNegativeType(type?: TransactionType): boolean {
-    return type === TransactionType.Debit || type === TransactionType.Expense;
+  protected isNegativeType(type?: number | string): boolean {
+    return type === 0 || type === TransactionType.Debit || type === 5 || type === TransactionType.Expense;
+  }
+
+  protected getAmount(item: ShowFinancialTransactionDTO): number {
+    return (item.amount as unknown as number) ?? 0;
   }
 
   protected getCategoryName(id?: string | null): string {
@@ -131,15 +133,13 @@ export class TransactionsComponent {
   protected onPageChange(page: number): void { this.currentPage.set(page); this.load(); }
   protected onPageSizeChange(size: number): void { this.pageSize.set(size); this.currentPage.set(1); this.load(); }
   protected onFilterChange(output: FilterOutput): void {
-    this.filterType.set(output.conditions.find(c => c.field.key === 'type')?.value as TransactionType | undefined);
+    this.filterType.set(output.conditions.find(c => c.field.key === 'type')?.value as string | undefined);
     this.currentPage.set(1);
     this.load();
   }
   protected onCategorySearch(term: string): void { this.loadCategories(term); }
   protected openCreate(): void { this.openedCreate.set(true); }
-  protected openEdit(item: ShowTransactionDTO): void { this.selected.set(item); this.openedUpdate.set(true); }
   protected onCreated(): void { this.openedCreate.set(false); this.load(); }
-  protected onUpdated(): void { this.openedUpdate.set(false); this.load(); }
 
   private loadCategories(term = ''): void {
     this.categoryService.apiTransactionCategoryGet(term || undefined, undefined, 1, 100).subscribe({
@@ -149,9 +149,9 @@ export class TransactionsComponent {
     });
   }
 
-  protected delete(item: ShowTransactionDTO): void {
+  protected delete(item: ShowFinancialTransactionDTO): void {
     if (!confirm('Tem certeza que deseja excluir esta transação?')) return;
-    this.transactionService.apiFinancialTransactionIdDelete(item.id!).subscribe({
+    this.transactionService.apiFinancialTransactionChargeIdDelete(item.id!).subscribe({
       next: () => { this.ns.showSuccess('Transação Excluída!', 'Excluída com sucesso.'); this.load(); },
       error: () => { this.ns.showError('Erro ao Excluir!', 'Não foi possível excluir a transação.'); },
     });

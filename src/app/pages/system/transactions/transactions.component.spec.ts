@@ -10,9 +10,10 @@ import { FinancialTransactionService } from '../../../generated_services/api/fin
 import { TransactionCategoryService } from '../../../generated_services/api/transactionCategory.service';
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
-import { ShowTransactionDTO as ShowTransactionDTO, ShowTransactionCategoryDTO as ShowTransactionCategoryDTO, TransactionType as TransactionType } from '../../../generated_services';
+import { ShowFinancialTransactionDTO, ShowTransactionCategoryDTO } from '../../../generated_services';
+import { TransactionType } from '../../../generated_services/model/transactionType';
 
-const MOCK_TRANSACTION: ShowTransactionDTO = { id: 't1', description: 'Mensalidade março', amount: 150, type: TransactionType.Debit, transactionCategoryId: 'cat1' };
+const MOCK_TRANSACTION: ShowFinancialTransactionDTO = { id: 't1', description: 'Mensalidade março', amount: 150 as any, type: 0, transactionCategoryId: 'cat1' };
 
 const MOCK_ITEMS = Array.from({ length: 25 }, (_, i) => ({ ...MOCK_TRANSACTION, id: `tx${i + 1}` }));
 const buildResponse = (page = 1, pageSize = 10) => ({
@@ -32,11 +33,12 @@ describe('TransactionsComponent', () => {
   let subnavService: jasmine.SpyObj<SubnavService>;
 
   beforeEach(async () => {
-    const transactionSpy = jasmine.createSpyObj('FinancialTransactionService', ['apiFinancialTransactionGet', 'apiFinancialTransactionIdDelete']);
+    const transactionSpy = jasmine.createSpyObj('FinancialTransactionService', ['apiFinancialTransactionGet', 'apiFinancialTransactionChargeIdDelete']);
     const categorySpy = jasmine.createSpyObj('TransactionCategoryService', ['apiTransactionCategoryGet']);
     const nsSpy = jasmine.createSpyObj('NotificationService', ['showSuccess', 'showError']);
     const subnavSpy = jasmine.createSpyObj('SubnavService', ['setTitle']);
-    transactionSpy.apiFinancialTransactionGet.and.callFake((...args: any[]) => of(buildResponse(Number(args[7] ?? 1), Number(args[8] ?? 10))));
+    // page is at arg index 8 (0-based), pageSize at 9
+    transactionSpy.apiFinancialTransactionGet.and.callFake((...args: any[]) => of(buildResponse(Number(args[8] ?? 1), Number(args[9] ?? 10))));
     categorySpy.apiTransactionCategoryGet.and.returnValue(of(MOCK_CATEGORY_RESPONSE));
 
     await TestBed.configureTestingModule({
@@ -79,14 +81,23 @@ describe('TransactionsComponent', () => {
   });
 
   describe('getTypeLabel', () => {
-    it('should return correct labels for each type', () => {
+    it('should return correct labels for numeric types', () => {
+      expect((component as any).getTypeLabel(0)).toBe('Débito');
+      expect((component as any).getTypeLabel(1)).toBe('Crédito');
+      expect((component as any).getTypeLabel(2)).toBe('Reembolso');
+      expect((component as any).getTypeLabel(3)).toBe('Ajuste');
+      expect((component as any).getTypeLabel(4)).toBe('Receita');
+      expect((component as any).getTypeLabel(5)).toBe('Despesa');
+      expect((component as any).getTypeLabel(undefined)).toBe('—');
+    });
+
+    it('should return correct labels for string types', () => {
       expect((component as any).getTypeLabel(TransactionType.Debit)).toBe('Débito');
       expect((component as any).getTypeLabel(TransactionType.Credit)).toBe('Crédito');
       expect((component as any).getTypeLabel(TransactionType.Refund)).toBe('Reembolso');
       expect((component as any).getTypeLabel(TransactionType.Adjustment)).toBe('Ajuste');
       expect((component as any).getTypeLabel(TransactionType.Income)).toBe('Receita');
       expect((component as any).getTypeLabel(TransactionType.Expense)).toBe('Despesa');
-      expect((component as any).getTypeLabel(undefined)).toBe('—');
     });
   });
 
@@ -103,13 +114,13 @@ describe('TransactionsComponent', () => {
   describe('delete', () => {
     beforeEach(() => {
       spyOn(window, 'confirm').and.returnValue(true);
-      transactionService.apiFinancialTransactionIdDelete.and.returnValue(of(null as any));
+      transactionService.apiFinancialTransactionChargeIdDelete.and.returnValue(of(null as any));
       transactionService.apiFinancialTransactionGet.calls.reset();
     });
 
     it('should delete transaction and reload on confirmation', () => {
       (component as any).delete(MOCK_TRANSACTION);
-      expect(transactionService.apiFinancialTransactionIdDelete).toHaveBeenCalledWith(MOCK_TRANSACTION.id!);
+      expect(transactionService.apiFinancialTransactionChargeIdDelete).toHaveBeenCalledWith(MOCK_TRANSACTION.id!);
       expect(ns.showSuccess).toHaveBeenCalled();
       expect(transactionService.apiFinancialTransactionGet).toHaveBeenCalled();
     });
@@ -117,11 +128,11 @@ describe('TransactionsComponent', () => {
     it('should not delete when confirmation is cancelled', () => {
       (window.confirm as jasmine.Spy).and.returnValue(false);
       (component as any).delete(MOCK_TRANSACTION);
-      expect(transactionService.apiFinancialTransactionIdDelete).not.toHaveBeenCalled();
+      expect(transactionService.apiFinancialTransactionChargeIdDelete).not.toHaveBeenCalled();
     });
 
     it('should show error notification on delete failure', () => {
-      transactionService.apiFinancialTransactionIdDelete.and.returnValue(throwError(() => new Error()));
+      transactionService.apiFinancialTransactionChargeIdDelete.and.returnValue(throwError(() => new Error()));
       (component as any).delete(MOCK_TRANSACTION);
       expect(ns.showError).toHaveBeenCalled();
     });

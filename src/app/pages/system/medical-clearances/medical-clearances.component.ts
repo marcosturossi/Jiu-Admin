@@ -54,8 +54,8 @@ export class MedicalClearancesComponent {
       next: result => {
         this.items.set({
           items: result?.items ?? [],
-          totalCount: result?.totalCount ?? 0,
-          totalPages: result?.totalPages ?? 1,
+          totalCount: (result?.totalCount as unknown as number) ?? 0,
+          totalPages: (result?.totalPages as unknown as number) ?? 1,
         });
         this.isLoading.set(false);
       },
@@ -87,7 +87,7 @@ export class MedicalClearancesComponent {
     this.medicalClearanceService.apiMedicalClearanceIdAttachmentGet(
       clearance.id, 'body', false, { httpHeaderAccept: 'application/octet-stream' }
     ).subscribe({
-      next: (blob: Blob) => {
+      next: (blob: any) => {
         const mime = clearance.attachmentContentType || 'application/pdf';
         this.attachmentBlob.set(blob.type === mime ? blob : new Blob([blob], { type: mime }));
         this.attachmentMimeType.set(mime);

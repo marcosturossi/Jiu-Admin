@@ -7,7 +7,7 @@ import { NotificationService } from '../../../services/notification.service';
 import { ShowNotificationDto as ShowNotificationDTO } from '../../../generated_services/model/showNotificationDto';
 import { NotificationType } from '../../../generated_services/model/notificationType';
 
-const MOCK_NOTIFICATION: ShowNotificationDTO = { id: 'notif-1', title: 'Aviso', message: 'Mensagem', type: NotificationType.Info, isActive: true };
+const MOCK_NOTIFICATION: ShowNotificationDTO = { id: 'notif-1', title: 'Aviso', message: 'Mensagem', type: NotificationType.Info as any, isActive: true };
 const MOCK_ITEMS = Array.from({ length: 25 }, (_, i) => ({ ...MOCK_NOTIFICATION, id: `notif-${i + 1}` }));
 const buildResponse = (page = 1, pageSize = 10) => MOCK_ITEMS.slice((page - 1) * pageSize, page * pageSize);
 

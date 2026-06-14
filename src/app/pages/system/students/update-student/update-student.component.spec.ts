@@ -5,7 +5,7 @@ import { UpdateStudentComponent } from './update-student.component';
 import { StudentsService, ShowStudentDTO as ShowStudentDTO } from '../../../../generated_services';
 import { NotificationService } from '../../../../services/notification.service';
 
-const MOCK_STUDENT: ShowStudentDTO = { id: 's1', userName: 'joao', email: 'joao@test.com', firstName: 'João', lastName: 'Silva', isActive: true };
+const MOCK_STUDENT: ShowStudentDTO = { id: 's1', userName: 'joao', cpf: null, email: 'joao@test.com', firstName: 'João', lastName: 'Silva', isActive: true };
 
 describe('UpdateStudentComponent', () => {
   let component: UpdateStudentComponent;
