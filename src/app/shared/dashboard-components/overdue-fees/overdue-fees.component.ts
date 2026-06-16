@@ -5,7 +5,6 @@ import {
   signal,
   OnInit,
 } from '@angular/core';
-import { MonthlyFeeService } from '../../../generated_services/api/monthlyFee.service';
 import { ShowMonthlyFeeDTO } from '../../../generated_services/model/showMonthlyFeeDTO';
 
 @Component({
@@ -17,24 +16,12 @@ import { ShowMonthlyFeeDTO } from '../../../generated_services/model/showMonthly
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class OverdueFeesComponent implements OnInit {
-  private readonly monthlyFeeService = inject(MonthlyFeeService);
 
   protected readonly fees = signal<ShowMonthlyFeeDTO[]>([]);
   protected readonly loading = signal(true);
   protected readonly error = signal('');
 
   ngOnInit(): void {
-    this.monthlyFeeService.apiMonthlyFeeOverdueGet().subscribe({
-      next: (data) => {
-        this.fees.set(data?.items ?? []);
-        this.loading.set(false);
-      },
-      error: (err) => {
-        console.error('[OverdueFees] API error:', err);
-        this.error.set('Não foi possível carregar as mensalidades vencidas.');
-        this.loading.set(false);
-      },
-    });
   }
 
   protected formatCurrency(value: number | null | undefined): string {

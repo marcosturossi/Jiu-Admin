@@ -20,7 +20,6 @@ import { NotificationComponent } from './notification/notification.component';
 import { MedicalClearancesComponent } from './medical-clearances/medical-clearances.component';
 import { FeePlansComponent } from './fee-plans/fee-plans.component';
 import { ContractsComponent } from './contracts/contracts.component';
-import { MonthlyFeesComponent } from './monthly-fees/monthly-fees.component';
 import { TransactionsComponent } from './transactions/transactions.component';
 import { TransactionCategoriesComponent } from './transaction-categories/transaction-categories.component';
 import { AcademiesComponent } from './academies/academies.component';
@@ -50,7 +49,6 @@ export const routes: Routes = [
       { path: 'finance-dashboard', component: FinanceDashboardComponent },
       { path: 'fee-plans', component: FeePlansComponent },
       { path: 'contracts', component: ContractsComponent },
-      { path: 'monthly-fees', component: MonthlyFeesComponent },
       { path: 'transactions', component: TransactionsComponent },
       { path: 'transaction-categories', component: TransactionCategoriesComponent },
       // Saúde e Segurança

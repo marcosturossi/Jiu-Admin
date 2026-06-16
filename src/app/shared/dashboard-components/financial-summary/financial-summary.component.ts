@@ -6,7 +6,6 @@ import {
   OnInit,
 } from '@angular/core';
 import { FinancialTransactionService } from '../../../generated_services/api/financialTransaction.service';
-import { MonthlyFeeService } from '../../../generated_services/api/monthlyFee.service';
 import { TransactionType } from '../../../generated_services/model/transactionType';
 import { ShowMonthlyFeeDTO } from '../../../generated_services/model/showMonthlyFeeDTO';
 
@@ -40,7 +39,6 @@ function normalizeTransactionType(type: any): TransactionType | undefined {
 })
 export class FinancialSummaryComponent implements OnInit {
   private readonly transactionService = inject(FinancialTransactionService);
-  private readonly monthlyFeeService = inject(MonthlyFeeService);
 
   protected readonly totalIncome = signal(0);
   protected readonly totalExpenses = signal(0);
@@ -93,19 +91,7 @@ export class FinancialSummaryComponent implements OnInit {
   }
 
   private loadOverdueFees(): void {
-    this.monthlyFeeService.apiMonthlyFeeOverdueGet().subscribe({
-      next: fees => {
-        this.overdueFeeCount.set(fees?.items?.length ?? 0);
-        const total = (fees?.items ?? []).reduce(
-          (sum: number, f: ShowMonthlyFeeDTO) => sum + (f.amount ?? 0),
-          0,
-        );
-        this.pendingFeeTotal.set(total);
-      },
-      error: (err) => {
-        console.error('[FinancialSummary] Overdue fees error:', err);
-      },
-    });
+   
   }
 
   protected formatCurrency(value: number): string {
