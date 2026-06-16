@@ -8,13 +8,17 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { NotificationType } from './notificationType';
 
 
 export interface UpdateNotificationDto { 
     title?: string | null;
     message?: string | null;
-    type?: number;
+    type?: NotificationType | null;
     isActive?: boolean | null;
     expiresAt?: string | null;
 }
+export namespace UpdateNotificationDto {
+}
+
 

@@ -19,6 +19,7 @@ import { ChargeStatus } from '../model/models';
 import { ChargeTransactionDTO } from '../model/models';
 import { CreateFinancialTransactionDTO } from '../model/models';
 import { FileResult } from '../model/models';
+import { FinancialSummaryDTO } from '../model/models';
 import { PaginatedResultOfShowFinancialTransactionDTO } from '../model/models';
 import { PayFinancialTransactionDTO } from '../model/models';
 import { ProblemDetails } from '../model/models';
@@ -102,6 +103,13 @@ export interface FinancialTransactionServiceInterface {
      * 
      * @param id 
      */
+    apiFinancialTransactionIdDelete(id: string, extraHttpRequestParams?: any): Observable<{}>;
+
+    /**
+     * 
+     * 
+     * @param id 
+     */
     apiFinancialTransactionIdGet(id: string, extraHttpRequestParams?: any): Observable<ShowFinancialTransactionDTO>;
 
     /**
@@ -175,6 +183,12 @@ export interface FinancialTransactionServiceInterface {
      * @param status 
      */
     apiFinancialTransactionStudentStudentIdGet(studentId: string, type?: string, transactionCategoryId?: string, amountMin?: ApiFeePlanGetPriceMinParameter, amountMax?: ApiFeePlanGetPriceMinParameter, transactionDateFrom?: string, transactionDateTo?: string, description?: string, paidAt?: string, page?: ApiFrequencyGetPageParameter, pageSize?: ApiFrequencyGetPageParameter, orderBy?: string, orderByDescending?: boolean, studentId2?: string, contractId?: string, status?: string, extraHttpRequestParams?: any): Observable<PaginatedResultOfShowFinancialTransactionDTO>;
+
+    /**
+     * 
+     * 
+     */
+    apiFinancialTransactionSummaryGet(extraHttpRequestParams?: any): Observable<FinancialSummaryDTO>;
 
     /**
      * 

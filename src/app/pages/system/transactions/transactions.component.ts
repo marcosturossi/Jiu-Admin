@@ -46,8 +46,6 @@ export class TransactionsComponent {
       label: 'Tipo',
       type: 'select',
       options: [
-        { value: TransactionType.Debit, label: 'Débito' },
-        { value: TransactionType.Credit, label: 'Crédito' },
         { value: TransactionType.Refund, label: 'Reembolso' },
         { value: TransactionType.Adjustment, label: 'Ajuste' },
         { value: TransactionType.Income, label: 'Receita' },
@@ -93,32 +91,31 @@ export class TransactionsComponent {
 
   protected getTypeSeverity(type?: number | string): 'success' | 'danger' | 'secondary' {
     switch (type) {
-      case 1: case TransactionType.Credit:
-      case 4: case TransactionType.Income: return 'success';
-      case 0: case TransactionType.Debit:
-      case 5: case TransactionType.Expense: return 'danger';
+      case 0: case TransactionType.Income: return 'success';
+      case 1: case TransactionType.Expense: return 'danger';
+      case 2: case TransactionType.Refund:
+      case 3: case TransactionType.Adjustment:
       default: return 'secondary';
     }
   }
 
   protected getTypeLabel(type?: number | string): string {
     switch (type) {
-      case 0: case TransactionType.Debit: return 'Débito';
-      case 1: case TransactionType.Credit: return 'Crédito';
+      case 0: case TransactionType.Income: return 'Receita';
+      case 1: case TransactionType.Expense: return 'Despesa';
       case 2: case TransactionType.Refund: return 'Reembolso';
       case 3: case TransactionType.Adjustment: return 'Ajuste';
-      case 4: case TransactionType.Income: return 'Receita';
-      case 5: case TransactionType.Expense: return 'Despesa';
+
       default: return '—';
     }
   }
 
   protected isPositiveType(type?: number | string): boolean {
-    return type === 1 || type === TransactionType.Credit || type === 4 || type === TransactionType.Income;
+    return type === TransactionType.Income;
   }
 
   protected isNegativeType(type?: number | string): boolean {
-    return type === 0 || type === TransactionType.Debit || type === 5 || type === TransactionType.Expense;
+    return  type === TransactionType.Expense;
   }
 
   protected getAmount(item: ShowFinancialTransactionDTO): number {

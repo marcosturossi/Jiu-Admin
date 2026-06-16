@@ -16,6 +16,7 @@ import { ApiFrequencyGetPageParameter } from '../model/models';
 import { CreateNotificationDto } from '../model/models';
 import { MarkAsReadDto } from '../model/models';
 import { NotificationStatsDto } from '../model/models';
+import { NotificationType } from '../model/models';
 import { ProblemDetails } from '../model/models';
 import { ShowNotificationDto } from '../model/models';
 import { UpdateNotificationDto } from '../model/models';
@@ -55,7 +56,7 @@ export interface NotificationServiceInterface {
      * @param createdFrom 
      * @param createdTo 
      */
-    apiNotificationGet(pageNumber?: ApiFrequencyGetPageParameter, pageSize?: ApiFrequencyGetPageParameter, searchTerm?: string, type?: number, isActive?: boolean, studentId?: string, isExpired?: boolean, createdFrom?: string, createdTo?: string, extraHttpRequestParams?: any): Observable<Array<ShowNotificationDto>>;
+    apiNotificationGet(pageNumber?: ApiFrequencyGetPageParameter, pageSize?: ApiFrequencyGetPageParameter, searchTerm?: string, type?: NotificationType, isActive?: boolean, studentId?: string, isExpired?: boolean, createdFrom?: string, createdTo?: string, extraHttpRequestParams?: any): Observable<Array<ShowNotificationDto>>;
 
     /**
      * 
@@ -105,7 +106,7 @@ export interface NotificationServiceInterface {
      * @param createdFrom 
      * @param createdTo 
      */
-    apiNotificationMyGet(pageNumber?: ApiFrequencyGetPageParameter, pageSize?: ApiFrequencyGetPageParameter, searchTerm?: string, type?: number, isActive?: boolean, studentId?: string, isExpired?: boolean, createdFrom?: string, createdTo?: string, extraHttpRequestParams?: any): Observable<Array<ShowNotificationDto>>;
+    apiNotificationMyGet(pageNumber?: ApiFrequencyGetPageParameter, pageSize?: ApiFrequencyGetPageParameter, searchTerm?: string, type?: NotificationType, isActive?: boolean, studentId?: string, isExpired?: boolean, createdFrom?: string, createdTo?: string, extraHttpRequestParams?: any): Observable<Array<ShowNotificationDto>>;
 
     /**
      * 
@@ -126,7 +127,7 @@ export interface NotificationServiceInterface {
      * @param createdFrom 
      * @param createdTo 
      */
-    apiNotificationMyUnreadGet(pageNumber?: ApiFrequencyGetPageParameter, pageSize?: ApiFrequencyGetPageParameter, searchTerm?: string, type?: number, isActive?: boolean, studentId?: string, isExpired?: boolean, createdFrom?: string, createdTo?: string, extraHttpRequestParams?: any): Observable<Array<ShowNotificationDto>>;
+    apiNotificationMyUnreadGet(pageNumber?: ApiFrequencyGetPageParameter, pageSize?: ApiFrequencyGetPageParameter, searchTerm?: string, type?: NotificationType, isActive?: boolean, studentId?: string, isExpired?: boolean, createdFrom?: string, createdTo?: string, extraHttpRequestParams?: any): Observable<Array<ShowNotificationDto>>;
 
     /**
      * 
@@ -149,7 +150,7 @@ export interface NotificationServiceInterface {
      * @param createdFrom 
      * @param createdTo 
      */
-    apiNotificationTypeTypeGet(type: number, pageNumber?: ApiFrequencyGetPageParameter, pageSize?: ApiFrequencyGetPageParameter, searchTerm?: string, type2?: number, isActive?: boolean, studentId?: string, isExpired?: boolean, createdFrom?: string, createdTo?: string, extraHttpRequestParams?: any): Observable<Array<ShowNotificationDto>>;
+    apiNotificationTypeTypeGet(type: NotificationType, pageNumber?: ApiFrequencyGetPageParameter, pageSize?: ApiFrequencyGetPageParameter, searchTerm?: string, type2?: NotificationType, isActive?: boolean, studentId?: string, isExpired?: boolean, createdFrom?: string, createdTo?: string, extraHttpRequestParams?: any): Observable<Array<ShowNotificationDto>>;
 
     /**
      * 
@@ -165,6 +166,6 @@ export interface NotificationServiceInterface {
      * @param createdFrom 
      * @param createdTo 
      */
-    apiNotificationUserUserIdGet(userId: string, pageNumber?: ApiFrequencyGetPageParameter, pageSize?: ApiFrequencyGetPageParameter, searchTerm?: string, type?: number, isActive?: boolean, studentId?: string, isExpired?: boolean, createdFrom?: string, createdTo?: string, extraHttpRequestParams?: any): Observable<Array<ShowNotificationDto>>;
+    apiNotificationUserUserIdGet(userId: string, pageNumber?: ApiFrequencyGetPageParameter, pageSize?: ApiFrequencyGetPageParameter, searchTerm?: string, type?: NotificationType, isActive?: boolean, studentId?: string, isExpired?: boolean, createdFrom?: string, createdTo?: string, extraHttpRequestParams?: any): Observable<Array<ShowNotificationDto>>;
 
 }

@@ -20,8 +20,6 @@ function normalizeTransactionType(type: any): TransactionType | undefined {
   if (type === 0 || type === '0') return TransactionType.Income;
   if (type === 1 || type === '1') return TransactionType.Expense;
   // Handle other string enum values
-  if (type === 'Debit' || type === TransactionType.Debit) return TransactionType.Debit;
-  if (type === 'Credit' || type === TransactionType.Credit) return TransactionType.Credit;
   if (type === 'Refund' || type === TransactionType.Refund) return TransactionType.Refund;
   if (type === 'Adjustment' || type === TransactionType.Adjustment) return TransactionType.Adjustment;
   // Handle numeric values for new enum order (2-5)
@@ -73,13 +71,13 @@ export class FinancialSummaryComponent implements OnInit {
           const income = thisMonth
             .filter((t: any) => {
               const type = normalizeTransactionType(t.type);
-              return type === TransactionType.Income || type === TransactionType.Credit;
+              return type === TransactionType.Income
             })
             .reduce((sum: number, t: any) => sum + (t.amount ?? 0), 0);
           const expenses = thisMonth
             .filter((t: any) => {
               const type = normalizeTransactionType(t.type);
-              return type === TransactionType.Expense || type === TransactionType.Debit;
+              return type === TransactionType.Expense
             })
             .reduce((sum: number, t: any) => sum + (t.amount ?? 0), 0);
           this.totalIncome.set(income);

@@ -8,6 +8,7 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { NotificationType } from './notificationType';
 import { ShowNotificationStudentDto } from './showNotificationStudentDto';
 
 
@@ -15,7 +16,7 @@ export interface ShowNotificationDto {
     id?: string;
     title?: string;
     message?: string;
-    type?: number;
+    type?: NotificationType;
     isActive?: boolean;
     createdAt?: string;
     tenantId?: string;
@@ -25,4 +26,7 @@ export interface ShowNotificationDto {
     userName?: string | null;
     notificationStudents?: Array<ShowNotificationStudentDto>;
 }
+export namespace ShowNotificationDto {
+}
+
 

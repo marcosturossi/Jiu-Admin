@@ -13,6 +13,7 @@ import { HttpHeaders }                                       from '@angular/comm
 import { Observable }                                        from 'rxjs';
 
 import { ApiFrequencyGetPageParameter } from '../model/models';
+import { ContractStatus } from '../model/models';
 import { CreateContractDTO } from '../model/models';
 import { PaginatedResultOfShowContractDTO } from '../model/models';
 import { ProblemDetails } from '../model/models';
@@ -44,7 +45,7 @@ export interface ContractServiceInterface {
      * @param orderBy 
      * @param orderByDescending 
      */
-    apiContractGet(status?: number, studentId?: string, feePlanId?: string, startDateFrom?: string, startDateTo?: string, endDateFrom?: string, endDateTo?: string, page?: ApiFrequencyGetPageParameter, pageSize?: ApiFrequencyGetPageParameter, orderBy?: string, orderByDescending?: boolean, extraHttpRequestParams?: any): Observable<PaginatedResultOfShowContractDTO>;
+    apiContractGet(status?: ContractStatus, studentId?: string, feePlanId?: string, startDateFrom?: string, startDateTo?: string, endDateFrom?: string, endDateTo?: string, page?: ApiFrequencyGetPageParameter, pageSize?: ApiFrequencyGetPageParameter, orderBy?: string, orderByDescending?: boolean, extraHttpRequestParams?: any): Observable<PaginatedResultOfShowContractDTO>;
 
     /**
      * 

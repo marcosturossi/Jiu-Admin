@@ -8,14 +8,18 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { NotificationType } from './notificationType';
 
 
 export interface CreateNotificationDto { 
     title?: string;
     message?: string;
-    type?: number;
+    type?: NotificationType;
     isActive?: boolean;
     expiresAt?: string | null;
     studentIds?: Array<string>;
 }
+export namespace CreateNotificationDto {
+}
+
 

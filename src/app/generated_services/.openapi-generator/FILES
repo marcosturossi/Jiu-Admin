@@ -54,12 +54,14 @@ model/apiAdminContractsSendRenewalWarningsPostDaysAheadParameter.ts
 model/apiFeePlanGetPriceMinParameter.ts
 model/apiFrequencyGetPageParameter.ts
 model/apiMedicalClearanceIdAttachmentUrlGetExpiryHoursParameter.ts
+model/asaasEnvironment.ts
 model/barChartDataDTO.ts
 model/birthdayGreetingsResultDTO.ts
 model/chargeResult.ts
 model/chargeStatus.ts
 model/chargeStatusConfirmedValue.ts
 model/chargeTransactionDTO.ts
+model/contractStatus.ts
 model/createAcademyDto.ts
 model/createBeltDTO.ts
 model/createBeltDTOOrderIndex.ts
@@ -76,7 +78,9 @@ model/createNotificationDto.ts
 model/createStudentDTO.ts
 model/createTransactionCategoryDTO.ts
 model/entityTagHeaderValue.ts
+model/feeStatus.ts
 model/fileResult.ts
+model/financialSummaryDTO.ts
 model/generateFinancialTransactionsResultDTO.ts
 model/markAsReadDto.ts
 model/medicalClearanceAttachmentResponseDto.ts
@@ -84,6 +88,7 @@ model/medicalClearanceAttachmentResponseDtoSize.ts
 model/models.ts
 model/monthlyNewStudentsDTO.ts
 model/notificationStatsDto.ts
+model/notificationType.ts
 model/paginatedResultOfShowAcademyDto.ts
 model/paginatedResultOfShowBeltDTO.ts
 model/paginatedResultOfShowContractDTO.ts
@@ -98,6 +103,7 @@ model/paginatedResultOfShowNoticeDto.ts
 model/paginatedResultOfShowStudentDTO.ts
 model/paginatedResultOfShowTransactionCategoryDTO.ts
 model/payFinancialTransactionDTO.ts
+model/paymentGatewayProvider.ts
 model/photoResponseDTO.ts
 model/problemDetails.ts
 model/problemDetailsStatus.ts
@@ -125,8 +131,10 @@ model/showStudentDTO.ts
 model/showTenantSettingsDto.ts
 model/showTransactionCategoryDTO.ts
 model/stringSegment.ts
+model/stripesEnum.ts
 model/studentsBirthDay.ts
 model/topStudentDTO.ts
+model/transactionType.ts
 model/updateAcademyDto.ts
 model/updateBeltDTO.ts
 model/updateContractStatusRequest.ts

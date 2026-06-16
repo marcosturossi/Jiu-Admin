@@ -8,12 +8,16 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { StripesEnum } from './stripesEnum';
 
 
 export interface UpdateGraduationDTO { 
     studentId: string;
     beltId: string;
     graduationDate: string;
-    stripes?: number;
+    stripes?: StripesEnum;
 }
+export namespace UpdateGraduationDTO {
+}
+
 

@@ -8,9 +8,13 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { ContractStatus } from './contractStatus';
 
 
 export interface UpdateContractStatusRequest { 
-    status: number;
+    status: ContractStatus;
 }
+export namespace UpdateContractStatusRequest {
+}
+
 

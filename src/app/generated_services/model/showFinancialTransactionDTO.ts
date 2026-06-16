@@ -9,6 +9,8 @@
  * Do not edit the class manually.
  */
 import { ApiFeePlanGetPriceMinParameter } from './apiFeePlanGetPriceMinParameter';
+import { TransactionType } from './transactionType';
+import { FeeStatus } from './feeStatus';
 import { ChargeStatusConfirmedValue } from './chargeStatusConfirmedValue';
 
 
@@ -23,16 +25,19 @@ export interface ShowFinancialTransactionDTO {
     externalChargeId?: string | null;
     dueDate?: string;
     studentId?: string;
-    type?: number;
-    transactionCategoryId?: string;
+    type?: TransactionType;
+    transactionCategoryId?: string | null;
     contractId?: string | null;
-    status?: number;
+    status?: FeeStatus;
     paidAt?: string | null;
     paidAmount?: ChargeStatusConfirmedValue | null;
     description?: string;
     amount?: ApiFeePlanGetPriceMinParameter;
     transactionDate?: string;
-    notes?: string;
+    notes?: string | null;
     reference?: string | null;
 }
+export namespace ShowFinancialTransactionDTO {
+}
+
 

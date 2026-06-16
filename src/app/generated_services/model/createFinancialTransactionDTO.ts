@@ -9,14 +9,16 @@
  * Do not edit the class manually.
  */
 import { ApiFeePlanGetPriceMinParameter } from './apiFeePlanGetPriceMinParameter';
+import { TransactionType } from './transactionType';
+import { FeeStatus } from './feeStatus';
 import { ChargeStatusConfirmedValue } from './chargeStatusConfirmedValue';
 
 
 export interface CreateFinancialTransactionDTO { 
-    type?: number;
-    transactionCategoryId?: string;
+    type?: TransactionType;
+    transactionCategoryId?: string | null;
     contractId?: string | null;
-    status?: number;
+    status?: FeeStatus;
     studentId?: string;
     paidAt?: string | null;
     paidAmount?: ChargeStatusConfirmedValue | null;
@@ -24,7 +26,10 @@ export interface CreateFinancialTransactionDTO {
     description?: string;
     amount?: ApiFeePlanGetPriceMinParameter;
     transactionDate?: string;
-    notes?: string;
+    notes?: string | null;
     reference?: string | null;
 }
+export namespace CreateFinancialTransactionDTO {
+}
+
 

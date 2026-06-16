@@ -9,6 +9,7 @@
  * Do not edit the class manually.
  */
 import { ApiFeePlanGetPriceMinParameter } from './apiFeePlanGetPriceMinParameter';
+import { ContractStatus } from './contractStatus';
 import { ApiFrequencyGetPageParameter } from './apiFrequencyGetPageParameter';
 
 
@@ -22,11 +23,14 @@ export interface ShowContractDTO {
     startDate?: string;
     endDate?: string;
     monthlyAmount?: ApiFeePlanGetPriceMinParameter;
-    status?: number;
+    status?: ContractStatus;
     notes?: string | null;
     createdAt?: string;
     paidFees?: ApiFrequencyGetPageParameter;
     pendingFees?: ApiFrequencyGetPageParameter;
     overdueFees?: ApiFrequencyGetPageParameter;
 }
+export namespace ShowContractDTO {
+}
+
 

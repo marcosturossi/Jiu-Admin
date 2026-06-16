@@ -24,8 +24,6 @@ function normalizeTransactionType(type: any): TransactionType | undefined {
   if (type === 0 || type === '0') return TransactionType.Income;
   if (type === 1 || type === '1') return TransactionType.Expense;
   // Handle other string enum values
-  if (type === 'Debit' || type === TransactionType.Debit) return TransactionType.Debit;
-  if (type === 'Credit' || type === TransactionType.Credit) return TransactionType.Credit;
   if (type === 'Refund' || type === TransactionType.Refund) return TransactionType.Refund;
   if (type === 'Adjustment' || type === TransactionType.Adjustment) return TransactionType.Adjustment;
   // Handle numeric values for new enum order (2-5)
@@ -127,7 +125,7 @@ export class CashflowChartComponent implements AfterViewInit, OnDestroy {
               .filter((t: any) => {
                 const d = new Date(t.transactionDate ?? '');
                 const type = normalizeTransactionType(t.type);
-                return (type === TransactionType.Income || type === TransactionType.Credit) && d.getFullYear() === m.year && d.getMonth() === m.month;
+                return (type === TransactionType.Income) && d.getFullYear() === m.year && d.getMonth() === m.month;
               })
               .reduce((sum: number, t: any) => sum + (t.amount ?? 0), 0)
           );
@@ -136,7 +134,7 @@ export class CashflowChartComponent implements AfterViewInit, OnDestroy {
               .filter((t: any) => {
                 const d = new Date(t.transactionDate ?? '');
                 const type = normalizeTransactionType(t.type);
-                return (type === TransactionType.Expense || type === TransactionType.Debit) && d.getFullYear() === m.year && d.getMonth() === m.month;
+                return (type === TransactionType.Expense) && d.getFullYear() === m.year && d.getMonth() === m.month;
               })
               .reduce((sum: number, t: any) => sum + (t.amount ?? 0), 0)
           );

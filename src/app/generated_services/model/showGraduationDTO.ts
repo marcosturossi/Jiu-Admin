@@ -9,6 +9,7 @@
  * Do not edit the class manually.
  */
 import { ShowBeltDTO } from './showBeltDTO';
+import { StripesEnum } from './stripesEnum';
 
 
 export interface ShowGraduationDTO { 
@@ -19,6 +20,9 @@ export interface ShowGraduationDTO {
     studentId: string;
     beltId: string;
     graduationDate: string;
-    stripes?: number;
+    stripes?: StripesEnum;
 }
+export namespace ShowGraduationDTO {
+}
+
 
