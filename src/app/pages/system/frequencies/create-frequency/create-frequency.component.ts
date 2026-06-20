@@ -51,7 +51,7 @@ export class CreateFrequencyComponent {
   constructor() {
     this.lessonSearchSubject.pipe(debounceTime(400), takeUntilDestroyed(this.destroyRef))
       .subscribe(term => this.loadLessons(term));
-    this.studentsService.apiStudentsGet(undefined, undefined, undefined, undefined, undefined, undefined, 1, 500).subscribe({
+    this.studentsService.apiStudentsGet(undefined, undefined, undefined, undefined, undefined, undefined, 1, 100).subscribe({
       next: result => {
         const students = result?.items ?? [];
         this.students.set(students);

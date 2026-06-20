@@ -12,7 +12,7 @@
 export const environment = {
   production: false,
   server: 'http://localhost:9080',
-  face_api: 'http://localhost:9080/api',
+  face_api: 'http://localhost:9080',
   keycloak: {
     url: 'http://localhost:8082',
     realm: 'platform-admin',

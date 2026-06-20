@@ -55,7 +55,6 @@ export class SidebarComponent implements OnInit, OnDestroy {
       groupIcon: 'bi bi-wallet2',
       items: [
         { route: '/system/finance-dashboard', label: 'Dashboard', icon: 'bi bi-bar-chart-line' },
-        { route: '/system/contracts', label: 'Contratos', icon: 'bi bi-file-earmark-text' },
         { route: '/system/monthly-fees', label: 'Mensalidades', icon: 'bi bi-credit-card' },
         { route: '/system/fee-plans', label: 'Planos', icon: 'bi bi-receipt' },
         { route: '/system/transactions', label: 'Transações', icon: 'bi bi-arrow-left-right' },
