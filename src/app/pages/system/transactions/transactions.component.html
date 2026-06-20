@@ -16,11 +16,13 @@
         <thead class="table-light">
           <tr>
             <th>Tipo</th>
+            <th>Aluno</th>
             <th>Categoria</th>
             <th>Descrição</th>
             <th>Valor</th>
-            <th>Data</th>
+            <th>Vencimento</th>
             <th>Referência</th>
+            <th>Status</th>
             <th class="text-center" style="width: 5rem">Ações</th>
           </tr>
         </thead>
@@ -35,15 +37,22 @@
                   {{ getTypeLabel(transaction.type) }}
                 </span>
               </td>
+              <td>{{ transaction.studentName || '—' }}</td>
               <td>{{ transaction.transactionCategoryName }}</td>
               <td class="desc-cell">{{ transaction.description || '—' }}</td>
               <td [class.amount-income]="isPositiveType(transaction.type)" [class.amount-expense]="isNegativeType(transaction.type)">
                 {{ getAmount(transaction) | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}
               </td>
-              <td>{{ transaction.transactionDate | date:'dd/MM/yyyy':'UTC' }}</td>
+              
+              <td>{{ transaction.dueDate | date:'dd/MM/yyyy':'UTC' }}</td>
               <td>{{ transaction.reference || '—' }}</td>
+              <td>{{ transaction.status }}</td>
               <td class="text-center">
-                <button type="button" class="btn btn-sm btn-outline-danger" (click)="delete(transaction)"><i class="bi bi-trash"></i></button>
+                @if(transaction.status !== 'Paid' && isPositiveType(transaction.type)) {
+                <button type="button" class="btn btn-sm btn-outline-primary me-1" (click)="paymentWithMoney(transaction)"><i class="bi bi-currency-dollar"></i></button>
+                }
+                <!-- <button type="button" class="btn btn-sm btn-outline-primary me-1" (click)="openEdit(transaction)"><i class="bi bi-pencil"></i></button> -->
+                <button type="button" class="btn btn-sm btn-outline-danger me-1" (click)="delete(transaction)"><i class="bi bi-trash"></i></button>
               </td>
             </tr>
           }
@@ -81,3 +90,46 @@
     </div>
   </div>
 }
+
+@if (openedEdit()) {
+  <div class="modal-backdrop-custom" (click)="openedEdit.set(false)"></div>
+  <div class="modal show d-block" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Editar Transação</h5>
+          <button type="button" class="btn-close" (click)="openedEdit.set(false)" aria-label="Fechar"></button>
+        </div>
+        <div class="modal-body">
+          <app-update-transaction
+            [categories]="categories()"
+            [transaction]="selectedTransaction()!"
+            (closeEvent)="openedEdit.set(false)"
+            (transactionUpdated)="onUpdated()"
+            (categorySearch)="onCategorySearch($event)" />
+        </div>
+      </div>
+    </div>
+  </div>
+}
+
+@if (openPaymentWithMoney()) {
+  <div class="modal-backdrop-custom" (click)="openPaymentWithMoney.set(false)"></div>
+  <div class="modal show d-block" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Informar Pagamento em Dinheiro</h5>
+          <button type="button" class="btn-close" (click)="openPaymentWithMoney.set(false)" aria-label="Fechar"></button>
+        </div>
+        <div class="modal-body">
+          <app-payment-with-money
+            (transactionUpdated)="onPaymentWithMoney()"
+            [transaction]="selectedTransaction()!"
+            (closeEvent)="openPaymentWithMoney.set(false)" />
+        </div>
+      </div>
+    </div>
+  </div>
+}
+

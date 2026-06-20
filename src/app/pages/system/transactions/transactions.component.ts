@@ -11,6 +11,8 @@ import { FilterField, FilterOutput } from '../../../shared/filter/filter.types';
 import { PaginationComponent } from '../../../shared/pagination/pagination.component';
 import { CreateTransactionComponent } from './create-transaction/create-transaction.component';
 import { PageResult } from '../../../utils/page-result';
+import { UpdateTransactionComponent } from './update-transaction/update-transaction.component';
+import { PaymentWithMoneyComponent } from './payment-with-money/payment-with-money.component';
 
 @Component({
   selector: 'app-transactions',
@@ -21,7 +23,9 @@ import { PageResult } from '../../../utils/page-result';
     FilterComponent,
     PaginationComponent,
     CreateTransactionComponent,
-  ],
+    UpdateTransactionComponent,
+    PaymentWithMoneyComponent,
+],
   templateUrl: './transactions.component.html',
   styleUrl: './transactions.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -35,6 +39,9 @@ export class TransactionsComponent {
   protected readonly isLoading = signal(false);
   protected readonly items = signal<PageResult<ShowFinancialTransactionDTO> | null>(null);
   protected readonly openedCreate = signal(false);
+  protected readonly openedEdit = signal(false);
+  protected readonly openPaymentWithMoney = signal(false);
+  protected readonly selectedTransaction = signal<ShowFinancialTransactionDTO | null>(null);
   protected readonly currentPage = signal(1);
   protected readonly pageSize = signal(10);
   protected readonly filterType = signal<string | undefined>(undefined);
@@ -97,6 +104,28 @@ export class TransactionsComponent {
       case 3: case TransactionType.Adjustment:
       default: return 'secondary';
     }
+  }
+
+  protected openEdit(transaction: ShowFinancialTransactionDTO): void {
+    this.selectedTransaction.set(transaction);
+    this.openedEdit.set(true);
+  }
+
+  protected onUpdated(): void {
+    this.openedEdit.set(false);
+    this.selectedTransaction.set(null);
+    this.load();
+  }
+
+  protected paymentWithMoney(transaction: ShowFinancialTransactionDTO): void {
+    this.selectedTransaction.set(transaction);
+    this.openPaymentWithMoney.set(true);
+  }
+
+  protected onPaymentWithMoney(): void {
+    this.openPaymentWithMoney.set(false);
+    this.selectedTransaction.set(null);
+    this.load();
   }
 
   protected getTypeLabel(type?: number | string): string {

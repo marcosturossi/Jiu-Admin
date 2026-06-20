@@ -55,7 +55,6 @@ export class SidebarComponent implements OnInit, OnDestroy {
       groupIcon: 'bi bi-wallet2',
       items: [
         { route: '/system/finance-dashboard', label: 'Dashboard', icon: 'bi bi-bar-chart-line' },
-        { route: '/system/monthly-fees', label: 'Mensalidades', icon: 'bi bi-credit-card' },
         { route: '/system/fee-plans', label: 'Planos', icon: 'bi bi-receipt' },
         { route: '/system/transactions', label: 'Transações', icon: 'bi bi-arrow-left-right' },
         { route: '/system/transaction-categories', label: 'Categorias', icon: 'bi bi-tags' },
@@ -77,13 +76,13 @@ export class SidebarComponent implements OnInit, OnDestroy {
         { route: '/system/face-recognition', label: 'Reconhecimento', icon: 'bi bi-person-badge' },
       ]
     },
-    {
-      title: 'Configurações',
-      groupIcon: 'bi bi-gear',
-      items: [
-        { route: '/system/academies', label: 'Academias', icon: 'bi bi-building' },
-      ]
-    },
+    // {
+    //   title: 'Configurações',
+    //   groupIcon: 'bi bi-gear',
+    //   items: [
+    //     { route: '/system/academies', label: 'Academias', icon: 'bi bi-building' },
+    //   ]
+    // },
   ];
 
   constructor() {

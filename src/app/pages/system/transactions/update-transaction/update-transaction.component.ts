@@ -32,8 +32,6 @@ export class UpdateTransactionComponent {
   protected readonly selectedCategory = signal<SearchOption | null>(null);
 
   protected readonly typeOptions = [
-    { label: 'Débito', value: TransactionType.Debit },
-    { label: 'Crédito', value: TransactionType.Credit },
     { label: 'Reembolso', value: TransactionType.Refund },
     { label: 'Ajuste', value: TransactionType.Adjustment },
     { label: 'Receita', value: TransactionType.Income },
