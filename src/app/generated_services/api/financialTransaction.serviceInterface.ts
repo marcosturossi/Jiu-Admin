@@ -18,7 +18,6 @@ import { ChargeResult } from '../model/models';
 import { ChargeStatus } from '../model/models';
 import { ChargeTransactionDTO } from '../model/models';
 import { CreateFinancialTransactionDTO } from '../model/models';
-import { FileResult } from '../model/models';
 import { FinancialSummaryDTO } from '../model/models';
 import { PaginatedResultOfShowFinancialTransactionDTO } from '../model/models';
 import { PayFinancialTransactionDTO } from '../model/models';
@@ -125,7 +124,7 @@ export interface FinancialTransactionServiceInterface {
      * 
      * @param id 
      */
-    apiFinancialTransactionIdReceiptPdfGet(id: string, extraHttpRequestParams?: any): Observable<FileResult>;
+    apiFinancialTransactionIdReceiptPdfGet(id: string, extraHttpRequestParams?: any): Observable<string>;
 
     /**
      * 

@@ -48,6 +48,14 @@
               <td>{{ transaction.reference || '—' }}</td>
               <td>{{ transaction.status }}</td>
               <td class="text-center">
+                @if (transaction.status === "Paid") {
+                  <button type="button" class="btn btn-sm btn-outline-secondary" title="Baixar Recibo" (click)="getPdfReceipt(transaction)" [disabled]="isDownloading()">
+                    @if (isDownloading()) {
+                      <span class="spinner-border spinner-border-sm" role="status"></span>
+                    } @else {
+                      <i class="bi bi-file-earmark-pdf"></i>
+                    }
+                  </button>}
                 @if(transaction.status !== 'Paid' && isPositiveType(transaction.type)) {
                 <button type="button" class="btn btn-sm btn-outline-primary me-1" (click)="paymentWithMoney(transaction)"><i class="bi bi-currency-dollar"></i></button>
                 }

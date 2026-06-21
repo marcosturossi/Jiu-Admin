@@ -30,6 +30,14 @@ export interface AdminFinancialTransactionServiceInterface {
      * @param year 
      * @param month 
      */
+    apiAdminMonthlyFeesGenerateChargesPost(year?: ApiFrequencyGetPageParameter, month?: ApiFrequencyGetPageParameter, extraHttpRequestParams?: any): Observable<GenerateFinancialTransactionsResultDTO>;
+
+    /**
+     * 
+     * 
+     * @param year 
+     * @param month 
+     */
     apiAdminMonthlyFeesGeneratePost(year?: ApiFrequencyGetPageParameter, month?: ApiFrequencyGetPageParameter, extraHttpRequestParams?: any): Observable<GenerateFinancialTransactionsResultDTO>;
 
 }

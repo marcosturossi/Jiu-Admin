@@ -30,8 +30,6 @@ import { ChargeTransactionDTO } from '../model/chargeTransactionDTO';
 // @ts-ignore
 import { CreateFinancialTransactionDTO } from '../model/createFinancialTransactionDTO';
 // @ts-ignore
-import { FileResult } from '../model/fileResult';
-// @ts-ignore
 import { FinancialSummaryDTO } from '../model/financialSummaryDTO';
 // @ts-ignore
 import { PaginatedResultOfShowFinancialTransactionDTO } from '../model/paginatedResultOfShowFinancialTransactionDTO';
@@ -793,10 +791,10 @@ export class FinancialTransactionService implements FinancialTransactionServiceI
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiFinancialTransactionIdReceiptPdfGet(id: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<FileResult>;
-    public apiFinancialTransactionIdReceiptPdfGet(id: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<FileResult>>;
-    public apiFinancialTransactionIdReceiptPdfGet(id: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<FileResult>>;
-    public apiFinancialTransactionIdReceiptPdfGet(id: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public apiFinancialTransactionIdReceiptPdfGet(id: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/pdf' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<string>;
+    public apiFinancialTransactionIdReceiptPdfGet(id: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/pdf' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<string>>;
+    public apiFinancialTransactionIdReceiptPdfGet(id: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/pdf' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<string>>;
+    public apiFinancialTransactionIdReceiptPdfGet(id: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/pdf' | 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         if (id === null || id === undefined) {
             throw new Error('Required parameter id was null or undefined when calling apiFinancialTransactionIdReceiptPdfGet.');
         }
@@ -807,6 +805,7 @@ export class FinancialTransactionService implements FinancialTransactionServiceI
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
+                'application/pdf',
                 'application/json'
             ];
             localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
@@ -838,7 +837,7 @@ export class FinancialTransactionService implements FinancialTransactionServiceI
         }
 
         let localVarPath = `/api/FinancialTransaction/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: "uuid"})}/receipt/pdf`;
-        return this.httpClient.request<FileResult>('get', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<string>('get', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 responseType: <any>responseType_,

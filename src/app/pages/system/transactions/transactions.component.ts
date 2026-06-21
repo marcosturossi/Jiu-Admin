@@ -1,11 +1,13 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { DatePipe, CurrencyPipe } from '@angular/common';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { FinancialTransactionService } from '../../../generated_services/api/financialTransaction.service';
 import { TransactionCategoryService } from '../../../generated_services/api/transactionCategory.service';
 import { ShowFinancialTransactionDTO, ShowTransactionCategoryDTO } from '../../../generated_services';
 import { TransactionType } from '../../../generated_services/model/transactionType';
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
+import { environment } from '../../../enviroments/environment';
 import { FilterComponent } from '../../../shared/filter/filter.component';
 import { FilterField, FilterOutput } from '../../../shared/filter/filter.types';
 import { PaginationComponent } from '../../../shared/pagination/pagination.component';
@@ -31,12 +33,14 @@ import { PaymentWithMoneyComponent } from './payment-with-money/payment-with-mon
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TransactionsComponent {
+  private readonly http = inject(HttpClient);
   private readonly transactionService = inject(FinancialTransactionService);
   private readonly categoryService = inject(TransactionCategoryService);
   private readonly subnavService = inject(SubnavService);
   private readonly ns = inject(NotificationService);
 
   protected readonly isLoading = signal(false);
+  protected readonly isDownloading = signal(false);
   protected readonly items = signal<PageResult<ShowFinancialTransactionDTO> | null>(null);
   protected readonly openedCreate = signal(false);
   protected readonly openedEdit = signal(false);
@@ -93,6 +97,35 @@ export class TransactionsComponent {
         this.isLoading.set(false);
         this.ns.showError('Erro', 'Não foi possível carregar as transações.');
       },
+    });
+  }
+
+  protected getPdfReceipt(fee: ShowFinancialTransactionDTO): void {
+    if (!fee.id) {
+      this.ns.showWarning('Atenção', 'Transação sem identificação para gerar recibo.');
+      return;
+    }
+    this.isDownloading.set(true);
+
+    const url = `${environment.server}/api/FinancialTransaction/${fee.id}/receipt/pdf`;
+    this.http.get(url, {
+      responseType: 'blob',
+      headers: new HttpHeaders({ Accept: 'application/pdf' }),
+    }).subscribe({
+      next: (blob: Blob) => {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `recibo-${fee.id}.pdf`;
+        a.click();
+        URL.revokeObjectURL(url);
+      },
+      error: () => {
+        this.ns.showError('Erro', 'Não foi possível baixar o recibo.');
+      },
+      complete: () => {
+        this.isDownloading.set(false);
+      }
     });
   }
 

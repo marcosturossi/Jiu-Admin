@@ -20,6 +20,7 @@ export interface ShowStudentDTO {
     totalFrequencies?: ApiFrequencyGetPageParameter;
     totalGraduations?: ApiFrequencyGetPageParameter;
     currentBelt?: string | null;
+    fullName?: string | null;
     userName: string;
     email: string;
     phoneNumber?: string | null;
