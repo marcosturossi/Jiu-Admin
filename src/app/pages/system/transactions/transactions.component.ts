@@ -15,6 +15,7 @@ import { CreateTransactionComponent } from './create-transaction/create-transact
 import { PageResult } from '../../../utils/page-result';
 import { UpdateTransactionComponent } from './update-transaction/update-transaction.component';
 import { PaymentWithMoneyComponent } from './payment-with-money/payment-with-money.component';
+import { RefundTransactionComponent } from './refund-transaction/refund-transaction.component';
 
 @Component({
   selector: 'app-transactions',
@@ -27,6 +28,7 @@ import { PaymentWithMoneyComponent } from './payment-with-money/payment-with-mon
     CreateTransactionComponent,
     UpdateTransactionComponent,
     PaymentWithMoneyComponent,
+    RefundTransactionComponent,
 ],
   templateUrl: './transactions.component.html',
   styleUrl: './transactions.component.scss',
@@ -44,7 +46,8 @@ export class TransactionsComponent {
   protected readonly items = signal<PageResult<ShowFinancialTransactionDTO> | null>(null);
   protected readonly openedCreate = signal(false);
   protected readonly openedEdit = signal(false);
-  protected readonly openPaymentWithMoney = signal(false);
+  protected readonly openedRefund = signal(false);
+  protected readonly openedPaymentWithMoney = signal(false);
   protected readonly selectedTransaction = signal<ShowFinancialTransactionDTO | null>(null);
   protected readonly currentPage = signal(1);
   protected readonly pageSize = signal(10);
@@ -144,6 +147,17 @@ export class TransactionsComponent {
     this.openedEdit.set(true);
   }
 
+  protected openRefund(transaction: ShowFinancialTransactionDTO): void {
+    this.selectedTransaction.set(transaction);
+    this.openedRefund.set(true);
+  }
+
+  protected onRefund(): void {
+    this.openedRefund.set(false);
+    this.selectedTransaction.set(null);
+    this.load();
+  }
+
   protected onUpdated(): void {
     this.openedEdit.set(false);
     this.selectedTransaction.set(null);
@@ -152,11 +166,11 @@ export class TransactionsComponent {
 
   protected paymentWithMoney(transaction: ShowFinancialTransactionDTO): void {
     this.selectedTransaction.set(transaction);
-    this.openPaymentWithMoney.set(true);
+    this.openedPaymentWithMoney.set(true);
   }
 
   protected onPaymentWithMoney(): void {
-    this.openPaymentWithMoney.set(false);
+    this.openedPaymentWithMoney.set(false);
     this.selectedTransaction.set(null);
     this.load();
   }
@@ -170,6 +184,10 @@ export class TransactionsComponent {
 
       default: return '—';
     }
+  }
+
+  protected isRefundable(transaction: ShowFinancialTransactionDTO): boolean {
+    return transaction.type === TransactionType.Income && transaction.status === 'Paid';
   }
 
   protected isPositiveType(type?: number | string): boolean {

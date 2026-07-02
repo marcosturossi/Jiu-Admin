@@ -23,7 +23,7 @@
             <th>Vencimento</th>
             <th>Referência</th>
             <th>Status</th>
-            <th class="text-center" style="width: 5rem">Ações</th>
+            <th class="text-center" style="width: 10rem">Ações</th>
           </tr>
         </thead>
         <tbody>
@@ -55,7 +55,10 @@
                     } @else {
                       <i class="bi bi-file-earmark-pdf"></i>
                     }
-                  </button>}
+                  </button>
+                  @if (isRefundable(transaction)) {
+                    <button type="button" class="btn btn-sm btn-outline-warning me-1" (click)="openRefund(transaction)"><i class="bi bi-arrow-counterclockwise"></i></button>}
+                  }
                 @if(transaction.status !== 'Paid' && isPositiveType(transaction.type)) {
                 <button type="button" class="btn btn-sm btn-outline-primary me-1" (click)="paymentWithMoney(transaction)"><i class="bi bi-currency-dollar"></i></button>
                 }
@@ -121,20 +124,40 @@
   </div>
 }
 
-@if (openPaymentWithMoney()) {
-  <div class="modal-backdrop-custom" (click)="openPaymentWithMoney.set(false)"></div>
+@if (openedPaymentWithMoney()) {
+  <div class="modal-backdrop-custom" (click)="openedPaymentWithMoney.set(false)"></div>
   <div class="modal show d-block" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title">Informar Pagamento em Dinheiro</h5>
-          <button type="button" class="btn-close" (click)="openPaymentWithMoney.set(false)" aria-label="Fechar"></button>
+          <button type="button" class="btn-close" (click)="openedPaymentWithMoney.set(false)" aria-label="Fechar"></button>
         </div>
         <div class="modal-body">
           <app-payment-with-money
             (transactionUpdated)="onPaymentWithMoney()"
             [transaction]="selectedTransaction()!"
-            (closeEvent)="openPaymentWithMoney.set(false)" />
+            (closeEvent)="openedPaymentWithMoney.set(false)" />
+        </div>
+      </div>
+    </div>
+  </div>
+}
+
+@if (openedRefund()) {
+  <div class="modal-backdrop-custom" (click)="openedRefund.set(false)"></div>
+  <div class="modal show d-block" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Informar Reembolso</h5>
+          <button type="button" class="btn-close" (click)="openedRefund.set(false)" aria-label="Fechar"></button>
+        </div>
+        <div class="modal-body">
+          <app-refund-transaction
+            (transactionUpdated)="onRefund()"
+            [transaction]="selectedTransaction()!"
+            (closeEvent)="openedRefund.set(false)" />
         </div>
       </div>
     </div>
