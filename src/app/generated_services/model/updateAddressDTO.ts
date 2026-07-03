@@ -10,10 +10,14 @@
  */
 
 
-export interface CreateContractDTO { 
+export interface UpdateAddressDTO { 
+    street?: string | null;
+    number: string | null;
+    complement?: string | null;
+    neighborhood: string | null;
+    city: string | null;
+    state: string | null;
+    zipCode: string | null;
     personId?: string;
-    feePlanId?: string;
-    startDate?: string;
-    notes?: string | null;
 }
 

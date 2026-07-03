@@ -63,6 +63,7 @@ model/chargeStatusConfirmedValue.ts
 model/chargeTransactionDTO.ts
 model/contractStatus.ts
 model/createAcademyDto.ts
+model/createAddressDTO.ts
 model/createBeltDTO.ts
 model/createBeltDTOOrderIndex.ts
 model/createContractDTO.ts
@@ -75,6 +76,7 @@ model/createLessonDTO.ts
 model/createMedicalClearanceDto.ts
 model/createNoticeDto.ts
 model/createNotificationDto.ts
+model/createPersonRelationshipDTO.ts
 model/createStudentDTO.ts
 model/createTransactionCategoryDTO.ts
 model/entityTagHeaderValue.ts
@@ -108,6 +110,7 @@ model/photoResponseDTO.ts
 model/problemDetails.ts
 model/problemDetailsStatus.ts
 model/publicAcademyDto.ts
+model/relationshipType.ts
 model/renewalWarningsResultDTO.ts
 model/series.ts
 model/seriesDataInner.ts
@@ -136,6 +139,7 @@ model/studentsBirthDay.ts
 model/topStudentDTO.ts
 model/transactionType.ts
 model/updateAcademyDto.ts
+model/updateAddressDTO.ts
 model/updateBeltDTO.ts
 model/updateContractStatusRequest.ts
 model/updateFeePlanDTO.ts
@@ -146,6 +150,7 @@ model/updateLessonDTO.ts
 model/updateMedicalClearanceDto.ts
 model/updateNoticeDto.ts
 model/updateNotificationDto.ts
+model/updatePersonRelationshipDTO.ts
 model/updateStudentDTO.ts
 model/updateTransactionCategoryDTO.ts
 model/uploadPhotoBase64DTO.ts

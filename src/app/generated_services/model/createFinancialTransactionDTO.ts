@@ -19,7 +19,7 @@ export interface CreateFinancialTransactionDTO {
     transactionCategoryId?: string | null;
     contractId?: string | null;
     status?: FeeStatus;
-    studentId?: string;
+    personId?: string;
     paidAt?: string | null;
     paidAmount?: ChargeStatusConfirmedValue | null;
     dueDate?: string;

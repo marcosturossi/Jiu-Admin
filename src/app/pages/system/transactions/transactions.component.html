@@ -37,7 +37,7 @@
                   {{ getTypeLabel(transaction.type) }}
                 </span>
               </td>
-              <td>{{ transaction.studentName || '—' }}</td>
+              <td>{{ transaction.personName || '—' }}</td>
               <td>{{ transaction.transactionCategoryName }}</td>
               <td class="desc-cell">{{ transaction.description || '—' }}</td>
               <td [class.amount-income]="isPositiveType(transaction.type)" [class.amount-expense]="isNegativeType(transaction.type)">

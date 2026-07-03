@@ -13,7 +13,6 @@ import { ApiFrequencyGetPageParameter } from './apiFrequencyGetPageParameter';
 
 export interface ShowStudentDTO { 
     id?: string;
-    preferredUsername?: string | null;
     photoUrl?: string | null;
     createdAt?: string;
     lastLoginAt?: string | null;

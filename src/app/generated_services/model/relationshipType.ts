@@ -10,10 +10,11 @@
  */
 
 
-export interface CreateContractDTO { 
-    personId?: string;
-    feePlanId?: string;
-    startDate?: string;
-    notes?: string | null;
-}
+export type RelationshipType = 'Mother' | 'Father' | 'LegalGuardian';
+
+export const RelationshipType = {
+    Mother: 'Mother' as RelationshipType,
+    Father: 'Father' as RelationshipType,
+    LegalGuardian: 'LegalGuardian' as RelationshipType
+};
 

@@ -116,7 +116,7 @@ export class CreatePersonsComponent {
         this.students.set(students);
         this.studentOptions.set(students.map(s => ({
           id: s.id ?? '',
-          label: `${s.firstName} ${s.lastName}${s.preferredUsername || s.userName ? ' (' + (s.preferredUsername || s.userName) + ')' : ''}`,
+          label: `${s.firstName} ${s.lastName}${s.userName ? ' (' + s.userName + ')' : ''}`,
         })));
       },
       error: () => this.ns.showError('Erro ao Carregar Alunos', 'Não foi possível carregar a lista de alunos ativos.')

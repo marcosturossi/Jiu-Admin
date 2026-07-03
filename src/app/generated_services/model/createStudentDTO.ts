@@ -8,10 +8,13 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { CreateAddressDTO } from './createAddressDTO';
+import { CreatePersonRelationshipDTO } from './createPersonRelationshipDTO';
 
 
 export interface CreateStudentDTO { 
-    preferredUsername?: string | null;
+    addresses?: Array<CreateAddressDTO>;
+    relationships?: Array<CreatePersonRelationshipDTO>;
     userName: string;
     email: string;
     phoneNumber?: string | null;

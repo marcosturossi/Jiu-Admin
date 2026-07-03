@@ -1,6 +1,6 @@
 <div>
     <p><span class="fw-bold">Categoria</span>: {{transaction().transactionCategoryName || "-"}}</p>
-    <p><span class="fw-bold">Aluno</span>: {{transaction().studentName || "-"}}</p>
+    <p><span class="fw-bold">Aluno</span>: {{transaction().personName || "-"}}</p>
     <p><span class="fw-bold">Cobrança Ativa</span>: {{ transaction().externalChargeId != null ? "Sim" : "Não" }}</p>
     <p><span class="fw-bold">Data de Vencimento</span>: {{transaction().dueDate || "-"}}</p>
     <p><span class="fw-bold">Tipo</span>: {{getTypeLabel(transaction().type)}}</p>

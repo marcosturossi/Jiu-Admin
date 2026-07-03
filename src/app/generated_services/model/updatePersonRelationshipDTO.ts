@@ -8,12 +8,15 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { RelationshipType } from './relationshipType';
 
 
-export interface CreateContractDTO { 
+export interface UpdatePersonRelationshipDTO { 
+    relationshipType: RelationshipType | null;
+    relatedPersonId?: string | null;
     personId?: string;
-    feePlanId?: string;
-    startDate?: string;
-    notes?: string | null;
 }
+export namespace UpdatePersonRelationshipDTO {
+}
+
 

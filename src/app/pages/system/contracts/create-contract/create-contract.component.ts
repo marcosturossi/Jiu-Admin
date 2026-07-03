@@ -68,7 +68,7 @@ export class CreateContractComponent {
 
     this.isSaving.set(true);
     this.contractService
-      .apiContractPost({ studentId: raw.studentId!, feePlanId: raw.feePlanId!, startDate, notes: raw.notes || null })
+      .apiContractPost({ personId: raw.studentId!, feePlanId: raw.feePlanId!, startDate, notes: raw.notes || null })
       .subscribe({
         next: (result: ShowContractDTO) => {
           this.isSaving.set(false);

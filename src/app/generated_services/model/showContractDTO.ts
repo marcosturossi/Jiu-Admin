@@ -15,8 +15,8 @@ import { ApiFrequencyGetPageParameter } from './apiFrequencyGetPageParameter';
 
 export interface ShowContractDTO { 
     id?: string;
-    studentId?: string;
-    studentName?: string | null;
+    personId?: string;
+    personName?: string | null;
     feePlanId?: string;
     feePlanName?: string;
     feePlanMonthDuration?: ApiFrequencyGetPageParameter;

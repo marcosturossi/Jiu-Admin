@@ -44,7 +44,6 @@ export class UpdateStudentComponent {
         cpf: s.cpf ?? null,
         birthDay: s.birthDay ?? null,
         isActive: s.isActive,
-        preferredUsername: s.preferredUsername ?? '',
       });
     });
   }
