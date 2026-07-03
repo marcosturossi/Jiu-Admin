@@ -42,6 +42,8 @@ api/public.service.ts
 api/public.serviceInterface.ts
 api/students.service.ts
 api/students.serviceInterface.ts
+api/supplier.service.ts
+api/supplier.serviceInterface.ts
 api/tenantSettings.service.ts
 api/tenantSettings.serviceInterface.ts
 api/transactionCategory.service.ts
@@ -78,6 +80,7 @@ model/createNoticeDto.ts
 model/createNotificationDto.ts
 model/createPersonRelationshipDTO.ts
 model/createStudentDTO.ts
+model/createSupplierDTO.ts
 model/createTransactionCategoryDTO.ts
 model/entityTagHeaderValue.ts
 model/feeStatus.ts
@@ -103,6 +106,7 @@ model/paginatedResultOfShowLessonDTO.ts
 model/paginatedResultOfShowMedicalClearanceDto.ts
 model/paginatedResultOfShowNoticeDto.ts
 model/paginatedResultOfShowStudentDTO.ts
+model/paginatedResultOfShowSupplierDTO.ts
 model/paginatedResultOfShowTransactionCategoryDTO.ts
 model/payFinancialTransactionDTO.ts
 model/paymentGatewayProvider.ts
@@ -131,6 +135,7 @@ model/showNotificationDto.ts
 model/showNotificationStudentDto.ts
 model/showRealmInfoDto.ts
 model/showStudentDTO.ts
+model/showSupplierDTO.ts
 model/showTenantSettingsDto.ts
 model/showTransactionCategoryDTO.ts
 model/stringSegment.ts
@@ -152,6 +157,7 @@ model/updateNoticeDto.ts
 model/updateNotificationDto.ts
 model/updatePersonRelationshipDTO.ts
 model/updateStudentDTO.ts
+model/updateSupplierDTO.ts
 model/updateTransactionCategoryDTO.ts
 model/uploadPhotoBase64DTO.ts
 model/upsertTenantSettingsDto.ts
