@@ -8,6 +8,8 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { ShowAddressDTO } from './showAddressDTO';
+import { ShowPersonRelationshipDTO } from './showPersonRelationshipDTO';
 import { ApiFrequencyGetPageParameter } from './apiFrequencyGetPageParameter';
 
 
@@ -16,6 +18,8 @@ export interface ShowStudentDTO {
     photoUrl?: string | null;
     createdAt?: string;
     lastLoginAt?: string | null;
+    addresses?: Array<ShowAddressDTO>;
+    relationships?: Array<ShowPersonRelationshipDTO>;
     totalFrequencies?: ApiFrequencyGetPageParameter;
     totalGraduations?: ApiFrequencyGetPageParameter;
     currentBelt?: string | null;

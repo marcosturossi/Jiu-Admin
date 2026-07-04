@@ -10,6 +10,8 @@ import { PaginationComponent } from '../../../shared/pagination/pagination.compo
 import { PageResult } from '../../../utils/page-result';
 import { CreateStudentComponent } from './create-student/create-student.component';
 import { UpdateStudentComponent } from './update-student/update-student.component';
+import { RouterOutlet } from '@angular/router';
+import {Router, ActivatedRoute} from '@angular/router';
 
 @Component({
   selector: 'app-students',
@@ -19,7 +21,8 @@ import { UpdateStudentComponent } from './update-student/update-student.componen
     PaginationComponent,
     CreateStudentComponent,
     UpdateStudentComponent,
-  ],
+    RouterOutlet
+],
   templateUrl: './students.component.html',
   styleUrl: './students.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -28,6 +31,8 @@ export class StudentsComponent {
   private readonly studentsService = inject(StudentsService);
   private readonly subnavService = inject(SubnavService);
   private readonly notificationService = inject(NotificationService);
+  private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
 
   protected readonly isLoading = signal(false);
   protected readonly items = signal<PageResult<ShowStudentDTO> | null>(null);
@@ -79,6 +84,11 @@ export class StudentsComponent {
         this.notificationService.showError('Erro de Carregamento', 'Não foi possível carregar a lista de alunos.');
       },
     });
+  }
+
+  protected navigateToDetail(id: string|undefined): void {
+    console.log('Navigating to student details with ID:', id);
+    this.router.navigate(['details', id], { relativeTo: this.route });
   }
 
   protected onPageChange(page: number): void { this.currentPage.set(page); this.load(); }

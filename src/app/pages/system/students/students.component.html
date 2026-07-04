@@ -1,89 +1,77 @@
+<router-outlet/>
 <section class="page-section">
   <div class="page-toolbar">
-    <app-filter [placeholder]="'Buscar por nome do aluno'" [fields]="filterFields" (filterChange)="onFilterChange($event)" />
-    <button type="button" class="btn btn-primary" (click)="openCreate()"><i class="bi bi-plus-lg me-1"></i>Novo Aluno</button>
+    <app-filter [placeholder]="'Buscar por nome do aluno'" [fields]="filterFields"
+      (filterChange)="onFilterChange($event)" />
+    <button type="button" class="btn btn-primary" (click)="openCreate()"><i class="bi bi-plus-lg me-1"></i>Novo
+      Aluno</button>
   </div>
 
   @if (isLoading()) {
-    <div class="d-flex justify-content-center py-5">
-      <div class="spinner-border text-secondary" role="status"><span class="visually-hidden">Carregando...</span></div>
-    </div>
+  <div class="d-flex justify-content-center py-5">
+    <div class="spinner-border text-secondary" role="status"><span class="visually-hidden">Carregando...</span></div>
+  </div>
   } @else {
-    <div class="table-responsive">
-      <table class="table table-hover table-sm align-middle">
-        <thead class="table-light">
-          <tr>
-            <th>Nome</th>
-            <th>Graduação</th>
-            <th>Aulas</th>
-            <th>Aniversário</th>
-            <th>Último login</th>
-            <th class="text-center" style="width: 8rem">Ações</th>
-          </tr>
-        </thead>
-        <tbody>
-          @if ((items()?.items ?? []).length === 0) {
-            <tr><td colspan="6" class="text-center py-5 text-muted">Nenhum registro encontrado.</td></tr>
-          }
-          @for (student of items()?.items ?? []; track student.id) {
-            <tr>
-              <td>{{ student.firstName }} {{ student.lastName }}</td>
-              <td><span class="badge bg-secondary">{{ student.currentBelt }}</span></td>
-              <td><span class="badge bg-info text-dark">{{ student.totalFrequencies }}</span></td>
-              <td>{{ student.birthDay | date:'dd/MM/yyyy':'UTC' }}</td>
-              <td>{{ student.lastLoginAt | date:'dd/MM/yyyy HH:mm' }}</td>
-              <td class="text-center">
-                <button type="button" class="btn btn-sm btn-outline-info" (click)="openEdit(student)"><i class="bi bi-pencil"></i></button>
-                <button type="button" class="btn btn-sm btn-outline-danger" (click)="delete(student)"><i class="bi bi-trash"></i></button>
-              </td>
-            </tr>
-          }
-        </tbody>
-      </table>
+  <div class="row">
+    @for (student of items()?.items ?? []; track student.id){
+    <div class="card col-12 col-md-6 col-lg-4 mb-3 click" (click)="navigateToDetail(student.id)">
+        <div class="card-body">
+            <h5 class="card-title text-center">{{ student.firstName }} {{ student.lastName }}</h5>
+            <div class="row">
+              <p class="card-text text-left col-xxl-7 col-xl-12"><span class="fw-bold">Email:</span> {{ student.email }}</p>
+              <p class="card-text text-left col-xxl-5 col-xl-12"><span class="fw-bold">Telefone:</span> {{ student.phoneNumber ?? '-' }}</p>
+            </div>
+            <div class="row">
+            <p class="card-text text-left col-lg-6 col-md-12"><span class="fw-bold">Ativo:</span> {{ student.isActive ? 'Sim' : 'Não' }}</p>
+            <p class="card-text text-right col-lg-6 col-md-12"><span class="fw-bold">Criado em:</span> {{ student.createdAt ? (student.createdAt | date:'dd/MM/yyyy HH:mm') : '-' }}</p>
+            <div class="text-center">
+            </div>
+          </div>
+        </div>
     </div>
+    }
+  </div>
+
   }
 
-  <app-pagination
-    [currentPage]="currentPage()"
-    [totalPages]="items()?.totalPages ?? 1"
-    [pageSize]="pageSize()"
-    [totalItems]="items()?.totalCount ?? 0"
-    (pageChange)="onPageChange($event)"
+  <app-pagination [currentPage]="currentPage()" [totalPages]="items()?.totalPages ?? 1" [pageSize]="pageSize()"
+    [totalItems]="items()?.totalCount ?? 0" (pageChange)="onPageChange($event)"
     (pageSizeChange)="onPageSizeChange($event)" />
 </section>
 
 @if (openedCreate()) {
-  <div class="modal-backdrop-custom" (click)="openedCreate.set(false)"></div>
-  <div class="modal show d-block" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title">Novo Aluno</h5>
-          <button type="button" class="btn-close" (click)="openedCreate.set(false)" aria-label="Fechar"></button>
-        </div>
-        <div class="modal-body">
-          <app-create-student (closeEvent)="openedCreate.set(false)" (studentCreated)="onCreated()" />
-        </div>
+<div class="modal-backdrop-custom" (click)="openedCreate.set(false)"></div>
+<div class="modal show d-block" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Novo Aluno</h5>
+        <button type="button" class="btn-close" (click)="openedCreate.set(false)" aria-label="Fechar"></button>
+      </div>
+      <div class="modal-body">
+        <app-create-student (closeEvent)="openedCreate.set(false)" (studentCreated)="onCreated()" />
       </div>
     </div>
   </div>
+</div>
 }
 
 @if (openedUpdate()) {
-  <div class="modal-backdrop-custom" (click)="openedUpdate.set(false)"></div>
-  <div class="modal show d-block" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title">Editar Aluno</h5>
-          <button type="button" class="btn-close" (click)="openedUpdate.set(false)" aria-label="Fechar"></button>
-        </div>
-        <div class="modal-body">
-          @if (selected()) {
-            <app-update-student [student]="selected()!" (closeEvent)="openedUpdate.set(false)" (studentUpdated)="onUpdated()" />
-          }
-        </div>
+<div class="modal-backdrop-custom" (click)="openedUpdate.set(false)"></div>
+<div class="modal show d-block" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Editar Aluno</h5>
+        <button type="button" class="btn-close" (click)="openedUpdate.set(false)" aria-label="Fechar"></button>
+      </div>
+      <div class="modal-body">
+        @if (selected()) {
+        <app-update-student [student]="selected()!" (closeEvent)="openedUpdate.set(false)"
+          (studentUpdated)="onUpdated()" />
+        }
       </div>
     </div>
   </div>
+</div>
 }

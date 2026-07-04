@@ -7,3 +7,10 @@
   justify-content: flex-end;
   margin-bottom: 1rem;
 }
+
+.click {
+  cursor: pointer;
+  &:hover {
+    background-color: var(--brand-sidebar-hover);
+  }
+}

@@ -119,6 +119,7 @@ model/renewalWarningsResultDTO.ts
 model/series.ts
 model/seriesDataInner.ts
 model/showAcademyDto.ts
+model/showAddressDTO.ts
 model/showBeltDTO.ts
 model/showContractDTO.ts
 model/showFeePlanDTO.ts
@@ -127,12 +128,15 @@ model/showFrequencyDTO.ts
 model/showFrequencyUntilNextGraduationDTO.ts
 model/showGraduationDTO.ts
 model/showGraduationRequirementDTO.ts
+model/showIndividualPersonDTO.ts
 model/showLessonDTO.ts
 model/showMedicalClearanceDto.ts
 model/showMedicalClearanceDtoAttachmentSize.ts
 model/showNoticeDto.ts
 model/showNotificationDto.ts
 model/showNotificationStudentDto.ts
+model/showPersonDTO.ts
+model/showPersonRelationshipDTO.ts
 model/showRealmInfoDto.ts
 model/showStudentDTO.ts
 model/showSupplierDTO.ts

@@ -1,0 +1,67 @@
+<h3 class="page-title">Detalhes do Aluno</h3>
+<h2 class="text-center">{{ student?.firstName }} {{ student?.lastName }}</h2>
+
+<div class="row">
+    <section class="card col-xl-4 m">
+        <h2>Contratos</h2>
+        <div>
+            {{ contracts?.items?.length ? contracts?.items?.[0] : 'no contracts' }}
+        </div>
+    </section>
+    <section class="card col-xl-4">
+        <h2>Transações</h2>
+        <div>
+            {{ transactions?.items?.length ? transactions?.items?.[0] : 'no transactions' }}
+        </div>
+    </section>
+    <section class="card col-xl-4">
+        <h2>Graduações</h2>
+        <div>
+            <div>
+                @for (graduation of graduations?.items ?? []; track graduation.id) {
+                <div>
+                    {{ graduation?.belt?.color ?? 'no color' }}
+                    -
+                    {{ graduation?.graduationDate ? (graduation.graduationDate | date:'dd/MM/yyyy') : 'no graduation
+                    date' }}
+                </div>
+                }
+            </div>
+
+        </div>
+    </section>
+    <section class="card col-xl-4">
+        <h2>Informações Pessoais</h2>
+
+        <h3> Endereços</h3>
+        @for (address of student?.addresses ?? []; track address.id) {
+        <div>
+            <p><span class="fw-bold">Rua</span>{{ address?.street ?? 'no street' }}</p>
+            <p><span class="fw-bold">Número</span>{{ address?.number ?? 'no number' }}</p>
+            <p><span class="fw-bold">Complemento</span>{{ address?.complement ?? 'no complement' }}</p>
+            <p><span class="fw-bold">Bairro</span>{{ address?.neighborhood ?? 'no neighborhood' }}</p>
+            <p><span class="fw-bold">CEP</span>{{ address?.zipCode ?? 'no zip code' }}</p>
+            <p><span class="fw-bold">Cidade</span>{{ address?.city ?? 'no city' }}</p>
+        </div>
+        }
+        @if (student?.addresses?.length == 0) {
+        Nenhum endereço cadastrado
+        }
+
+        <h3>
+            Responsáveis
+        </h3>
+        @for(responsible of student?.relationships ?? []; track responsible.id){
+        <p><span class="fw-bold">Nome</span>{{ responsible?.relatedIndividual?.firstName ?? 'no name' }} {{
+            responsible?.relatedIndividual?.lastName ?? 'no last name' }}</p>
+        <p><span class="fw-bold">Email</span>{{ responsible?.relatedIndividual?.email ?? 'no email' }}</p>
+        <p><span class="fw-bold">Telefone</span>{{ responsible?.relatedIndividual?.phoneNumber ?? 'no phone number' }}
+        </p>
+        }
+        @if (student?.relationships?.length == 0) {
+        Nenhum responsável cadastrado
+        }
+
+        <a class="click" (click)="updateStudent()">Editar</a>
+    </section>
+</div>

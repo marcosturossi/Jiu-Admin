@@ -36,7 +36,10 @@ export const routes: Routes = [
       { path: 'home', component: HomeComponent },
       // Acadêmico
       { path: 'student-onboarding', component: StudentOnboardingComponent },
-      { path: 'students', component: StudentsComponent },
+      { path: 'students', component: StudentsComponent},
+  
+      {path: 'students/details/:id', loadComponent: () => import('./students/detail-student/detail-student.component').then(m => m.DetailStudentComponent)},
+
       { path: 'lessons', component: LessonsComponent },
       { path: 'graduations', component: GraduationsComponent },
       { path: 'frequencies', component: FrequenciesComponent },
