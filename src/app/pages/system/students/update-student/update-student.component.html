@@ -1,41 +1,167 @@
 <form [formGroup]="form">
-  <div class="mb-3">
-    <label for="userName">Usuário *</label>
-    <input type="text" class="form-control" id="userName" formControlName="userName" placeholder="Digite o nome de usuário" />
-  </div>
-  <div class="mb-3">
-    <label for="email">E-mail *</label>
-    <input type="email" class="form-control" id="email" formControlName="email" placeholder="Digite o e-mail" />
-  </div>
-  <div class="mb-3">
-    <label for="phoneNumber">Telefone</label>
-    <input type="text" class="form-control" id="phoneNumber" formControlName="phoneNumber" placeholder="Digite o telefone" />
-  </div>
-  <div class="mb-3">
-    <label for="firstName">Nome</label>
-    <input type="text" class="form-control" id="firstName" formControlName="firstName" placeholder="Digite o primeiro nome" />
-  </div>
-  <div class="mb-3">
-    <label for="lastName">Sobrenome</label>
-    <input type="text" class="form-control" id="lastName" formControlName="lastName" placeholder="Digite o sobrenome" />
-  </div>
-   <div class="mb-3">
-    <label for="cpf">CPF</label>
-    <input type="text" class="form-control" id="cpf" formControlName="cpf" placeholder="Digite o CPF" />
-  </div>
-  <div class="mb-3">
-    <label for="birthDay">Data de Nascimento</label>
-    <input type="date" class="form-control" id="birthDay" formControlName="birthDay" />
-  </div>
-  <div class="form-check mb-3">
-    <input class="form-check-input" type="checkbox" formControlName="isActive" id="isActive" />
-    <label class="form-check-label" for="isActive">Ativo</label>
-  </div>
- 
-  <div class="d-flex gap-2 justify-content-end mt-3">
+
+  <!-- Informações Pessoais -->
+  <section class="mb-4">
+    <h6 class="section-title">Informações Pessoais</h6>
+    <div class="row">
+      <div class="col-12 mb-3">
+        <label for="userName" class="form-label">Usuário *</label>
+        <input id="userName" type="text" class="form-control" formControlName="userName" placeholder="Nome de usuário">
+      </div>
+      <div class="col-md-6 mb-3">
+        <label for="firstName" class="form-label">Nome *</label>
+        <input id="firstName" type="text" class="form-control" formControlName="firstName" placeholder="Nome">
+      </div>
+      <div class="col-md-6 mb-3">
+        <label for="lastName" class="form-label">Sobrenome *</label>
+        <input id="lastName" type="text" class="form-control" formControlName="lastName" placeholder="Sobrenome">
+      </div>
+      <div class="col-md-4 mb-3">
+        <label for="cpf" class="form-label">CPF</label>
+        <input id="cpf" type="text" class="form-control" formControlName="cpf" placeholder="000.000.000-00">
+      </div>
+      <div class="col-md-4 mb-3">
+        <label for="birthDay" class="form-label">Data de Nascimento</label>
+        <input id="birthDay" type="date" class="form-control" formControlName="birthDay" (change)="onBirthDayChange()">
+      </div>
+      <div class="col-md-4 mb-3">
+        <label for="email" class="form-label">E-mail *</label>
+        <input id="email" type="email" class="form-control" formControlName="email" placeholder="email@exemplo.com">
+      </div>
+      <div class="col-md-6 mb-3">
+        <label for="phoneNumber" class="form-label">Telefone</label>
+        <input id="phoneNumber" type="text" class="form-control" formControlName="phoneNumber" placeholder="(00) 00000-0000">
+      </div>
+      <div class="col-md-6 mb-3 d-flex align-items-end pb-1">
+        <div class="form-check">
+          <input id="isActive" type="checkbox" class="form-check-input" formControlName="isActive">
+          <label class="form-check-label" for="isActive">Ativo</label>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Endereços -->
+  <section class="mb-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h6 class="section-title mb-0">Endereços</h6>
+      <button type="button" class="btn btn-outline-primary btn-sm" (click)="addAddress()">
+        <i class="bi bi-plus-lg me-1"></i>Adicionar
+      </button>
+    </div>
+
+    <div formArrayName="addresses">
+      @for (addr of addresses.controls; track $index) {
+        <div class="address-block" [formGroupName]="$index">
+          <div class="row">
+            <div class="col-md-4 mb-3">
+              <label class="form-label">Tipo *</label>
+              <select class="form-select" formControlName="typeAddress">
+                <option value="" disabled>Selecione</option>
+                @for (type of addressTypes; track type) {
+                  <option [value]="type">{{ type }}</option>
+                }
+              </select>
+            </div>
+            <div class="col-md-8 mb-3">
+              <label class="form-label">Rua *</label>
+              <input class="form-control" formControlName="street" placeholder="Rua, Avenida...">
+            </div>
+            <div class="col-md-2 mb-3">
+              <label class="form-label">Número *</label>
+              <input class="form-control" formControlName="number" placeholder="Nº">
+            </div>
+            <div class="col-md-4 mb-3">
+              <label class="form-label">Complemento</label>
+              <input class="form-control" formControlName="complement" placeholder="Apto, Bloco...">
+            </div>
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Bairro *</label>
+              <input class="form-control" formControlName="neighborhood" placeholder="Bairro">
+            </div>
+            <div class="col-md-5 mb-3">
+              <label class="form-label">Cidade *</label>
+              <input class="form-control" formControlName="city" placeholder="Cidade">
+            </div>
+            <div class="col-md-2 mb-3">
+              <label class="form-label">Estado *</label>
+              <input class="form-control" formControlName="state" placeholder="UF" maxlength="2">
+            </div>
+            <div class="col-md-3 mb-3">
+              <label class="form-label">CEP *</label>
+              <input class="form-control" formControlName="zipCode" placeholder="00000-000">
+            </div>
+          </div>
+          <div class="text-end mb-2">
+            <button type="button" class="btn btn-outline-danger btn-sm" (click)="removeAddress($index)">
+              <i class="bi bi-trash me-1"></i>Remover
+            </button>
+          </div>
+        </div>
+        @if (!$last) { <hr class="my-3"> }
+      }
+      @if (addresses.length === 0) {
+        <p class="text-muted fst-italic small">Nenhum endereço cadastrado.</p>
+      }
+    </div>
+  </section>
+
+  <!-- Responsáveis (apenas menores) -->
+  @if (isMinorSignal()) {
+    <section class="mb-4">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h6 class="section-title mb-0">Responsáveis</h6>
+        <button type="button" class="btn btn-outline-primary btn-sm" (click)="addResponsible()">
+          <i class="bi bi-plus-lg me-1"></i>Adicionar
+        </button>
+      </div>
+
+      <div formArrayName="responsibles">
+        @for (r of responsibles.controls; track $index) {
+          <div class="address-block" [formGroupName]="$index">
+            <div class="row">
+              <div class="col-md-5 mb-3">
+                <label class="form-label">Tipo de Relação *</label>
+                <select class="form-select" formControlName="relationshipType">
+                  <option value="" disabled>Selecione</option>
+                  @for (type of relationshipTypes; track type) {
+                    <option [value]="type">{{ type }}</option>
+                  }
+                </select>
+              </div>
+              <div class="col-md-7 mb-3">
+                <label class="form-label">Pessoa Vinculada</label>
+                @if (getResponsibleGroup($index).get('selectedPersonName')?.value) {
+                  <div class="form-control bg-light d-flex align-items-center gap-2">
+                    <i class="bi bi-person-check text-success"></i>
+                    <span>{{ getResponsibleGroup($index).get('selectedPersonName')?.value }}</span>
+                  </div>
+                } @else {
+                  <input class="form-control" formControlName="relatedPersonId" placeholder="ID da pessoa responsável">
+                }
+              </div>
+            </div>
+            <div class="text-end mb-2">
+              <button type="button" class="btn btn-outline-danger btn-sm" (click)="removeResponsible($index)">
+                <i class="bi bi-trash me-1"></i>Remover
+              </button>
+            </div>
+          </div>
+          @if (!$last) { <hr class="my-3"> }
+        }
+        @if (responsibles.length === 0) {
+          <p class="text-muted fst-italic small">Nenhum responsável cadastrado.</p>
+        }
+      </div>
+    </section>
+  }
+
+  <!-- Botões -->
+  <div class="d-flex justify-content-end gap-2 mt-2">
     <button type="button" class="btn btn-outline-secondary" (click)="close()">Cancelar</button>
     <button type="button" class="btn btn-primary" (click)="save()" [disabled]="form.invalid">
       <i class="bi bi-check-lg me-1"></i>Salvar
     </button>
   </div>
+
 </form>
