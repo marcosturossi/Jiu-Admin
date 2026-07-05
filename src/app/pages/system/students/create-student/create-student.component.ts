@@ -1,10 +1,12 @@
-import { ChangeDetectionStrategy, Component, inject, output } from '@angular/core';
-import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
+import { ChangeDetectionStrategy, Component, inject, output, signal } from '@angular/core';
+import { ReactiveFormsModule, FormBuilder, Validators, FormArray, FormGroup } from '@angular/forms';
 import { StudentsService } from '../../../../generated_services/api/students.service';
 import { CreateStudentDTO } from '../../../../generated_services/model/createStudentDTO';
 import { NotificationService } from '../../../../services/notification.service';
-import {FormArray} from '@angular/forms';
-import { CreateAddressDTO, CreatePersonRelationshipDTO } from '../../../../generated_services';
+import { AddressType } from '../../../../generated_services/model/addressType';
+import { RelationshipType } from '../../../../generated_services/model/relationshipType';
+import { ShowStudentDTO } from '../../../../generated_services/model/showStudentDTO';
+import { CreateAddressDTO } from '../../../../generated_services';
 
 @Component({
   selector: 'app-create-student',
@@ -20,6 +22,11 @@ export class CreateStudentComponent {
   private readonly fb = inject(FormBuilder);
   private readonly studentsService = inject(StudentsService);
   private readonly notificationService = inject(NotificationService);
+
+  protected readonly addressTypes = Object.values(AddressType);
+  protected readonly relationshipTypes = Object.values(RelationshipType);
+
+  protected readonly responsibleSearchResults = signal<ShowStudentDTO[][]>([]);
 
   protected readonly form = this.fb.group({
     userName: ['', Validators.required],
@@ -46,7 +53,7 @@ export class CreateStudentComponent {
       zipCode: ['', Validators.required],
       neighborhood: ['', Validators.required],
       number: ['', Validators.required],
-      typeAddress: ['', Validators.required],
+      typeAddress: ['' as AddressType | '', Validators.required],
       complement: ['']
     }));
   }
@@ -57,11 +64,18 @@ export class CreateStudentComponent {
 
   protected addResponsible(): void {
     this.responsibles.push(this.fb.group({
-      name: ['', Validators.required],
-      phoneNumber: ['', Validators.required],
-      email: ['', [Validators.required, Validators.email]],
-      relationship: ['', Validators.required]
+      mode: ['search'],
+      searchQuery: [''],
+      relatedPersonId: [''],
+      selectedPersonName: [''],
+      relationshipType: ['' as RelationshipType | '', Validators.required],
+      firstName: [''],
+      lastName: [''],
+      cpf: [''],
+      phoneNumber: [''],
+      email: [''],
     }));
+    this.responsibleSearchResults.update(r => [...r, []]);
   }
 
   protected removeAddress(index: number): void {
@@ -70,6 +84,45 @@ export class CreateStudentComponent {
 
   protected removeResponsible(index: number): void {
     this.responsibles.removeAt(index);
+    this.responsibleSearchResults.update(r => r.filter((_, i) => i !== index));
+  }
+
+  protected getResponsibleGroup(index: number): FormGroup {
+    return this.responsibles.at(index) as FormGroup;
+  }
+
+  protected setResponsibleMode(index: number, mode: 'search' | 'create'): void {
+    const group = this.getResponsibleGroup(index);
+    group.patchValue({ mode, searchQuery: '', relatedPersonId: '', selectedPersonName: '' });
+    this.responsibleSearchResults.update(r => r.map((res, i) => i === index ? [] : res));
+  }
+
+  protected searchResponsible(index: number): void {
+    const query: string = this.getResponsibleGroup(index).get('searchQuery')?.value ?? '';
+    if (!query.trim()) {
+      this.responsibleSearchResults.update(r => r.map((res, i) => i === index ? [] : res));
+      return;
+    }
+    this.studentsService.apiStudentsGet(query).subscribe({
+      next: (data) => {
+        const results = data.items ?? [];
+        this.responsibleSearchResults.update(r => r.map((res, i) => i === index ? results : res));
+      },
+      error: () => this.notificationService.showError('Erro', 'Não foi possível buscar pessoas.'),
+    });
+  }
+
+  protected selectResponsible(index: number, student: ShowStudentDTO): void {
+    this.getResponsibleGroup(index).patchValue({
+      relatedPersonId: student.id,
+      selectedPersonName: student.fullName ?? `${student.firstName ?? ''} ${student.lastName ?? ''}`.trim(),
+      searchQuery: '',
+    });
+    this.responsibleSearchResults.update(r => r.map((res, i) => i === index ? [] : res));
+  }
+
+  protected clearSelectedResponsible(index: number): void {
+    this.getResponsibleGroup(index).patchValue({ relatedPersonId: '', selectedPersonName: '' });
   }
 
   protected close(): void { this.closeEvent.emit(); }
@@ -99,33 +152,34 @@ export class CreateStudentComponent {
   }
 
   private toDTO(): CreateStudentDTO {
-  const v = this.form.getRawValue();
+    const v = this.form.getRawValue();
 
-  return {
-    userName: v.userName!,
-    email: v.email!,
-    phoneNumber: v.phoneNumber || null,
-    firstName: v.firstName!,
-    lastName: v.lastName!,
-    birthDay: v.birthDay!,
-    cpf: v.cpf!,
-    isActive: v.isActive!,
+    return {
+      userName: v.userName!,
+      email: v.email!,
+      phoneNumber: v.phoneNumber || null,
+      firstName: v.firstName!,
+      lastName: v.lastName!,
+      birthDay: v.birthDay!,
+      cpf: v.cpf!,
+      isActive: v.isActive!,
 
-    addresses: ((v.addresses ?? []) as CreateAddressDTO[]).map(address => ({
-    street: address.street,
-    typeAddress: address.typeAddress,
-    number: address.number,
-    city: address.city,
-    state: address.state,
-    zipCode: address.zipCode,
-    neighborhood: address.neighborhood,
-    complement: address.complement,
-  })),
+      addresses: ((v.addresses ?? []) as CreateAddressDTO[]).map(address => ({
+        street: address.street,
+        typeAddress: address.typeAddress as AddressType,
+        number: address.number,
+        city: address.city,
+        state: address.state,
+        zipCode: address.zipCode,
+        neighborhood: address.neighborhood,
+        complement: address.complement,
+      })),
 
-  // relationships: ((v.responsibles ?? []) as CreatePersonRelationshipDTO[]).map(responsible => ({
-
-  //   }))
-  };
-}
+      relationships: (v.responsibles ?? []).map((r: any) => ({
+        relatedPersonId: r.mode === 'search' ? r.relatedPersonId : undefined,
+        relationshipType: r.relationshipType as RelationshipType,
+      })).filter((r: any) => r.relationshipType),
+    };
+  }
 }
 

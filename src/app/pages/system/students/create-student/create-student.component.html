@@ -1,261 +1,256 @@
 <form [formGroup]="form">
 
-  <!-- Personal Information -->
+  <!-- Informações Pessoais -->
   <section class="mb-4">
-
-    <h2>Personal Information</h2>
+    <h2 class="h5 mb-3">Informações Pessoais</h2>
     <div class="card">
       <div class="card-body">
-
-
-
         <div class="row">
-
-          <div class="mb-3">
-            <label for="userName" class="form-label">Username *</label>
-            <input id="userName" type="text" class="form-control" formControlName="userName"
-              placeholder="Enter username">
+          <div class="col-12 mb-3">
+            <label for="userName" class="form-label">Usuário *</label>
+            <input id="userName" type="text" class="form-control" formControlName="userName" placeholder="Nome de usuário">
           </div>
 
           <div class="col-md-4 mb-3">
-            <label for="email" class="form-label">Email *</label>
-            <input id="email" type="email" class="form-control" formControlName="email" placeholder="Enter email">
+            <label for="firstName" class="form-label">Nome *</label>
+            <input id="firstName" type="text" class="form-control" formControlName="firstName" placeholder="Nome">
           </div>
 
           <div class="col-md-4 mb-3">
-            <label for="phoneNumber" class="form-label">Phone *</label>
-            <input id="phoneNumber" type="text" class="form-control" formControlName="phoneNumber"
-              placeholder="Enter phone">
-          </div>
-
-          <div class="col-md-4 mb-3">
-            <label for="firstName" class="form-label">First Name *</label>
-            <input id="firstName" type="text" class="form-control" formControlName="firstName"
-              placeholder="Enter first name">
-          </div>
-
-          <div class="col-md-4 mb-3">
-            <label for="lastName" class="form-label">Last Name *</label>
-            <input id="lastName" type="text" class="form-control" formControlName="lastName"
-              placeholder="Enter last name">
+            <label for="lastName" class="form-label">Sobrenome *</label>
+            <input id="lastName" type="text" class="form-control" formControlName="lastName" placeholder="Sobrenome">
           </div>
 
           <div class="col-md-4 mb-3">
             <label for="cpf" class="form-label">CPF *</label>
-            <input id="cpf" type="text" class="form-control" formControlName="cpf" placeholder="Enter CPF">
+            <input id="cpf" type="text" class="form-control" formControlName="cpf" placeholder="000.000.000-00">
           </div>
 
           <div class="col-md-4 mb-3">
-            <label for="birthDay" class="form-label">Birth Date *</label>
+            <label for="birthDay" class="form-label">Data de Nascimento *</label>
             <input id="birthDay" type="date" class="form-control" formControlName="birthDay">
+          </div>
+
+          <div class="col-md-4 mb-3">
+            <label for="email" class="form-label">E-mail *</label>
+            <input id="email" type="email" class="form-control" formControlName="email" placeholder="email@exemplo.com">
+          </div>
+
+          <div class="col-md-4 mb-3">
+            <label for="phoneNumber" class="form-label">Telefone *</label>
+            <input id="phoneNumber" type="text" class="form-control" formControlName="phoneNumber" placeholder="(00) 00000-0000">
           </div>
         </div>
       </div>
     </div>
-
   </section>
 
-  <!-- Addresses -->
+  <!-- Endereços -->
   <section class="mb-4">
-
     <div class="d-flex justify-content-between align-items-center mb-3">
-      <h2>Addresses</h2>
-
+      <h2 class="h5 mb-0">Endereços</h2>
       <button type="button" class="btn btn-outline-primary btn-sm" (click)="addAddress()">
-        <i class="bi bi-plus"></i>
-        Add Address
+        <i class="bi bi-plus-lg me-1"></i>Adicionar Endereço
       </button>
     </div>
 
     <div formArrayName="addresses">
-
       @for (address of addresses.controls; track $index) {
+        <div class="card mb-3">
+          <div class="card-body" [formGroupName]="$index">
+            <div class="row">
 
-      <div class="card mb-3">
+              <div class="col-md-4 mb-3">
+                <label class="form-label">Tipo *</label>
+                <select class="form-select" formControlName="typeAddress">
+                  <option value="" disabled>Selecione o tipo</option>
+                  @for (type of addressTypes; track type) {
+                    <option [value]="type">{{ type }}</option>
+                  }
+                </select>
+              </div>
 
-        <div class="card-body" [formGroupName]="$index">
+              <div class="col-md-8 mb-3">
+                <label class="form-label">Rua *</label>
+                <input class="form-control" formControlName="street" placeholder="Rua, Avenida...">
+              </div>
 
-          <div class="row">
-            <div class="col-md-6 mb-3">
-              <label class="form-label">Tipo *</label>
-              <input class="form-control" formControlName="typeAddress">
+              <div class="col-md-2 mb-3">
+                <label class="form-label">Número *</label>
+                <input class="form-control" formControlName="number" placeholder="Nº">
+              </div>
+
+              <div class="col-md-4 mb-3">
+                <label class="form-label">Complemento</label>
+                <input class="form-control" formControlName="complement" placeholder="Apto, Bloco...">
+              </div>
+
+              <div class="col-md-6 mb-3">
+                <label class="form-label">Bairro *</label>
+                <input class="form-control" formControlName="neighborhood" placeholder="Bairro">
+              </div>
+
+              <div class="col-md-4 mb-3">
+                <label class="form-label">Cidade *</label>
+                <input class="form-control" formControlName="city" placeholder="Cidade">
+              </div>
+
+              <div class="col-md-2 mb-3">
+                <label class="form-label">Estado *</label>
+                <input class="form-control" formControlName="state" placeholder="UF" maxlength="2">
+              </div>
+
+              <div class="col-md-3 mb-3">
+                <label class="form-label">CEP *</label>
+                <input class="form-control" formControlName="zipCode" placeholder="00000-000">
+              </div>
+
             </div>
 
-            <div class="col-md-6 mb-3">
-              <label class="form-label">Rua *</label>
-              <input class="form-control" formControlName="street">
+            <div class="text-end">
+              <button type="button" class="btn btn-outline-danger btn-sm" (click)="removeAddress($index)">
+                <i class="bi bi-trash me-1"></i>Remover Endereço
+              </button>
             </div>
-
-            <div class="col-md-2 mb-3">
-              <label class="form-label">Número *</label>
-              <input class="form-control" formControlName="number">
-            </div>
-
-            <div class="col-md-4 mb-3">
-              <label class="form-label">Complemento</label>
-              <input class="form-control" formControlName="complement">
-            </div>
-
-            <div class="col-md-4 mb-3">
-              <label class="form-label">Bairro *</label>
-              <input class="form-control" formControlName="neighborhood">
-            </div>
-
-            <div class="col-md-3 mb-3">
-              <label class="form-label">Cidade *</label>
-              <input class="form-control" formControlName="city">
-            </div>
-
-            <div class="col-md-2 mb-3">
-              <label class="form-label">Estado *</label>
-              <input class="form-control" formControlName="state">
-            </div>
-
-            <div class="col-md-3 mb-3">
-              <label class="form-label">CEP *</label>
-              <input class="form-control" formControlName="zipCode">
-            </div>
-
           </div>
-
-          <div class="text-end">
-
-            <button type="button" class="btn btn-outline-danger btn-sm" (click)="removeAddress($index)">
-
-              <i class="bi bi-trash"></i>
-              Remove Address
-
-            </button>
-
-          </div>
-
         </div>
-
-      </div>
-
       }
-
     </div>
-
   </section>
 
-  <!-- Responsibles -->
+  <!-- Responsáveis (apenas para menores de idade) -->
   @if (isMinor()) {
-
-  <section class="mb-4">
-
-    <div class="d-flex justify-content-between align-items-center mb-3">
-
-      <h2>Responsibles</h2>
-
-      <button type="button" class="btn btn-outline-primary btn-sm" (click)="addResponsible()">
-
-        <i class="bi bi-plus"></i>
-        Add Responsible
-
-      </button>
-
-    </div>
-
-    <div formArrayName="responsibles">
-
-      @for (responsible of responsibles.controls; track $index) {
-
-      <div class="card mb-3">
-
-        <div class="card-body" [formGroupName]="$index">
-
-          <div class="row">
-
-            <div class="col-md-3 mb-3">
-              <label class="form-label">Relationship *</label>
-
-              <select class="form-select" formControlName="relationship">
-
-                <option value="">Select</option>
-                <option value="Father">Father</option>
-                <option value="Mother">Mother</option>
-                <option value="Guardian">Guardian</option>
-                <option value="Other">Other</option>
-
-              </select>
-            </div>
-
-            <div class="col-md-3 mb-3">
-              <label class="form-label">First Name *</label>
-              <input class="form-control" formControlName="firstName">
-            </div>
-
-            <div class="col-md-3 mb-3">
-              <label class="form-label">Last Name *</label>
-              <input class="form-control" formControlName="lastName">
-            </div>
-
-            <div class="col-md-3 mb-3">
-              <label class="form-label">CPF *</label>
-              <input class="form-control" formControlName="cpf">
-            </div>
-
-            <div class="col-md-4 mb-3">
-              <label class="form-label">Phone *</label>
-              <input class="form-control" formControlName="phoneNumber">
-            </div>
-
-            <div class="col-md-4 mb-3">
-              <label class="form-label">Email</label>
-              <input type="email" class="form-control" formControlName="email">
-            </div>
-
-          </div>
-
-          <div class="text-end">
-
-            <button type="button" class="btn btn-outline-danger btn-sm" (click)="removeResponsible($index)">
-
-              <i class="bi bi-trash"></i>
-              Remove Responsible
-
-            </button>
-
-          </div>
-
-        </div>
-
+    <section class="mb-4">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="h5 mb-0">Responsáveis</h2>
+        <button type="button" class="btn btn-outline-primary btn-sm" (click)="addResponsible()">
+          <i class="bi bi-plus-lg me-1"></i>Adicionar Responsável
+        </button>
       </div>
 
-      }
+      <div formArrayName="responsibles">
+        @for (responsible of responsibles.controls; track $index) {
+          <div class="card mb-3">
+            <div class="card-body" [formGroupName]="$index">
 
-    </div>
+              <!-- Tabs: Buscar / Criar -->
+              <ul class="nav nav-tabs mb-3">
+                <li class="nav-item">
+                  <button type="button" class="nav-link"
+                    [class.active]="getResponsibleGroup($index).get('mode')?.value === 'search'"
+                    (click)="setResponsibleMode($index, 'search')">
+                    <i class="bi bi-search me-1"></i>Buscar Pessoa
+                  </button>
+                </li>
+                <li class="nav-item">
+                  <button type="button" class="nav-link"
+                    [class.active]="getResponsibleGroup($index).get('mode')?.value === 'create'"
+                    (click)="setResponsibleMode($index, 'create')">
+                    <i class="bi bi-person-plus me-1"></i>Nova Pessoa
+                  </button>
+                </li>
+              </ul>
 
-  </section>
+              <div class="row">
+                <!-- Tipo de Relacionamento -->
+                <div class="col-md-4 mb-3">
+                  <label class="form-label">Tipo de Relação *</label>
+                  <select class="form-select" formControlName="relationshipType">
+                    <option value="" disabled>Selecione</option>
+                    @for (type of relationshipTypes; track type) {
+                      <option [value]="type">{{ type }}</option>
+                    }
+                  </select>
+                </div>
 
+                @if (getResponsibleGroup($index).get('mode')?.value === 'search') {
+                  <!-- Modo Busca -->
+                  <div class="col-md-8 mb-3">
+                    @if (getResponsibleGroup($index).get('selectedPersonName')?.value) {
+                      <label class="form-label">Pessoa Selecionada</label>
+                      <div class="input-group">
+                        <span class="form-control bg-light">
+                          <i class="bi bi-person-check me-1 text-success"></i>
+                          {{ getResponsibleGroup($index).get('selectedPersonName')?.value }}
+                        </span>
+                        <button type="button" class="btn btn-outline-secondary" (click)="clearSelectedResponsible($index)">
+                          <i class="bi bi-x-lg"></i>
+                        </button>
+                      </div>
+                    } @else {
+                      <label class="form-label">Buscar por nome</label>
+                      <div class="input-group">
+                        <input type="text" class="form-control" formControlName="searchQuery"
+                          placeholder="Digite o nome da pessoa...">
+                        <button type="button" class="btn btn-outline-secondary"
+                          (click)="searchResponsible($index)">
+                          <i class="bi bi-search"></i>
+                        </button>
+                      </div>
+                      @if ((responsibleSearchResults()[$index] || []).length > 0) {
+                        <ul class="list-group mt-1 position-absolute w-100 shadow-sm" style="z-index:1000; max-height:200px; overflow-y:auto">
+                          @for (student of responsibleSearchResults()[$index]; track student.id) {
+                            <li class="list-group-item list-group-item-action" style="cursor:pointer"
+                              (click)="selectResponsible($index, student)">
+                              <i class="bi bi-person me-1"></i>
+                              {{ student.fullName ?? (student.firstName + ' ' + student.lastName) }}
+                              <small class="text-muted ms-2">{{ student.cpf }}</small>
+                            </li>
+                          }
+                        </ul>
+                      }
+                    }
+                  </div>
+                } @else {
+                  <!-- Modo Criar -->
+                  <div class="col-md-4 mb-3">
+                    <label class="form-label">Nome *</label>
+                    <input class="form-control" formControlName="firstName" placeholder="Nome">
+                  </div>
+                  <div class="col-md-4 mb-3">
+                    <label class="form-label">Sobrenome *</label>
+                    <input class="form-control" formControlName="lastName" placeholder="Sobrenome">
+                  </div>
+                  <div class="col-md-4 mb-3">
+                    <label class="form-label">CPF *</label>
+                    <input class="form-control" formControlName="cpf" placeholder="000.000.000-00">
+                  </div>
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label">Telefone *</label>
+                    <input class="form-control" formControlName="phoneNumber" placeholder="(00) 00000-0000">
+                  </div>
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label">E-mail</label>
+                    <input type="email" class="form-control" formControlName="email" placeholder="email@exemplo.com">
+                  </div>
+                }
+              </div>
+
+              <div class="text-end">
+                <button type="button" class="btn btn-outline-danger btn-sm" (click)="removeResponsible($index)">
+                  <i class="bi bi-trash me-1"></i>Remover Responsável
+                </button>
+              </div>
+
+            </div>
+          </div>
+        }
+      </div>
+    </section>
   }
 
-  <!-- Active -->
+  <!-- Ativo -->
   <div class="form-check mb-4">
-
     <input id="isActive" type="checkbox" class="form-check-input" formControlName="isActive">
-
-    <label class="form-check-label" for="isActive">
-      Active
-    </label>
-
+    <label class="form-check-label" for="isActive">Ativo</label>
   </div>
 
-  <!-- Buttons -->
+  <!-- Botões -->
   <div class="d-flex justify-content-end gap-2">
-
-    <button type="button" class="btn btn-outline-secondary" (click)="close()">
-      Cancel
-    </button>
-
+    <button type="button" class="btn btn-outline-secondary" (click)="close()">Cancelar</button>
     <button type="button" class="btn btn-primary" (click)="save()" [disabled]="form.invalid">
-
-      <i class="bi bi-check-lg me-1"></i>
-      Save
-
+      <i class="bi bi-check-lg me-1"></i>Salvar
     </button>
-
   </div>
 
 </form>

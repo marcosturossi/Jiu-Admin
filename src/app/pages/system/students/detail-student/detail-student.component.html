@@ -162,7 +162,7 @@
             </div>
             <div class="info-row">
               <span class="info-label">Mensalidade</span>
-              <span>{{ (contract.monthlyAmount ?? 0) | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}</span>
+              <span>{{ ($any(contract.monthlyAmount) ?? 0) | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}</span>
             </div>
             <div class="fees-pills mt-2">
               <span class="badge bg-success me-1">{{ contract.paidFees ?? 0 }} pagas</span>

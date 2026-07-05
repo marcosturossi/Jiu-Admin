@@ -11,8 +11,8 @@
 
 // ── Section card ──────────────────────────────────────────────────────────────
 .section-card {
-  background: #fff;
-  border: 1px solid #e2e8f0;
+  background: var(--brand-surface);
+  border: 1px solid var(--brand-border);
   border-radius: 0.75rem;
   padding: 1.25rem 1.5rem;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
@@ -21,8 +21,8 @@
 .section-title {
   font-size: 0.95rem;
   font-weight: 600;
-  color: #374151;
-  border-bottom: 1px solid #f1f5f9;
+  color: var(--brand-text);
+  border-bottom: 1px solid var(--brand-border);
   padding-bottom: 0.5rem;
   margin-bottom: 1rem;
 }
@@ -54,7 +54,7 @@
 .student-name {
   font-size: 1.4rem;
   font-weight: 700;
-  color: #1e293b;
+  color: var(--brand-text);
 }
 
 // ── Avatar ────────────────────────────────────────────────────────────────────
@@ -67,7 +67,7 @@
   height: 120px;
   border-radius: 50%;
   object-fit: cover;
-  border: 3px solid #e2e8f0;
+  border: 3px solid var(--brand-border);
   display: block;
 }
 
@@ -75,15 +75,15 @@
   width: 120px;
   height: 120px;
   border-radius: 50%;
-  background: #f1f5f9;
-  border: 3px solid #e2e8f0;
+  background: var(--brand-bg);
+  border: 3px solid var(--brand-border);
   display: flex;
   align-items: center;
   justify-content: center;
 
   i {
     font-size: 3.5rem;
-    color: #94a3b8;
+    color: var(--brand-muted);
   }
 }
 
@@ -94,7 +94,8 @@
   align-items: baseline;
   padding: 0.3rem 0;
   font-size: 0.9rem;
-  border-bottom: 1px solid #f8fafc;
+  border-bottom: 1px solid var(--brand-border);
+  color: var(--brand-text);
 
   &:last-child {
     border-bottom: none;
@@ -104,7 +105,7 @@
 .info-label {
   min-width: 140px;
   font-weight: 600;
-  color: #64748b;
+  color: var(--brand-muted);
   font-size: 0.82rem;
   text-transform: uppercase;
   letter-spacing: 0.03em;
@@ -116,6 +117,7 @@
 .responsible-block,
 .contract-block {
   font-size: 0.9rem;
+  color: var(--brand-text);
 }
 
 // ── Fees pills ────────────────────────────────────────────────────────────────
@@ -147,16 +149,17 @@
 
 .graduation-info {
   font-size: 0.9rem;
+  color: var(--brand-text);
 }
 
 // ── Back button ───────────────────────────────────────────────────────────────
 .back-btn {
-  color: #64748b;
-  border-color: #cbd5e1;
+  color: var(--brand-muted);
+  border-color: var(--brand-border);
 
   &:hover {
-    background: #f8fafc;
-    color: #374151;
+    background: var(--brand-bg);
+    color: var(--brand-text);
   }
 }
 
