@@ -8,6 +8,7 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { AddressType } from './addressType';
 
 
 export interface UpdateAddressDTO { 
@@ -19,5 +20,9 @@ export interface UpdateAddressDTO {
     state: string | null;
     zipCode: string | null;
     personId?: string;
+    typeAddress?: AddressType;
 }
+export namespace UpdateAddressDTO {
+}
+
 

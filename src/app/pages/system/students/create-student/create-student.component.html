@@ -1,41 +1,261 @@
 <form [formGroup]="form">
-  <div class="mb-3">
-    <label for="userName">Usuário *</label>
-    <input type="text" class="form-control" id="userName" formControlName="userName" placeholder="Digite o nome de usuário" />
-  </div>
-  <div class="mb-3">
-    <label for="email">E-mail *</label>
-    <input type="email" class="form-control" id="email" formControlName="email" placeholder="Digite o e-mail" />
-  </div>
-  <div class="mb-3">
-    <label for="phoneNumber">Telefone</label>
-    <input type="text" class="form-control" id="phoneNumber" formControlName="phoneNumber" placeholder="Digite o telefone" />
-  </div>
-  <div class="mb-3">
-    <label for="firstName">Nome</label>
-    <input type="text" class="form-control" id="firstName" formControlName="firstName" placeholder="Digite o primeiro nome" />
-  </div>
-  <div class="mb-3">
-    <label for="lastName">Sobrenome</label>
-    <input type="text" class="form-control" id="lastName" formControlName="lastName" placeholder="Digite o sobrenome" />
-  </div>
-    <div class="mb-3">
-    <label for="cpf">CPF</label>
-    <input type="text" class="form-control" id="cpf" formControlName="cpf" placeholder="Digite o CPF" />
-  </div>
-  <div class="mb-3">
-    <label for="birthDay">Data de Nascimento</label>
-    <input type="date" class="form-control" id="birthDay" formControlName="birthDay" />
+
+  <!-- Personal Information -->
+  <section class="mb-4">
+
+    <h2>Personal Information</h2>
+    <div class="card">
+      <div class="card-body">
+
+
+
+        <div class="row">
+
+          <div class="mb-3">
+            <label for="userName" class="form-label">Username *</label>
+            <input id="userName" type="text" class="form-control" formControlName="userName"
+              placeholder="Enter username">
+          </div>
+
+          <div class="col-md-4 mb-3">
+            <label for="email" class="form-label">Email *</label>
+            <input id="email" type="email" class="form-control" formControlName="email" placeholder="Enter email">
+          </div>
+
+          <div class="col-md-4 mb-3">
+            <label for="phoneNumber" class="form-label">Phone *</label>
+            <input id="phoneNumber" type="text" class="form-control" formControlName="phoneNumber"
+              placeholder="Enter phone">
+          </div>
+
+          <div class="col-md-4 mb-3">
+            <label for="firstName" class="form-label">First Name *</label>
+            <input id="firstName" type="text" class="form-control" formControlName="firstName"
+              placeholder="Enter first name">
+          </div>
+
+          <div class="col-md-4 mb-3">
+            <label for="lastName" class="form-label">Last Name *</label>
+            <input id="lastName" type="text" class="form-control" formControlName="lastName"
+              placeholder="Enter last name">
+          </div>
+
+          <div class="col-md-4 mb-3">
+            <label for="cpf" class="form-label">CPF *</label>
+            <input id="cpf" type="text" class="form-control" formControlName="cpf" placeholder="Enter CPF">
+          </div>
+
+          <div class="col-md-4 mb-3">
+            <label for="birthDay" class="form-label">Birth Date *</label>
+            <input id="birthDay" type="date" class="form-control" formControlName="birthDay">
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- Addresses -->
+  <section class="mb-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h2>Addresses</h2>
+
+      <button type="button" class="btn btn-outline-primary btn-sm" (click)="addAddress()">
+        <i class="bi bi-plus"></i>
+        Add Address
+      </button>
+    </div>
+
+    <div formArrayName="addresses">
+
+      @for (address of addresses.controls; track $index) {
+
+      <div class="card mb-3">
+
+        <div class="card-body" [formGroupName]="$index">
+
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Tipo *</label>
+              <input class="form-control" formControlName="typeAddress">
+            </div>
+
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Rua *</label>
+              <input class="form-control" formControlName="street">
+            </div>
+
+            <div class="col-md-2 mb-3">
+              <label class="form-label">Número *</label>
+              <input class="form-control" formControlName="number">
+            </div>
+
+            <div class="col-md-4 mb-3">
+              <label class="form-label">Complemento</label>
+              <input class="form-control" formControlName="complement">
+            </div>
+
+            <div class="col-md-4 mb-3">
+              <label class="form-label">Bairro *</label>
+              <input class="form-control" formControlName="neighborhood">
+            </div>
+
+            <div class="col-md-3 mb-3">
+              <label class="form-label">Cidade *</label>
+              <input class="form-control" formControlName="city">
+            </div>
+
+            <div class="col-md-2 mb-3">
+              <label class="form-label">Estado *</label>
+              <input class="form-control" formControlName="state">
+            </div>
+
+            <div class="col-md-3 mb-3">
+              <label class="form-label">CEP *</label>
+              <input class="form-control" formControlName="zipCode">
+            </div>
+
+          </div>
+
+          <div class="text-end">
+
+            <button type="button" class="btn btn-outline-danger btn-sm" (click)="removeAddress($index)">
+
+              <i class="bi bi-trash"></i>
+              Remove Address
+
+            </button>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      }
+
+    </div>
+
+  </section>
+
+  <!-- Responsibles -->
+  @if (isMinor()) {
+
+  <section class="mb-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+
+      <h2>Responsibles</h2>
+
+      <button type="button" class="btn btn-outline-primary btn-sm" (click)="addResponsible()">
+
+        <i class="bi bi-plus"></i>
+        Add Responsible
+
+      </button>
+
+    </div>
+
+    <div formArrayName="responsibles">
+
+      @for (responsible of responsibles.controls; track $index) {
+
+      <div class="card mb-3">
+
+        <div class="card-body" [formGroupName]="$index">
+
+          <div class="row">
+
+            <div class="col-md-3 mb-3">
+              <label class="form-label">Relationship *</label>
+
+              <select class="form-select" formControlName="relationship">
+
+                <option value="">Select</option>
+                <option value="Father">Father</option>
+                <option value="Mother">Mother</option>
+                <option value="Guardian">Guardian</option>
+                <option value="Other">Other</option>
+
+              </select>
+            </div>
+
+            <div class="col-md-3 mb-3">
+              <label class="form-label">First Name *</label>
+              <input class="form-control" formControlName="firstName">
+            </div>
+
+            <div class="col-md-3 mb-3">
+              <label class="form-label">Last Name *</label>
+              <input class="form-control" formControlName="lastName">
+            </div>
+
+            <div class="col-md-3 mb-3">
+              <label class="form-label">CPF *</label>
+              <input class="form-control" formControlName="cpf">
+            </div>
+
+            <div class="col-md-4 mb-3">
+              <label class="form-label">Phone *</label>
+              <input class="form-control" formControlName="phoneNumber">
+            </div>
+
+            <div class="col-md-4 mb-3">
+              <label class="form-label">Email</label>
+              <input type="email" class="form-control" formControlName="email">
+            </div>
+
+          </div>
+
+          <div class="text-end">
+
+            <button type="button" class="btn btn-outline-danger btn-sm" (click)="removeResponsible($index)">
+
+              <i class="bi bi-trash"></i>
+              Remove Responsible
+
+            </button>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      }
+
+    </div>
+
+  </section>
+
+  }
+
+  <!-- Active -->
+  <div class="form-check mb-4">
+
+    <input id="isActive" type="checkbox" class="form-check-input" formControlName="isActive">
+
+    <label class="form-check-label" for="isActive">
+      Active
+    </label>
+
   </div>
 
-  <div class="form-check mb-3">
-    <input class="form-check-input" type="checkbox" formControlName="isActive" id="isActive" />
-    <label class="form-check-label" for="isActive">Ativo</label>
-  </div>
-  <div class="d-flex gap-2 justify-content-end mt-3">
-    <button type="button" class="btn btn-outline-secondary" (click)="close()">Cancelar</button>
-    <button type="button" class="btn btn-primary" (click)="save()" [disabled]="form.invalid">
-      <i class="bi bi-check-lg me-1"></i>Salvar
+  <!-- Buttons -->
+  <div class="d-flex justify-content-end gap-2">
+
+    <button type="button" class="btn btn-outline-secondary" (click)="close()">
+      Cancel
     </button>
+
+    <button type="button" class="btn btn-primary" (click)="save()" [disabled]="form.invalid">
+
+      <i class="bi bi-check-lg me-1"></i>
+      Save
+
+    </button>
+
   </div>
+
 </form>

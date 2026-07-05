@@ -3,6 +3,8 @@ import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { StudentsService } from '../../../../generated_services/api/students.service';
 import { CreateStudentDTO } from '../../../../generated_services/model/createStudentDTO';
 import { NotificationService } from '../../../../services/notification.service';
+import {FormArray} from '@angular/forms';
+import { CreateAddressDTO, CreatePersonRelationshipDTO } from '../../../../generated_services';
 
 @Component({
   selector: 'app-create-student',
@@ -22,14 +24,53 @@ export class CreateStudentComponent {
   protected readonly form = this.fb.group({
     userName: ['', Validators.required],
     email: ['', [Validators.required, Validators.email]],
-    phoneNumber: [''],
-    firstName: [''],
-    lastName: [''],
-    birthDay: [null as string | null],
-    cpf: [null as string | null],
+    phoneNumber: ['', [Validators.required]],
+    firstName: ['', Validators.required],
+    lastName: ['', Validators.required],
+    birthDay: [null as string | null, Validators.required],
+    cpf: [null as string | null, Validators.required],
     isActive: [true],
-    preferredUsername: [''],
+    addresses: this.fb.array([]),
+    responsibles: this.fb.array([]),
   });
+
+  protected get addresses() {
+    return this.form.get('addresses') as FormArray;
+  }
+
+  protected addAddress(): void {
+    this.addresses.push(this.fb.group({
+      street: ['', Validators.required],
+      city: ['', Validators.required],
+      state: ['', Validators.required],
+      zipCode: ['', Validators.required],
+      neighborhood: ['', Validators.required],
+      number: ['', Validators.required],
+      typeAddress: ['', Validators.required],
+      complement: ['']
+    }));
+  }
+
+  protected get responsibles() {
+    return this.form.get('responsibles') as FormArray;
+  }
+
+  protected addResponsible(): void {
+    this.responsibles.push(this.fb.group({
+      name: ['', Validators.required],
+      phoneNumber: ['', Validators.required],
+      email: ['', [Validators.required, Validators.email]],
+      relationship: ['', Validators.required]
+    }));
+  }
+
+  protected removeAddress(index: number): void {
+    this.addresses.removeAt(index);
+  }
+
+  protected removeResponsible(index: number): void {
+    this.responsibles.removeAt(index);
+  }
 
   protected close(): void { this.closeEvent.emit(); }
 
@@ -44,18 +85,47 @@ export class CreateStudentComponent {
     });
   }
 
-  private toDTO(): CreateStudentDTO {
-    const v = this.form.value;
-    return {
-      userName: v.userName!,
-      email: v.email!,
-      phoneNumber: v.phoneNumber || null,
-      firstName: v.firstName || null,
-      lastName: v.lastName || null,
-      birthDay: v.birthDay ?? null,
-      cpf: v.cpf ?? null,
-      isActive: v.isActive ?? true,
-      preferredUsername: v.preferredUsername || null,
-    } as CreateStudentDTO;
+  protected isMinor(): boolean {
+    const birthDay = this.form.get('birthDay')?.value;
+    if (!birthDay) return false;
+    const birthDate = new Date(birthDay);
+    const today = new Date();
+    const age = today.getFullYear() - birthDate.getFullYear();
+    const monthDiff = today.getMonth() - birthDate.getMonth();
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+      return age - 1 < 18;
+    }
+    return age < 18;
   }
+
+  private toDTO(): CreateStudentDTO {
+  const v = this.form.getRawValue();
+
+  return {
+    userName: v.userName!,
+    email: v.email!,
+    phoneNumber: v.phoneNumber || null,
+    firstName: v.firstName!,
+    lastName: v.lastName!,
+    birthDay: v.birthDay!,
+    cpf: v.cpf!,
+    isActive: v.isActive!,
+
+    addresses: ((v.addresses ?? []) as CreateAddressDTO[]).map(address => ({
+    street: address.street,
+    typeAddress: address.typeAddress,
+    number: address.number,
+    city: address.city,
+    state: address.state,
+    zipCode: address.zipCode,
+    neighborhood: address.neighborhood,
+    complement: address.complement,
+  })),
+
+  // relationships: ((v.responsibles ?? []) as CreatePersonRelationshipDTO[]).map(responsible => ({
+
+  //   }))
+  };
 }
+}
+

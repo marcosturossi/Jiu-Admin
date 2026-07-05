@@ -8,21 +8,12 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { AddressType } from './addressType';
 
 
-export interface CreateAddressDTO { 
-    personId?: string;
-    typeAddress?: AddressType;
-    street: string;
-    number: string;
-    complement?: string | null;
-    neighborhood: string;
-    city: string;
-    state: string;
-    zipCode: string;
-}
-export namespace CreateAddressDTO {
-}
+export type AddressType = 'Comercial' | 'Residential';
 
+export const AddressType = {
+    Comercial: 'Comercial' as AddressType,
+    Residential: 'Residential' as AddressType
+};
 

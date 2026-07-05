@@ -12,5 +12,6 @@
   cursor: pointer;
   &:hover {
     background-color: var(--brand-sidebar-hover);
+    color: var(--brand-text);
   }
 }

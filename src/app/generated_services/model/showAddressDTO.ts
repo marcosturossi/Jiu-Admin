@@ -9,12 +9,14 @@
  * Do not edit the class manually.
  */
 import { ShowPersonDTO } from './showPersonDTO';
+import { AddressType } from './addressType';
 
 
 export interface ShowAddressDTO { 
     id?: string;
     person?: ShowPersonDTO | null;
     personId?: string;
+    typeAddress?: AddressType;
     street: string;
     number: string;
     complement?: string | null;
@@ -23,4 +25,7 @@ export interface ShowAddressDTO {
     state: string;
     zipCode: string;
 }
+export namespace ShowAddressDTO {
+}
+
 

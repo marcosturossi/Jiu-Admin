@@ -52,6 +52,7 @@ configuration.ts
 encoder.ts
 git_push.sh
 index.ts
+model/addressType.ts
 model/apiAdminContractsSendRenewalWarningsPostDaysAheadParameter.ts
 model/apiFeePlanGetPriceMinParameter.ts
 model/apiFrequencyGetPageParameter.ts
