@@ -25,6 +25,7 @@ import { TransactionCategoriesComponent } from './transaction-categories/transac
 import { AcademiesComponent } from './academies/academies.component';
 import { StudentOnboardingComponent } from './student-onboarding/student-onboarding.component';
 import { FinanceDashboardComponent } from './finance-dashboard/finance-dashboard.component';
+import { SuppliersComponent } from './suppliers/suppliers.component';
 
 export const routes: Routes = [
   {
@@ -57,6 +58,9 @@ export const routes: Routes = [
       // Saúde e Segurança
       { path: 'medical-clearances', component: MedicalClearancesComponent },
       { path: 'face-recognition', component: FaceRecognitionComponent },
+      // Fornecedores
+      { path: 'suppliers', component: SuppliersComponent },
+      { path: 'suppliers/details/:id', loadComponent: () => import('./suppliers/detail-supplier/detail-supplier.component').then(m => m.DetailSupplierComponent) },
       // Configurações
       { path: 'academies', component: AcademiesComponent },
     ]

@@ -1,0 +1,151 @@
+<!-- Loading overlay -->
+@if (isLoadingSupplier()) {
+  <div class="d-flex justify-content-center align-items-center py-5">
+    <div class="spinner-border text-secondary" role="status">
+      <span class="visually-hidden">Carregando...</span>
+    </div>
+  </div>
+}
+
+<!-- Header Card -->
+@if (!isLoadingSupplier()) {
+  <div class="section-card header-card mb-4">
+    <div class="header-inner">
+      <!-- Icon -->
+      <div class="icon-wrap">
+        <div class="icon-placeholder">
+          <i class="bi bi-building"></i>
+        </div>
+      </div>
+
+      <!-- Identity -->
+      <div class="header-info">
+        <h2 class="supplier-title mb-1">Fornecedor</h2>
+        <div class="d-flex align-items-center gap-2 flex-wrap">
+          @if (!supplier()?.deletedAt) {
+            <span class="badge bg-success">Ativo</span>
+          } @else {
+            <span class="badge bg-danger">Excluído</span>
+          }
+          @if (supplier()?.createdAt) {
+            <span class="text-muted small">Cadastrado em {{ supplier()!.createdAt! | date:'dd/MM/yyyy' }}</span>
+          }
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="header-actions">
+        @if (supplier()) {
+          <button type="button" class="btn btn-primary btn-sm me-2" (click)="openUpdate()">
+            <i class="bi bi-pencil me-1"></i>Editar
+          </button>
+        }
+        <button type="button" class="btn btn-outline-secondary btn-sm" (click)="goBack()">
+          <i class="bi bi-arrow-left me-1"></i>Voltar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Grid -->
+  <div class="detail-grid">
+    <!-- LEFT COLUMN -->
+    <div class="left-col">
+
+      <!-- Informações -->
+      <div class="section-card mb-4">
+        <h5 class="section-title"><i class="bi bi-building me-2"></i>Informações</h5>
+        <div class="info-row">
+          <span class="info-label">ID</span>
+          <span class="text-monospace small">{{ supplier()?.id ?? '—' }}</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Pessoa vinculada</span>
+          <span class="text-monospace small">{{ supplier()?.personId ?? '—' }}</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Cadastrado em</span>
+          <span>{{ supplier()?.createdAt ? (supplier()!.createdAt! | date:'dd/MM/yyyy') : '—' }}</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Status</span>
+          @if (!supplier()?.deletedAt) {
+            <span class="badge bg-success">Ativo</span>
+          } @else {
+            <span class="badge bg-danger">Excluído em {{ supplier()!.deletedAt! | date:'dd/MM/yyyy' }}</span>
+          }
+        </div>
+      </div>
+
+    </div>
+
+    <!-- RIGHT COLUMN -->
+    <div class="right-col">
+
+      <!-- Transações -->
+      <div class="section-card mb-4">
+        <h5 class="section-title"><i class="bi bi-arrow-left-right me-2"></i>Transações</h5>
+
+        @if (isLoadingTransactions()) {
+          <div class="d-flex justify-content-center py-3">
+            <div class="spinner-border spinner-border-sm text-secondary" role="status"></div>
+          </div>
+        } @else if ((transactions()?.items ?? []).length === 0) {
+          <p class="text-muted fst-italic mb-0">Nenhuma transação encontrada.</p>
+        } @else {
+          <div class="transaction-list">
+            @for (tx of transactions()?.items ?? []; track tx.id) {
+              <div class="transaction-item">
+                <div class="transaction-item__top">
+                  <span class="transaction-item__desc">{{ tx.description ?? '—' }}</span>
+                  <span class="transaction-item__amount">
+                    {{ $any(tx.amount) | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}
+                  </span>
+                </div>
+                <div class="transaction-item__badges">
+                  <span class="badge {{ transactionTypeBadge(tx.type) }}">{{ transactionTypeLabel(tx.type) }}</span>
+                  <span class="badge {{ transactionStatusBadge(tx.status) }}">{{ transactionStatusLabel(tx.status) }}</span>
+                </div>
+                <div class="transaction-item__dates">
+                  @if (tx.transactionDate) {
+                    <span class="text-muted small">Data: {{ tx.transactionDate | date:'dd/MM/yyyy' }}</span>
+                  }
+                  @if (tx.dueDate) {
+                    <span class="text-muted small">Vencimento: {{ tx.dueDate | date:'dd/MM/yyyy' }}</span>
+                  }
+                  @if (tx.paidAt) {
+                    <span class="text-muted small">Pago em: {{ tx.paidAt | date:'dd/MM/yyyy' }}</span>
+                  }
+                </div>
+              </div>
+            }
+          </div>
+        }
+      </div>
+
+    </div>
+  </div>
+}
+
+<!-- Update Modal -->
+@if (openedUpdate()) {
+  <div class="modal-backdrop fade show" (click)="openedUpdate.set(false)"></div>
+  <div class="modal show d-block" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Editar Fornecedor</h5>
+          <button type="button" class="btn-close" (click)="openedUpdate.set(false)" aria-label="Fechar"></button>
+        </div>
+        <div class="modal-body">
+          @if (supplier()) {
+            <app-update-supplier
+              [supplier]="supplier()!"
+              (closeEvent)="openedUpdate.set(false)"
+              (supplierUpdated)="onSupplierUpdated()" />
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+}

@@ -1,0 +1,112 @@
+<router-outlet />
+<section class="page-section">
+  <div class="page-toolbar">
+    <app-filter [placeholder]="'Buscar por nome do fornecedor'" (filterChange)="onFilterChange($event)" />
+    <button type="button" class="btn btn-primary" (click)="openCreate()">
+      <i class="bi bi-plus-lg me-1"></i>Novo Fornecedor
+    </button>
+  </div>
+
+  @if (isLoading()) {
+    <div class="d-flex justify-content-center py-5">
+      <div class="spinner-border text-secondary" role="status">
+        <span class="visually-hidden">Carregando...</span>
+      </div>
+    </div>
+  } @else {
+    @if ((items()?.items ?? []).length === 0) {
+      <div class="text-center py-5 text-muted fst-italic">
+        Nenhum fornecedor encontrado.
+      </div>
+    }
+    <div class="suppliers-grid">
+      @for (supplier of items()?.items ?? []; track supplier.id) {
+        <div class="supplier-card" (click)="navigateToDetail(supplier.id)">
+
+          <!-- Icon + status -->
+          <div class="supplier-card__icon-wrap">
+            <div class="supplier-card__icon-placeholder">
+              <i class="bi bi-building"></i>
+            </div>
+            @if (!supplier.deletedAt) {
+              <span class="status-dot status-dot--active" title="Ativo"></span>
+            } @else {
+              <span class="status-dot status-dot--inactive" title="Excluído"></span>
+            }
+          </div>
+
+          <!-- Info -->
+          <div class="supplier-card__info">
+            <p class="supplier-card__name">Fornecedor</p>
+            <p class="supplier-card__meta">
+              <i class="bi bi-hash me-1"></i>{{ shortId(supplier.personId) }}
+            </p>
+            <p class="supplier-card__meta">
+              <i class="bi bi-calendar3 me-1"></i>{{ supplier.createdAt | date:'dd/MM/yyyy' }}
+            </p>
+          </div>
+
+          <!-- Actions -->
+          <div class="supplier-card__actions" (click)="$event.stopPropagation()">
+            <button type="button" class="btn btn-sm btn-outline-secondary"
+              title="Editar" (click)="openEdit(supplier)">
+              <i class="bi bi-pencil"></i>
+            </button>
+            <button type="button" class="btn btn-sm btn-outline-danger"
+              title="Excluir" (click)="delete(supplier)">
+              <i class="bi bi-trash"></i>
+            </button>
+          </div>
+
+        </div>
+      }
+    </div>
+  }
+
+  <app-pagination
+    [currentPage]="currentPage()"
+    [totalPages]="$any(items()?.totalPages) ?? 1"
+    [pageSize]="pageSize()"
+    [totalItems]="$any(items()?.totalCount) ?? 0"
+    (pageChange)="onPageChange($event)"
+    (pageSizeChange)="onPageSizeChange($event)" />
+</section>
+
+@if (openedCreate()) {
+  <div class="modal-backdrop fade show" (click)="openedCreate.set(false)"></div>
+  <div class="modal show d-block" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Novo Fornecedor</h5>
+          <button type="button" class="btn-close" (click)="openedCreate.set(false)" aria-label="Fechar"></button>
+        </div>
+        <div class="modal-body">
+          <app-create-supplier (closeEvent)="openedCreate.set(false)" (supplierCreated)="onCreated()" />
+        </div>
+      </div>
+    </div>
+  </div>
+}
+
+@if (openedUpdate()) {
+  <div class="modal-backdrop fade show" (click)="openedUpdate.set(false)"></div>
+  <div class="modal show d-block" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Editar Fornecedor</h5>
+          <button type="button" class="btn-close" (click)="openedUpdate.set(false)" aria-label="Fechar"></button>
+        </div>
+        <div class="modal-body">
+          @if (selected()) {
+            <app-update-supplier
+              [supplier]="selected()!"
+              (closeEvent)="openedUpdate.set(false)"
+              (supplierUpdated)="onUpdated()" />
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+}
