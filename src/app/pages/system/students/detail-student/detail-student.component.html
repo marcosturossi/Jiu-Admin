@@ -1,67 +1,229 @@
-<h3 class="page-title">Detalhes do Aluno</h3>
-<h2 class="text-center">{{ student?.firstName }} {{ student?.lastName }}</h2>
+<!-- Loading global overlay -->
+@if (isLoadingStudent() || isLoadingContracts() || isLoadingGraduations()) {
+  <div class="global-loading d-flex justify-content-center align-items-center py-4">
+    <div class="spinner-border text-secondary" role="status">
+      <span class="visually-hidden">Carregando...</span>
+    </div>
+  </div>
+}
 
-<div class="row">
-    <section class="card col-xl-4 m">
-        <h2>Contratos</h2>
-        <div>
-            {{ contracts?.items?.length ? contracts?.items?.[0] : 'no contracts' }}
+<!-- Header Card -->
+<div class="section-card header-card mb-4">
+  <div class="header-inner">
+    <!-- Avatar -->
+    <div class="avatar-wrap">
+      @if (photoUrl()) {
+        <img [src]="photoUrl()" alt="Foto do aluno" class="avatar" />
+      } @else {
+        <div class="avatar-placeholder">
+          <i class="bi bi-person-circle"></i>
         </div>
-    </section>
-    <section class="card col-xl-4">
-        <h2>Transações</h2>
-        <div>
-            {{ transactions?.items?.length ? transactions?.items?.[0] : 'no transactions' }}
-        </div>
-    </section>
-    <section class="card col-xl-4">
-        <h2>Graduações</h2>
-        <div>
-            <div>
-                @for (graduation of graduations?.items ?? []; track graduation.id) {
-                <div>
-                    {{ graduation?.belt?.color ?? 'no color' }}
-                    -
-                    {{ graduation?.graduationDate ? (graduation.graduationDate | date:'dd/MM/yyyy') : 'no graduation
-                    date' }}
-                </div>
-                }
-            </div>
+      }
+    </div>
 
-        </div>
-    </section>
-    <section class="card col-xl-4">
-        <h2>Informações Pessoais</h2>
+    <!-- Identity -->
+    <div class="header-info">
+      <h2 class="student-name mb-1">{{ student()?.firstName }} {{ student()?.lastName }}</h2>
+      <div class="d-flex align-items-center gap-2 flex-wrap mb-1">
+        @if (student()?.isActive) {
+          <span class="badge bg-success">Ativo</span>
+        } @else {
+          <span class="badge bg-danger">Inativo</span>
+        }
+        @if (student()?.cpf) {
+          <span class="text-muted small">CPF: {{ student()?.cpf }}</span>
+        }
+        @if (student()?.userName) {
+          <span class="text-muted small">&#64;{{ student()?.userName }}</span>
+        }
+      </div>
+    </div>
 
-        <h3> Endereços</h3>
-        @for (address of student?.addresses ?? []; track address.id) {
-        <div>
-            <p><span class="fw-bold">Rua</span>{{ address?.street ?? 'no street' }}</p>
-            <p><span class="fw-bold">Número</span>{{ address?.number ?? 'no number' }}</p>
-            <p><span class="fw-bold">Complemento</span>{{ address?.complement ?? 'no complement' }}</p>
-            <p><span class="fw-bold">Bairro</span>{{ address?.neighborhood ?? 'no neighborhood' }}</p>
-            <p><span class="fw-bold">CEP</span>{{ address?.zipCode ?? 'no zip code' }}</p>
-            <p><span class="fw-bold">Cidade</span>{{ address?.city ?? 'no city' }}</p>
-        </div>
-        }
-        @if (student?.addresses?.length == 0) {
-        Nenhum endereço cadastrado
-        }
-
-        <h3>
-            Responsáveis
-        </h3>
-        @for(responsible of student?.relationships ?? []; track responsible.id){
-        <p><span class="fw-bold">Nome</span>{{ responsible?.relatedIndividual?.firstName ?? 'no name' }} {{
-            responsible?.relatedIndividual?.lastName ?? 'no last name' }}</p>
-        <p><span class="fw-bold">Email</span>{{ responsible?.relatedIndividual?.email ?? 'no email' }}</p>
-        <p><span class="fw-bold">Telefone</span>{{ responsible?.relatedIndividual?.phoneNumber ?? 'no phone number' }}
-        </p>
-        }
-        @if (student?.relationships?.length == 0) {
-        Nenhum responsável cadastrado
-        }
-
-        <a class="click" (click)="updateStudent()">Editar</a>
-    </section>
+    <!-- Actions -->
+    <div class="header-actions">
+      @if (student()) {
+        <button type="button" class="btn btn-primary btn-sm me-2" (click)="openUpdate()">
+          <i class="bi bi-pencil me-1"></i>Editar
+        </button>
+      }
+      <button type="button" class="btn btn-outline-secondary btn-sm back-btn" (click)="goBack()">
+        <i class="bi bi-arrow-left me-1"></i>Voltar
+      </button>
+    </div>
+  </div>
 </div>
+
+<!-- Main Grid -->
+<div class="detail-grid">
+  <!-- LEFT COLUMN -->
+  <div class="left-col">
+
+    <!-- Informações Pessoais -->
+    <div class="section-card mb-4">
+      <h5 class="section-title"><i class="bi bi-person me-2"></i>Informações Pessoais</h5>
+      @if (isLoadingStudent()) {
+        <div class="d-flex justify-content-center py-3">
+          <div class="spinner-border spinner-border-sm text-secondary" role="status"></div>
+        </div>
+      } @else {
+        <div class="info-row"><span class="info-label">E-mail</span><span>{{ student()?.email ?? '—' }}</span></div>
+        <div class="info-row"><span class="info-label">Telefone</span><span>{{ student()?.phoneNumber ?? '—' }}</span></div>
+        <div class="info-row">
+          <span class="info-label">Data de Nascimento</span>
+          <span>{{ student()?.birthDay ? (student()!.birthDay! | date:'dd/MM/yyyy') : '—' }}</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Cadastrado em</span>
+          <span>{{ student()?.createdAt ? (student()!.createdAt! | date:'dd/MM/yyyy') : '—' }}</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Último acesso</span>
+          <span>{{ student()?.lastLoginAt ? (student()!.lastLoginAt! | date:'dd/MM/yyyy') : 'Nunca' }}</span>
+        </div>
+      }
+    </div>
+
+    <!-- Endereços -->
+    <div class="section-card mb-4">
+      <h5 class="section-title"><i class="bi bi-geo-alt me-2"></i>Endereços</h5>
+      @if (isLoadingStudent()) {
+        <div class="d-flex justify-content-center py-3">
+          <div class="spinner-border spinner-border-sm text-secondary" role="status"></div>
+        </div>
+      } @else if ((student()?.addresses ?? []).length === 0) {
+        <p class="text-muted fst-italic mb-0">Nenhum endereço cadastrado.</p>
+      } @else {
+        @for (addr of student()?.addresses ?? []; track addr.id) {
+          <div class="address-block">
+            <span class="badge bg-info text-dark mb-2">{{ addressTypeLabel(addr.typeAddress) }}</span>
+            <p class="mb-1">{{ addr.street }}, {{ addr.number }}
+              @if (addr.complement) { — {{ addr.complement }} }
+            </p>
+            <p class="mb-1 text-muted small">{{ addr.neighborhood }} · {{ addr.city }}/{{ addr.state }}</p>
+            <p class="mb-0 text-muted small">CEP: {{ addr.zipCode }}</p>
+          </div>
+          @if (!$last) { <hr class="my-3"> }
+        }
+      }
+    </div>
+
+    <!-- Responsáveis -->
+    <div class="section-card mb-4">
+      <h5 class="section-title"><i class="bi bi-people me-2"></i>Responsáveis</h5>
+      @if (isLoadingStudent()) {
+        <div class="d-flex justify-content-center py-3">
+          <div class="spinner-border spinner-border-sm text-secondary" role="status"></div>
+        </div>
+      } @else if ((student()?.relationships ?? []).length === 0) {
+        <p class="text-muted fst-italic mb-0">Nenhum responsável cadastrado.</p>
+      } @else {
+        @for (rel of student()?.relationships ?? []; track rel.id) {
+          <div class="responsible-block">
+            <div class="d-flex align-items-center gap-2 mb-1">
+              <span class="badge bg-secondary">{{ relationshipLabel(rel.relationshipType) }}</span>
+              <strong>{{ rel.relatedIndividual?.firstName }} {{ rel.relatedIndividual?.lastName }}</strong>
+            </div>
+            <div class="info-row"><span class="info-label">E-mail</span><span>{{ rel.relatedIndividual?.email ?? '—' }}</span></div>
+            <div class="info-row"><span class="info-label">Telefone</span><span>{{ rel.relatedIndividual?.phoneNumber ?? '—' }}</span></div>
+          </div>
+          @if (!$last) { <hr class="my-3"> }
+        }
+      }
+    </div>
+
+  </div><!-- /left-col -->
+
+  <!-- RIGHT COLUMN -->
+  <div class="right-col">
+
+    <!-- Contratos -->
+    <div class="section-card mb-4">
+      <h5 class="section-title"><i class="bi bi-file-earmark-text me-2"></i>Contratos</h5>
+      @if (isLoadingContracts()) {
+        <div class="d-flex justify-content-center py-3">
+          <div class="spinner-border spinner-border-sm text-secondary" role="status"></div>
+        </div>
+      } @else if ((contracts()?.items ?? []).length === 0) {
+        <p class="text-muted fst-italic mb-0">Nenhum contrato encontrado.</p>
+      } @else {
+        @for (contract of contracts()?.items ?? []; track contract.id) {
+          <div class="contract-block">
+            <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-2">
+              <strong>{{ contract.feePlanName ?? 'Plano não informado' }}</strong>
+              <span class="badge {{ contractStatusBadge(contract.status) }}">{{ contractStatusLabel(contract.status) }}</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">Período</span>
+              <span>
+                {{ contract.startDate ? (contract.startDate | date:'dd/MM/yyyy') : '—' }}
+                →
+                {{ contract.endDate ? (contract.endDate | date:'dd/MM/yyyy') : '—' }}
+              </span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">Mensalidade</span>
+              <span>{{ (contract.monthlyAmount ?? 0) | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}</span>
+            </div>
+            <div class="fees-pills mt-2">
+              <span class="badge bg-success me-1">{{ contract.paidFees ?? 0 }} pagas</span>
+              <span class="badge bg-warning text-dark me-1">{{ contract.pendingFees ?? 0 }} pendentes</span>
+              <span class="badge bg-danger">{{ contract.overdueFees ?? 0 }} em atraso</span>
+            </div>
+            @if (contract.notes) {
+              <p class="text-muted small mt-2 mb-0"><i class="bi bi-chat-left-text me-1"></i>{{ contract.notes }}</p>
+            }
+          </div>
+          @if (!$last) { <hr class="my-3"> }
+        }
+      }
+    </div>
+
+    <!-- Graduações -->
+    <div class="section-card mb-4">
+      <h5 class="section-title"><i class="bi bi-award me-2"></i>Graduações</h5>
+      @if (isLoadingGraduations()) {
+        <div class="d-flex justify-content-center py-3">
+          <div class="spinner-border spinner-border-sm text-secondary" role="status"></div>
+        </div>
+      } @else if ((graduations()?.items ?? []).length === 0) {
+        <p class="text-muted fst-italic mb-0">Nenhuma graduação registrada.</p>
+      } @else {
+        <div class="graduation-timeline">
+          @for (grad of graduations()?.items ?? []; track grad.id) {
+            <div class="graduation-item">
+              <div class="belt-dot" [style.background-color]="grad.belt?.color ?? '#888'"></div>
+              <div class="graduation-info">
+                <strong>{{ grad.belt?.color ?? 'Faixa não informada' }}</strong>
+                <span class="text-muted small ms-2">{{ stripesLabel(grad.stripes) }}</span>
+                <br>
+                <span class="text-muted small">{{ grad.graduationDate | date:'dd/MM/yyyy' }}</span>
+              </div>
+            </div>
+          }
+        </div>
+      }
+    </div>
+
+  </div><!-- /right-col -->
+</div><!-- /detail-grid -->
+
+<!-- Update Modal -->
+@if (openedUpdate() && student()) {
+  <div class="modal-backdrop fade show" (click)="openedUpdate.set(false)"></div>
+  <div class="modal show d-block" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Editar Aluno</h5>
+          <button type="button" class="btn-close" (click)="openedUpdate.set(false)" aria-label="Fechar"></button>
+        </div>
+        <div class="modal-body">
+          <app-update-student
+            [student]="student()!"
+            (closeEvent)="openedUpdate.set(false)"
+            (studentUpdated)="onStudentUpdated()" />
+        </div>
+      </div>
+    </div>
+  </div>
+}
