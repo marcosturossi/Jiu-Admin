@@ -7,12 +7,10 @@
     <div class="col mb-3">
       <label for="type" class="form-label">Tipo *</label>
       <select id="type" formControlName="type" class="form-select">
-        <option [ngValue]="null" disabled>Selecione</option>
+        <option value="" disabled>Selecione</option>
 
         @for (item of notificationTypes; track item.value) {
-        <option [ngValue]="item.value">
-          {{ item.label }}
-        </option>
+          <option [value]="item.value">{{ item.label }}</option>
         }
       </select>
     </div>

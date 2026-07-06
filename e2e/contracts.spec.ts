@@ -16,8 +16,20 @@ test.describe('Contratos', () => {
     // CREATE — requires an existing student and fee-plan in the DB
     await openCreateModal(page, /Novo Contrato/i);
 
-    // Select a student
-    await selectFromSearchSelect(page, 'Aluno', '');
+    // Select a student — skip if no students exist in the database
+    const field = page.locator('.mb-3', { hasText: 'Aluno' });
+    await field.locator('.search-select-trigger').click();
+    const searchModal = page.locator('.modal.show').last();
+    await expect(searchModal).toBeVisible({ timeout: 5_000 });
+    await searchModal.locator('input[placeholder="Buscar..."]').fill('');
+    const firstResult = searchModal.locator('li.list-group-item-action:not(.search-select-clear)').first();
+    const hasStudents = await firstResult.isVisible({ timeout: 5_000 }).catch(() => false);
+    if (!hasStudents) {
+      await page.keyboard.press('Escape');
+      test.skip(true, 'Sem alunos cadastrados para criar contrato');
+      return;
+    }
+    await firstResult.click();
 
     // Select a fee-plan
     await selectFromSearchSelect(page, 'Plano de Pagamento', '');

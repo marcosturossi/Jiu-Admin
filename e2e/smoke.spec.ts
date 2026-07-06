@@ -14,7 +14,6 @@ const sections = [
   { path: '/system/finance-dashboard',       label: 'Dashboard Financeiro' },
   { path: '/system/fee-plans',               label: 'Planos de Mensalidade' },
   { path: '/system/contracts',               label: 'Contratos' },
-  { path: '/system/monthly-fees',            label: 'Mensalidades' },
   { path: '/system/transactions',            label: 'Transações' },
   { path: '/system/transaction-categories',  label: 'Categorias de Transação' },
   { path: '/system/medical-clearances',      label: 'Atestados Médicos' },

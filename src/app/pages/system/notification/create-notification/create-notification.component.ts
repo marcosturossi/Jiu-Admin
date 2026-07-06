@@ -35,7 +35,7 @@ export class CreateNotificationComponent {
   protected readonly form = this.fb.group({
     title: ['', Validators.required],
     message: ['', Validators.required],
-    type: ['', Validators.required],
+    type: [NotificationType.Info as string, Validators.required],
     userId: [''],
     isActive: [true],
     expiresAt: [null as string | null],

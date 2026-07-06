@@ -25,7 +25,6 @@ test.describe('Notificações', () => {
 
     await page.fill('#title', TEST_TITLE);
     await page.fill('#message', TEST_MESSAGE);
-    await page.selectOption('#type', { label: 'Informação' });
 
     await page.getByRole('button', { name: /Salvar|Criar/i }).click();
     await expect(page.locator('.modal.show').first()).not.toBeVisible({ timeout: 15_000 });
@@ -62,7 +61,7 @@ test.describe('Notificações', () => {
 
   test('busca retorna vazio para texto inexistente', async ({ page }) => {
     await page.fill('input[placeholder="Buscar notificação"]', '__NAO_EXISTE_ABC123__');
-    await page.waitForTimeout(600);
+    // Wait for debounce (400ms) + API response
     await expect(page.locator('table tbody tr')).toHaveCount(1, { timeout: 8_000 });
   });
 
