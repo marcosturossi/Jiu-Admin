@@ -3,6 +3,8 @@ README.md
 api.module.ts
 api/academy.service.ts
 api/academy.serviceInterface.ts
+api/address.service.ts
+api/address.serviceInterface.ts
 api/adminContract.service.ts
 api/adminContract.serviceInterface.ts
 api/adminFinancialTransaction.service.ts
@@ -52,6 +54,7 @@ configuration.ts
 encoder.ts
 git_push.sh
 index.ts
+model/addressFromApiDTO.ts
 model/addressType.ts
 model/apiAdminContractsSendRenewalWarningsPostDaysAheadParameter.ts
 model/apiFeePlanGetPriceMinParameter.ts

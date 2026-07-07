@@ -6,7 +6,7 @@ import { NotificationService } from '../../../../services/notification.service';
 import { AddressType } from '../../../../generated_services/model/addressType';
 import { RelationshipType } from '../../../../generated_services/model/relationshipType';
 import { ShowStudentDTO } from '../../../../generated_services/model/showStudentDTO';
-import { CreateAddressDTO } from '../../../../generated_services';
+import { AddressService, CreateAddressDTO } from '../../../../generated_services';
 
 @Component({
   selector: 'app-create-student',
@@ -22,6 +22,7 @@ export class CreateStudentComponent {
   private readonly fb = inject(FormBuilder);
   private readonly studentsService = inject(StudentsService);
   private readonly notificationService = inject(NotificationService);
+  private readonly addressService = inject(AddressService)
 
   protected readonly addressTypes = Object.values(AddressType);
   protected readonly relationshipTypes = Object.values(RelationshipType);
@@ -80,6 +81,28 @@ export class CreateStudentComponent {
 
   protected removeAddress(index: number): void {
     this.addresses.removeAt(index);
+  }
+
+  protected onZipCodeChange(index: number): void {
+    const group = this.addresses.at(index) as FormGroup;
+
+    const zipCode = group.get('zipCode')?.value?.replace(/\D/g, '');
+
+    if (!zipCode || zipCode.length !== 8) {
+      return;
+    }
+
+    this.addressService.apiAddressCepGet(zipCode).subscribe({
+      next: address => {
+        group.patchValue({
+          street: address.street,
+          neighborhood: address.neighborhood,
+          city: address.city,
+          state: address.state,
+          complement: address.complement
+        });
+      }
+    });
   }
 
   protected removeResponsible(index: number): void {

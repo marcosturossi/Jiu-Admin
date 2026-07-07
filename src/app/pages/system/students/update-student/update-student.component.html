@@ -30,7 +30,8 @@
       </div>
       <div class="col-md-6 mb-3">
         <label for="phoneNumber" class="form-label">Telefone</label>
-        <input id="phoneNumber" type="text" class="form-control" formControlName="phoneNumber" placeholder="(00) 00000-0000">
+        <input id="phoneNumber" type="text" class="form-control" formControlName="phoneNumber"
+          placeholder="(00) 00000-0000">
       </div>
       <div class="col-md-6 mb-3 d-flex align-items-end pb-1">
         <div class="form-check">
@@ -52,108 +53,113 @@
 
     <div formArrayName="addresses">
       @for (addr of addresses.controls; track $index) {
-        <div class="address-block" [formGroupName]="$index">
-          <div class="row">
-            <div class="col-md-4 mb-3">
-              <label class="form-label">Tipo *</label>
-              <select class="form-select" formControlName="typeAddress">
-                <option value="" disabled>Selecione</option>
-                @for (type of addressTypes; track type) {
-                  <option [value]="type">{{ type }}</option>
-                }
-              </select>
-            </div>
-            <div class="col-md-8 mb-3">
-              <label class="form-label">Rua *</label>
-              <input class="form-control" formControlName="street" placeholder="Rua, Avenida...">
-            </div>
-            <div class="col-md-2 mb-3">
-              <label class="form-label">Número *</label>
-              <input class="form-control" formControlName="number" placeholder="Nº">
-            </div>
-            <div class="col-md-4 mb-3">
-              <label class="form-label">Complemento</label>
-              <input class="form-control" formControlName="complement" placeholder="Apto, Bloco...">
-            </div>
-            <div class="col-md-6 mb-3">
-              <label class="form-label">Bairro *</label>
-              <input class="form-control" formControlName="neighborhood" placeholder="Bairro">
-            </div>
-            <div class="col-md-5 mb-3">
-              <label class="form-label">Cidade *</label>
-              <input class="form-control" formControlName="city" placeholder="Cidade">
-            </div>
-            <div class="col-md-2 mb-3">
-              <label class="form-label">Estado *</label>
-              <input class="form-control" formControlName="state" placeholder="UF" maxlength="2">
-            </div>
-            <div class="col-md-3 mb-3">
-              <label class="form-label">CEP *</label>
-              <input class="form-control" formControlName="zipCode" placeholder="00000-000">
-            </div>
+      <div class="address-block" [formGroupName]="$index">
+        <div class="row">
+          <div class="col-md-4 mb-3">
+            <label class="form-label">Tipo *</label>
+            <select class="form-select" formControlName="typeAddress">
+              <option value="" disabled>Selecione</option>
+              @for (type of addressTypes; track type) {
+              <option [value]="type">{{ type }}</option>
+              }
+            </select>
           </div>
-          <div class="text-end mb-2">
-            <button type="button" class="btn btn-outline-danger btn-sm" (click)="removeAddress($index)">
-              <i class="bi bi-trash me-1"></i>Remover
-            </button>
+
+          <div class="col-md-3 mb-3">
+            <label class="form-label">CEP *</label>
+            <input class="form-control" formControlName="zipCode" (blur)="onZipCodeChange($index)"
+              placeholder="00000-000">
           </div>
+          <div class="col-md-8 mb-3">
+            <label class="form-label">Rua *</label>
+            <input class="form-control" formControlName="street" placeholder="Rua, Avenida...">
+          </div>
+          <div class="col-md-2 mb-3">
+            <label class="form-label">Número *</label>
+            <input class="form-control" formControlName="number" placeholder="Nº">
+          </div>
+          <div class="col-md-4 mb-3">
+            <label class="form-label">Complemento</label>
+            <input class="form-control" formControlName="complement" placeholder="Apto, Bloco...">
+          </div>
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Bairro *</label>
+            <input class="form-control" formControlName="neighborhood" placeholder="Bairro">
+          </div>
+          <div class="col-md-5 mb-3">
+            <label class="form-label">Cidade *</label>
+            <input class="form-control" formControlName="city" placeholder="Cidade">
+          </div>
+          <div class="col-md-2 mb-3">
+            <label class="form-label">Estado *</label>
+            <input class="form-control" formControlName="state" placeholder="UF" maxlength="2">
+          </div>
+
         </div>
-        @if (!$last) { <hr class="my-3"> }
+        <div class="text-end mb-2">
+          <button type="button" class="btn btn-outline-danger btn-sm" (click)="removeAddress($index)">
+            <i class="bi bi-trash me-1"></i>Remover
+          </button>
+        </div>
+      </div>
+      @if (!$last) {
+      <hr class="my-3"> }
       }
       @if (addresses.length === 0) {
-        <p class="text-muted fst-italic small">Nenhum endereço cadastrado.</p>
+      <p class="text-muted fst-italic small">Nenhum endereço cadastrado.</p>
       }
     </div>
   </section>
 
   <!-- Responsáveis (apenas menores) -->
   @if (isMinorSignal()) {
-    <section class="mb-4">
-      <div class="d-flex justify-content-between align-items-center mb-3">
-        <h6 class="section-title mb-0">Responsáveis</h6>
-        <button type="button" class="btn btn-outline-primary btn-sm" (click)="addResponsible()">
-          <i class="bi bi-plus-lg me-1"></i>Adicionar
-        </button>
-      </div>
+  <section class="mb-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h6 class="section-title mb-0">Responsáveis</h6>
+      <button type="button" class="btn btn-outline-primary btn-sm" (click)="addResponsible()">
+        <i class="bi bi-plus-lg me-1"></i>Adicionar
+      </button>
+    </div>
 
-      <div formArrayName="responsibles">
-        @for (r of responsibles.controls; track $index) {
-          <div class="address-block" [formGroupName]="$index">
-            <div class="row">
-              <div class="col-md-5 mb-3">
-                <label class="form-label">Tipo de Relação *</label>
-                <select class="form-select" formControlName="relationshipType">
-                  <option value="" disabled>Selecione</option>
-                  @for (type of relationshipTypes; track type) {
-                    <option [value]="type">{{ type }}</option>
-                  }
-                </select>
-              </div>
-              <div class="col-md-7 mb-3">
-                <label class="form-label">Pessoa Vinculada</label>
-                @if (getResponsibleGroup($index).get('selectedPersonName')?.value) {
-                  <div class="form-control bg-light d-flex align-items-center gap-2">
-                    <i class="bi bi-person-check text-success"></i>
-                    <span>{{ getResponsibleGroup($index).get('selectedPersonName')?.value }}</span>
-                  </div>
-                } @else {
-                  <input class="form-control" formControlName="relatedPersonId" placeholder="ID da pessoa responsável">
-                }
-              </div>
-            </div>
-            <div class="text-end mb-2">
-              <button type="button" class="btn btn-outline-danger btn-sm" (click)="removeResponsible($index)">
-                <i class="bi bi-trash me-1"></i>Remover
-              </button>
-            </div>
+    <div formArrayName="responsibles">
+      @for (r of responsibles.controls; track $index) {
+      <div class="address-block" [formGroupName]="$index">
+        <div class="row">
+          <div class="col-md-5 mb-3">
+            <label class="form-label">Tipo de Relação *</label>
+            <select class="form-select" formControlName="relationshipType">
+              <option value="" disabled>Selecione</option>
+              @for (type of relationshipTypes; track type) {
+              <option [value]="type">{{ type }}</option>
+              }
+            </select>
           </div>
-          @if (!$last) { <hr class="my-3"> }
-        }
-        @if (responsibles.length === 0) {
-          <p class="text-muted fst-italic small">Nenhum responsável cadastrado.</p>
-        }
+          <div class="col-md-7 mb-3">
+            <label class="form-label">Pessoa Vinculada</label>
+            @if (getResponsibleGroup($index).get('selectedPersonName')?.value) {
+            <div class="form-control bg-light d-flex align-items-center gap-2">
+              <i class="bi bi-person-check text-success"></i>
+              <span>{{ getResponsibleGroup($index).get('selectedPersonName')?.value }}</span>
+            </div>
+            } @else {
+            <input class="form-control" formControlName="relatedPersonId" placeholder="ID da pessoa responsável">
+            }
+          </div>
+        </div>
+        <div class="text-end mb-2">
+          <button type="button" class="btn btn-outline-danger btn-sm" (click)="removeResponsible($index)">
+            <i class="bi bi-trash me-1"></i>Remover
+          </button>
+        </div>
       </div>
-    </section>
+      @if (!$last) {
+      <hr class="my-3"> }
+      }
+      @if (responsibles.length === 0) {
+      <p class="text-muted fst-italic small">Nenhum responsável cadastrado.</p>
+      }
+    </div>
+  </section>
   }
 
   <!-- Botões -->

@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, effect, inject, input, output, signal } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, Validators, FormArray, FormGroup } from '@angular/forms';
 import { StudentsService } from '../../../../generated_services/api/students.service';
-import { ShowStudentDTO, UpdateStudentDTO, UpdateAddressDTO } from '../../../../generated_services';
+import { ShowStudentDTO, UpdateStudentDTO, UpdateAddressDTO, AddressService } from '../../../../generated_services';
 import { AddressType } from '../../../../generated_services/model/addressType';
 import { RelationshipType } from '../../../../generated_services/model/relationshipType';
 import { NotificationService } from '../../../../services/notification.service';
@@ -21,6 +21,7 @@ export class UpdateStudentComponent {
   private readonly fb = inject(FormBuilder);
   private readonly studentsService = inject(StudentsService);
   private readonly notificationService = inject(NotificationService);
+  private readonly addressService = inject(AddressService)
 
   protected readonly addressTypes = Object.values(AddressType);
   protected readonly relationshipTypes = Object.values(RelationshipType);
@@ -91,6 +92,28 @@ export class UpdateStudentComponent {
   protected get responsibles(): FormArray { return this.form.get('responsibles') as FormArray; }
 
   protected getResponsibleGroup(i: number): FormGroup { return this.responsibles.at(i) as FormGroup; }
+
+  protected onZipCodeChange(index: number): void {
+    const group = this.addresses.at(index) as FormGroup;
+
+    const zipCode = group.get('zipCode')?.value?.replace(/\D/g, '');
+
+    if (!zipCode || zipCode.length !== 8) {
+      return;
+    }
+
+    this.addressService.apiAddressCepGet(zipCode).subscribe({
+      next: address => {
+        group.patchValue({
+          street: address.street,
+          neighborhood: address.neighborhood,
+          city: address.city,
+          state: address.state,
+          complement: address.complement
+        });
+      }
+    });
+  }
 
   protected addAddress(): void {
     this.addresses.push(this.fb.group({

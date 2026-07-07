@@ -1,3 +1,4 @@
+export * from './addressFromApiDTO';
 export * from './addressType';
 export * from './apiAdminContractsSendRenewalWarningsPostDaysAheadParameter';
 export * from './apiFeePlanGetPriceMinParameter';

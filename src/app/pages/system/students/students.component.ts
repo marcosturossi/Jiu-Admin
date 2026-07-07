@@ -16,7 +16,6 @@ import {Router, ActivatedRoute} from '@angular/router';
 @Component({
   selector: 'app-students',
   imports: [
-    DatePipe,
     FilterComponent,
     PaginationComponent,
     CreateStudentComponent,
