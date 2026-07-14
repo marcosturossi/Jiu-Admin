@@ -3,9 +3,9 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { DatePipe, CurrencyPipe } from '@angular/common';
 
 import { SupplierService } from '../../../../generated_services/api/supplier.service';
-import { FinancialTransactionService } from '../../../../generated_services/api/financialTransaction.service';
+import { AccountsPayableService } from '../../../../generated_services/api/accountsPayable.service';
 import { ShowSupplierDTO } from '../../../../generated_services/model/showSupplierDTO';
-import { PaginatedResultOfShowFinancialTransactionDTO } from '../../../../generated_services/model/paginatedResultOfShowFinancialTransactionDTO';
+import { ShowAccountsPayableDTO } from '../../../../generated_services/model/showAccountsPayableDTO';
 import { NotificationService } from '../../../../services/notification.service';
 import { SubnavService } from '../../../../services/subnav.service';
 import { UpdateSupplierComponent } from '../update-supplier/update-supplier.component';
@@ -22,14 +22,14 @@ export class DetailSupplierComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly supplierService = inject(SupplierService);
-  private readonly financialTransactionService = inject(FinancialTransactionService);
+  private readonly accountsPayableService = inject(AccountsPayableService);
   private readonly notificationService = inject(NotificationService);
   private readonly subnavService = inject(SubnavService);
 
   private readonly id = this.route.snapshot.paramMap.get('id') ?? '';
 
   protected readonly supplier = signal<ShowSupplierDTO | null>(null);
-  protected readonly transactions = signal<PaginatedResultOfShowFinancialTransactionDTO | null>(null);
+  protected readonly transactions = signal<ShowAccountsPayableDTO[]>([]);
   protected readonly isLoadingSupplier = signal(false);
   protected readonly isLoadingTransactions = signal(false);
   protected readonly openedUpdate = signal(false);
@@ -58,8 +58,8 @@ export class DetailSupplierComponent implements OnInit {
 
   protected loadTransactions(personId: string): void {
     this.isLoadingTransactions.set(true);
-    this.financialTransactionService.apiFinancialTransactionGet(
-      undefined,
+    // AccountsPayable has no server-side filter by supplier yet; fetch a page and filter client-side.
+    this.accountsPayableService.apiAccountsPayableGet(
       undefined,
       undefined,
       undefined,
@@ -68,17 +68,14 @@ export class DetailSupplierComponent implements OnInit {
       undefined,
       undefined,
       1 as any,
-      10 as any,
-      undefined,
-      undefined,
-      personId,
+      100 as any,
     ).subscribe({
       next: data => {
-        this.transactions.set(data);
+        this.transactions.set((data?.items ?? []).filter(item => item.personId === personId).slice(0, 10));
         this.isLoadingTransactions.set(false);
       },
       error: () => {
-        this.notificationService.showError('Erro', 'Não foi possível carregar as transações.');
+        this.notificationService.showError('Erro', 'Não foi possível carregar as contas a pagar.');
         this.isLoadingTransactions.set(false);
       },
     });
@@ -113,26 +110,6 @@ export class DetailSupplierComponent implements OnInit {
       Refunded:  'Reembolsado',
     };
     return map[status ?? ''] ?? status ?? '';
-  }
-
-  protected transactionTypeBadge(type: string | undefined): string {
-    switch (type) {
-      case 'Income':     return 'bg-success';
-      case 'Expense':    return 'bg-danger';
-      case 'Refund':     return 'bg-info text-dark';
-      case 'Adjustment': return 'bg-secondary';
-      default:           return 'bg-secondary';
-    }
-  }
-
-  protected transactionTypeLabel(type: string | undefined): string {
-    const map: Record<string, string> = {
-      Income:     'Receita',
-      Expense:    'Despesa',
-      Refund:     'Reembolso',
-      Adjustment: 'Ajuste',
-    };
-    return map[type ?? ''] ?? type ?? '';
   }
 
   protected addressTypeLabel(type: string | undefined): string {

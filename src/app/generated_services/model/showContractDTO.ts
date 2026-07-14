@@ -8,9 +8,9 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { ApiFeePlanGetPriceMinParameter } from './apiFeePlanGetPriceMinParameter';
 import { ContractStatus } from './contractStatus';
 import { ApiFrequencyGetPageParameter } from './apiFrequencyGetPageParameter';
+import { ApiAccountsPayableGetAmountMinParameter } from './apiAccountsPayableGetAmountMinParameter';
 
 
 export interface ShowContractDTO { 
@@ -22,7 +22,7 @@ export interface ShowContractDTO {
     feePlanMonthDuration?: ApiFrequencyGetPageParameter;
     startDate?: string;
     endDate?: string;
-    monthlyAmount?: ApiFeePlanGetPriceMinParameter;
+    monthlyAmount?: ApiAccountsPayableGetAmountMinParameter;
     status?: ContractStatus;
     notes?: string | null;
     createdAt?: string;

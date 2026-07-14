@@ -20,7 +20,8 @@ import { NotificationComponent } from './notification/notification.component';
 import { MedicalClearancesComponent } from './medical-clearances/medical-clearances.component';
 import { FeePlansComponent } from './fee-plans/fee-plans.component';
 import { ContractsComponent } from './contracts/contracts.component';
-import { TransactionsComponent } from './transactions/transactions.component';
+import { AccountsReceivableComponent } from './accounts-receivable/accounts-receivable.component';
+import { AccountsPayableComponent } from './accounts-payable/accounts-payable.component';
 import { TransactionCategoriesComponent } from './transaction-categories/transaction-categories.component';
 import { AcademiesComponent } from './academies/academies.component';
 import { StudentOnboardingComponent } from './student-onboarding/student-onboarding.component';
@@ -53,7 +54,8 @@ export const routes: Routes = [
       { path: 'finance-dashboard', component: FinanceDashboardComponent },
       { path: 'fee-plans', component: FeePlansComponent },
       { path: 'contracts', component: ContractsComponent },
-      { path: 'transactions', component: TransactionsComponent },
+      { path: 'accounts-receivable', component: AccountsReceivableComponent },
+      { path: 'accounts-payable', component: AccountsPayableComponent },
       { path: 'transaction-categories', component: TransactionCategoriesComponent },
       // Saúde e Segurança
       { path: 'medical-clearances', component: MedicalClearancesComponent },

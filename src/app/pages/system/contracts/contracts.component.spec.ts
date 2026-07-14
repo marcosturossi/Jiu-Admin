@@ -13,7 +13,7 @@ import { NotificationService } from '../../../services/notification.service';
 import { ShowContractDTO as ShowContractDTO, ContractStatus as ContractStatus } from '../../../generated_services';
 import { ShowStudentDTO } from '../../../generated_services/model/showStudentDTO';
 
-const MOCK_CONTRACT: ShowContractDTO = { id: 'c1', studentId: 'student-1', feePlanName: 'Plano Mensal', monthlyAmount: 150, status: ContractStatus.Active as any };
+const MOCK_CONTRACT: ShowContractDTO = { id: 'c1', personId: 'student-1', feePlanName: 'Plano Mensal', monthlyAmount: 150, status: ContractStatus.Active as any };
 
 const MOCK_ITEMS = Array.from({ length: 25 }, (_, i) => ({ ...MOCK_CONTRACT, id: `ct${i + 1}` }));
 const buildResponse = (page = 1, pageSize = 10) => ({

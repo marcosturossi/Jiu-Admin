@@ -8,8 +8,8 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { ApiFeePlanGetPriceMinParameter } from './apiFeePlanGetPriceMinParameter';
 import { ApiFrequencyGetPageParameter } from './apiFrequencyGetPageParameter';
+import { ApiAccountsPayableGetAmountMinParameter } from './apiAccountsPayableGetAmountMinParameter';
 
 
 export interface ShowFeePlanDTO { 
@@ -17,7 +17,7 @@ export interface ShowFeePlanDTO {
     name?: string;
     description?: string | null;
     monthDuration?: ApiFrequencyGetPageParameter;
-    price?: ApiFeePlanGetPriceMinParameter;
+    price?: ApiAccountsPayableGetAmountMinParameter;
     isActive?: boolean;
     createdAt?: string;
 }

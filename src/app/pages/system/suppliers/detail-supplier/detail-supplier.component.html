@@ -115,19 +115,19 @@
     <!-- RIGHT COLUMN -->
     <div class="right-col">
 
-      <!-- Transações -->
+      <!-- Contas a Pagar -->
       <div class="section-card mb-4">
-        <h5 class="section-title"><i class="bi bi-arrow-left-right me-2"></i>Transações</h5>
+        <h5 class="section-title"><i class="bi bi-arrow-up-circle me-2"></i>Contas a Pagar</h5>
 
         @if (isLoadingTransactions()) {
           <div class="d-flex justify-content-center py-3">
             <div class="spinner-border spinner-border-sm text-secondary" role="status"></div>
           </div>
-        } @else if ((transactions()?.items ?? []).length === 0) {
-          <p class="text-muted fst-italic mb-0">Nenhuma transação encontrada.</p>
+        } @else if (transactions().length === 0) {
+          <p class="text-muted fst-italic mb-0">Nenhuma conta a pagar encontrada.</p>
         } @else {
           <div class="transaction-list">
-            @for (tx of transactions()?.items ?? []; track tx.id) {
+            @for (tx of transactions(); track tx.id) {
               <div class="transaction-item">
                 <div class="transaction-item__top">
                   <span class="transaction-item__desc">{{ tx.description ?? '—' }}</span>
@@ -136,7 +136,6 @@
                   </span>
                 </div>
                 <div class="transaction-item__badges">
-                  <span class="badge {{ transactionTypeBadge(tx.type) }}">{{ transactionTypeLabel(tx.type) }}</span>
                   <span class="badge {{ transactionStatusBadge(tx.status) }}">{{ transactionStatusLabel(tx.status) }}</span>
                 </div>
                 <div class="transaction-item__dates">

@@ -2,8 +2,9 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
 import { FinanceDashboardComponent } from './finance-dashboard.component';
 import { SubnavService } from '../../../services/subnav.service';
-import { FinancialTransactionService } from '../../../generated_services/api/financialTransaction.service';
-import { MonthlyFeeService } from '../../../generated_services/api/monthlyFee.service';
+import { FinancialOverviewService } from '../../../generated_services/api/financialOverview.service';
+import { AccountsReceivableService } from '../../../generated_services/api/accountsReceivable.service';
+import { AccountsPayableService } from '../../../generated_services/api/accountsPayable.service';
 import { ThemeService } from '../../../services/theme.service';
 import { signal } from '@angular/core';
 
@@ -14,10 +15,13 @@ describe('FinanceDashboardComponent', () => {
 
   beforeEach(async () => {
     subnavSpy = jasmine.createSpyObj('SubnavService', ['setTitle']);
-    const transactionSvc = jasmine.createSpyObj('FinancialTransactionService', ['apiFinancialTransactionGet']);
-    transactionSvc.apiFinancialTransactionGet.and.returnValue(of({ items: [] } as any));
-    const monthlyFeeSvc = jasmine.createSpyObj('MonthlyFeeService', ['apiMonthlyFeeOverdueGet']);
-    monthlyFeeSvc.apiMonthlyFeeOverdueGet.and.returnValue(of([]) as any);
+    const overviewSvc = jasmine.createSpyObj('FinancialOverviewService', ['apiFinancialOverviewBalanceGet']);
+    overviewSvc.apiFinancialOverviewBalanceGet.and.returnValue(of({ totalReceivable: 0, totalPayable: 0, balance: 0 } as any));
+    const receivableSvc = jasmine.createSpyObj('AccountsReceivableService', ['apiAccountsReceivableGet', 'apiAccountsReceivableSummaryGet']);
+    receivableSvc.apiAccountsReceivableGet.and.returnValue(of({ items: [] } as any));
+    receivableSvc.apiAccountsReceivableSummaryGet.and.returnValue(of({ overdueFeeCount: 0, pendingFeesTotal: 0 } as any));
+    const payableSvc = jasmine.createSpyObj('AccountsPayableService', ['apiAccountsPayableGet']);
+    payableSvc.apiAccountsPayableGet.and.returnValue(of({ items: [] } as any));
     const themeServiceStub: Partial<ThemeService> = {
       currentTheme: signal<any>('light'),
       getChartTheme: () => ({ color: [], tooltip: {}, legend: {}, axisLine: {}, label: {}, splitLine: {} }),
@@ -27,8 +31,9 @@ describe('FinanceDashboardComponent', () => {
       imports: [FinanceDashboardComponent],
       providers: [
         { provide: SubnavService, useValue: subnavSpy },
-        { provide: FinancialTransactionService, useValue: transactionSvc },
-        { provide: MonthlyFeeService, useValue: monthlyFeeSvc },
+        { provide: FinancialOverviewService, useValue: overviewSvc },
+        { provide: AccountsReceivableService, useValue: receivableSvc },
+        { provide: AccountsPayableService, useValue: payableSvc },
         { provide: ThemeService, useValue: themeServiceStub },
       ],
     }).compileComponents();

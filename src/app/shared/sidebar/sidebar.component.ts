@@ -58,7 +58,8 @@ export class SidebarComponent implements OnInit, OnDestroy {
         { route: '/system/finance-dashboard', label: 'Dashboard', icon: 'bi bi-bar-chart-line' },
         { route: '/system/fee-plans', label: 'Planos', icon: 'bi bi-receipt' },
         { route: '/system/contracts', label: 'Contratos', icon: 'bi bi-file-earmark-text' },
-        { route: '/system/transactions', label: 'Transações', icon: 'bi bi-arrow-left-right' },
+        { route: '/system/accounts-receivable', label: 'Contas a Receber', icon: 'bi bi-arrow-down-circle' },
+        { route: '/system/accounts-payable', label: 'Contas a Pagar', icon: 'bi bi-arrow-up-circle' },
         { route: '/system/transaction-categories', label: 'Categorias', icon: 'bi bi-tags' },
       ]
     },

@@ -10,7 +10,7 @@
       <div class="kpi-card income">
         <div class="kpi-icon"><i class="bi bi-arrow-up-circle-fill"></i></div>
         <div class="kpi-content">
-          <div class="kpi-label">Receitas (mês)</div>
+          <div class="kpi-label">Total a Receber</div>
           <div class="kpi-value">{{ formatCurrency(totalIncome()) }}</div>
         </div>
       </div>
@@ -18,7 +18,7 @@
       <div class="kpi-card expense">
         <div class="kpi-icon"><i class="bi bi-arrow-down-circle-fill"></i></div>
         <div class="kpi-content">
-          <div class="kpi-label">Despesas (mês)</div>
+          <div class="kpi-label">Total a Pagar</div>
           <div class="kpi-value">{{ formatCurrency(totalExpenses()) }}</div>
         </div>
       </div>
@@ -26,7 +26,7 @@
       <div class="kpi-card" [class.balance-pos]="balance() >= 0" [class.balance-neg]="balance() < 0">
         <div class="kpi-icon"><i class="bi bi-wallet2"></i></div>
         <div class="kpi-content">
-          <div class="kpi-label">Saldo do Mês</div>
+          <div class="kpi-label">Saldo</div>
           <div class="kpi-value">{{ formatCurrency(balance()) }}</div>
         </div>
       </div>

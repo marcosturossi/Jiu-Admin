@@ -12,7 +12,7 @@ import { HttpHeaders }                                       from '@angular/comm
 
 import { Observable }                                        from 'rxjs';
 
-import { ApiFeePlanGetPriceMinParameter } from '../model/models';
+import { ApiAccountsPayableGetAmountMinParameter } from '../model/models';
 import { ApiFrequencyGetPageParameter } from '../model/models';
 import { CreateFeePlanDTO } from '../model/models';
 import { PaginatedResultOfShowFeePlanDTO } from '../model/models';
@@ -43,7 +43,7 @@ export interface FeePlanServiceInterface {
      * @param orderBy 
      * @param orderByDescending 
      */
-    apiFeePlanGet(name?: string, monthDurationMin?: ApiFrequencyGetPageParameter, monthDurationMax?: ApiFrequencyGetPageParameter, priceMin?: ApiFeePlanGetPriceMinParameter, priceMax?: ApiFeePlanGetPriceMinParameter, page?: ApiFrequencyGetPageParameter, pageSize?: ApiFrequencyGetPageParameter, orderBy?: string, orderByDescending?: boolean, extraHttpRequestParams?: any): Observable<PaginatedResultOfShowFeePlanDTO>;
+    apiFeePlanGet(name?: string, monthDurationMin?: ApiFrequencyGetPageParameter, monthDurationMax?: ApiFrequencyGetPageParameter, priceMin?: ApiAccountsPayableGetAmountMinParameter, priceMax?: ApiAccountsPayableGetAmountMinParameter, page?: ApiFrequencyGetPageParameter, pageSize?: ApiFrequencyGetPageParameter, orderBy?: string, orderByDescending?: boolean, extraHttpRequestParams?: any): Observable<PaginatedResultOfShowFeePlanDTO>;
 
     /**
      * 

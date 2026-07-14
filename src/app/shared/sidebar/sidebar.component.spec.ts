@@ -83,7 +83,7 @@ describe('SidebarComponent', () => {
     it('shows all individual item links (not group buttons)', () => {
       setup('/system/students');
       const links = fixture.nativeElement.querySelectorAll('.sidebar-section-collapsed .sidebar-link');
-      const totalItems = 18; // 5 sections: Principal(1) + Acadêmico(8) + Financeiro(5) + Comunicação(2) + Saúde e Segurança(2)
+      const totalItems = 19; // 5 sections: Principal(1) + Acadêmico(8) + Financeiro(6) + Comunicação(2) + Saúde e Segurança(2)
       expect(links.length).toBe(totalItems);
     });
 

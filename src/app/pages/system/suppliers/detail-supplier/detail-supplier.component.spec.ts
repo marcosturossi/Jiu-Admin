@@ -5,7 +5,7 @@ import { provideRouter, ActivatedRoute } from '@angular/router';
 
 import { DetailSupplierComponent } from './detail-supplier.component';
 import { SupplierService } from '../../../../generated_services/api/supplier.service';
-import { FinancialTransactionService } from '../../../../generated_services/api/financialTransaction.service';
+import { AccountsPayableService } from '../../../../generated_services/api/accountsPayable.service';
 import { NotificationService } from '../../../../services/notification.service';
 import { SubnavService } from '../../../../services/subnav.service';
 
@@ -20,18 +20,18 @@ describe('DetailSupplierComponent', () => {
   let component: DetailSupplierComponent;
   let fixture: ComponentFixture<DetailSupplierComponent>;
   let supplierSpy: jasmine.SpyObj<SupplierService>;
-  let financialSpy: jasmine.SpyObj<FinancialTransactionService>;
+  let accountsPayableSpy: jasmine.SpyObj<AccountsPayableService>;
   let notifySpy: jasmine.SpyObj<NotificationService>;
   let subnavSpy: jasmine.SpyObj<SubnavService>;
 
   beforeEach(async () => {
     supplierSpy = jasmine.createSpyObj('SupplierService', ['apiSupplierIdGet']);
-    financialSpy = jasmine.createSpyObj('FinancialTransactionService', ['apiFinancialTransactionGet']);
+    accountsPayableSpy = jasmine.createSpyObj('AccountsPayableService', ['apiAccountsPayableGet']);
     notifySpy = jasmine.createSpyObj('NotificationService', ['showError', 'showSuccess']);
     subnavSpy = jasmine.createSpyObj('SubnavService', ['setTitle']);
 
     supplierSpy.apiSupplierIdGet.and.returnValue(of(MOCK_SUPPLIER) as any);
-    financialSpy.apiFinancialTransactionGet.and.returnValue(of({ items: [], totalCount: 0, totalPages: 0 }) as any);
+    accountsPayableSpy.apiAccountsPayableGet.and.returnValue(of({ items: [], totalCount: 0, totalPages: 0 }) as any);
 
     await TestBed.configureTestingModule({
       imports: [DetailSupplierComponent],
@@ -39,7 +39,7 @@ describe('DetailSupplierComponent', () => {
         provideHttpClient(),
         provideRouter([]),
         { provide: SupplierService, useValue: supplierSpy },
-        { provide: FinancialTransactionService, useValue: financialSpy },
+        { provide: AccountsPayableService, useValue: accountsPayableSpy },
         { provide: NotificationService, useValue: notifySpy },
         { provide: SubnavService, useValue: subnavSpy },
         {
@@ -65,8 +65,8 @@ describe('DetailSupplierComponent', () => {
     expect((component as any).supplier()).toEqual(MOCK_SUPPLIER);
   });
 
-  it('should load transactions after supplier loads', () => {
-    expect(financialSpy.apiFinancialTransactionGet).toHaveBeenCalled();
+  it('should load accounts payable after supplier loads', () => {
+    expect(accountsPayableSpy.apiAccountsPayableGet).toHaveBeenCalled();
   });
 
   it('should show error notification when supplier load fails', () => {
