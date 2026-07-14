@@ -13,10 +13,8 @@ import { HttpHeaders }                                       from '@angular/comm
 import { Observable }                                        from 'rxjs';
 
 import { ApiFrequencyGetPageParameter } from '../model/models';
-import { ApiMedicalClearanceIdAttachmentUrlGetExpiryHoursParameter } from '../model/models';
 import { CreateStudentDTO } from '../model/models';
 import { PaginatedResultOfShowStudentDTO } from '../model/models';
-import { PhotoResponseDTO } from '../model/models';
 import { ProblemDetails } from '../model/models';
 import { ShowStudentDTO } from '../model/models';
 import { UpdateStudentDTO } from '../model/models';
@@ -82,7 +80,7 @@ export interface StudentsServiceInterface {
      * 
      * @param id 
      */
-    apiStudentsIdPhotoGet(id: string, extraHttpRequestParams?: any): Observable<PhotoResponseDTO>;
+    apiStudentsIdPhotoGet(id: string, extraHttpRequestParams?: any): Observable<{}>;
 
     /**
      * 
@@ -91,14 +89,6 @@ export interface StudentsServiceInterface {
      * @param photo 
      */
     apiStudentsIdPhotoPost(id: string, photo?: Blob, extraHttpRequestParams?: any): Observable<ShowStudentDTO>;
-
-    /**
-     * 
-     * 
-     * @param id 
-     * @param expiryHours 
-     */
-    apiStudentsIdPhotoUrlGet(id: string, expiryHours?: ApiMedicalClearanceIdAttachmentUrlGetExpiryHoursParameter, extraHttpRequestParams?: any): Observable<any>;
 
     /**
      * 

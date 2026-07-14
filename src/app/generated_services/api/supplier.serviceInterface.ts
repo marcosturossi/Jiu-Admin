@@ -18,6 +18,7 @@ import { PaginatedResultOfShowSupplierDTO } from '../model/models';
 import { ProblemDetails } from '../model/models';
 import { ShowSupplierDTO } from '../model/models';
 import { UpdateSupplierDTO } from '../model/models';
+import { ValidationProblemDetails } from '../model/models';
 
 
 import { Configuration }                                     from '../configuration';

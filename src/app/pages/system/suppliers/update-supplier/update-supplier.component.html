@@ -1,5 +1,75 @@
 <form [formGroup]="form" (ngSubmit)="save()">
 
+  <!-- Informações -->
+  <div class="supplier-info-section mb-3">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h6 class="mb-0">Informações</h6>
+      <span class="badge bg-secondary">{{ supplierTypeLabel() }}</span>
+    </div>
+
+    <!-- Pessoa Física -->
+    @if (individualPerson) {
+      <div formGroupName="individualPerson">
+        <div class="row">
+          <div class="mb-3 col-6">
+            <label class="form-label">Nome <span class="text-danger">*</span></label>
+            <input type="text" class="form-control" formControlName="firstName" placeholder="Nome" />
+          </div>
+
+          <div class="mb-3 col-6">
+            <label class="form-label">Sobrenome <span class="text-danger">*</span></label>
+            <input type="text" class="form-control" formControlName="lastName" placeholder="Sobrenome" />
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">CPF <span class="text-danger">*</span></label>
+          <input type="text" class="form-control" formControlName="cpf" placeholder="00000000000" maxlength="11" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">E-mail <span class="text-danger">*</span></label>
+          <input type="email" class="form-control" formControlName="email" placeholder="email@exemplo.com" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Telefone</label>
+          <input type="text" class="form-control" formControlName="phoneNumber" placeholder="(11) 99999-9999" />
+        </div>
+      </div>
+    }
+
+    <!-- Pessoa Jurídica -->
+    @if (companyPerson) {
+      <div formGroupName="companyPerson">
+        <div class="mb-3">
+          <label class="form-label">Razão Social <span class="text-danger">*</span></label>
+          <input type="text" class="form-control" formControlName="name" placeholder="Nome da empresa" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">CNPJ <span class="text-danger">*</span></label>
+          <input type="text" class="form-control" formControlName="cnpj" placeholder="00000000000000" maxlength="14" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Data de Fundação</label>
+          <input type="date" class="form-control" formControlName="foundedIn" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">E-mail <span class="text-danger">*</span></label>
+          <input type="email" class="form-control" formControlName="email" placeholder="email@exemplo.com" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Telefone</label>
+          <input type="text" class="form-control" formControlName="phoneNumber" placeholder="(11) 99999-9999" />
+        </div>
+      </div>
+    }
+  </div>
+
   <!-- Endereços -->
   <div class="addresses-section">
     <div class="d-flex justify-content-between align-items-center mb-2">

@@ -1,41 +1,5 @@
 <form [formGroup]="form">
 
-  <!-- Foto -->
-  <section class="mb-4">
-    <h6 class="section-title">Foto</h6>
-    <div class="d-flex align-items-center gap-3">
-      <div class="photo-wrap">
-        @if (photoPreview() || photoUrl()) {
-          <img [src]="photoPreview() || photoUrl()" alt="Foto do aluno" class="photo-avatar" />
-        } @else {
-          <div class="photo-avatar-placeholder">
-            <i class="bi bi-person-circle"></i>
-          </div>
-        }
-      </div>
-      <div class="d-flex flex-column gap-2">
-        <input type="file" id="photoInput" class="form-control" accept="image/*" (change)="onPhotoSelected($event)">
-        <small class="text-muted">Formatos aceitos: JPG, PNG, GIF. Tamanho máximo: 5MB.</small>
-        <div class="d-flex gap-2">
-          @if (selectedPhotoFile()) {
-            <button type="button" class="btn btn-primary btn-sm" (click)="uploadPhoto()" [disabled]="isUploadingPhoto()">
-              @if (isUploadingPhoto()) { <span class="spinner-border spinner-border-sm me-1" role="status"></span> }
-              <i class="bi bi-cloud-upload me-1"></i>{{ isUploadingPhoto() ? 'Enviando...' : 'Salvar Foto' }}
-            </button>
-            <button type="button" class="btn btn-outline-secondary btn-sm" (click)="cancelPhotoSelection()">
-              Cancelar
-            </button>
-          } @else if (photoUrl()) {
-            <button type="button" class="btn btn-outline-danger btn-sm" (click)="removePhoto()" [disabled]="isRemovingPhoto()">
-              @if (isRemovingPhoto()) { <span class="spinner-border spinner-border-sm me-1" role="status"></span> }
-              <i class="bi bi-trash me-1"></i>Remover Foto
-            </button>
-          }
-        </div>
-      </div>
-    </div>
-  </section>
-
   <!-- Informações Pessoais -->
   <section class="mb-4">
     <h6 class="section-title">Informações Pessoais</h6>

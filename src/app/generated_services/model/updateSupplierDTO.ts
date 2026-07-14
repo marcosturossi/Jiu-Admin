@@ -8,11 +8,15 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { UpdateIndividualPersonDTO } from './updateIndividualPersonDTO';
+import { UpdateCompanyPersonDTO } from './updateCompanyPersonDTO';
 import { UpdateAddressDTO } from './updateAddressDTO';
 
 
 export interface UpdateSupplierDTO { 
     id?: string;
     addresses?: Array<UpdateAddressDTO>;
+    individualPerson?: UpdateIndividualPersonDTO | null;
+    companyPerson?: UpdateCompanyPersonDTO | null;
 }
 

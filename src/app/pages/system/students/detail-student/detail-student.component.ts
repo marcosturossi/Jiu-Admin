@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DatePipe, CurrencyPipe } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
 
 import { StudentsService } from '../../../../generated_services/api/students.service';
 import { ContractService } from '../../../../generated_services/api/contract.service';
@@ -25,6 +26,7 @@ import { UpdateStudentComponent } from '../update-student/update-student.compone
 export class DetailStudentComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
+  private readonly http = inject(HttpClient);
   private readonly studentsService = inject(StudentsService);
   private readonly contractService = inject(ContractService);
   private readonly graduationService = inject(GraduationService);
@@ -42,6 +44,12 @@ export class DetailStudentComponent implements OnInit {
   protected readonly photoUrl = signal<string | null>(null);
   protected readonly openedUpdate = signal(false);
 
+  protected readonly openedPhotoEditor = signal(false);
+  protected readonly photoPreview = signal<string | null>(null);
+  protected readonly selectedPhotoFile = signal<File | null>(null);
+  protected readonly isUploadingPhoto = signal(false);
+  protected readonly isRemovingPhoto = signal(false);
+
   ngOnInit(): void {
     this.subnavService.setTitle('Detalhes do Aluno');
     this.loadStudent();
@@ -54,18 +62,95 @@ export class DetailStudentComponent implements OnInit {
     this.studentsService.apiStudentsIdGet(this.id).subscribe({
       next: (s) => {
         this.student.set(s);
-        if (s.id) {
-          this.studentsService.apiStudentsIdPhotoUrlGet(s.id).subscribe({
-            next: (res: { url: string }) => this.photoUrl.set(res?.url ?? null),
-            error: () => this.photoUrl.set(null),
-          });
-        }
+        this.loadPhoto();
         this.isLoadingStudent.set(false);
       },
       error: () => {
         this.notificationService.showError('Erro', 'Não foi possível carregar o aluno.');
         this.isLoadingStudent.set(false);
       },
+    });
+  }
+
+  private loadPhoto(): void {
+    const studentId = this.student()?.id;
+    if (!studentId) { this.photoUrl.set(null); return; }
+    const basePath = this.studentsService.configuration.basePath;
+    this.http.get(`${basePath}/api/Students/${studentId}/photo`, { responseType: 'blob' }).subscribe({
+      next: (blob) => {
+        const reader = new FileReader();
+        reader.onload = e => this.photoUrl.set(e.target?.result as string);
+        reader.readAsDataURL(blob);
+      },
+      error: () => this.photoUrl.set(null),
+    });
+  }
+
+  protected openPhotoEditor(): void {
+    this.openedPhotoEditor.set(true);
+  }
+
+  protected closePhotoEditor(): void {
+    this.openedPhotoEditor.set(false);
+    this.cancelPhotoSelection();
+  }
+
+  protected onPhotoSelected(event: Event): void {
+    const target = event.target as HTMLInputElement;
+    const file = target.files?.[0];
+    if (!file) return;
+    if (!file.type.startsWith('image/')) {
+      this.notificationService.showError('Arquivo Inválido', 'Por favor, selecione apenas arquivos de imagem.');
+      this.cancelPhotoSelection();
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      this.notificationService.showError('Arquivo Muito Grande', 'A foto deve ter no máximo 5MB.');
+      this.cancelPhotoSelection();
+      return;
+    }
+    this.selectedPhotoFile.set(file);
+    const reader = new FileReader();
+    reader.onload = e => this.photoPreview.set(e.target?.result as string);
+    reader.readAsDataURL(file);
+  }
+
+  protected cancelPhotoSelection(): void {
+    this.selectedPhotoFile.set(null);
+    this.photoPreview.set(null);
+    const input = document.getElementById('photoInput') as HTMLInputElement;
+    if (input) input.value = '';
+  }
+
+  protected uploadPhoto(): void {
+    const file = this.selectedPhotoFile();
+    const studentId = this.student()?.id;
+    if (!file || !studentId || this.isUploadingPhoto()) return;
+    this.isUploadingPhoto.set(true);
+    this.studentsService.apiStudentsIdPhotoPost(studentId, file).subscribe({
+      next: () => {
+        this.notificationService.showSuccess('Foto Atualizada!', 'A foto do aluno foi atualizada com sucesso.');
+        this.cancelPhotoSelection();
+        this.loadPhoto();
+        this.openedPhotoEditor.set(false);
+      },
+      error: () => this.notificationService.showError('Erro ao Enviar Foto', 'Não foi possível atualizar a foto do aluno. Tente novamente.'),
+      complete: () => this.isUploadingPhoto.set(false),
+    });
+  }
+
+  protected removePhoto(): void {
+    const studentId = this.student()?.id;
+    if (!studentId || this.isRemovingPhoto()) return;
+    this.isRemovingPhoto.set(true);
+    this.studentsService.apiStudentsIdPhotoDelete(studentId).subscribe({
+      next: () => {
+        this.notificationService.showSuccess('Foto Removida!', 'A foto do aluno foi removida com sucesso.');
+        this.photoUrl.set(null);
+        this.openedPhotoEditor.set(false);
+      },
+      error: () => this.notificationService.showError('Erro ao Remover Foto', 'Não foi possível remover a foto do aluno. Tente novamente.'),
+      complete: () => this.isRemovingPhoto.set(false),
     });
   }
 

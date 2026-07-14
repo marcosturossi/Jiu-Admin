@@ -26,12 +26,6 @@ export class UpdateStudentComponent {
   protected readonly relationshipTypes = Object.values(RelationshipType);
   protected readonly isMinorSignal = signal(false);
 
-  protected readonly photoUrl = signal<string | null>(null);
-  protected readonly photoPreview = signal<string | null>(null);
-  protected readonly selectedPhotoFile = signal<File | null>(null);
-  protected readonly isUploadingPhoto = signal(false);
-  protected readonly isRemovingPhoto = signal(false);
-
   protected readonly form = this.fb.group({
     userName: ['', Validators.required],
     email: ['', [Validators.required, Validators.email]],
@@ -81,74 +75,6 @@ export class UpdateStudentComponent {
       });
 
       this.isMinorSignal.set(this.checkIsMinor(s.birthDay));
-
-      this.cancelPhotoSelection();
-      this.loadPhoto(s.id);
-    });
-  }
-
-  private loadPhoto(studentId: string | null | undefined): void {
-    if (!studentId) { this.photoUrl.set(null); return; }
-    this.studentsService.apiStudentsIdPhotoUrlGet(studentId).subscribe({
-      next: (res: { url: string }) => this.photoUrl.set(res?.url ?? null),
-      error: () => this.photoUrl.set(null),
-    });
-  }
-
-  protected onPhotoSelected(event: Event): void {
-    const target = event.target as HTMLInputElement;
-    const file = target.files?.[0];
-    if (!file) return;
-    if (!file.type.startsWith('image/')) {
-      this.notificationService.showError('Arquivo Inválido', 'Por favor, selecione apenas arquivos de imagem.');
-      this.cancelPhotoSelection();
-      return;
-    }
-    if (file.size > 5 * 1024 * 1024) {
-      this.notificationService.showError('Arquivo Muito Grande', 'A foto deve ter no máximo 5MB.');
-      this.cancelPhotoSelection();
-      return;
-    }
-    this.selectedPhotoFile.set(file);
-    const reader = new FileReader();
-    reader.onload = e => this.photoPreview.set(e.target?.result as string);
-    reader.readAsDataURL(file);
-  }
-
-  protected cancelPhotoSelection(): void {
-    this.selectedPhotoFile.set(null);
-    this.photoPreview.set(null);
-    const input = document.getElementById('photoInput') as HTMLInputElement;
-    if (input) input.value = '';
-  }
-
-  protected uploadPhoto(): void {
-    const file = this.selectedPhotoFile();
-    const studentId = this.student().id;
-    if (!file || !studentId || this.isUploadingPhoto()) return;
-    this.isUploadingPhoto.set(true);
-    this.studentsService.apiStudentsIdPhotoPost(studentId, file).subscribe({
-      next: () => {
-        this.notificationService.showSuccess('Foto Atualizada!', 'A foto do aluno foi atualizada com sucesso.');
-        this.cancelPhotoSelection();
-        this.loadPhoto(studentId);
-      },
-      error: () => this.notificationService.showError('Erro ao Enviar Foto', 'Não foi possível atualizar a foto do aluno. Tente novamente.'),
-      complete: () => this.isUploadingPhoto.set(false),
-    });
-  }
-
-  protected removePhoto(): void {
-    const studentId = this.student().id;
-    if (!studentId || this.isRemovingPhoto()) return;
-    this.isRemovingPhoto.set(true);
-    this.studentsService.apiStudentsIdPhotoDelete(studentId).subscribe({
-      next: () => {
-        this.notificationService.showSuccess('Foto Removida!', 'A foto do aluno foi removida com sucesso.');
-        this.photoUrl.set(null);
-      },
-      error: () => this.notificationService.showError('Erro ao Remover Foto', 'Não foi possível remover a foto do aluno. Tente novamente.'),
-      complete: () => this.isRemovingPhoto.set(false),
     });
   }
 

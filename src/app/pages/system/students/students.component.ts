@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
 import { StudentsService } from '../../../generated_services/api/students.service';
 import { ShowStudentDTO } from '../../../generated_services/model/showStudentDTO';
 import { SubnavService } from '../../../services/subnav.service';
@@ -28,6 +29,7 @@ import {Router, ActivatedRoute} from '@angular/router';
 })
 export class StudentsComponent {
   private readonly studentsService = inject(StudentsService);
+  private readonly http = inject(HttpClient);
   private readonly subnavService = inject(SubnavService);
   private readonly notificationService = inject(NotificationService);
   private readonly router = inject(Router);
@@ -35,6 +37,7 @@ export class StudentsComponent {
 
   protected readonly isLoading = signal(false);
   protected readonly items = signal<PageResult<ShowStudentDTO> | null>(null);
+  protected readonly photoUrls = signal<Record<string, string>>({});
   protected readonly openedCreate = signal(false);
   protected readonly openedUpdate = signal(false);
   protected readonly selected = signal<ShowStudentDTO | null>(null);
@@ -76,12 +79,28 @@ export class StudentsComponent {
           totalCount: (result?.totalCount as unknown as number) ?? 0,
           totalPages: (result?.totalPages as unknown as number) ?? 1,
         });
+        this.photoUrls.set({});
+        for (const student of result?.items ?? []) {
+          if (student.id && student.photoUrl) this.loadPhoto(student.id);
+        }
         this.isLoading.set(false);
       },
       error: () => {
         this.isLoading.set(false);
         this.notificationService.showError('Erro de Carregamento', 'Não foi possível carregar a lista de alunos.');
       },
+    });
+  }
+
+  private loadPhoto(studentId: string): void {
+    const basePath = this.studentsService.configuration.basePath;
+    this.http.get(`${basePath}/api/Students/${studentId}/photo`, { responseType: 'blob' }).subscribe({
+      next: (blob) => {
+        const reader = new FileReader();
+        reader.onload = e => this.photoUrls.update(urls => ({ ...urls, [studentId]: e.target?.result as string }));
+        reader.readAsDataURL(blob);
+      },
+      error: () => {},
     });
   }
 

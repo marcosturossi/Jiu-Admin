@@ -8,17 +8,18 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { ShowAddressDTO } from './showAddressDTO';
-import { ShowIndividualPersonDTO } from './showIndividualPersonDTO';
-import { ShowCompanyPersonDTO } from './showCompanyPersonDTO';
+import { ShowPersonDTO } from './showPersonDTO';
 
 
-export interface ShowSupplierDTO { 
-    id?: string;
+export interface ShowCompanyPersonDTO { 
+    person?: ShowPersonDTO | null;
     createdAt?: string;
     deletedAt?: string | null;
-    individualPerson?: ShowIndividualPersonDTO | null;
-    companyPerson?: ShowCompanyPersonDTO | null;
-    addresses?: Array<ShowAddressDTO>;
+    personId?: string;
+    email: string;
+    phoneNumber?: string | null;
+    name: string | null;
+    foundedIn?: string | null;
+    cnpj: string | null;
 }
 

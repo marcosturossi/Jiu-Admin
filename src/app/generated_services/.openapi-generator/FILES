@@ -116,7 +116,6 @@ model/paginatedResultOfShowSupplierDTO.ts
 model/paginatedResultOfShowTransactionCategoryDTO.ts
 model/payFinancialTransactionDTO.ts
 model/paymentGatewayProvider.ts
-model/photoResponseDTO.ts
 model/problemDetails.ts
 model/problemDetailsStatus.ts
 model/publicAcademyDto.ts
@@ -127,6 +126,7 @@ model/seriesDataInner.ts
 model/showAcademyDto.ts
 model/showAddressDTO.ts
 model/showBeltDTO.ts
+model/showCompanyPersonDTO.ts
 model/showContractDTO.ts
 model/showFeePlanDTO.ts
 model/showFinancialTransactionDTO.ts
@@ -157,11 +157,13 @@ model/transactionType.ts
 model/updateAcademyDto.ts
 model/updateAddressDTO.ts
 model/updateBeltDTO.ts
+model/updateCompanyPersonDTO.ts
 model/updateContractStatusRequest.ts
 model/updateFeePlanDTO.ts
 model/updateFrequencyDTO.ts
 model/updateGraduationDTO.ts
 model/updateGraduationRequirementDTO.ts
+model/updateIndividualPersonDTO.ts
 model/updateLessonDTO.ts
 model/updateMedicalClearanceDto.ts
 model/updateNoticeDto.ts

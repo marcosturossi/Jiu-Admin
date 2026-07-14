@@ -1,4 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting, HttpTestingController } from '@angular/common/http/testing';
+import { provideRouter } from '@angular/router';
 import { of, throwError } from 'rxjs';
 import { StudentsComponent } from './students.component';
 import { StudentsService } from '../../../generated_services/api/students.service';
@@ -29,8 +32,11 @@ describe('StudentsComponent', () => {
   let ns: jasmine.SpyObj<NotificationService>;
   let subnavService: jasmine.SpyObj<SubnavService>;
 
+  let httpMock: HttpTestingController;
+
   beforeEach(async () => {
     const studentsSpy = jasmine.createSpyObj('StudentsService', ['apiStudentsGet', 'apiStudentsIdDelete']);
+    (studentsSpy as any).configuration = { basePath: 'http://localhost:8080' };
     const nsSpy = jasmine.createSpyObj('NotificationService', ['showSuccess', 'showError']);
     const subnavSpy = jasmine.createSpyObj('SubnavService', ['setTitle']);
     studentsSpy.apiStudentsGet.and.callFake((...args: any[]) => of(buildResponse(Number(args[6] ?? 1), Number(args[7] ?? 10))));
@@ -38,6 +44,9 @@ describe('StudentsComponent', () => {
     await TestBed.configureTestingModule({
       imports: [StudentsComponent],
       providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        provideRouter([]),
         { provide: StudentsService, useValue: studentsSpy },
         { provide: NotificationService, useValue: nsSpy },
         { provide: SubnavService, useValue: subnavSpy },
@@ -49,7 +58,12 @@ describe('StudentsComponent', () => {
     studentsService = TestBed.inject(StudentsService) as jasmine.SpyObj<StudentsService>;
     ns = TestBed.inject(NotificationService) as jasmine.SpyObj<NotificationService>;
     subnavService = TestBed.inject(SubnavService) as jasmine.SpyObj<SubnavService>;
+    httpMock = TestBed.inject(HttpTestingController);
     fixture.detectChanges();
+  });
+
+  afterEach(() => {
+    httpMock.match(() => true).forEach(req => req.flush(new Blob(['fake-image'], { type: 'image/png' })));
   });
 
   it('should create', () => { expect(component).toBeTruthy(); });
@@ -122,6 +136,23 @@ describe('StudentsComponent', () => {
     (component as any).onFilterChange({ text: 'João', conditions: [] });
     expect((component as any).filterText()).toBe('João');
     expect(studentsService.apiStudentsGet).toHaveBeenCalled();
+  });
+
+  it('should fetch photo via authenticated request for students with a photoUrl', () => {
+    const studentsWithPhoto = [{ ...MOCK_STUDENT, photoUrl: 'student_s1.png' }];
+    studentsService.apiStudentsGet.and.returnValue(of({ items: studentsWithPhoto, totalCount: 1, totalPages: 1 } as any));
+    (component as any).load();
+
+    const req = httpMock.expectOne('http://localhost:8080/api/Students/s1/photo');
+    expect(req.request.method).toBe('GET');
+    req.flush(new Blob(['fake-image'], { type: 'image/png' }));
+  });
+
+  it('should not request a photo for students without a photoUrl', () => {
+    studentsService.apiStudentsGet.and.returnValue(of({ items: [MOCK_STUDENT], totalCount: 1, totalPages: 1 } as any));
+    (component as any).load();
+    httpMock.expectNone((req) => req.url.includes('/photo'));
+    expect((component as any).photoUrls()).toEqual({});
   });
 
   describe('delete', () => {

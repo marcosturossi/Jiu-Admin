@@ -43,7 +43,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
       items: [
         { route: '/system/student-onboarding', label: 'Cadastros', icon: 'bi bi-clipboard-check' },
         { route: '/system/students', label: 'Alunos', icon: 'bi bi-people' },
-        { route: '/system/suppliers', label: 'Fornecedores', icon: 'bi bi-building' },
+        { route: '/system/suppliers', label: 'Fornecedores', icon: 'bi bi-truck' },
         { route: '/system/lessons', label: 'Aulas', icon: 'bi bi-calendar3' },
         { route: '/system/graduations', label: 'Graduações', icon: 'bi bi-award' },
         { route: '/system/frequencies', label: 'Frequências', icon: 'bi bi-check2-square' },

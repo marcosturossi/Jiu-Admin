@@ -59,7 +59,33 @@
 
 // ── Avatar ────────────────────────────────────────────────────────────────────
 .avatar-wrap {
+  position: relative;
   flex-shrink: 0;
+}
+
+.avatar-edit-btn {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 2px solid var(--brand-surface);
+  background: var(--brand-primary);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  cursor: pointer;
+
+  i {
+    font-size: 0.85rem;
+  }
+
+  &:hover {
+    filter: brightness(1.1);
+  }
 }
 
 .avatar {

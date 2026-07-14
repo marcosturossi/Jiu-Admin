@@ -26,8 +26,8 @@
 
           <!-- Avatar + status -->
           <div class="student-card__avatar-wrap">
-            @if (student.photoUrl) {
-              <img [src]="student.photoUrl" [alt]="student.firstName ?? ''" class="student-card__avatar" />
+            @if (student.id && photoUrls()[student.id]) {
+              <img [src]="photoUrls()[student.id!]" [alt]="student.firstName ?? ''" class="student-card__avatar" />
             } @else {
               <div class="student-card__avatar-placeholder">
                 <i class="bi bi-person"></i>

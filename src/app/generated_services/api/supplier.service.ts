@@ -29,6 +29,8 @@ import { ProblemDetails } from '../model/problemDetails';
 import { ShowSupplierDTO } from '../model/showSupplierDTO';
 // @ts-ignore
 import { UpdateSupplierDTO } from '../model/updateSupplierDTO';
+// @ts-ignore
+import { ValidationProblemDetails } from '../model/validationProblemDetails';
 
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
