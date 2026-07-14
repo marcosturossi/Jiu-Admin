@@ -106,6 +106,12 @@
   word-break: break-all;
 }
 
+// ── Address block ─────────────────────────────────────────────────────────────
+.address-block {
+  font-size: 0.9rem;
+  color: var(--brand-text);
+}
+
 // ── Transaction list ──────────────────────────────────────────────────────────
 .transaction-list {
   display: flex;

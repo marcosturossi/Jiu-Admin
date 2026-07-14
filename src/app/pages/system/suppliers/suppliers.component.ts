@@ -97,8 +97,21 @@ export class SuppliersComponent {
     });
   }
 
-  protected shortId(id: string | undefined): string {
-    if (!id) return '—';
-    return id.substring(0, 8) + '…';
+  protected supplierName(item: ShowSupplierDTO): string {
+    if (item.individualPerson) {
+      return `${item.individualPerson.firstName ?? ''} ${item.individualPerson.lastName ?? ''}`.trim() || 'Sem nome';
+    }
+    if (item.companyPerson) {
+      return item.companyPerson.name || 'Sem nome';
+    }
+    return 'Fornecedor';
+  }
+
+  protected supplierDocument(item: ShowSupplierDTO): string {
+    return item.individualPerson?.cpf ?? item.companyPerson?.cnpj ?? '—';
+  }
+
+  protected supplierIcon(item: ShowSupplierDTO): string {
+    return item.companyPerson ? 'bi-building' : 'bi-person';
   }
 }

@@ -14,14 +14,15 @@
       <!-- Icon -->
       <div class="icon-wrap">
         <div class="icon-placeholder">
-          <i class="bi bi-building"></i>
+          <i class="bi" [class]="supplierIcon()"></i>
         </div>
       </div>
 
       <!-- Identity -->
       <div class="header-info">
-        <h2 class="supplier-title mb-1">Fornecedor</h2>
+        <h2 class="supplier-title mb-1">{{ supplierName() }}</h2>
         <div class="d-flex align-items-center gap-2 flex-wrap">
+          <span class="badge bg-secondary">{{ supplierTypeLabel() }}</span>
           @if (!supplier()?.deletedAt) {
             <span class="badge bg-success">Ativo</span>
           } @else {
@@ -54,14 +55,26 @@
 
       <!-- Informações -->
       <div class="section-card mb-4">
-        <h5 class="section-title"><i class="bi bi-building me-2"></i>Informações</h5>
+        <h5 class="section-title"><i class="bi bi-person-vcard me-2"></i>Informações</h5>
         <div class="info-row">
-          <span class="info-label">ID</span>
-          <span class="text-monospace small">{{ supplier()?.id ?? '—' }}</span>
+          <span class="info-label">Nome</span>
+          <span>{{ supplierName() }}</span>
         </div>
         <div class="info-row">
-          <span class="info-label">Pessoa vinculada</span>
-          <span class="text-monospace small">{{ supplier()?.personId ?? '—' }}</span>
+          <span class="info-label">Tipo</span>
+          <span>{{ supplierTypeLabel() }}</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">{{ supplierDocumentLabel() }}</span>
+          <span class="text-monospace small">{{ supplierDocument() }}</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">E-mail</span>
+          <span>{{ supplierEmail() }}</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Telefone</span>
+          <span>{{ supplierPhone() }}</span>
         </div>
         <div class="info-row">
           <span class="info-label">Cadastrado em</span>
@@ -75,6 +88,26 @@
             <span class="badge bg-danger">Excluído em {{ supplier()!.deletedAt! | date:'dd/MM/yyyy' }}</span>
           }
         </div>
+      </div>
+
+      <!-- Endereços -->
+      <div class="section-card mb-4">
+        <h5 class="section-title"><i class="bi bi-geo-alt me-2"></i>Endereços</h5>
+        @if ((supplier()?.addresses ?? []).length === 0) {
+          <p class="text-muted fst-italic mb-0">Nenhum endereço cadastrado.</p>
+        } @else {
+          @for (addr of supplier()?.addresses ?? []; track $index) {
+            <div class="address-block">
+              <span class="badge bg-info text-dark mb-2">{{ addressTypeLabel(addr.typeAddress) }}</span>
+              <p class="mb-1">{{ addr.street }}, {{ addr.number }}
+                @if (addr.complement) { — {{ addr.complement }} }
+              </p>
+              <p class="mb-1 text-muted small">{{ addr.neighborhood }} · {{ addr.city }}/{{ addr.state }}</p>
+              <p class="mb-0 text-muted small">CEP: {{ addr.zipCode }}</p>
+            </div>
+            @if (!$last) { <hr class="my-3"> }
+          }
+        }
       </div>
 
     </div>

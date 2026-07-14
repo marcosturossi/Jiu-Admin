@@ -8,10 +8,31 @@
   border-bottom: 1px solid var(--brand-border);
 }
 
-.address-block {
+.photo-wrap {
+  flex-shrink: 0;
+}
+
+.photo-avatar {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid var(--brand-border);
+  display: block;
+}
+
+.photo-avatar-placeholder {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
   background: var(--brand-bg);
-  border: 1px solid var(--brand-border);
-  border-radius: 0.5rem;
-  padding: 1rem;
-  margin-bottom: 0.5rem;
+  border: 3px solid var(--brand-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  i {
+    font-size: 2.5rem;
+    color: var(--brand-muted);
+  }
 }

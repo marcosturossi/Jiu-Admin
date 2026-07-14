@@ -58,67 +58,7 @@
 
     <div formArrayName="addresses">
       @for (address of addresses.controls; track $index) {
-      <div class="card mb-3">
-        <div class="card-body" [formGroupName]="$index">
-          <div class="row">
-
-            <div class="col-md-4 mb-3">
-              <label class="form-label">Tipo *</label>
-              <select class="form-select" formControlName="typeAddress">
-                <option value="" disabled>Selecione o tipo</option>
-                @for (type of addressTypes; track type) {
-                <option [value]="type">{{ type }}</option>
-                }
-              </select>
-            </div>
-
-            <div class="col-md-3 mb-3">
-              <label class="form-label">CEP *</label>
-              <input class="form-control" formControlName="zipCode" (blur)="onZipCodeChange($index)"
-                placeholder="00000-000">
-            </div>
-
-
-            <div class="col-md-8 mb-3">
-              <label class="form-label">Rua *</label>
-              <input class="form-control" formControlName="street" placeholder="Rua, Avenida...">
-            </div>
-
-            <div class="col-md-2 mb-3">
-              <label class="form-label">Número *</label>
-              <input class="form-control" formControlName="number" placeholder="Nº">
-            </div>
-
-            <div class="col-md-4 mb-3">
-              <label class="form-label">Complemento</label>
-              <input class="form-control" formControlName="complement" placeholder="Apto, Bloco...">
-            </div>
-
-            <div class="col-md-6 mb-3">
-              <label class="form-label">Bairro *</label>
-              <input class="form-control" formControlName="neighborhood" placeholder="Bairro">
-            </div>
-
-            <div class="col-md-4 mb-3">
-              <label class="form-label">Cidade *</label>
-              <input class="form-control" formControlName="city" placeholder="Cidade">
-            </div>
-
-            <div class="col-md-2 mb-3">
-              <label class="form-label">Estado *</label>
-              <input class="form-control" formControlName="state" placeholder="UF" maxlength="2">
-            </div>
-
-
-          </div>
-
-          <div class="text-end">
-            <button type="button" class="btn btn-outline-danger btn-sm" (click)="removeAddress($index)">
-              <i class="bi bi-trash me-1"></i>Remover Endereço
-            </button>
-          </div>
-        </div>
-      </div>
+        <app-address-form [group]="$any(address)" [index]="$index" (remove)="removeAddress($index)" />
       }
     </div>
   </section>

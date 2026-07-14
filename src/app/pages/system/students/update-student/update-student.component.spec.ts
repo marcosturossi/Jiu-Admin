@@ -15,7 +15,10 @@ describe('UpdateStudentComponent', () => {
   let ns: jasmine.SpyObj<NotificationService>;
 
   beforeEach(async () => {
-    const studentsSpy = jasmine.createSpyObj('StudentsService', ['apiStudentsIdPut']);
+    const studentsSpy = jasmine.createSpyObj('StudentsService', [
+      'apiStudentsIdPut', 'apiStudentsIdPhotoUrlGet', 'apiStudentsIdPhotoPost', 'apiStudentsIdPhotoDelete',
+    ]);
+    studentsSpy.apiStudentsIdPhotoUrlGet.and.returnValue(of({ url: null }));
     const nsSpy = jasmine.createSpyObj('NotificationService', ['showSuccess', 'showError']);
     await TestBed.configureTestingModule({
       imports: [UpdateStudentComponent],
@@ -77,5 +80,67 @@ describe('UpdateStudentComponent', () => {
     studentsService.apiStudentsIdPut.and.returnValue(throwError(() => new Error()));
     (component as any).save();
     expect(ns.showError).toHaveBeenCalledWith('Erro ao Atualizar!', jasmine.any(String));
+  });
+
+  it('should load photo url when student input changes', () => {
+    expect(studentsService.apiStudentsIdPhotoUrlGet).toHaveBeenCalledWith('s1');
+  });
+
+  it('should reject non-image files on photo selection', () => {
+    const file = new File(['data'], 'doc.pdf', { type: 'application/pdf' });
+    const event = { target: { files: [file] } } as unknown as Event;
+    (component as any).onPhotoSelected(event);
+    expect(ns.showError).toHaveBeenCalledWith('Arquivo Inválido', jasmine.any(String));
+    expect((component as any).selectedPhotoFile()).toBeNull();
+  });
+
+  it('should reject files larger than 5MB', () => {
+    const bigFile = new File([new Uint8Array(6 * 1024 * 1024)], 'big.png', { type: 'image/png' });
+    const event = { target: { files: [bigFile] } } as unknown as Event;
+    (component as any).onPhotoSelected(event);
+    expect(ns.showError).toHaveBeenCalledWith('Arquivo Muito Grande', jasmine.any(String));
+    expect((component as any).selectedPhotoFile()).toBeNull();
+  });
+
+  it('should set selectedPhotoFile on valid image selection', () => {
+    const file = new File(['data'], 'photo.png', { type: 'image/png' });
+    const event = { target: { files: [file] } } as unknown as Event;
+    (component as any).onPhotoSelected(event);
+    expect((component as any).selectedPhotoFile()).toBe(file);
+  });
+
+  it('should upload photo and refresh photo url on uploadPhoto()', () => {
+    studentsService.apiStudentsIdPhotoPost.and.returnValue(of({} as any));
+    const file = new File(['data'], 'photo.png', { type: 'image/png' });
+    const event = { target: { files: [file] } } as unknown as Event;
+    (component as any).onPhotoSelected(event);
+    (component as any).uploadPhoto();
+    expect(studentsService.apiStudentsIdPhotoPost).toHaveBeenCalledWith('s1', file);
+    expect(ns.showSuccess).toHaveBeenCalled();
+    expect((component as any).selectedPhotoFile()).toBeNull();
+  });
+
+  it('should show error notification when photo upload fails', () => {
+    studentsService.apiStudentsIdPhotoPost.and.returnValue(throwError(() => new Error()));
+    const file = new File(['data'], 'photo.png', { type: 'image/png' });
+    const event = { target: { files: [file] } } as unknown as Event;
+    (component as any).onPhotoSelected(event);
+    (component as any).uploadPhoto();
+    expect(ns.showError).toHaveBeenCalledWith('Erro ao Enviar Foto', jasmine.any(String));
+  });
+
+  it('should remove photo and clear photoUrl on removePhoto()', () => {
+    studentsService.apiStudentsIdPhotoDelete.and.returnValue(of({} as any));
+    (component as any).photoUrl.set('http://example.com/photo.png');
+    (component as any).removePhoto();
+    expect(studentsService.apiStudentsIdPhotoDelete).toHaveBeenCalledWith('s1');
+    expect(ns.showSuccess).toHaveBeenCalled();
+    expect((component as any).photoUrl()).toBeNull();
+  });
+
+  it('should show error notification when photo removal fails', () => {
+    studentsService.apiStudentsIdPhotoDelete.and.returnValue(throwError(() => new Error()));
+    (component as any).removePhoto();
+    expect(ns.showError).toHaveBeenCalledWith('Erro ao Remover Foto', jasmine.any(String));
   });
 });

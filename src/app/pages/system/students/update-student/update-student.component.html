@@ -1,5 +1,41 @@
 <form [formGroup]="form">
 
+  <!-- Foto -->
+  <section class="mb-4">
+    <h6 class="section-title">Foto</h6>
+    <div class="d-flex align-items-center gap-3">
+      <div class="photo-wrap">
+        @if (photoPreview() || photoUrl()) {
+          <img [src]="photoPreview() || photoUrl()" alt="Foto do aluno" class="photo-avatar" />
+        } @else {
+          <div class="photo-avatar-placeholder">
+            <i class="bi bi-person-circle"></i>
+          </div>
+        }
+      </div>
+      <div class="d-flex flex-column gap-2">
+        <input type="file" id="photoInput" class="form-control" accept="image/*" (change)="onPhotoSelected($event)">
+        <small class="text-muted">Formatos aceitos: JPG, PNG, GIF. Tamanho máximo: 5MB.</small>
+        <div class="d-flex gap-2">
+          @if (selectedPhotoFile()) {
+            <button type="button" class="btn btn-primary btn-sm" (click)="uploadPhoto()" [disabled]="isUploadingPhoto()">
+              @if (isUploadingPhoto()) { <span class="spinner-border spinner-border-sm me-1" role="status"></span> }
+              <i class="bi bi-cloud-upload me-1"></i>{{ isUploadingPhoto() ? 'Enviando...' : 'Salvar Foto' }}
+            </button>
+            <button type="button" class="btn btn-outline-secondary btn-sm" (click)="cancelPhotoSelection()">
+              Cancelar
+            </button>
+          } @else if (photoUrl()) {
+            <button type="button" class="btn btn-outline-danger btn-sm" (click)="removePhoto()" [disabled]="isRemovingPhoto()">
+              @if (isRemovingPhoto()) { <span class="spinner-border spinner-border-sm me-1" role="status"></span> }
+              <i class="bi bi-trash me-1"></i>Remover Foto
+            </button>
+          }
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- Informações Pessoais -->
   <section class="mb-4">
     <h6 class="section-title">Informações Pessoais</h6>
@@ -53,57 +89,7 @@
 
     <div formArrayName="addresses">
       @for (addr of addresses.controls; track $index) {
-      <div class="address-block" [formGroupName]="$index">
-        <div class="row">
-          <div class="col-md-4 mb-3">
-            <label class="form-label">Tipo *</label>
-            <select class="form-select" formControlName="typeAddress">
-              <option value="" disabled>Selecione</option>
-              @for (type of addressTypes; track type) {
-              <option [value]="type">{{ type }}</option>
-              }
-            </select>
-          </div>
-
-          <div class="col-md-3 mb-3">
-            <label class="form-label">CEP *</label>
-            <input class="form-control" formControlName="zipCode" (blur)="onZipCodeChange($index)"
-              placeholder="00000-000">
-          </div>
-          <div class="col-md-8 mb-3">
-            <label class="form-label">Rua *</label>
-            <input class="form-control" formControlName="street" placeholder="Rua, Avenida...">
-          </div>
-          <div class="col-md-2 mb-3">
-            <label class="form-label">Número *</label>
-            <input class="form-control" formControlName="number" placeholder="Nº">
-          </div>
-          <div class="col-md-4 mb-3">
-            <label class="form-label">Complemento</label>
-            <input class="form-control" formControlName="complement" placeholder="Apto, Bloco...">
-          </div>
-          <div class="col-md-6 mb-3">
-            <label class="form-label">Bairro *</label>
-            <input class="form-control" formControlName="neighborhood" placeholder="Bairro">
-          </div>
-          <div class="col-md-5 mb-3">
-            <label class="form-label">Cidade *</label>
-            <input class="form-control" formControlName="city" placeholder="Cidade">
-          </div>
-          <div class="col-md-2 mb-3">
-            <label class="form-label">Estado *</label>
-            <input class="form-control" formControlName="state" placeholder="UF" maxlength="2">
-          </div>
-
-        </div>
-        <div class="text-end mb-2">
-          <button type="button" class="btn btn-outline-danger btn-sm" (click)="removeAddress($index)">
-            <i class="bi bi-trash me-1"></i>Remover
-          </button>
-        </div>
-      </div>
-      @if (!$last) {
-      <hr class="my-3"> }
+        <app-address-form [group]="$any(addr)" [index]="$index" (remove)="removeAddress($index)" />
       }
       @if (addresses.length === 0) {
       <p class="text-muted fst-italic small">Nenhum endereço cadastrado.</p>

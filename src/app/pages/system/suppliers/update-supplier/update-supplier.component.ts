@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, effect, inject, input, output } from '@angular/core';
-import { ReactiveFormsModule, FormBuilder, Validators, FormArray } from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, FormArray } from '@angular/forms';
 
 import { SupplierService } from '../../../../generated_services/api/supplier.service';
 import { ShowSupplierDTO } from '../../../../generated_services/model/showSupplierDTO';
@@ -7,11 +7,12 @@ import { UpdateSupplierDTO } from '../../../../generated_services/model/updateSu
 import { UpdateAddressDTO } from '../../../../generated_services/model/updateAddressDTO';
 import { AddressType } from '../../../../generated_services/model/addressType';
 import { NotificationService } from '../../../../services/notification.service';
+import { AddressFormComponent, buildAddressFormGroup } from '../../../../shared/address-form/address-form.component';
 
 @Component({
   selector: 'app-update-supplier',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, AddressFormComponent],
   templateUrl: './update-supplier.component.html',
   styleUrl: './update-supplier.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -25,8 +26,6 @@ export class UpdateSupplierComponent {
   private readonly supplierService = inject(SupplierService);
   private readonly notificationService = inject(NotificationService);
 
-  protected readonly addressTypes: AddressType[] = ['Comercial', 'Residential'];
-
   protected readonly form = this.fb.group({
     addresses: this.fb.array([]),
   });
@@ -34,11 +33,10 @@ export class UpdateSupplierComponent {
   constructor() {
     effect(() => {
       const s = this.supplier();
-      // Reset addresses array
-      while (this.addresses.length) this.addresses.removeAt(0);
-      if (s) {
-        // No addresses available directly on ShowSupplierDTO — start empty
-      }
+      this.addresses.clear();
+      (s.addresses ?? []).forEach(addr => {
+        this.addresses.push(buildAddressFormGroup(this.fb, addr));
+      });
     });
   }
 
@@ -47,16 +45,7 @@ export class UpdateSupplierComponent {
   }
 
   protected addAddress(): void {
-    this.addresses.push(this.fb.group({
-      typeAddress: ['' as AddressType | '', Validators.required],
-      street: ['', Validators.required],
-      number: ['', Validators.required],
-      complement: [''],
-      neighborhood: ['', Validators.required],
-      city: ['', Validators.required],
-      state: ['', Validators.required],
-      zipCode: ['', Validators.required],
-    }));
+    this.addresses.push(buildAddressFormGroup(this.fb));
   }
 
   protected removeAddress(index: number): void {

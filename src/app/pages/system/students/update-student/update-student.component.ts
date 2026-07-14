@@ -1,14 +1,15 @@
 import { ChangeDetectionStrategy, Component, effect, inject, input, output, signal } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, Validators, FormArray, FormGroup } from '@angular/forms';
 import { StudentsService } from '../../../../generated_services/api/students.service';
-import { ShowStudentDTO, UpdateStudentDTO, UpdateAddressDTO, AddressService } from '../../../../generated_services';
+import { ShowStudentDTO, UpdateStudentDTO, UpdateAddressDTO } from '../../../../generated_services';
 import { AddressType } from '../../../../generated_services/model/addressType';
 import { RelationshipType } from '../../../../generated_services/model/relationshipType';
 import { NotificationService } from '../../../../services/notification.service';
+import { AddressFormComponent, buildAddressFormGroup } from '../../../../shared/address-form/address-form.component';
 
 @Component({
   selector: 'app-update-student',
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, AddressFormComponent],
   templateUrl: './update-student.component.html',
   styleUrl: './update-student.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -21,11 +22,15 @@ export class UpdateStudentComponent {
   private readonly fb = inject(FormBuilder);
   private readonly studentsService = inject(StudentsService);
   private readonly notificationService = inject(NotificationService);
-  private readonly addressService = inject(AddressService)
 
-  protected readonly addressTypes = Object.values(AddressType);
   protected readonly relationshipTypes = Object.values(RelationshipType);
   protected readonly isMinorSignal = signal(false);
+
+  protected readonly photoUrl = signal<string | null>(null);
+  protected readonly photoPreview = signal<string | null>(null);
+  protected readonly selectedPhotoFile = signal<File | null>(null);
+  protected readonly isUploadingPhoto = signal(false);
+  protected readonly isRemovingPhoto = signal(false);
 
   protected readonly form = this.fb.group({
     userName: ['', Validators.required],
@@ -58,16 +63,7 @@ export class UpdateStudentComponent {
       // Rebuild addresses
       this.addresses.clear();
       (s.addresses ?? []).forEach(addr => {
-        this.addresses.push(this.fb.group({
-          street: [addr.street ?? '', Validators.required],
-          city: [addr.city ?? '', Validators.required],
-          state: [addr.state ?? '', Validators.required],
-          zipCode: [addr.zipCode ?? '', Validators.required],
-          neighborhood: [addr.neighborhood ?? '', Validators.required],
-          number: [addr.number ?? '', Validators.required],
-          typeAddress: [addr.typeAddress ?? '' as AddressType | '', Validators.required],
-          complement: [addr.complement ?? ''],
-        }));
+        this.addresses.push(buildAddressFormGroup(this.fb, addr));
       });
 
       // Rebuild responsibles
@@ -85,6 +81,74 @@ export class UpdateStudentComponent {
       });
 
       this.isMinorSignal.set(this.checkIsMinor(s.birthDay));
+
+      this.cancelPhotoSelection();
+      this.loadPhoto(s.id);
+    });
+  }
+
+  private loadPhoto(studentId: string | null | undefined): void {
+    if (!studentId) { this.photoUrl.set(null); return; }
+    this.studentsService.apiStudentsIdPhotoUrlGet(studentId).subscribe({
+      next: (res: { url: string }) => this.photoUrl.set(res?.url ?? null),
+      error: () => this.photoUrl.set(null),
+    });
+  }
+
+  protected onPhotoSelected(event: Event): void {
+    const target = event.target as HTMLInputElement;
+    const file = target.files?.[0];
+    if (!file) return;
+    if (!file.type.startsWith('image/')) {
+      this.notificationService.showError('Arquivo Inválido', 'Por favor, selecione apenas arquivos de imagem.');
+      this.cancelPhotoSelection();
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      this.notificationService.showError('Arquivo Muito Grande', 'A foto deve ter no máximo 5MB.');
+      this.cancelPhotoSelection();
+      return;
+    }
+    this.selectedPhotoFile.set(file);
+    const reader = new FileReader();
+    reader.onload = e => this.photoPreview.set(e.target?.result as string);
+    reader.readAsDataURL(file);
+  }
+
+  protected cancelPhotoSelection(): void {
+    this.selectedPhotoFile.set(null);
+    this.photoPreview.set(null);
+    const input = document.getElementById('photoInput') as HTMLInputElement;
+    if (input) input.value = '';
+  }
+
+  protected uploadPhoto(): void {
+    const file = this.selectedPhotoFile();
+    const studentId = this.student().id;
+    if (!file || !studentId || this.isUploadingPhoto()) return;
+    this.isUploadingPhoto.set(true);
+    this.studentsService.apiStudentsIdPhotoPost(studentId, file).subscribe({
+      next: () => {
+        this.notificationService.showSuccess('Foto Atualizada!', 'A foto do aluno foi atualizada com sucesso.');
+        this.cancelPhotoSelection();
+        this.loadPhoto(studentId);
+      },
+      error: () => this.notificationService.showError('Erro ao Enviar Foto', 'Não foi possível atualizar a foto do aluno. Tente novamente.'),
+      complete: () => this.isUploadingPhoto.set(false),
+    });
+  }
+
+  protected removePhoto(): void {
+    const studentId = this.student().id;
+    if (!studentId || this.isRemovingPhoto()) return;
+    this.isRemovingPhoto.set(true);
+    this.studentsService.apiStudentsIdPhotoDelete(studentId).subscribe({
+      next: () => {
+        this.notificationService.showSuccess('Foto Removida!', 'A foto do aluno foi removida com sucesso.');
+        this.photoUrl.set(null);
+      },
+      error: () => this.notificationService.showError('Erro ao Remover Foto', 'Não foi possível remover a foto do aluno. Tente novamente.'),
+      complete: () => this.isRemovingPhoto.set(false),
     });
   }
 
@@ -93,39 +157,8 @@ export class UpdateStudentComponent {
 
   protected getResponsibleGroup(i: number): FormGroup { return this.responsibles.at(i) as FormGroup; }
 
-  protected onZipCodeChange(index: number): void {
-    const group = this.addresses.at(index) as FormGroup;
-
-    const zipCode = group.get('zipCode')?.value?.replace(/\D/g, '');
-
-    if (!zipCode || zipCode.length !== 8) {
-      return;
-    }
-
-    this.addressService.apiAddressCepGet(zipCode).subscribe({
-      next: address => {
-        group.patchValue({
-          street: address.street,
-          neighborhood: address.neighborhood,
-          city: address.city,
-          state: address.state,
-          complement: address.complement
-        });
-      }
-    });
-  }
-
   protected addAddress(): void {
-    this.addresses.push(this.fb.group({
-      street: ['', Validators.required],
-      city: ['', Validators.required],
-      state: ['', Validators.required],
-      zipCode: ['', Validators.required],
-      neighborhood: ['', Validators.required],
-      number: ['', Validators.required],
-      typeAddress: ['' as AddressType | '', Validators.required],
-      complement: [''],
-    }));
+    this.addresses.push(buildAddressFormGroup(this.fb));
   }
 
   protected removeAddress(i: number): void { this.addresses.removeAt(i); }

@@ -3,36 +3,3 @@
   padding-top: 1rem;
   margin-top: 0.5rem;
 }
-
-.address-block {
-  border: 1px solid var(--brand-border);
-  border-radius: 0.5rem;
-  padding: 1rem;
-  margin-bottom: 1rem;
-  background: var(--brand-bg);
-}
-
-.address-block__header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 0.75rem;
-}
-
-.address-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0 1rem;
-
-  .col-full {
-    grid-column: 1 / -1;
-  }
-
-  @media (max-width: 576px) {
-    grid-template-columns: 1fr;
-
-    .col-full {
-      grid-column: auto;
-    }
-  }
-}

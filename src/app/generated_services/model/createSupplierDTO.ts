@@ -8,11 +8,14 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { CreateCompanyPersonDTO } from './createCompanyPersonDTO';
 import { CreateAddressDTO } from './createAddressDTO';
+import { CreateIndividualPersonDTO } from './createIndividualPersonDTO';
 
 
 export interface CreateSupplierDTO { 
+    individualPerson?: CreateIndividualPersonDTO | null;
+    companyPerson?: CreateCompanyPersonDTO | null;
     addresses?: Array<CreateAddressDTO>;
-    personId?: string;
 }
 

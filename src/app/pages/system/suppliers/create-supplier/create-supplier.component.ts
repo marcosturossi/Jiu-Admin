@@ -1,16 +1,18 @@
 import { ChangeDetectionStrategy, Component, inject, output } from '@angular/core';
-import { ReactiveFormsModule, FormBuilder, Validators, FormArray } from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, Validators, FormArray, FormGroup } from '@angular/forms';
 
 import { SupplierService } from '../../../../generated_services/api/supplier.service';
 import { CreateSupplierDTO } from '../../../../generated_services/model/createSupplierDTO';
 import { CreateAddressDTO } from '../../../../generated_services/model/createAddressDTO';
 import { AddressType } from '../../../../generated_services/model/addressType';
 import { NotificationService } from '../../../../services/notification.service';
+import { CreateCompanyPersonDTO, CreateIndividualPersonDTO } from '../../../../generated_services';
+import { AddressFormComponent, buildAddressFormGroup } from '../../../../shared/address-form/address-form.component';
 
 @Component({
   selector: 'app-create-supplier',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, AddressFormComponent],
   templateUrl: './create-supplier.component.html',
   styleUrl: './create-supplier.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -23,12 +25,10 @@ export class CreateSupplierComponent {
   private readonly supplierService = inject(SupplierService);
   private readonly notificationService = inject(NotificationService);
 
-  protected readonly addressTypes: AddressType[] = ['Comercial', 'Residential'];
+  protected readonly form: FormGroup = this.fb.group({
 
-  protected readonly form = this.fb.group({
-    name: ['', Validators.required],
-    email: ['', [Validators.required, Validators.email]],
-    phoneNumber: [''],
+    personType: ['' as 'individual' | 'company' | '', Validators.required],
+
     addresses: this.fb.array([]),
   });
 
@@ -36,17 +36,50 @@ export class CreateSupplierComponent {
     return this.form.get('addresses') as FormArray;
   }
 
-  protected addAddress(): void {
-    this.addresses.push(this.fb.group({
-      typeAddress: ['' as AddressType | '', Validators.required],
-      street: ['', Validators.required],
-      number: ['', Validators.required],
-      complement: [''],
-      neighborhood: ['', Validators.required],
-      city: ['', Validators.required],
-      state: ['', Validators.required],
-      zipCode: ['', Validators.required],
+  // call this from a (change) on your radio/select for personType
+  protected onPersonTypeChange(type: 'individual' | 'company' | ''): void {
+    // always remove both first, so switching types doesn't leave stale controls
+    this.form.removeControl('individualPerson');
+    this.form.removeControl('companyPerson');
+
+    if (type === 'individual') {
+      this.addIndividualPerson();
+    } else if (type === 'company') {
+      this.addCompanyPerson();
+    }
+  }
+
+  protected addIndividualPerson(): void {
+    this.form.addControl('individualPerson', this.fb.group({
+      email: [''],
+      phoneNumber: [''],
+      firstName: ['', Validators.required],
+      lastName: ['', Validators.required],
+      cpf: ['', [Validators.required, Validators.minLength(11), Validators.maxLength(11)]],
     }));
+  }
+
+  protected addCompanyPerson(): void {
+    this.form.addControl('companyPerson', this.fb.group({
+      email: [''],
+      phoneNumber: [''],
+      name: ['', Validators.required],
+      foundedIn: ['', Validators.required],
+      cnpj: ['', [Validators.required, Validators.minLength(14), Validators.maxLength(14)]],
+    }));
+  }
+
+  // optional helpers for the template
+  protected get individualPerson() {
+    return this.form.get('individualPerson') as FormGroup | null;
+  }
+
+  protected get companyPerson() {
+    return this.form.get('companyPerson') as FormGroup | null;
+  }
+
+  protected addAddress(): void {
+    this.addresses.push(buildAddressFormGroup(this.fb));
   }
 
   protected removeAddress(index: number): void {
@@ -57,6 +90,7 @@ export class CreateSupplierComponent {
 
   protected save(): void {
     if (this.form.invalid) {
+      this.logInvalidControls(this.form);
       this.notificationService.showError('Formulário Inválido', 'Por favor, preencha todos os campos obrigatórios.');
       return;
     }
@@ -71,9 +105,23 @@ export class CreateSupplierComponent {
     });
   }
 
+  private logInvalidControls(form: FormGroup | FormArray, path: string = ''): void {
+    Object.keys(form.controls).forEach((key) => {
+      const control = form.get(key);
+      const controlPath = path ? `${path}.${key}` : key;
+
+      if (control instanceof FormGroup || control instanceof FormArray) {
+        this.logInvalidControls(control, controlPath);
+      } else if (control && control.invalid) {
+        console.log(`Campo inválido: ${controlPath}`, control.errors);
+      }
+    });
+  }
+
   private toDTO(): CreateSupplierDTO {
     const v = this.form.getRawValue();
-    return {
+
+    const dto: CreateSupplierDTO = {
       addresses: (v.addresses as CreateAddressDTO[]).map(a => ({
         typeAddress: a.typeAddress as AddressType,
         street: a.street,
@@ -84,6 +132,37 @@ export class CreateSupplierComponent {
         state: a.state,
         zipCode: a.zipCode,
       })),
-    } as CreateSupplierDTO;
+    };
+
+    if (v.personType === 'individual') {
+      dto.individualPerson = this.toIndividualPersonDTO(v.individualPerson);
+      dto.companyPerson = null;
+    } else if (v.personType === 'company') {
+      dto.companyPerson = this.toCompanyPersonDTO(v.companyPerson);
+      dto.individualPerson = null;
+    }
+
+    return dto;
+  }
+
+  private toIndividualPersonDTO(p: any): CreateIndividualPersonDTO {
+    return {
+      email: p.email,
+      phoneNumber: p.phoneNumber || null,
+      photoUrl: p.photoUrl || null,
+      firstName: p.firstName,
+      lastName: p.lastName,
+      cpf: p.cpf,
+    };
+  }
+
+  private toCompanyPersonDTO(p: any): CreateCompanyPersonDTO {
+    return {
+      email: p.email,
+      phoneNumber: p.phoneNumber || null,
+      name: p.name,
+      foundedIn: p.foundedIn || null,
+      cnpj: p.cnpj,
+    };
   }
 }

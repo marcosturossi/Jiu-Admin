@@ -6,11 +6,12 @@ import { NotificationService } from '../../../../services/notification.service';
 import { AddressType } from '../../../../generated_services/model/addressType';
 import { RelationshipType } from '../../../../generated_services/model/relationshipType';
 import { ShowStudentDTO } from '../../../../generated_services/model/showStudentDTO';
-import { AddressService, CreateAddressDTO } from '../../../../generated_services';
+import { CreateAddressDTO } from '../../../../generated_services';
+import { AddressFormComponent, buildAddressFormGroup } from '../../../../shared/address-form/address-form.component';
 
 @Component({
   selector: 'app-create-student',
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, AddressFormComponent],
   templateUrl: './create-student.component.html',
   styleUrl: './create-student.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -22,9 +23,7 @@ export class CreateStudentComponent {
   private readonly fb = inject(FormBuilder);
   private readonly studentsService = inject(StudentsService);
   private readonly notificationService = inject(NotificationService);
-  private readonly addressService = inject(AddressService)
 
-  protected readonly addressTypes = Object.values(AddressType);
   protected readonly relationshipTypes = Object.values(RelationshipType);
 
   protected readonly responsibleSearchResults = signal<ShowStudentDTO[][]>([]);
@@ -47,16 +46,7 @@ export class CreateStudentComponent {
   }
 
   protected addAddress(): void {
-    this.addresses.push(this.fb.group({
-      street: ['', Validators.required],
-      city: ['', Validators.required],
-      state: ['', Validators.required],
-      zipCode: ['', Validators.required],
-      neighborhood: ['', Validators.required],
-      number: ['', Validators.required],
-      typeAddress: ['' as AddressType | '', Validators.required],
-      complement: ['']
-    }));
+    this.addresses.push(buildAddressFormGroup(this.fb));
   }
 
   protected get responsibles() {
@@ -81,28 +71,6 @@ export class CreateStudentComponent {
 
   protected removeAddress(index: number): void {
     this.addresses.removeAt(index);
-  }
-
-  protected onZipCodeChange(index: number): void {
-    const group = this.addresses.at(index) as FormGroup;
-
-    const zipCode = group.get('zipCode')?.value?.replace(/\D/g, '');
-
-    if (!zipCode || zipCode.length !== 8) {
-      return;
-    }
-
-    this.addressService.apiAddressCepGet(zipCode).subscribe({
-      next: address => {
-        group.patchValue({
-          street: address.street,
-          neighborhood: address.neighborhood,
-          city: address.city,
-          state: address.state,
-          complement: address.complement
-        });
-      }
-    });
   }
 
   protected removeResponsible(index: number): void {

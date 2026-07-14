@@ -45,8 +45,8 @@ export class DetailSupplierComponent implements OnInit {
       next: s => {
         this.supplier.set(s);
         this.isLoadingSupplier.set(false);
-        if (s.personId) {
-          this.loadTransactions(s.personId);
+        if (s.id) {
+          this.loadTransactions(s.id);
         }
       },
       error: () => {
@@ -141,5 +141,45 @@ export class DetailSupplierComponent implements OnInit {
       Residential: 'Residencial',
     };
     return map[type ?? ''] ?? 'Não informado';
+  }
+
+  protected supplierName(): string {
+    const s = this.supplier();
+    if (!s) return 'Fornecedor';
+    if (s.individualPerson) {
+      return `${s.individualPerson.firstName ?? ''} ${s.individualPerson.lastName ?? ''}`.trim() || 'Sem nome';
+    }
+    if (s.companyPerson) {
+      return s.companyPerson.name || 'Sem nome';
+    }
+    return 'Fornecedor';
+  }
+
+  protected supplierTypeLabel(): string {
+    const s = this.supplier();
+    return s?.companyPerson ? 'Pessoa Jurídica' : 'Pessoa Física';
+  }
+
+  protected supplierIcon(): string {
+    return this.supplier()?.companyPerson ? 'bi-building' : 'bi-person';
+  }
+
+  protected supplierDocument(): string {
+    const s = this.supplier();
+    return s?.individualPerson?.cpf ?? s?.companyPerson?.cnpj ?? '—';
+  }
+
+  protected supplierDocumentLabel(): string {
+    return this.supplier()?.companyPerson ? 'CNPJ' : 'CPF';
+  }
+
+  protected supplierEmail(): string {
+    const s = this.supplier();
+    return s?.individualPerson?.email ?? s?.companyPerson?.email ?? '—';
+  }
+
+  protected supplierPhone(): string {
+    const s = this.supplier();
+    return s?.individualPerson?.phoneNumber ?? s?.companyPerson?.phoneNumber ?? '—';
   }
 }

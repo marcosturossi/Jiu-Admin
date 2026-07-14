@@ -8,6 +8,7 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { ShowPaymentInformationDTO } from './showPaymentInformationDTO';
 import { ApiFeePlanGetPriceMinParameter } from './apiFeePlanGetPriceMinParameter';
 import { TransactionType } from './transactionType';
 import { FeeStatus } from './feeStatus';
@@ -36,6 +37,7 @@ export interface ShowFinancialTransactionDTO {
     transactionDate?: string;
     notes?: string | null;
     reference?: string | null;
+    paymentInformation?: ShowPaymentInformationDTO;
 }
 export namespace ShowFinancialTransactionDTO {
 }

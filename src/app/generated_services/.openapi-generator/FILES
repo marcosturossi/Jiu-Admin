@@ -72,12 +72,14 @@ model/createAcademyDto.ts
 model/createAddressDTO.ts
 model/createBeltDTO.ts
 model/createBeltDTOOrderIndex.ts
+model/createCompanyPersonDTO.ts
 model/createContractDTO.ts
 model/createFeePlanDTO.ts
 model/createFinancialTransactionDTO.ts
 model/createFrequencyDTO.ts
 model/createGraduationDTO.ts
 model/createGraduationRequirementDTO.ts
+model/createIndividualPersonDTO.ts
 model/createLessonDTO.ts
 model/createMedicalClearanceDto.ts
 model/createNoticeDto.ts
@@ -139,6 +141,7 @@ model/showMedicalClearanceDtoAttachmentSize.ts
 model/showNoticeDto.ts
 model/showNotificationDto.ts
 model/showNotificationStudentDto.ts
+model/showPaymentInformationDTO.ts
 model/showPersonDTO.ts
 model/showPersonRelationshipDTO.ts
 model/showRealmInfoDto.ts

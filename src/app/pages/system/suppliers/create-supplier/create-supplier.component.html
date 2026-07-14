@@ -1,19 +1,78 @@
 <form [formGroup]="form" (ngSubmit)="save()">
-  <!-- Dados pessoais -->
   <div class="mb-3">
-    <label class="form-label">Nome <span class="text-danger">*</span></label>
-    <input type="text" class="form-control" formControlName="name" placeholder="Nome do fornecedor" />
+    <label class="form-label">Tipo de Pessoa <span class="text-danger">*</span></label>
+    <select
+      class="form-select"
+      formControlName="personType"
+      (change)="onPersonTypeChange(form.get('personType')!.value)"
+    >
+      <option value="" disabled>Selecione</option>
+      <option value="individual">Pessoa Física</option>
+      <option value="company">Pessoa Jurídica</option>
+    </select>
   </div>
 
-  <div class="mb-3">
-    <label class="form-label">E-mail <span class="text-danger">*</span></label>
-    <input type="email" class="form-control" formControlName="email" placeholder="email@exemplo.com" />
-  </div>
+  <!-- Pessoa Física -->
+  @if (individualPerson) {
+    <div formGroupName="individualPerson">
+      <div class="row">
+        <div class="mb-3 col-6">
+          <label class="form-label">Nome <span class="text-danger">*</span></label>
+          <input type="text" class="form-control" formControlName="firstName" placeholder="Nome" />
+        </div>
 
-  <div class="mb-3">
-    <label class="form-label">Telefone</label>
-    <input type="text" class="form-control" formControlName="phoneNumber" placeholder="(11) 99999-9999" />
-  </div>
+        <div class="mb-3 col-6">
+          <label class="form-label">Sobrenome <span class="text-danger">*</span></label>
+          <input type="text" class="form-control" formControlName="lastName" placeholder="Sobrenome" />
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">CPF <span class="text-danger">*</span></label>
+        <input type="text" class="form-control" formControlName="cpf" placeholder="00000000000" maxlength="11" />
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">E-mail</label>
+        <input type="email" class="form-control" formControlName="email" placeholder="email@exemplo.com" />
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Telefone</label>
+        <input type="text" class="form-control" formControlName="phoneNumber" placeholder="(11) 99999-9999" />
+      </div>
+    </div>
+  }
+
+  <!-- Pessoa Jurídica -->
+  @if (companyPerson) {
+    <div formGroupName="companyPerson">
+      <div class="mb-3">
+        <label class="form-label">Razão Social <span class="text-danger">*</span></label>
+        <input type="text" class="form-control" formControlName="name" placeholder="Nome da empresa" />
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">CNPJ <span class="text-danger">*</span></label>
+        <input type="text" class="form-control" formControlName="cnpj" placeholder="00000000000000" maxlength="14" />
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Data de Fundação <span class="text-danger">*</span></label>
+        <input type="date" class="form-control" formControlName="foundedIn" />
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">E-mail</label>
+        <input type="email" class="form-control" formControlName="email" placeholder="email@exemplo.com" />
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Telefone</label>
+        <input type="text" class="form-control" formControlName="phoneNumber" placeholder="(11) 99999-9999" />
+      </div>
+    </div>
+  }
 
   <!-- Endereços -->
   <div class="addresses-section">
@@ -24,65 +83,9 @@
       </button>
     </div>
 
-    <div formArrayName="addresses">
-      @for (addr of addresses.controls; track $index) {
-        <div class="address-block" [formGroupName]="$index">
-          <div class="address-block__header">
-            <span class="fw-semibold">Endereço {{ $index + 1 }}</span>
-            <button type="button" class="btn btn-sm btn-outline-danger" (click)="removeAddress($index)">
-              <i class="bi bi-trash"></i>
-            </button>
-          </div>
-
-          <div class="address-grid">
-            <div class="mb-3">
-              <label class="form-label">Tipo <span class="text-danger">*</span></label>
-              <select class="form-select" formControlName="typeAddress">
-                <option value="" disabled>Selecione</option>
-                @for (t of addressTypes; track t) {
-                  <option [value]="t">{{ t === 'Comercial' ? 'Comercial' : 'Residencial' }}</option>
-                }
-              </select>
-            </div>
-
-            <div class="mb-3">
-              <label class="form-label">CEP <span class="text-danger">*</span></label>
-              <input type="text" class="form-control" formControlName="zipCode" placeholder="00000-000" />
-            </div>
-
-            <div class="mb-3 col-full">
-              <label class="form-label">Rua <span class="text-danger">*</span></label>
-              <input type="text" class="form-control" formControlName="street" placeholder="Nome da rua" />
-            </div>
-
-            <div class="mb-3">
-              <label class="form-label">Número <span class="text-danger">*</span></label>
-              <input type="text" class="form-control" formControlName="number" placeholder="123" />
-            </div>
-
-            <div class="mb-3">
-              <label class="form-label">Complemento</label>
-              <input type="text" class="form-control" formControlName="complement" placeholder="Apto, sala..." />
-            </div>
-
-            <div class="mb-3">
-              <label class="form-label">Bairro <span class="text-danger">*</span></label>
-              <input type="text" class="form-control" formControlName="neighborhood" placeholder="Bairro" />
-            </div>
-
-            <div class="mb-3">
-              <label class="form-label">Cidade <span class="text-danger">*</span></label>
-              <input type="text" class="form-control" formControlName="city" placeholder="Cidade" />
-            </div>
-
-            <div class="mb-3">
-              <label class="form-label">Estado <span class="text-danger">*</span></label>
-              <input type="text" class="form-control" formControlName="state" placeholder="SP" maxlength="2" />
-            </div>
-          </div>
-        </div>
-      }
-    </div>
+    @for (addr of addresses.controls; track $index) {
+      <app-address-form [group]="$any(addr)" [index]="$index" (remove)="removeAddress($index)" />
+    }
   </div>
 
   <!-- Footer -->
