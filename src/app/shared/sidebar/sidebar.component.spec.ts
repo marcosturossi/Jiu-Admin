@@ -83,7 +83,7 @@ describe('SidebarComponent', () => {
     it('shows all individual item links (not group buttons)', () => {
       setup('/system/students');
       const links = fixture.nativeElement.querySelectorAll('.sidebar-section-collapsed .sidebar-link');
-      const totalItems = 19; // 6 sections: 1+7+6+2+2+1 (Financeiro now has Dashboard link)
+      const totalItems = 18; // 5 sections: Principal(1) + Acadêmico(8) + Financeiro(5) + Comunicação(2) + Saúde e Segurança(2)
       expect(links.length).toBe(totalItems);
     });
 
@@ -132,7 +132,7 @@ describe('SidebarComponent', () => {
 
     it('shows one group header per section', () => {
       const headers = fixture.nativeElement.querySelectorAll('.sidebar-group-header');
-      expect(headers.length).toBe(6); // 6 sections defined
+      expect(headers.length).toBe(5); // 5 active sections (Configurações is commented out)
     });
 
     it('does not show collapsed group buttons in expanded mode', () => {
