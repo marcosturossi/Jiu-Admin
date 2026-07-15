@@ -95,14 +95,14 @@ export class CashflowChartComponent implements AfterViewInit, OnDestroy {
       const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
       months.push({ label: PT_MONTHS[d.getMonth()], year: d.getFullYear(), month: d.getMonth() });
     }
-    const rangeFrom = new Date(now.getFullYear(), now.getMonth() - 5, 1).toISOString();
+    const rangeFrom = new Date(now.getFullYear(), now.getMonth() - 5, 1).toISOString().substring(0, 10);
 
     forkJoin({
       receivable: this.accountsReceivableService.apiAccountsReceivableGet(
-        undefined, undefined, undefined, undefined, rangeFrom, undefined, undefined, undefined, 1 as any, 1000 as any,
+        undefined, undefined, undefined, undefined, rangeFrom, undefined, undefined, undefined, 1 as any, 100 as any,
       ),
       payable: this.accountsPayableService.apiAccountsPayableGet(
-        undefined, undefined, undefined, rangeFrom, undefined, undefined, undefined, 1 as any, 1000 as any,
+        undefined, undefined, undefined, rangeFrom, undefined, undefined, undefined, 1 as any, 100 as any,
       ),
     }).subscribe({
       next: ({ receivable, payable }) => {

@@ -35,7 +35,7 @@ export interface PersonsServiceInterface {
      * @param personId 
      * @param images 
      */
-    addPersonImagesApiV1PersonsPersonIdImagesPost(personId: string, images: Array<string>, extraHttpRequestParams?: any): Observable<{ [key: string]: any; }>;
+    addPersonImagesApiV1PersonsPersonIdImagesPost(personId: string, images: Array<Blob>, extraHttpRequestParams?: any): Observable<{ [key: string]: any; }>;
 
     /**
      * Delete Person
@@ -69,7 +69,7 @@ export interface PersonsServiceInterface {
      * @param image 
      * @param drawBoxes 
      */
-    recognizeFacesApiV1RecognizePost(image: string, drawBoxes?: boolean, extraHttpRequestParams?: any): Observable<RecognitionResponse>;
+    recognizeFacesApiV1RecognizePost(image: Blob, drawBoxes?: boolean, extraHttpRequestParams?: any): Observable<RecognitionResponse>;
 
     /**
      * Register Multiple Photos
@@ -78,7 +78,7 @@ export interface PersonsServiceInterface {
      * @param images 
      * @param personId 
      */
-    registerMultiplePhotosApiV1RegisterMultiplePost(name: string, images: Array<string>, personId?: string, extraHttpRequestParams?: any): Observable<RegisterMultipleResponse>;
+    registerMultiplePhotosApiV1RegisterMultiplePost(name: string, images: Array<Blob>, personId?: string, extraHttpRequestParams?: any): Observable<RegisterMultipleResponse>;
 
     /**
      * Register Person
@@ -87,7 +87,7 @@ export interface PersonsServiceInterface {
      * @param image 
      * @param personId 
      */
-    registerPersonApiV1RegisterPost(name: string, image: string, personId?: string, extraHttpRequestParams?: any): Observable<RegisterPersonResponse>;
+    registerPersonApiV1RegisterPost(name: string, image: Blob, personId?: string, extraHttpRequestParams?: any): Observable<RegisterPersonResponse>;
 
     /**
      * Remove Person Image
