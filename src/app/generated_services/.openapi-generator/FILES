@@ -22,6 +22,8 @@ api/asaasWebhook.service.ts
 api/asaasWebhook.serviceInterface.ts
 api/belt.service.ts
 api/belt.serviceInterface.ts
+api/companyPersons.service.ts
+api/companyPersons.serviceInterface.ts
 api/contract.service.ts
 api/contract.serviceInterface.ts
 api/dashboard.service.ts
@@ -38,6 +40,8 @@ api/graduationRequirements.service.ts
 api/graduationRequirements.serviceInterface.ts
 api/health.service.ts
 api/health.serviceInterface.ts
+api/individualPersons.service.ts
+api/individualPersons.serviceInterface.ts
 api/lesson.service.ts
 api/lesson.serviceInterface.ts
 api/medicalClearance.service.ts
@@ -97,6 +101,7 @@ model/createPersonRelationshipDTO.ts
 model/createStudentDTO.ts
 model/createSupplierDTO.ts
 model/createTransactionCategoryDTO.ts
+model/dashboardSummaryDTO.ts
 model/entityTagHeaderValue.ts
 model/feeStatus.ts
 model/fileResult.ts
@@ -113,11 +118,13 @@ model/paginatedResultOfShowAcademyDto.ts
 model/paginatedResultOfShowAccountsPayableDTO.ts
 model/paginatedResultOfShowAccountsReceivableDTO.ts
 model/paginatedResultOfShowBeltDTO.ts
+model/paginatedResultOfShowCompanyPersonDTO.ts
 model/paginatedResultOfShowContractDTO.ts
 model/paginatedResultOfShowFeePlanDTO.ts
 model/paginatedResultOfShowFrequencyDTO.ts
 model/paginatedResultOfShowGraduationDTO.ts
 model/paginatedResultOfShowGraduationRequirementDTO.ts
+model/paginatedResultOfShowIndividualPersonDTO.ts
 model/paginatedResultOfShowLessonDTO.ts
 model/paginatedResultOfShowMedicalClearanceDto.ts
 model/paginatedResultOfShowNoticeDto.ts

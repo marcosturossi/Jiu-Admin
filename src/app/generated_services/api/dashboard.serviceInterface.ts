@@ -15,6 +15,7 @@ import { Observable }                                        from 'rxjs';
 import { ApiAdminContractsSendRenewalWarningsPostDaysAheadParameter } from '../model/models';
 import { ApiMedicalClearanceIdAttachmentUrlGetExpiryHoursParameter } from '../model/models';
 import { BarChartDataDTO } from '../model/models';
+import { DashboardSummaryDTO } from '../model/models';
 import { MonthlyNewStudentsDTO } from '../model/models';
 import { StudentsBirthDay } from '../model/models';
 import { TopStudentDTO } from '../model/models';
@@ -55,6 +56,12 @@ export interface DashboardServiceInterface {
      * @param months 
      */
     apiDashboardNewStudentsGet(months?: ApiMedicalClearanceIdAttachmentUrlGetExpiryHoursParameter, extraHttpRequestParams?: any): Observable<MonthlyNewStudentsDTO>;
+
+    /**
+     * 
+     * 
+     */
+    apiDashboardSummaryGet(extraHttpRequestParams?: any): Observable<DashboardSummaryDTO>;
 
     /**
      * 

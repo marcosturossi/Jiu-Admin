@@ -83,6 +83,13 @@ export interface NotificationServiceInterface {
     /**
      * 
      * 
+     * @param id 
+     */
+    apiNotificationIdReadPatch(id: string, extraHttpRequestParams?: any): Observable<{}>;
+
+    /**
+     * 
+     * 
      */
     apiNotificationMarkAllAsReadPost(extraHttpRequestParams?: any): Observable<{}>;
 

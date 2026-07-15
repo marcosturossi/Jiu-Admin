@@ -12,6 +12,7 @@ import { ShowPersonDTO } from './showPersonDTO';
 
 
 export interface ShowCompanyPersonDTO { 
+    id?: string;
     person?: ShowPersonDTO | null;
     createdAt?: string;
     deletedAt?: string | null;

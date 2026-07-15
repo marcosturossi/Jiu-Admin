@@ -17,6 +17,7 @@ export interface ShowAccountsPayableDTO {
     createdAt?: string;
     id?: string;
     transactionCategoryName?: string;
+    supplierName?: string | null;
     transactionCategoryId?: string | null;
     status?: FeeStatus;
     personId?: string;
