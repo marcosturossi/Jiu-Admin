@@ -30,7 +30,7 @@
             @for (fee of fees(); track fee.id) {
               <tr>
                 <td>{{ formatDate(fee.dueDate) }}</td>
-                <td class="text-danger fw-semibold">{{ formatCurrency(fee.amount) }}</td>
+                <td class="text-danger fw-semibold">{{ formatCurrency(getAmount(fee)) }}</td>
                 <td>
                   <span class="badge" [class.bg-danger]="daysOverdue(fee.dueDate) > 30" [class.bg-warning]="daysOverdue(fee.dueDate) <= 30">
                     {{ daysOverdue(fee.dueDate) }} dias

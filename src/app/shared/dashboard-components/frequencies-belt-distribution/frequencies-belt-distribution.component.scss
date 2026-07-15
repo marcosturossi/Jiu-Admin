@@ -21,8 +21,8 @@
 .dashboard-card .card-header {
   padding: 0.5rem 0.6rem;
   font-weight: 700;
-  background: linear-gradient(90deg, var(--accent), var(--accent-2));
-  color: #fff;
+  background: var(--brand-surface);
+  color: var(--brand-text);
   border-bottom: none;
   text-align: center;
 }

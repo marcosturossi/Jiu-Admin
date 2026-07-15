@@ -5,7 +5,8 @@ import {
   signal,
   OnInit,
 } from '@angular/core';
-import { ShowMonthlyFeeDTO } from '../../../generated_services/model/showMonthlyFeeDTO';
+import { AccountsReceivableService } from '../../../generated_services/api/accountsReceivable.service';
+import { ShowAccountsReceivableDTO } from '../../../generated_services/model/showAccountsReceivableDTO';
 
 @Component({
   selector: 'app-overdue-fees',
@@ -16,12 +17,32 @@ import { ShowMonthlyFeeDTO } from '../../../generated_services/model/showMonthly
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class OverdueFeesComponent implements OnInit {
+  private readonly accountsReceivableService = inject(AccountsReceivableService);
 
-  protected readonly fees = signal<ShowMonthlyFeeDTO[]>([]);
+  protected readonly fees = signal<ShowAccountsReceivableDTO[]>([]);
   protected readonly loading = signal(true);
   protected readonly error = signal('');
 
   ngOnInit(): void {
+    this.accountsReceivableService
+      .apiAccountsReceivableOverdueGet(
+        undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, 1 as any, 50 as any,
+      )
+      .subscribe({
+        next: (result) => {
+          this.fees.set(result?.items ?? []);
+          this.loading.set(false);
+        },
+        error: (err) => {
+          console.error('[OverdueFees] API error:', err);
+          this.error.set('Não foi possível carregar as mensalidades vencidas.');
+          this.loading.set(false);
+        },
+      });
+  }
+
+  protected getAmount(item: ShowAccountsReceivableDTO): number {
+    return (item.amount as unknown as number) ?? 0;
   }
 
   protected formatCurrency(value: number | null | undefined): string {

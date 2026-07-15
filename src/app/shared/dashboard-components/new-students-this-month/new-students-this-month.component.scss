@@ -17,7 +17,7 @@
 	height: 100%;
 }
 
-.dashboard-card .card-header { padding: 0.5rem 0.6rem; font-weight: 700; background: linear-gradient(90deg,var(--accent), #06b6d4); color:#fff; }
+.dashboard-card .card-header { padding: 0.5rem 0.6rem; font-weight: 700; background: var(--brand-surface); color: var(--brand-text); }
 .dashboard-card .card-body { padding: 0.6rem 0.8rem; flex: 1 1 auto; }
 
 .dashboard-card:hover { transform: translateY(-4px); box-shadow: 0 12px 30px rgba(16,24,40,0.10); }
