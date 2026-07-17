@@ -34,7 +34,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
       title: 'Principal',
       groupIcon: 'bi bi-house',
       items: [
-        { route: '/system/home', label: 'Dashboard', icon: 'bi bi-house' },
+        { route: '/system/home', label: 'Início', icon: 'bi bi-house' },
       ]
     },
     {
@@ -43,7 +43,6 @@ export class SidebarComponent implements OnInit, OnDestroy {
       items: [
         { route: '/system/student-onboarding', label: 'Cadastros', icon: 'bi bi-clipboard-check' },
         { route: '/system/students', label: 'Alunos', icon: 'bi bi-people' },
-        { route: '/system/suppliers', label: 'Fornecedores', icon: 'bi bi-truck' },
         { route: '/system/lessons', label: 'Aulas', icon: 'bi bi-calendar3' },
         { route: '/system/graduations', label: 'Graduações', icon: 'bi bi-award' },
         { route: '/system/frequencies', label: 'Frequências', icon: 'bi bi-check2-square' },
@@ -60,6 +59,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
         { route: '/system/contracts', label: 'Contratos', icon: 'bi bi-file-earmark-text' },
         { route: '/system/accounts-receivable', label: 'Contas a Receber', icon: 'bi bi-arrow-down-circle' },
         { route: '/system/accounts-payable', label: 'Contas a Pagar', icon: 'bi bi-arrow-up-circle' },
+        { route: '/system/suppliers', label: 'Fornecedores', icon: 'bi bi-truck' },
         { route: '/system/transaction-categories', label: 'Categorias', icon: 'bi bi-tags' },
       ]
     },

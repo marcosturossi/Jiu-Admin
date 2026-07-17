@@ -2,6 +2,7 @@ import { Component, ChangeDetectionStrategy, input, output } from '@angular/core
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { StudentContractInfo } from './student-onboarding.component';
+import { ShowFeePlanDTO } from '../../../generated_services/model/showFeePlanDTO';
 
 @Component({
   selector: 'app-onboarding-contract-form',
@@ -17,7 +18,7 @@ import { StudentContractInfo } from './student-onboarding.component';
 
       <div class="form-section">
         <div class="form-group">
-          <label for="feePlanId" class="form-label">Plano de Mensalidade *</label>
+          <label for="feePlanId" class="form-label">Plano de Mensalidade <span class="text-danger">*</span></label>
           <select
             id="feePlanId"
             class="form-select"
@@ -26,16 +27,15 @@ import { StudentContractInfo } from './student-onboarding.component';
             (ngModelChange)="onDataChange('feePlanId', $event)"
           >
             <option value="">Selecione um plano...</option>
-            <option value="basic">Plano Básico - 2 aulas/semana</option>
-            <option value="standard">Plano Padrão - 4 aulas/semana</option>
-            <option value="premium">Plano Premium - Aulas ilimitadas</option>
-            <option value="kids">Plano Kids - Crianças</option>
+            @for (plan of feePlans(); track plan.id) {
+              <option [value]="plan.id">{{ plan.name }} — R$ {{ $any(plan.price)?.toFixed(2) }}/mês ({{ plan.monthDuration }} {{ plan.monthDuration === 1 ? 'mês' : 'meses' }})</option>
+            }
           </select>
           <small class="form-text-muted">O plano de aulas do aluno</small>
         </div>
 
         <div class="form-group">
-          <label for="startDate" class="form-label">Data de Início do Contrato *</label>
+          <label for="startDate" class="form-label">Data de Início do Contrato <span class="text-danger">*</span></label>
           <input
             type="date"
             id="startDate"
@@ -45,32 +45,6 @@ import { StudentContractInfo } from './student-onboarding.component';
             (ngModelChange)="onDataChange('startDate', $event)"
           />
           <small class="form-text-muted">Quando começa a cobrança</small>
-        </div>
-      </div>
-
-      <div class="form-section">
-        <div class="form-group">
-          <label for="contractId" class="form-label">Tipo de Contrato</label>
-          <select
-            id="contractId"
-            class="form-select"
-            [(ngModel)]="data().contractId"
-            [ngModelOptions]="{standalone: true}"
-            (ngModelChange)="onDataChange('contractId', $event)"
-          >
-            <option value="">Sem contrato específico</option>
-            <option value="monthly">Mensal</option>
-            <option value="quarterly">Trimestral</option>
-            <option value="annual">Anual</option>
-          </select>
-          <small class="form-text-muted">Duração do contrato</small>
-        </div>
-      </div>
-
-      <div class="pricing-info">
-        <div class="pricing-item">
-          <span class="pricing-label">Plano:</span>
-          <span class="pricing-value">{{ getFeePlanName() }}</span>
         </div>
       </div>
 
@@ -145,33 +119,6 @@ import { StudentContractInfo } from './student-onboarding.component';
       color: var(--brand-muted);
     }
 
-    .pricing-info {
-      padding: 1rem;
-      background: var(--brand-surface);
-      border: 1px solid var(--brand-border);
-      border-radius: 4px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .pricing-item {
-      display: flex;
-      justify-content: space-between;
-      gap: 1rem;
-      width: 100%;
-    }
-
-    .pricing-label {
-      font-weight: 500;
-      color: var(--brand-muted);
-    }
-
-    .pricing-value {
-      color: var(--brand-text);
-      font-weight: 600;
-    }
-
     .info-box {
       display: flex;
       gap: 1rem;
@@ -192,19 +139,10 @@ import { StudentContractInfo } from './student-onboarding.component';
 })
 export class OnboardingContractFormComponent {
   readonly data = input.required<StudentContractInfo>();
+  readonly feePlans = input<ShowFeePlanDTO[]>([]);
   readonly dataChange = output<Partial<StudentContractInfo>>();
 
   protected onDataChange(field: string, value: any): void {
     this.dataChange.emit({ [field]: value });
-  }
-
-  protected getFeePlanName(): string {
-    const plans: Record<string, string> = {
-      basic: 'Plano Básico - 2 aulas/semana',
-      standard: 'Plano Padrão - 4 aulas/semana',
-      premium: 'Plano Premium - Aulas ilimitadas',
-      kids: 'Plano Kids - Crianças',
-    };
-    return plans[this.data().feePlanId] || 'Selecione um plano';
   }
 }

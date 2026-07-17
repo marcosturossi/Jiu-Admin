@@ -37,7 +37,13 @@
                   {{ getTypeLabel(item.type) }}
                 </span>
               </td>
-              <td>{{ item.personName || '—' }}</td>
+              <td>
+                @if (item.personId) {
+                  <a [routerLink]="['/system/students/details', item.personId]">{{ item.personName || '—' }}</a>
+                } @else {
+                  {{ item.personName || '—' }}
+                }
+              </td>
               <td>{{ item.transactionCategoryName }}</td>
               <td class="desc-cell">{{ item.description || '—' }}</td>
               <td [class.amount-income]="isPositiveType(item.type)">

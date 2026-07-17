@@ -5,6 +5,7 @@ import { BirthdayThisMonthComponent } from '../../../shared/dashboard-components
 import { NewStudentsThisMonthComponent } from '../../../shared/dashboard-components/new-students-this-month/new-students-this-month.component';
 import { FrequenciesBeltDistributionComponent } from '../../../shared/dashboard-components/frequencies-belt-distribution/frequencies-belt-distribution.component';
 import { AvgStudentsByClassComponent } from '../../../shared/dashboard-components/avg-students-by-class/avg-students-by-class.component';
+import { QuickActionsComponent } from '../../../shared/dashboard-components/quick-actions/quick-actions.component';
 
 @Component({
   selector: 'app-home',
@@ -12,6 +13,7 @@ import { AvgStudentsByClassComponent } from '../../../shared/dashboard-component
   styleUrls: ['./home.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    QuickActionsComponent,
     TopStudentsComponent,
     BirthdayThisMonthComponent,
     NewStudentsThisMonthComponent,

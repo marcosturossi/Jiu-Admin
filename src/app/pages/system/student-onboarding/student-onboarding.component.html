@@ -7,14 +7,6 @@
     </div>
   }
 
-  <!-- Success Alert -->
-  @if (successMessage()) {
-    <div class="alert alert-success" role="alert">
-      <i class="bi bi-check-circle me-2"></i>
-      {{ successMessage() }}
-    </div>
-  }
-
   <div class="wizard-header">
     <h2>Assistente de Cadastro de Alunos</h2>
     <div class="progress-bar">
@@ -38,6 +30,7 @@
     @if (currentStep() === 2) {
       <app-onboarding-belt-form
         [data]="beltInfo()"
+        [belts]="belts()"
         (dataChange)="updateBeltInfo($event)"
       />
     }
@@ -46,6 +39,7 @@
     @if (currentStep() === 3) {
       <app-onboarding-contract-form
         [data]="contractInfo()"
+        [feePlans]="feePlans()"
         (dataChange)="updateContractInfo($event)"
       />
     }
@@ -57,7 +51,10 @@
         [beltInfo]="beltInfo()"
         [contractInfo]="contractInfo()"
         [medicalInfo]="medicalInfo()"
+        [belts]="belts()"
+        [feePlans]="feePlans()"
         (medicalDataChange)="updateMedicalInfo($event)"
+        (termsChange)="updateTermsAccepted($event)"
         (submit)="submitForm()"
       />
     }
@@ -86,7 +83,7 @@
       <button
         class="btn btn-success"
         (click)="submitForm()"
-        [disabled]="isSubmitting()"
+        [disabled]="isSubmitting() || !termsAccepted()"
       >
         @if (isSubmitting()) {
           <span class="spinner-border spinner-border-sm me-2"></span>Processando...

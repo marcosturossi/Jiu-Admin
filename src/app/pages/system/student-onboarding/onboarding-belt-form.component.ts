@@ -1,7 +1,8 @@
-import { Component, ChangeDetectionStrategy, input, output, OnInit, inject } from '@angular/core';
+import { Component, ChangeDetectionStrategy, input, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { StudentBeltInfo } from './student-onboarding.component';
+import { ShowBeltDTO } from '../../../generated_services/model/showBeltDTO';
 
 @Component({
   selector: 'app-onboarding-belt-form',
@@ -9,15 +10,15 @@ import { StudentBeltInfo } from './student-onboarding.component';
   imports: [CommonModule, FormsModule],
   template: `
     <form class="onboarding-form">
-      <h3>Seleção de Faixa e Graduação</h3>
+      <h3>Seleção de Faixa</h3>
 
       <p class="form-description">
-        Selecione a faixa e a graduação inicial do aluno.
+        Selecione a faixa inicial do aluno.
       </p>
 
       <div class="form-section">
         <div class="form-group">
-          <label for="beltId" class="form-label">Faixa *</label>
+          <label for="beltId" class="form-label">Faixa <span class="text-danger">*</span></label>
           <select
             id="beltId"
             class="form-select"
@@ -26,35 +27,15 @@ import { StudentBeltInfo } from './student-onboarding.component';
             (ngModelChange)="onDataChange('beltId', $event)"
           >
             <option value="">Selecione uma faixa...</option>
-            <option value="white">Branca</option>
-            <option value="blue">Azul</option>
-            <option value="purple">Roxa</option>
-            <option value="brown">Marrom</option>
-            <option value="black">Preta</option>
+            @for (belt of belts(); track belt.id) {
+              <option [value]="belt.id">{{ belt.color }}</option>
+            }
           </select>
           <small class="form-text-muted">A faixa inicial do aluno</small>
         </div>
 
         <div class="form-group">
-          <label for="graduationId" class="form-label">Graduação *</label>
-          <select
-            id="graduationId"
-            class="form-select"
-            [(ngModel)]="data().graduationId"
-            [ngModelOptions]="{standalone: true}"
-            (ngModelChange)="onDataChange('graduationId', $event)"
-          >
-            <option value="">Selecione uma graduação...</option>
-            <option value="1">1º Grau</option>
-            <option value="2">2º Grau</option>
-            <option value="3">3º Grau</option>
-            <option value="4">4º Grau</option>
-          </select>
-          <small class="form-text-muted">A graduação dentro da faixa</small>
-        </div>
-
-        <div class="form-group">
-          <label for="startDate" class="form-label">Data de Início *</label>
+          <label for="startDate" class="form-label">Data de Início <span class="text-danger">*</span></label>
           <input
             type="date"
             id="startDate"
@@ -96,12 +77,8 @@ import { StudentBeltInfo } from './student-onboarding.component';
 
     .form-section {
       display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
+      grid-template-columns: 1fr 1fr;
       gap: 1.5rem;
-
-      @media (max-width: 992px) {
-        grid-template-columns: 1fr 1fr;
-      }
 
       @media (max-width: 768px) {
         grid-template-columns: 1fr;
@@ -162,6 +139,7 @@ import { StudentBeltInfo } from './student-onboarding.component';
 })
 export class OnboardingBeltFormComponent {
   readonly data = input.required<StudentBeltInfo>();
+  readonly belts = input<ShowBeltDTO[]>([]);
   readonly dataChange = output<Partial<StudentBeltInfo>>();
 
   protected onDataChange(field: string, value: any): void {

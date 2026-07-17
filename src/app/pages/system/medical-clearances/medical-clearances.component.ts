@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
+import { RouterLink } from '@angular/router';
 import { MedicalClearanceService } from '../../../generated_services/api/medicalClearance.service';
 import { ShowMedicalClearanceDto } from '../../../generated_services/model/showMedicalClearanceDto';
 import { CreateMedicalClearanceComponent } from './create-medical-clearance/create-medical-clearance.component';
@@ -15,7 +16,7 @@ import { PageResult } from '../../../utils/page-result';
 
 @Component({
   selector: 'app-medical-clearances',
-  imports: [DatePipe, CreateMedicalClearanceComponent, PaginationComponent, BlobViewerComponent, FilterComponent],
+  imports: [DatePipe, RouterLink, CreateMedicalClearanceComponent, PaginationComponent, BlobViewerComponent, FilterComponent],
   templateUrl: './medical-clearances.component.html',
   styleUrl: './medical-clearances.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush

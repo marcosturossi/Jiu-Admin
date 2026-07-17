@@ -26,7 +26,13 @@
           }
           @for (clearance of items()?.items ?? []; track clearance.id) {
             <tr>
-              <td><strong>{{ clearance.studentName }}</strong></td>
+              <td>
+                @if (clearance.studentId) {
+                  <a [routerLink]="['/system/students/details', clearance.studentId]"><strong>{{ clearance.studentName }}</strong></a>
+                } @else {
+                  <strong>{{ clearance.studentName }}</strong>
+                }
+              </td>
               <td>
                 <span [class]="'badge ' + ({'success': 'bg-success', 'warn': 'bg-warning text-dark', 'danger': 'bg-danger', 'secondary': 'bg-secondary', 'info': 'bg-info text-dark'})[getStatusSeverity(clearance)]">{{ getStatusLabel(clearance) }}</span>
               </td>

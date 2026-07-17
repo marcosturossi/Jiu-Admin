@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { DatePipe, CurrencyPipe } from '@angular/common';
+import { RouterLink } from '@angular/router';
 import { ContractService } from '../../../generated_services/api/contract.service';
 import { StudentsService } from '../../../generated_services/api/students.service';
 import { ShowContractDTO as ShowContractDTO, ContractStatus as ContractStatus } from '../../../generated_services';
@@ -20,6 +21,7 @@ import { PageResult } from '../../../utils/page-result';
   imports: [
     DatePipe,
     CurrencyPipe,
+    RouterLink,
     FilterComponent,
     PaginationComponent,
     CreateContractComponent,

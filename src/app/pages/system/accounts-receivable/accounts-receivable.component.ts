@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { DatePipe, CurrencyPipe } from '@angular/common';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { RouterLink } from '@angular/router';
 import { AccountsReceivableService } from '../../../generated_services/api/accountsReceivable.service';
 import { TransactionCategoryService } from '../../../generated_services/api/transactionCategory.service';
 import { ShowAccountsReceivableDTO, ShowTransactionCategoryDTO } from '../../../generated_services';
@@ -24,6 +25,7 @@ import { RefundAccountsReceivableComponent } from './refund-accounts-receivable/
   imports: [
     DatePipe,
     CurrencyPipe,
+    RouterLink,
     FilterComponent,
     PaginationComponent,
     CreateAccountsReceivableComponent,

@@ -29,7 +29,13 @@
           }
           @for (contract of items()?.items ?? []; track contract.id) {
             <tr>
-              <td>{{ contract.personName }}</td>
+              <td>
+                @if (contract.personId) {
+                  <a [routerLink]="['/system/students/details', contract.personId]">{{ contract.personName }}</a>
+                } @else {
+                  {{ contract.personName }}
+                }
+              </td>
               <td>{{ contract.feePlanName }}</td>
               <td>{{ contract.startDate | date:'dd/MM/yyyy':'UTC' }}</td>
               <td>{{ contract.endDate | date:'dd/MM/yyyy':'UTC' }}</td>

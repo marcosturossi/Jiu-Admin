@@ -35,7 +35,7 @@
           }
           @for (frequency of items()?.items ?? []; track frequency.id) {
             <tr>
-              <td><strong>{{ frequency.studentName }}</strong></td>
+              <td><a [routerLink]="['/system/students/details', frequency.studentId]"><strong>{{ frequency.studentName }}</strong></a></td>
               <td>{{ frequency.lessonTitle }}</td>
               <td>{{ frequency.createdAt | date:'dd/MM/yyyy HH:mm' }}</td>
               <td class="text-center">

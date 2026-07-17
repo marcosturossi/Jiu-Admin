@@ -2,6 +2,8 @@ import { Component, ChangeDetectionStrategy, input, output } from '@angular/core
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { StudentBasicInfo, StudentBeltInfo, StudentContractInfo, StudentMedicalInfo } from './student-onboarding.component';
+import { ShowBeltDTO } from '../../../generated_services/model/showBeltDTO';
+import { ShowFeePlanDTO } from '../../../generated_services/model/showFeePlanDTO';
 
 @Component({
   selector: 'app-onboarding-confirmation',
@@ -42,21 +44,21 @@ import { StudentBasicInfo, StudentBeltInfo, StudentContractInfo, StudentMedicalI
         <div class="summary-section">
           <div class="section-header">
             <i class="bi bi-award"></i>
-            <h4>Faixa e Graduação</h4>
+            <h4>Faixa</h4>
           </div>
           <div class="summary-content">
-            <div class="summary-row">
-              <span class="label">Faixa:</span>
-              <span class="value">{{ getBeltName() }}</span>
-            </div>
-            <div class="summary-row">
-              <span class="label">Graduação:</span>
-              <span class="value">{{ beltInfo().graduationId }}º Grau</span>
-            </div>
-            <div class="summary-row">
-              <span class="label">Data de Início:</span>
-              <span class="value">{{ formatDate(beltInfo().startDate) }}</span>
-            </div>
+            @if (beltInfo().beltId) {
+              <div class="summary-row">
+                <span class="label">Faixa:</span>
+                <span class="value">{{ getBeltName() }}</span>
+              </div>
+              <div class="summary-row">
+                <span class="label">Data de Início:</span>
+                <span class="value">{{ formatDate(beltInfo().startDate) }}</span>
+              </div>
+            } @else {
+              <p class="text-muted fst-italic mb-0">Nenhuma faixa selecionada.</p>
+            }
           </div>
         </div>
 
@@ -67,18 +69,18 @@ import { StudentBasicInfo, StudentBeltInfo, StudentContractInfo, StudentMedicalI
             <h4>Plano de Mensalidade</h4>
           </div>
           <div class="summary-content">
-            <div class="summary-row">
-              <span class="label">Plano:</span>
-              <span class="value">{{ getFeePlanName() }}</span>
-            </div>
-            <div class="summary-row">
-              <span class="label">Tipo de Contrato:</span>
-              <span class="value">{{ getContractType() }}</span>
-            </div>
-            <div class="summary-row">
-              <span class="label">Data de Início:</span>
-              <span class="value">{{ formatDate(contractInfo().startDate) }}</span>
-            </div>
+            @if (contractInfo().feePlanId) {
+              <div class="summary-row">
+                <span class="label">Plano:</span>
+                <span class="value">{{ getFeePlanName() }}</span>
+              </div>
+              <div class="summary-row">
+                <span class="label">Data de Início:</span>
+                <span class="value">{{ formatDate(contractInfo().startDate) }}</span>
+              </div>
+            } @else {
+              <p class="text-muted fst-italic mb-0">Nenhum plano selecionado.</p>
+            }
           </div>
         </div>
 
@@ -93,40 +95,51 @@ import { StudentBasicInfo, StudentBeltInfo, StudentContractInfo, StudentMedicalI
               <label class="form-checkbox">
                 <input
                   type="checkbox"
-                  [(ngModel)]="medicalInfo().hasRestrictions"
+                  [(ngModel)]="medicalInfo().hasClearance"
                   [ngModelOptions]="{standalone: true}"
-                  (ngModelChange)="updateMedical('hasRestrictions', $event)"
+                  (ngModelChange)="updateMedical('hasClearance', $event)"
                 />
-                <span>O aluno tem restrições médicas</span>
+                <span>Cadastrar atestado médico agora</span>
               </label>
             </div>
 
-            @if (medicalInfo().hasRestrictions) {
+            @if (medicalInfo().hasClearance) {
               <div class="form-group">
-                <label for="restrictions" class="form-label">Descreva as restrições:</label>
-                <textarea
-                  id="restrictions"
+                <label for="expiresAt" class="form-label">Validade do Atestado <span class="text-danger">*</span></label>
+                <input
+                  type="date"
+                  id="expiresAt"
                   class="form-control"
-                  rows="3"
-                  [(ngModel)]="medicalInfo().restrictions"
+                  [(ngModel)]="medicalInfo().expiresAt"
                   [ngModelOptions]="{standalone: true}"
-                  (ngModelChange)="updateMedical('restrictions', $event)"
-                  placeholder="Ex: Lesão no joelho, alergia a..."
-                ></textarea>
+                  (ngModelChange)="updateMedical('expiresAt', $event)"
+                />
+              </div>
+
+              <div class="form-group">
+                <label class="form-checkbox">
+                  <input
+                    type="checkbox"
+                    [(ngModel)]="medicalInfo().isApproved"
+                    [ngModelOptions]="{standalone: true}"
+                    (ngModelChange)="updateMedical('isApproved', $event)"
+                  />
+                  <span>Aluno aprovado para atividade física</span>
+                </label>
+              </div>
+
+              <div class="form-group">
+                <label for="medicalClearance" class="form-label">Anexar Atestado (Opcional):</label>
+                <input
+                  type="file"
+                  id="medicalClearance"
+                  class="form-control"
+                  accept=".pdf,.jpg,.jpeg,.png"
+                  (change)="onFileChange($event)"
+                />
+                <small class="form-text-muted">PDF ou Imagem (max 5MB)</small>
               </div>
             }
-
-            <div class="form-group">
-              <label for="medicalClearance" class="form-label">Atestado Médico (Opcional):</label>
-              <input
-                type="file"
-                id="medicalClearance"
-                class="form-control"
-                accept=".pdf,.jpg,.jpeg,.png"
-                (change)="onFileChange($event)"
-              />
-              <small class="form-text-muted">PDF ou Imagem (max 5MB)</small>
-            </div>
           </div>
         </div>
       </div>
@@ -284,7 +297,10 @@ export class OnboardingConfirmationComponent {
   readonly beltInfo = input.required<StudentBeltInfo>();
   readonly contractInfo = input.required<StudentContractInfo>();
   readonly medicalInfo = input.required<StudentMedicalInfo>();
+  readonly belts = input<ShowBeltDTO[]>([]);
+  readonly feePlans = input<ShowFeePlanDTO[]>([]);
   readonly medicalDataChange = output<Partial<StudentMedicalInfo>>();
+  readonly termsChange = output<boolean>();
   readonly submit = output<void>();
 
   protected termsAccepted = false;
@@ -295,13 +311,12 @@ export class OnboardingConfirmationComponent {
 
   protected onFileChange(event: Event): void {
     const input = event.target as HTMLInputElement;
-    if (input.files?.length) {
-      // File upload handled by parent component
-    }
+    this.medicalDataChange.emit({ clearanceFile: input.files?.[0] ?? null });
   }
 
   protected onTermsChange(value: boolean): void {
     this.termsAccepted = value;
+    this.termsChange.emit(value);
   }
 
   protected formatDate(date: string): string {
@@ -310,32 +325,10 @@ export class OnboardingConfirmationComponent {
   }
 
   protected getBeltName(): string {
-    const belts: Record<string, string> = {
-      white: 'Branca',
-      blue: 'Azul',
-      purple: 'Roxa',
-      brown: 'Marrom',
-      black: 'Preta',
-    };
-    return belts[this.beltInfo().beltId] || '-';
+    return this.belts().find(b => b.id === this.beltInfo().beltId)?.color ?? '-';
   }
 
   protected getFeePlanName(): string {
-    const plans: Record<string, string> = {
-      basic: 'Plano Básico - 2 aulas/semana',
-      standard: 'Plano Padrão - 4 aulas/semana',
-      premium: 'Plano Premium - Aulas ilimitadas',
-      kids: 'Plano Kids - Crianças',
-    };
-    return plans[this.contractInfo().feePlanId] || '-';
-  }
-
-  protected getContractType(): string {
-    const types: Record<string, string> = {
-      monthly: 'Mensal',
-      quarterly: 'Trimestral',
-      annual: 'Anual',
-    };
-    return types[this.contractInfo().contractId] || 'Sem contrato específico';
+    return this.feePlans().find(p => p.id === this.contractInfo().feePlanId)?.name ?? '-';
   }
 }

@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { DatePipe } from '@angular/common';
+import { RouterLink } from '@angular/router';
 import { Subject, debounceTime } from 'rxjs';
 import { FrequencyService, ShowFrequencyDTO as ShowFrequencyDTO } from '../../../generated_services';
 import { CreateFrequencyComponent } from './create-frequency/create-frequency.component';
@@ -14,7 +15,7 @@ import { PageResult } from '../../../utils/page-result';
 
 @Component({
   selector: 'app-frequencies',
-  imports: [CreateFrequencyComponent, UpdateFrequencyComponent, DatePipe, PaginationComponent],
+  imports: [CreateFrequencyComponent, UpdateFrequencyComponent, DatePipe, RouterLink, PaginationComponent],
   templateUrl: './frequencies.component.html',
   styleUrl: './frequencies.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
