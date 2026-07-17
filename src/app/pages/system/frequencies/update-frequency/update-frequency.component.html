@@ -1,17 +1,20 @@
 <form [formGroup]="frequencyForm">
   <div class="mb-3">
-    <label for="studentSelect" class="form-label">Selecione o Aluno *</label>
+    <label for="studentSelect" class="form-label">Selecione o Aluno <span class="text-danger">*</span></label>
     <app-search-select
+      inputId="studentSelect"
       [options]="studentOptions()"
       [selected]="selectedStudent()"
       placeholder="Selecione um aluno..."
       label="Aluno"
       (selectionChange)="onStudentSelected($event)"
       (searchChange)="onStudentSearch($event)" />
+    <app-field-error [control]="frequencyForm.get('studentId')" />
   </div>
   <div class="d-flex gap-2 justify-content-end mt-3">
     <button class="btn btn-outline-secondary" type="button" (click)="close()">Cancelar</button>
-    <button class="btn btn-primary" type="button" [disabled]="frequencyForm.invalid" (click)="update()">
+    <button class="btn btn-primary" type="button" [disabled]="isSaving() || frequencyForm.invalid" (click)="update()">
+      @if (isSaving()) { <span class="spinner-border spinner-border-sm me-1" role="status"></span> }
       <i class="bi bi-check-lg me-1"></i> Salvar
     </button>
   </div>

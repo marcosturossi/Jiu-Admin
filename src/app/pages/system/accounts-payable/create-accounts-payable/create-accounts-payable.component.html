@@ -2,6 +2,7 @@
   <div class="mb-3">
     <label for="category">Categoria</label>
     <app-search-select
+      inputId="category"
       [options]="categoryOptions()"
       [selected]="selectedCategory()"
       placeholder="Sem categoria"
@@ -16,13 +17,15 @@
   </div>
 
   <div class="mb-3">
-    <label for="amount">Valor *</label>
+    <label for="amount">Valor <span class="text-danger">*</span></label>
     <input type="number" class="form-control" id="amount" formControlName="amount" step="0.01" min="0.01" />
+    <app-field-error [control]="form.get('amount')" />
   </div>
 
   <div class="mb-3">
-    <label for="transactionDate">Data *</label>
+    <label for="transactionDate">Data <span class="text-danger">*</span></label>
     <input type="date" class="form-control" id="transactionDate" formControlName="transactionDate" />
+    <app-field-error [control]="form.get('transactionDate')" />
   </div>
 
   <div class="mb-3">

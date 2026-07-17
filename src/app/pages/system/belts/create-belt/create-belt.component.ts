@@ -1,12 +1,14 @@
-import { ChangeDetectionStrategy, Component, inject, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, output, signal } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { BeltService } from '../../../../generated_services';
 import { CreateBeltDTO } from '../../../../generated_services/model/createBeltDTO';
 import { NotificationService } from '../../../../services/notification.service';
+import { extractErrorMessage } from '../../../../utils/error.utils';
+import { FieldErrorComponent } from '../../../../shared/field-error/field-error.component';
 
 @Component({
   selector: 'app-create-belt',
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, FieldErrorComponent],
   templateUrl: './create-belt.component.html',
   styleUrl: './create-belt.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -25,6 +27,8 @@ export class CreateBeltComponent {
     isForKids: [false],
   });
 
+  protected readonly isSaving = signal(false);
+
   protected close(): void { this.closeEvent.emit(); }
 
   protected save(): void {
@@ -32,9 +36,10 @@ export class CreateBeltComponent {
       this.notificationService.showError('Formulário Inválido', 'Por favor, preencha todos os campos obrigatórios.');
       return;
     }
+    this.isSaving.set(true);
     this.beltService.apiBeltPost(this.toDTO()).subscribe({
-      next: () => { this.notificationService.showSuccess('Faixa Criada!', 'A nova faixa foi criada com sucesso.'); this.beltCreated.emit(); },
-      error: () => { this.notificationService.showError('Erro ao Criar Faixa!', 'Não foi possível criar a faixa. Tente novamente.'); }
+      next: () => { this.isSaving.set(false); this.notificationService.showSuccess('Faixa Criada!', 'A nova faixa foi criada com sucesso.'); this.beltCreated.emit(); },
+      error: (err) => { this.isSaving.set(false); this.notificationService.showError('Erro ao Criar Faixa!', extractErrorMessage(err, 'Não foi possível criar a faixa. Tente novamente.')); }
     });
   }
 

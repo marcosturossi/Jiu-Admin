@@ -8,6 +8,7 @@ import { TransactionType } from '../../../generated_services/model/transactionTy
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
 import { ConfirmService } from '../../../services/confirm.service';
+import { extractErrorMessage } from '../../../utils/error.utils';
 import { environment } from '../../../enviroments/environment';
 import { FilterComponent } from '../../../shared/filter/filter.component';
 import { FilterField, FilterOutput } from '../../../shared/filter/filter.types';
@@ -51,6 +52,7 @@ export class AccountsReceivableComponent {
   protected readonly currentPage = signal(1);
   protected readonly pageSize = signal(10);
   protected readonly filterType = signal<string | undefined>(undefined);
+  protected readonly filterText = signal<string | undefined>(undefined);
   protected readonly categories = signal<ShowTransactionCategoryDTO[]>([]);
 
   protected readonly filterFields: FilterField[] = [
@@ -81,7 +83,7 @@ export class AccountsReceivableComponent {
       undefined,
       undefined,
       undefined,
-      undefined,
+      this.filterText(),
       undefined,
       this.currentPage() as any,
       this.pageSize() as any,
@@ -192,6 +194,7 @@ export class AccountsReceivableComponent {
   protected onPageSizeChange(size: number): void { this.pageSize.set(size); this.currentPage.set(1); this.load(); }
   protected onFilterChange(output: FilterOutput): void {
     this.filterType.set(output.conditions.find(c => c.field.key === 'type')?.value as string | undefined);
+    this.filterText.set(output.text || undefined);
     this.currentPage.set(1);
     this.load();
   }
@@ -212,7 +215,7 @@ export class AccountsReceivableComponent {
     if (!ok) return;
     this.accountsReceivableService.apiAccountsReceivableChargeIdDelete(item.id!).subscribe({
       next: () => { this.ns.showSuccess('Excluída!', 'Excluída com sucesso.'); this.load(); },
-      error: () => { this.ns.showError('Erro ao Excluir!', 'Não foi possível excluir.'); },
+      error: (err) => { this.ns.showError('Erro ao Excluir!', extractErrorMessage(err, 'Não foi possível excluir.')); },
     });
   }
 }

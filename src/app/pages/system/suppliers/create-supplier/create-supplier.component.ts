@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, output, signal } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, Validators, FormArray, FormGroup } from '@angular/forms';
 
 import { SupplierService } from '../../../../generated_services/api/supplier.service';
@@ -6,13 +6,15 @@ import { CreateSupplierDTO } from '../../../../generated_services/model/createSu
 import { CreateAddressDTO } from '../../../../generated_services/model/createAddressDTO';
 import { AddressType } from '../../../../generated_services/model/addressType';
 import { NotificationService } from '../../../../services/notification.service';
+import { extractErrorMessage } from '../../../../utils/error.utils';
 import { CreateCompanyPersonDTO, CreateIndividualPersonDTO } from '../../../../generated_services';
 import { AddressFormComponent, buildAddressFormGroup } from '../../../../shared/address-form/address-form.component';
+import { FieldErrorComponent } from '../../../../shared/field-error/field-error.component';
 
 @Component({
   selector: 'app-create-supplier',
   standalone: true,
-  imports: [ReactiveFormsModule, AddressFormComponent],
+  imports: [ReactiveFormsModule, AddressFormComponent, FieldErrorComponent],
   templateUrl: './create-supplier.component.html',
   styleUrl: './create-supplier.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -31,6 +33,8 @@ export class CreateSupplierComponent {
 
     addresses: this.fb.array([]),
   });
+
+  protected readonly isSaving = signal(false);
 
   protected get addresses() {
     return this.form.get('addresses') as FormArray;
@@ -94,13 +98,16 @@ export class CreateSupplierComponent {
       this.notificationService.showError('Formulário Inválido', 'Por favor, preencha todos os campos obrigatórios.');
       return;
     }
+    this.isSaving.set(true);
     this.supplierService.apiSupplierPost(this.toDTO()).subscribe({
       next: () => {
+        this.isSaving.set(false);
         this.notificationService.showSuccess('Sucesso!', 'Fornecedor criado com sucesso.');
         this.supplierCreated.emit();
       },
-      error: () => {
-        this.notificationService.showError('Erro!', 'Erro ao criar fornecedor. Tente novamente.');
+      error: (err) => {
+        this.isSaving.set(false);
+        this.notificationService.showError('Erro!', extractErrorMessage(err, 'Erro ao criar fornecedor. Tente novamente.'));
       },
     });
   }

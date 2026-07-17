@@ -5,13 +5,15 @@ import { ShowStudentDTO, UpdateStudentDTO, UpdateAddressDTO } from '../../../../
 import { AddressType } from '../../../../generated_services/model/addressType';
 import { RelationshipType } from '../../../../generated_services/model/relationshipType';
 import { NotificationService } from '../../../../services/notification.service';
+import { extractErrorMessage } from '../../../../utils/error.utils';
 import { AddressFormComponent, buildAddressFormGroup } from '../../../../shared/address-form/address-form.component';
 import { ResponsibleFormComponent, buildResponsibleFormGroup } from '../responsible-form/responsible-form.component';
 import { isMinor } from '../../../../utils/date.utils';
+import { FieldErrorComponent } from '../../../../shared/field-error/field-error.component';
 
 @Component({
   selector: 'app-update-student',
-  imports: [ReactiveFormsModule, AddressFormComponent, ResponsibleFormComponent],
+  imports: [ReactiveFormsModule, AddressFormComponent, ResponsibleFormComponent, FieldErrorComponent],
   templateUrl: './update-student.component.html',
   styleUrl: './update-student.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -26,6 +28,7 @@ export class UpdateStudentComponent {
   private readonly notificationService = inject(NotificationService);
 
   protected readonly isMinorSignal = signal(false);
+  protected readonly isSaving = signal(false);
 
   protected readonly form = this.fb.group({
     userName: ['', Validators.required],
@@ -108,12 +111,14 @@ export class UpdateStudentComponent {
       return;
     }
     const s = this.student();
+    this.isSaving.set(true);
     this.studentsService.apiStudentsIdPut(s.id!, this.toDTO()).subscribe({
       next: () => {
+        this.isSaving.set(false);
         this.notificationService.showSuccess('Aluno Atualizado!', `Os dados de ${this.form.value.firstName} ${this.form.value.lastName} foram atualizados.`);
         this.studentUpdated.emit();
       },
-      error: () => this.notificationService.showError('Erro ao Atualizar!', 'Não foi possível atualizar os dados do aluno. Tente novamente.'),
+      error: (err) => { this.isSaving.set(false); this.notificationService.showError('Erro ao Atualizar!', extractErrorMessage(err, 'Não foi possível atualizar os dados do aluno. Tente novamente.')); },
     });
   }
 

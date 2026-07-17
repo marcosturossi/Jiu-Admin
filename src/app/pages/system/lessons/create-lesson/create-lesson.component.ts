@@ -3,11 +3,13 @@ import { ReactiveFormsModule, FormsModule, FormBuilder, Validators } from '@angu
 import { LessonService } from '../../../../generated_services/api/lesson.service';
 import { CreateLessonDTO } from '../../../../generated_services/model/createLessonDTO';
 import { NotificationService } from '../../../../services/notification.service';
+import { extractErrorMessage } from '../../../../utils/error.utils';
+import { FieldErrorComponent } from '../../../../shared/field-error/field-error.component';
 
 @Component({
   selector: 'app-create-lesson',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ReactiveFormsModule, FormsModule],
+  imports: [ReactiveFormsModule, FormsModule, FieldErrorComponent],
   templateUrl: './create-lesson.component.html',
   styleUrl: './create-lesson.component.scss',
 })
@@ -20,6 +22,7 @@ export class CreateLessonComponent {
   private readonly fb = inject(FormBuilder);
 
   protected autoTitle = signal(true);
+  protected readonly isSaving = signal(false);
 
   protected readonly form = this.fb.group({
     title: ['', Validators.required],
@@ -71,15 +74,18 @@ export class CreateLessonComponent {
       return;
     }
     this.createAutoTitle();
+    this.isSaving.set(true);
     this.lessonService.apiLessonPost(this.toDTO()).subscribe({
       next: () => {
+        this.isSaving.set(false);
         const title = this.form.getRawValue().title;
         this.ns.showSuccess('Aula Criada!', `A aula "${title}" foi criada com sucesso.`);
         this.lessonCreated.emit();
         this.close();
       },
-      error: () => {
-        this.ns.showError('Erro ao Criar Aula!', 'Não foi possível criar a aula. Tente novamente.');
+      error: (err) => {
+        this.isSaving.set(false);
+        this.ns.showError('Erro ao Criar Aula!', extractErrorMessage(err, 'Não foi possível criar a aula. Tente novamente.'));
       },
     });
   }

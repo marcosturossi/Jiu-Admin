@@ -7,6 +7,7 @@ import { UpdateLessonComponent } from './update-lesson/update-lesson.component';
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
 import { ConfirmService } from '../../../services/confirm.service';
+import { extractErrorMessage } from '../../../utils/error.utils';
 import { FilterComponent } from '../../../shared/filter/filter.component';
 import { FilterOutput } from '../../../shared/filter/filter.types';
 import { PaginationComponent } from '../../../shared/pagination/pagination.component';
@@ -79,8 +80,8 @@ export class LessonsComponent {
         this.notificationService.showSuccess('Aula Excluída!', `A aula "${item.title}" foi excluída com sucesso.`);
         this.load();
       },
-      error: () => {
-        this.notificationService.showError('Erro ao Excluir Aula!', 'Não foi possível excluir a aula. Tente novamente.');
+      error: (err) => {
+        this.notificationService.showError('Erro ao Excluir Aula!', extractErrorMessage(err, 'Não foi possível excluir a aula. Tente novamente.'));
       },
     });
   }

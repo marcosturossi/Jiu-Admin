@@ -6,6 +6,7 @@ import { ShowStudentDTO } from '../../../generated_services/model/showStudentDTO
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
 import { ConfirmService } from '../../../services/confirm.service';
+import { extractErrorMessage } from '../../../utils/error.utils';
 import { FilterComponent } from '../../../shared/filter/filter.component';
 import { FilterField, FilterOutput } from '../../../shared/filter/filter.types';
 import { PaginationComponent } from '../../../shared/pagination/pagination.component';
@@ -127,7 +128,7 @@ export class StudentsComponent {
     if (!ok) return;
     this.studentsService.apiStudentsIdDelete(item.id!).subscribe({
       next: () => { this.notificationService.showSuccess('Aluno Excluído', `O aluno ${item.firstName} ${item.lastName} foi excluído com sucesso.`); this.load(); },
-      error: () => { this.notificationService.showError('Erro ao Excluir', 'Não foi possível excluir o aluno. Tente novamente.'); }
+      error: (err) => { this.notificationService.showError('Erro ao Excluir', extractErrorMessage(err, 'Não foi possível excluir o aluno. Tente novamente.')); }
     });
   }
 

@@ -1,7 +1,8 @@
 <form [formGroup]="form" (ngSubmit)="save()">
   <div class="mb-3">
-    <label class="form-label">Tipo de Pessoa <span class="text-danger">*</span></label>
+    <label class="form-label" for="personType">Tipo de Pessoa <span class="text-danger">*</span></label>
     <select
+      id="personType"
       class="form-select"
       formControlName="personType"
       (change)="onPersonTypeChange(form.get('personType')!.value)"
@@ -10,6 +11,7 @@
       <option value="individual">Pessoa Física</option>
       <option value="company">Pessoa Jurídica</option>
     </select>
+    <app-field-error [control]="form.get('personType')" />
   </div>
 
   <!-- Pessoa Física -->
@@ -17,29 +19,32 @@
     <div formGroupName="individualPerson">
       <div class="row">
         <div class="mb-3 col-6">
-          <label class="form-label">Nome <span class="text-danger">*</span></label>
-          <input type="text" class="form-control" formControlName="firstName" placeholder="Nome" />
+          <label class="form-label" for="individualFirstName">Nome <span class="text-danger">*</span></label>
+          <input id="individualFirstName" type="text" class="form-control" formControlName="firstName" placeholder="Nome" />
+          <app-field-error [control]="individualPerson!.get('firstName')" />
         </div>
 
         <div class="mb-3 col-6">
-          <label class="form-label">Sobrenome <span class="text-danger">*</span></label>
-          <input type="text" class="form-control" formControlName="lastName" placeholder="Sobrenome" />
+          <label class="form-label" for="individualLastName">Sobrenome <span class="text-danger">*</span></label>
+          <input id="individualLastName" type="text" class="form-control" formControlName="lastName" placeholder="Sobrenome" />
+          <app-field-error [control]="individualPerson!.get('lastName')" />
         </div>
       </div>
 
       <div class="mb-3">
-        <label class="form-label">CPF <span class="text-danger">*</span></label>
-        <input type="text" class="form-control" formControlName="cpf" placeholder="00000000000" maxlength="11" />
+        <label class="form-label" for="individualCpf">CPF <span class="text-danger">*</span></label>
+        <input id="individualCpf" type="text" class="form-control" formControlName="cpf" placeholder="00000000000" maxlength="11" />
+        <app-field-error [control]="individualPerson!.get('cpf')" />
       </div>
 
       <div class="mb-3">
-        <label class="form-label">E-mail</label>
-        <input type="email" class="form-control" formControlName="email" placeholder="email@exemplo.com" />
+        <label class="form-label" for="individualEmail">E-mail</label>
+        <input id="individualEmail" type="email" class="form-control" formControlName="email" placeholder="email@exemplo.com" />
       </div>
 
       <div class="mb-3">
-        <label class="form-label">Telefone</label>
-        <input type="text" class="form-control" formControlName="phoneNumber" placeholder="(11) 99999-9999" />
+        <label class="form-label" for="individualPhoneNumber">Telefone</label>
+        <input id="individualPhoneNumber" type="text" class="form-control" formControlName="phoneNumber" placeholder="(11) 99999-9999" />
       </div>
     </div>
   }
@@ -48,28 +53,31 @@
   @if (companyPerson) {
     <div formGroupName="companyPerson">
       <div class="mb-3">
-        <label class="form-label">Razão Social <span class="text-danger">*</span></label>
-        <input type="text" class="form-control" formControlName="name" placeholder="Nome da empresa" />
+        <label class="form-label" for="companyName">Razão Social <span class="text-danger">*</span></label>
+        <input id="companyName" type="text" class="form-control" formControlName="name" placeholder="Nome da empresa" />
+        <app-field-error [control]="companyPerson!.get('name')" />
       </div>
 
       <div class="mb-3">
-        <label class="form-label">CNPJ <span class="text-danger">*</span></label>
-        <input type="text" class="form-control" formControlName="cnpj" placeholder="00000000000000" maxlength="14" />
+        <label class="form-label" for="companyCnpj">CNPJ <span class="text-danger">*</span></label>
+        <input id="companyCnpj" type="text" class="form-control" formControlName="cnpj" placeholder="00000000000000" maxlength="14" />
+        <app-field-error [control]="companyPerson!.get('cnpj')" />
       </div>
 
       <div class="mb-3">
-        <label class="form-label">Data de Fundação <span class="text-danger">*</span></label>
-        <input type="date" class="form-control" formControlName="foundedIn" />
+        <label class="form-label" for="companyFoundedIn">Data de Fundação <span class="text-danger">*</span></label>
+        <input id="companyFoundedIn" type="date" class="form-control" formControlName="foundedIn" />
+        <app-field-error [control]="companyPerson!.get('foundedIn')" />
       </div>
 
       <div class="mb-3">
-        <label class="form-label">E-mail</label>
-        <input type="email" class="form-control" formControlName="email" placeholder="email@exemplo.com" />
+        <label class="form-label" for="companyEmail">E-mail</label>
+        <input id="companyEmail" type="email" class="form-control" formControlName="email" placeholder="email@exemplo.com" />
       </div>
 
       <div class="mb-3">
-        <label class="form-label">Telefone</label>
-        <input type="text" class="form-control" formControlName="phoneNumber" placeholder="(11) 99999-9999" />
+        <label class="form-label" for="companyPhoneNumber">Telefone</label>
+        <input id="companyPhoneNumber" type="text" class="form-control" formControlName="phoneNumber" placeholder="(11) 99999-9999" />
       </div>
     </div>
   }
@@ -91,7 +99,8 @@
   <!-- Footer -->
   <div class="d-flex justify-content-end gap-2 mt-4">
     <button type="button" class="btn btn-outline-secondary" (click)="close()">Cancelar</button>
-    <button type="submit" class="btn btn-primary">
+    <button type="submit" class="btn btn-primary" [disabled]="isSaving() || form.invalid">
+      @if (isSaving()) { <span class="spinner-border spinner-border-sm me-1" role="status"></span> }
       <i class="bi bi-check-lg me-1"></i>Salvar
     </button>
   </div>

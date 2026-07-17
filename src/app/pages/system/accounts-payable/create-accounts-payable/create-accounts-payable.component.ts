@@ -3,14 +3,16 @@ import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { AccountsPayableService } from '../../../../generated_services/api/accountsPayable.service';
 import { ShowTransactionCategoryDTO } from '../../../../generated_services';
 import { NotificationService } from '../../../../services/notification.service';
+import { extractErrorMessage } from '../../../../utils/error.utils';
 import { todayDateString } from '../../../../utils/date.utils';
 import { SearchOption } from '../../../../shared/search-select/search-option';
 import { SearchSelectComponent } from '../../../../shared/search-select/search-select.component';
+import { FieldErrorComponent } from '../../../../shared/field-error/field-error.component';
 
 @Component({
   selector: 'app-create-accounts-payable',
   standalone: true,
-  imports: [ReactiveFormsModule, SearchSelectComponent],
+  imports: [ReactiveFormsModule, SearchSelectComponent, FieldErrorComponent],
   templateUrl: './create-accounts-payable.component.html',
   styleUrl: './create-accounts-payable.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -56,8 +58,8 @@ export class CreateAccountsPayableComponent {
         this.ns.showSuccess('Conta a Pagar Criada!', 'A conta a pagar foi criada com sucesso.');
         this.itemCreated.emit();
       },
-      error: () => {
-        this.ns.showError('Erro ao Criar', 'Não foi possível criar a conta a pagar.');
+      error: (err) => {
+        this.ns.showError('Erro ao Criar', extractErrorMessage(err, 'Não foi possível criar a conta a pagar.'));
         this.isSaving.set(false);
       },
       complete: () => this.isSaving.set(false),

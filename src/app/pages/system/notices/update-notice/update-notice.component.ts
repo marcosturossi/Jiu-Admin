@@ -1,14 +1,16 @@
-import { ChangeDetectionStrategy, Component, effect, inject, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, inject, input, output, signal } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { NoticesService } from '../../../../generated_services/api/notices.service';
 import { ShowNoticeDto } from '../../../../generated_services/model/showNoticeDto';
 import { UpdateNoticeDto } from '../../../../generated_services/model/updateNoticeDto';
 import { NotificationService } from '../../../../services/notification.service';
+import { extractErrorMessage } from '../../../../utils/error.utils';
+import { FieldErrorComponent } from '../../../../shared/field-error/field-error.component';
 
 @Component({
   selector: 'app-update-notice',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, FieldErrorComponent],
   templateUrl: './update-notice.component.html',
   styleUrl: './update-notice.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -26,6 +28,8 @@ export class UpdateNoticeComponent {
     description: ['', Validators.required],
     isActive: [true],
   });
+
+  protected readonly isSaving = signal(false);
 
   constructor() {
     effect(() => {
@@ -45,9 +49,10 @@ export class UpdateNoticeComponent {
       return;
     }
     const n = this.notice();
+    this.isSaving.set(true);
     this.noticesService.apiNoticesIdPut(n.id!, this.toDTO()).subscribe({
-      next: () => { this.notificationService.showSuccess('Aviso Atualizado!', 'O aviso foi atualizado com sucesso.'); this.noticeUpdated.emit(); },
-      error: () => { this.notificationService.showError('Erro ao Atualizar Aviso!', 'Não foi possível atualizar o aviso. Tente novamente.'); }
+      next: () => { this.isSaving.set(false); this.notificationService.showSuccess('Aviso Atualizado!', 'O aviso foi atualizado com sucesso.'); this.noticeUpdated.emit(); },
+      error: (err) => { this.isSaving.set(false); this.notificationService.showError('Erro ao Atualizar Aviso!', extractErrorMessage(err, 'Não foi possível atualizar o aviso. Tente novamente.')); }
     });
   }
 

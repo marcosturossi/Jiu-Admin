@@ -5,11 +5,13 @@ import { PersonDetailResponse } from '../../../../generated_services/api2/model/
 import { FaceImageResponse } from '../../../../generated_services/api2/model/faceImageResponse';
 import { NotificationService } from '../../../../services/notification.service';
 import { ConfirmService } from '../../../../services/confirm.service';
+import { extractErrorMessage } from '../../../../utils/error.utils';
+import { FieldErrorComponent } from '../../../../shared/field-error/field-error.component';
 
 @Component({
   selector: 'app-update-persons',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, FieldErrorComponent],
   templateUrl: './update-persons.component.html',
   styleUrl: './update-persons.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -78,7 +80,7 @@ export class UpdatePersonsComponent {
     if (images.length > 0) {
       this.personsService.addPersonImagesApiV1PersonsPersonIdImagesPost(this.person().id, images).subscribe({
         next: () => { this.ns.showSuccess('Imagens Adicionadas!', 'As imagens foram adicionadas com sucesso.'); this.personUpdated.emit(this.person()); this.close(); },
-        error: () => { this.ns.showError('Erro ao Adicionar Imagens', 'Não foi possível adicionar as imagens.'); this.isUpdating.set(false); },
+        error: (err) => { this.ns.showError('Erro ao Adicionar Imagens', extractErrorMessage(err, 'Não foi possível adicionar as imagens.')); this.isUpdating.set(false); },
         complete: () => this.isUpdating.set(false)
       });
     } else {
@@ -99,7 +101,7 @@ export class UpdatePersonsComponent {
         this.existingImages.set(this.existingImages().filter(i => i.id !== img.id));
         this.previewUrls.set(this.existingImages().map(i => this.getImageSrc(i)));
       },
-      error: () => this.ns.showError('Erro ao Remover Imagem', 'Não foi possível remover a imagem.')
+      error: (err) => this.ns.showError('Erro ao Remover Imagem', extractErrorMessage(err, 'Não foi possível remover a imagem.'))
     });
   }
 

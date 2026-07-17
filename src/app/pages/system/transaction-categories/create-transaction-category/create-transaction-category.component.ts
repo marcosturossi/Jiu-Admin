@@ -1,12 +1,14 @@
-import { ChangeDetectionStrategy, Component, inject, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, output, signal } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { TransactionCategoryService, CreateTransactionCategoryDTO as CreateTransactionCategoryDTO } from '../../../../generated_services';
 import { NotificationService } from '../../../../services/notification.service';
+import { extractErrorMessage } from '../../../../utils/error.utils';
+import { FieldErrorComponent } from '../../../../shared/field-error/field-error.component';
 
 @Component({
   selector: 'app-create-transaction-category',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, FieldErrorComponent],
   templateUrl: './create-transaction-category.component.html',
   styleUrl: './create-transaction-category.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -23,6 +25,8 @@ export class CreateTransactionCategoryComponent {
     name: ['', Validators.required],
   });
 
+  protected readonly isSaving = signal(false);
+
   protected close(): void { this.closeEvent.emit(); }
 
   protected save(): void {
@@ -31,9 +35,10 @@ export class CreateTransactionCategoryComponent {
       return;
     }
     const dto: CreateTransactionCategoryDTO = { name: this.form.value.name! };
+    this.isSaving.set(true);
     this.service.apiTransactionCategoryPost(dto).subscribe({
-      next: () => { this.ns.showSuccess('Criado!', 'Categoria criada com sucesso.'); this.categoryCreated.emit(); },
-      error: () => { this.ns.showError('Erro ao Criar!', 'Não foi possível criar a categoria.'); }
+      next: () => { this.isSaving.set(false); this.ns.showSuccess('Criado!', 'Categoria criada com sucesso.'); this.categoryCreated.emit(); },
+      error: (err) => { this.isSaving.set(false); this.ns.showError('Erro ao Criar!', extractErrorMessage(err, 'Não foi possível criar a categoria.')); }
     });
   }
 }

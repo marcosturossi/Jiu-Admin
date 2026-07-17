@@ -3,11 +3,13 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ContractService } from '../../../../generated_services/api/contract.service';
 import { ShowContractDTO as ShowContractDTO, ContractStatus } from '../../../../generated_services';
 import { NotificationService } from '../../../../services/notification.service';
+import { extractErrorMessage } from '../../../../utils/error.utils';
+import { FieldErrorComponent } from '../../../../shared/field-error/field-error.component';
 
 @Component({
   selector: 'app-update-contract',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, FieldErrorComponent],
   templateUrl: './update-contract.component.html',
   styleUrl: './update-contract.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -60,9 +62,9 @@ export class UpdateContractComponent {
           this.ns.showSuccess('Contrato Atualizado!', 'Atualizado com sucesso.');
           this.contractUpdated.emit();
         },
-        error: () => {
+        error: (err) => {
           this.isSaving.set(false);
-          this.ns.showError('Erro ao Atualizar!', 'Não foi possível atualizar o contrato.');
+          this.ns.showError('Erro ao Atualizar!', extractErrorMessage(err, 'Não foi possível atualizar o contrato.'));
         },
       });
   }

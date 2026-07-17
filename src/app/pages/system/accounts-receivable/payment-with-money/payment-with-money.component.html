@@ -13,5 +13,8 @@
 </div>
 <div class="d-flex justify-content-between mt-3">
 <button type="button" class="btn btn-danger" (click)="closeEvent.emit()">Fechar</button>
-<button type="button" class="btn btn-primary" (click)="save()">Salvar</button>
+<button type="button" class="btn btn-primary" (click)="save()" [disabled]="isSaving()">
+  @if (isSaving()) { <span class="spinner-border spinner-border-sm me-1" role="status"></span> }
+  Salvar
+</button>
 </div>

@@ -4,6 +4,8 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { IndividualPersonsService } from '../../../../generated_services/api/individualPersons.service';
 import { RelationshipType } from '../../../../generated_services/model/relationshipType';
 import { NotificationService } from '../../../../services/notification.service';
+import { extractErrorMessage } from '../../../../utils/error.utils';
+import { FieldErrorComponent } from '../../../../shared/field-error/field-error.component';
 
 export interface ExistingResponsible {
   relatedPersonId?: string | null;
@@ -33,7 +35,7 @@ const RELATIONSHIP_LABELS: Record<string, string> = {
 @Component({
   selector: 'app-responsible-form',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, FieldErrorComponent],
   templateUrl: './responsible-form.component.html',
   styleUrl: './responsible-form.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -81,9 +83,9 @@ export class ResponsibleFormComponent {
           this.notFoundMode.set(true);
         }
       },
-      error: () => {
+      error: (err) => {
         this.isSearching.set(false);
-        this.notificationService.showError('Erro', 'Não foi possível buscar pessoa pelo CPF.');
+        this.notificationService.showError('Erro', extractErrorMessage(err, 'Não foi possível buscar pessoa pelo CPF.'));
       },
     });
   }
@@ -112,9 +114,9 @@ export class ResponsibleFormComponent {
         });
         this.notFoundMode.set(false);
       },
-      error: () => {
+      error: (err) => {
         this.isCreating.set(false);
-        this.notificationService.showError('Erro', 'Não foi possível criar a pessoa responsável.');
+        this.notificationService.showError('Erro', extractErrorMessage(err, 'Não foi possível criar a pessoa responsável.'));
       },
     });
   }

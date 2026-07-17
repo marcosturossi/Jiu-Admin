@@ -1,18 +1,20 @@
-import { ChangeDetectionStrategy, Component, inject, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, output, signal } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, Validators, FormArray } from '@angular/forms';
 import { StudentsService } from '../../../../generated_services/api/students.service';
 import { CreateStudentDTO } from '../../../../generated_services/model/createStudentDTO';
 import { NotificationService } from '../../../../services/notification.service';
+import { extractErrorMessage } from '../../../../utils/error.utils';
 import { AddressType } from '../../../../generated_services/model/addressType';
 import { RelationshipType } from '../../../../generated_services/model/relationshipType';
 import { CreateAddressDTO } from '../../../../generated_services';
 import { AddressFormComponent, buildAddressFormGroup } from '../../../../shared/address-form/address-form.component';
 import { ResponsibleFormComponent, buildResponsibleFormGroup } from '../responsible-form/responsible-form.component';
 import { isMinor } from '../../../../utils/date.utils';
+import { FieldErrorComponent } from '../../../../shared/field-error/field-error.component';
 
 @Component({
   selector: 'app-create-student',
-  imports: [ReactiveFormsModule, AddressFormComponent, ResponsibleFormComponent],
+  imports: [ReactiveFormsModule, AddressFormComponent, ResponsibleFormComponent, FieldErrorComponent],
   templateUrl: './create-student.component.html',
   styleUrl: './create-student.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -37,6 +39,8 @@ export class CreateStudentComponent {
     addresses: this.fb.array([]),
     responsibles: this.fb.array([]),
   });
+
+  protected readonly isSaving = signal(false);
 
   protected get addresses() {
     return this.form.get('addresses') as FormArray;
@@ -73,9 +77,10 @@ export class CreateStudentComponent {
       this.notificationService.showError('Responsável Obrigatório', 'Alunos menores de idade precisam de ao menos um responsável vinculado.');
       return;
     }
+    this.isSaving.set(true);
     this.studentsService.apiStudentsPost(this.toDTO()).subscribe({
-      next: () => { this.notificationService.showSuccess('Sucesso!', 'Aluno criado com sucesso.'); this.studentCreated.emit(); },
-      error: () => { this.notificationService.showError('Erro!', 'Erro ao criar aluno. Tente novamente.'); }
+      next: () => { this.isSaving.set(false); this.notificationService.showSuccess('Sucesso!', 'Aluno criado com sucesso.'); this.studentCreated.emit(); },
+      error: (err) => { this.isSaving.set(false); this.notificationService.showError('Erro!', extractErrorMessage(err, 'Erro ao criar aluno. Tente novamente.')); }
     });
   }
 

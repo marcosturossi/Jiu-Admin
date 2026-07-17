@@ -5,6 +5,7 @@ import { ShowNoticeDto } from '../../../generated_services/model/showNoticeDto';
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
 import { ConfirmService } from '../../../services/confirm.service';
+import { extractErrorMessage } from '../../../utils/error.utils';
 import { FilterComponent } from '../../../shared/filter/filter.component';
 import { FilterOutput } from '../../../shared/filter/filter.types';
 import { PaginationComponent } from '../../../shared/pagination/pagination.component';
@@ -89,7 +90,7 @@ export class NoticesComponent {
     if (!ok) return;
     this.noticesService.apiNoticesIdDelete(item.id!).subscribe({
       next: () => { this.notificationService.showSuccess('Aviso Excluído!', 'O aviso foi excluído com sucesso.'); this.load(); },
-      error: () => { this.notificationService.showError('Erro ao Excluir Aviso!', 'Não foi possível excluir o aviso. Tente novamente.'); }
+      error: (err) => { this.notificationService.showError('Erro ao Excluir Aviso!', extractErrorMessage(err, 'Não foi possível excluir o aviso. Tente novamente.')); }
     });
   }
 }

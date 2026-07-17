@@ -4,6 +4,7 @@ import { FeePlanService, ShowFeePlanDTO as ShowFeePlanDTO } from '../../../gener
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
 import { ConfirmService } from '../../../services/confirm.service';
+import { extractErrorMessage } from '../../../utils/error.utils';
 import { FilterComponent } from '../../../shared/filter/filter.component';
 import { FilterOutput } from '../../../shared/filter/filter.types';
 import { PaginationComponent } from '../../../shared/pagination/pagination.component';
@@ -84,7 +85,7 @@ export class FeePlansComponent {
     if (!ok) return;
     this.service.apiFeePlanIdDelete(item.id!).subscribe({
       next: () => { this.notificationService.showSuccess('Excluído!', 'Plano excluído com sucesso.'); this.load(); },
-      error: () => { this.notificationService.showError('Erro ao Excluir!', 'Não foi possível excluir o plano.'); }
+      error: (err) => { this.notificationService.showError('Erro ao Excluir!', extractErrorMessage(err, 'Não foi possível excluir o plano.')); }
     });
   }
 }

@@ -8,6 +8,7 @@ import { UpdateFrequencyComponent } from './update-frequency/update-frequency.co
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
 import { ConfirmService } from '../../../services/confirm.service';
+import { extractErrorMessage } from '../../../utils/error.utils';
 import { PaginationComponent } from '../../../shared/pagination/pagination.component';
 import { PageResult } from '../../../utils/page-result';
 
@@ -76,7 +77,7 @@ export class FrequenciesComponent {
     if (!ok) return;
     this.frequencyService.apiFrequencyIdDelete(frequency.id!).subscribe({
       next: () => { this.ns.showSuccess('Frequência Excluída!', 'A frequência foi excluída com sucesso.'); this.load(); },
-      error: () => { this.ns.showError('Erro ao Excluir Frequência!', 'Não foi possível excluir a frequência. Tente novamente.'); }
+      error: (err) => { this.ns.showError('Erro ao Excluir Frequência!', extractErrorMessage(err, 'Não foi possível excluir a frequência. Tente novamente.')); }
     });
   }
 }

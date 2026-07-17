@@ -1,12 +1,13 @@
 <form [formGroup]="personForm">
   <div class="mb-3">
-    <label for="name" class="form-label">Nome *</label>
+    <label for="name" class="form-label">Nome <span class="text-danger">*</span></label>
     <input id="name" formControlName="name" placeholder="Digite o nome completo" class="form-control" />
+    <app-field-error [control]="personForm.get('name')" />
   </div>
 
   @if (existingImages().length > 0) {
     <div class="mb-3">
-      <label class="form-label">Imagens já cadastradas</label>
+      <span class="form-label d-block">Imagens já cadastradas</span>
       <div class="existing-images">
         @for (img of existingImages(); track img.id) {
           <div class="existing-item">
@@ -31,7 +32,7 @@
 
   @if (selectedFiles().length > 0) {
     <div class="preview-section mb-3">
-      <label class="form-label">Pré-visualização das novas fotos</label>
+      <span class="form-label d-block">Pré-visualização das novas fotos</span>
       <div class="preview-grid">
         @for (url of previewUrls(); track url) {
           <div class="preview-item">

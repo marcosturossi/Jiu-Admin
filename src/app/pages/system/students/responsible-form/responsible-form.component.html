@@ -8,18 +8,19 @@
 
   <div class="row">
     <div class="col-md-4 mb-3">
-      <label class="form-label">Tipo de Relação <span class="text-danger">*</span></label>
-      <select class="form-select" formControlName="relationshipType">
+      <label class="form-label" [for]="'responsible-' + index() + '-relationshipType'">Tipo de Relação <span class="text-danger">*</span></label>
+      <select class="form-select" [id]="'responsible-' + index() + '-relationshipType'" formControlName="relationshipType">
         <option value="" disabled>Selecione</option>
         @for (type of relationshipTypes; track type) {
         <option [value]="type">{{ relationshipLabel(type) }}</option>
         }
       </select>
+      <app-field-error [control]="group().get('relationshipType')" />
     </div>
 
     @if (isResolved()) {
     <div class="col-md-8 mb-3">
-      <label class="form-label">Pessoa Vinculada</label>
+      <span class="form-label d-block">Pessoa Vinculada</span>
       <div class="input-group">
         <span class="form-control bg-light">
           <i class="bi bi-person-check me-1 text-success"></i>
@@ -32,9 +33,9 @@
     </div>
     } @else {
     <div class="col-md-8 mb-3">
-      <label class="form-label">CPF do Responsável <span class="text-danger">*</span></label>
+      <label class="form-label" [for]="'responsible-' + index() + '-cpf'">CPF do Responsável <span class="text-danger">*</span></label>
       <div class="input-group">
-        <input type="text" class="form-control" formControlName="cpf" placeholder="000.000.000-00">
+        <input type="text" class="form-control" [id]="'responsible-' + index() + '-cpf'" formControlName="cpf" placeholder="000.000.000-00">
         <button type="button" class="btn btn-outline-secondary" (click)="searchByCpf()" [disabled]="isSearching()">
           <i class="bi bi-search me-1"></i>{{ isSearching() ? 'Buscando...' : 'Buscar' }}
         </button>
@@ -49,20 +50,21 @@
       </p>
     </div>
     <div class="col-md-4 mb-3">
-      <label class="form-label">Nome <span class="text-danger">*</span></label>
-      <input class="form-control" formControlName="firstName" placeholder="Nome">
+      <label class="form-label" [for]="'responsible-' + index() + '-firstName'">Nome <span class="text-danger">*</span></label>
+      <input class="form-control" [id]="'responsible-' + index() + '-firstName'" formControlName="firstName" placeholder="Nome">
     </div>
     <div class="col-md-4 mb-3">
-      <label class="form-label">Sobrenome <span class="text-danger">*</span></label>
-      <input class="form-control" formControlName="lastName" placeholder="Sobrenome">
+      <label class="form-label" [for]="'responsible-' + index() + '-lastName'">Sobrenome <span class="text-danger">*</span></label>
+      <input class="form-control" [id]="'responsible-' + index() + '-lastName'" formControlName="lastName" placeholder="Sobrenome">
     </div>
     <div class="col-md-4 mb-3">
-      <label class="form-label">E-mail <span class="text-danger">*</span></label>
-      <input type="email" class="form-control" formControlName="email" placeholder="email@exemplo.com">
+      <label class="form-label" [for]="'responsible-' + index() + '-email'">E-mail <span class="text-danger">*</span></label>
+      <input type="email" class="form-control" [id]="'responsible-' + index() + '-email'" formControlName="email" placeholder="email@exemplo.com">
+      <app-field-error [control]="group().get('email')" />
     </div>
     <div class="col-md-6 mb-3">
-      <label class="form-label">Telefone</label>
-      <input class="form-control" formControlName="phoneNumber" placeholder="(00) 00000-0000">
+      <label class="form-label" [for]="'responsible-' + index() + '-phoneNumber'">Telefone</label>
+      <input class="form-control" [id]="'responsible-' + index() + '-phoneNumber'" formControlName="phoneNumber" placeholder="(00) 00000-0000">
     </div>
     <div class="col-md-6 mb-3 d-flex align-items-end">
       <button type="button" class="btn btn-outline-primary" (click)="createAndLink()" [disabled]="isCreating()">

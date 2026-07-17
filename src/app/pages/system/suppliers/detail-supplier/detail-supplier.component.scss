@@ -87,9 +87,15 @@
   gap: 0.5rem;
   padding: 0.45rem 0;
   border-bottom: 1px solid var(--brand-border);
+  flex-wrap: wrap;
 
   &:last-child {
     border-bottom: none;
+  }
+
+  > span:last-child {
+    min-width: 0;
+    overflow-wrap: break-word;
   }
 }
 

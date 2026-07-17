@@ -5,12 +5,14 @@ import { Subject, debounceTime } from 'rxjs';
 import { FrequencyService, StudentsService, ShowStudentDTO as ShowStudentDTO } from '../../../../generated_services';
 import { ShowFrequencyDTO as ShowFrequencyDTO, UpdateFrequencyDTO as UpdateFrequencyDTO } from '../../../../generated_services';
 import { NotificationService } from '../../../../services/notification.service';
+import { extractErrorMessage } from '../../../../utils/error.utils';
 import { SearchOption } from '../../../../shared/search-select/search-option';
 import { SearchSelectComponent } from '../../../../shared/search-select/search-select.component';
+import { FieldErrorComponent } from '../../../../shared/field-error/field-error.component';
 
 @Component({
   selector: 'app-update-frequency',
-  imports: [ReactiveFormsModule, SearchSelectComponent],
+  imports: [ReactiveFormsModule, SearchSelectComponent, FieldErrorComponent],
   templateUrl: './update-frequency.component.html',
   styleUrl: './update-frequency.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -33,6 +35,8 @@ export class UpdateFrequencyComponent {
   protected readonly frequencyForm = this.fb.group({
     studentId: ['', Validators.required]
   });
+
+  protected readonly isSaving = signal(false);
 
   constructor() {
     this.studentSearchSubject.pipe(debounceTime(400), takeUntilDestroyed(this.destroyRef))
@@ -73,18 +77,21 @@ export class UpdateFrequencyComponent {
 
   protected update(): void {
     if (this.frequencyForm.invalid) {
+      this.frequencyForm.markAllAsTouched();
       this.ns.showError('Formulário Inválido', 'Por favor, selecione um aluno.');
       return;
     }
+    this.isSaving.set(true);
     this.frequencyService.apiFrequencyIdPut(this.frequency().id!, {
       studentId: this.frequencyForm.value.studentId
     } as UpdateFrequencyDTO).subscribe({
       next: () => {
+        this.isSaving.set(false);
         this.ns.showSuccess('Frequência Atualizada!', 'A frequência foi atualizada com sucesso.');
         this.frequencyUpdated.emit();
         this.close();
       },
-      error: () => this.ns.showError('Erro ao Atualizar Frequência!', 'Não foi possível atualizar a frequência. Tente novamente.')
+      error: (err) => { this.isSaving.set(false); this.ns.showError('Erro ao Atualizar Frequência!', extractErrorMessage(err, 'Não foi possível atualizar a frequência. Tente novamente.')); }
     });
   }
 }

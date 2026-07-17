@@ -1,11 +1,12 @@
 <form [formGroup]="form">
   <div class="row g-2">
     <div class="col mb-3">
-      <label for="title" class="form-label">Título *</label>
+      <label for="title" class="form-label">Título <span class="text-danger">*</span></label>
       <input id="title" formControlName="title" placeholder="Digite o título da notificação" class="form-control" />
+      <app-field-error [control]="form.get('title')" />
     </div>
     <div class="col mb-3">
-      <label for="type" class="form-label">Tipo *</label>
+      <label for="type" class="form-label">Tipo <span class="text-danger">*</span></label>
       <select id="type" formControlName="type" class="form-select">
         <option value="" disabled>Selecione</option>
         <option value="Info">Informação</option>
@@ -17,13 +18,15 @@
         <option value="Payment">Pagamento</option>
         <option value="System">Sistema</option>
       </select>
+      <app-field-error [control]="form.get('type')" />
     </div>
   </div>
 
   <div class="mb-3">
-    <label for="message" class="form-label">Mensagem *</label>
+    <label for="message" class="form-label">Mensagem <span class="text-danger">*</span></label>
     <textarea id="message" formControlName="message" rows="4"
       placeholder="Digite a mensagem da notificação" class="form-control"></textarea>
+    <app-field-error [control]="form.get('message')" />
   </div>
 
   <div class="row g-2">
@@ -49,7 +52,8 @@
 
   <div class="d-flex gap-2 justify-content-end mt-3">
     <button type="button" class="btn btn-outline-secondary" (click)="close()">Cancelar</button>
-    <button type="button" class="btn btn-primary" (click)="update()" [disabled]="form.invalid">
+    <button type="button" class="btn btn-primary" (click)="update()" [disabled]="isSaving() || form.invalid">
+      @if (isSaving()) { <span class="spinner-border spinner-border-sm me-1" role="status"></span> }
       <i class="bi bi-check-lg me-1"></i>Atualizar
     </button>
   </div>

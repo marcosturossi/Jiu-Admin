@@ -8,6 +8,7 @@ import { NotificationType as NotificationType } from '../../../generated_service
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
 import { ConfirmService } from '../../../services/confirm.service';
+import { extractErrorMessage } from '../../../utils/error.utils';
 import { FilterComponent } from '../../../shared/filter/filter.component';
 import { FilterOutput } from '../../../shared/filter/filter.types';
 import { PaginationComponent } from '../../../shared/pagination/pagination.component';
@@ -81,7 +82,7 @@ export class NotificationComponent {
     if (!ok) return;
     this.apiNotificationService.apiNotificationIdDelete(notification.id!).subscribe({
       next: () => { this.ns.showSuccess('Notificação Excluída!', `A notificação "${notification.title}" foi excluída com sucesso.`); this.load(); },
-      error: () => this.ns.showError('Erro ao Excluir Notificação!', 'Não foi possível excluir a notificação. Tente novamente.')
+      error: (err) => this.ns.showError('Erro ao Excluir Notificação!', extractErrorMessage(err, 'Não foi possível excluir a notificação. Tente novamente.'))
     });
   }
 

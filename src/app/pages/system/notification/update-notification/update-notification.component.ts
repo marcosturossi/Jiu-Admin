@@ -1,15 +1,17 @@
-import { ChangeDetectionStrategy, Component, inject, input, output, effect } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, input, output, effect, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NotificationService as ApiNotificationService } from '../../../../generated_services/api/notification.service';
 import { ShowNotificationDto as ShowNotificationDTO } from '../../../../generated_services/model/showNotificationDto';
 import { UpdateNotificationDto } from '../../../../generated_services/model/updateNotificationDto';
 import { NotificationType as NotificationType } from '../../../../generated_services/model/notificationType';
 import { NotificationService } from '../../../../services/notification.service';
+import { extractErrorMessage } from '../../../../utils/error.utils';
 import { datetimeLocalToIso, isoToDatetimeLocal } from '../../../../utils/date.utils';
+import { FieldErrorComponent } from '../../../../shared/field-error/field-error.component';
 
 @Component({
   selector: 'app-update-notification',
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, FieldErrorComponent],
   templateUrl: './update-notification.component.html',
   styleUrl: './update-notification.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -43,6 +45,8 @@ export class UpdateNotificationComponent {
     expiresAt: [null as string | null],
   });
 
+  protected readonly isSaving = signal(false);
+
   constructor() {
     effect(() => {
       const n = this.notification();
@@ -65,13 +69,15 @@ export class UpdateNotificationComponent {
       this.ns.showError('Formulário Inválido', 'Por favor, preencha todos os campos obrigatórios.');
       return;
     }
+    this.isSaving.set(true);
     this.apiNotificationService.apiNotificationIdPut(this.notification().id!, this.toDTO()).subscribe({
       next: () => {
+        this.isSaving.set(false);
         this.ns.showSuccess('Notificação Atualizada!', `A notificação "${this.form.value.title}" foi atualizada com sucesso.`);
         this.notificationUpdated.emit();
         this.close();
       },
-      error: () => this.ns.showError('Erro ao Atualizar Notificação!', 'Não foi possível atualizar a notificação. Tente novamente.')
+      error: (err) => { this.isSaving.set(false); this.ns.showError('Erro ao Atualizar Notificação!', extractErrorMessage(err, 'Não foi possível atualizar a notificação. Tente novamente.')); }
     });
   }
 

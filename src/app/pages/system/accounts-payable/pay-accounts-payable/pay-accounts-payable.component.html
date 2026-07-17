@@ -1,12 +1,14 @@
 <form [formGroup]="form" (ngSubmit)="save()">
   <div class="mb-3">
-    <label for="paidAmount">Valor Pago *</label>
+    <label for="paidAmount">Valor Pago <span class="text-danger">*</span></label>
     <input type="number" class="form-control" id="paidAmount" formControlName="paidAmount" step="0.01" min="0.01" />
+    <app-field-error [control]="form.get('paidAmount')" />
   </div>
 
   <div class="mb-3">
-    <label for="paidAt">Data do Pagamento *</label>
+    <label for="paidAt">Data do Pagamento <span class="text-danger">*</span></label>
     <input type="date" class="form-control" id="paidAt" formControlName="paidAt" />
+    <app-field-error [control]="form.get('paidAt')" />
   </div>
 
   <div class="mb-3">

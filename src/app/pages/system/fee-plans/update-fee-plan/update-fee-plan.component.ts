@@ -1,12 +1,14 @@
-import { ChangeDetectionStrategy, Component, effect, inject, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, inject, input, output, signal } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { FeePlanService, ShowFeePlanDTO as ShowFeePlanDTO, UpdateFeePlanDTO as UpdateFeePlanDTO } from '../../../../generated_services';
 import { NotificationService } from '../../../../services/notification.service';
+import { extractErrorMessage } from '../../../../utils/error.utils';
+import { FieldErrorComponent } from '../../../../shared/field-error/field-error.component';
 
 @Component({
   selector: 'app-update-fee-plan',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, FieldErrorComponent],
   templateUrl: './update-fee-plan.component.html',
   styleUrl: './update-fee-plan.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -27,6 +29,8 @@ export class UpdateFeePlanComponent {
     price: [null as number | null, Validators.required],
     isActive: [true],
   });
+
+  protected readonly isSaving = signal(false);
 
   constructor() {
     effect(() => {
@@ -56,9 +60,10 @@ export class UpdateFeePlanComponent {
       price: v.price!,
       isActive: v.isActive ?? true,
     };
+    this.isSaving.set(true);
     this.service.apiFeePlanIdPut(this.feePlan().id!, dto).subscribe({
-      next: () => { this.ns.showSuccess('Atualizado!', 'Plano atualizado com sucesso.'); this.feePlanUpdated.emit(); },
-      error: () => { this.ns.showError('Erro ao Atualizar!', 'Não foi possível atualizar o plano.'); }
+      next: () => { this.isSaving.set(false); this.ns.showSuccess('Atualizado!', 'Plano atualizado com sucesso.'); this.feePlanUpdated.emit(); },
+      error: (err) => { this.isSaving.set(false); this.ns.showError('Erro ao Atualizar!', extractErrorMessage(err, 'Não foi possível atualizar o plano.')); }
     });
   }
 }

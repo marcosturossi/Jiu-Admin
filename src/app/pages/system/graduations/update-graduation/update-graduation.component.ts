@@ -7,14 +7,16 @@ import { BeltService } from '../../../../generated_services/api/belt.service';
 import { StudentsService } from '../../../../generated_services/api/students.service';
 import { ShowGraduationDTO as ShowGraduationDTO, ShowBeltDTO as ShowBeltDTO, ShowStudentDTO as ShowStudentDTO, UpdateGraduationDTO as UpdateGraduationDTO } from '../../../../generated_services';
 import { NotificationService } from '../../../../services/notification.service';
+import { extractErrorMessage } from '../../../../utils/error.utils';
 import { todayDateString } from '../../../../utils/date.utils';
 import { SearchOption } from '../../../../shared/search-select/search-option';
 import { SearchSelectComponent } from '../../../../shared/search-select/search-select.component';
+import { FieldErrorComponent } from '../../../../shared/field-error/field-error.component';
 
 @Component({
   selector: 'app-update-graduation',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ReactiveFormsModule, SearchSelectComponent],
+  imports: [ReactiveFormsModule, SearchSelectComponent, FieldErrorComponent],
   templateUrl: './update-graduation.component.html',
   styleUrl: './update-graduation.component.scss',
 })
@@ -44,6 +46,8 @@ export class UpdateGraduationComponent {
     beltId: ['', Validators.required],
     graduationDate: [todayDateString(), Validators.required],
   });
+
+  protected readonly isSaving = signal(false);
 
   constructor() {
     this.studentSearchSubject.pipe(debounceTime(400), takeUntilDestroyed(this.destroyRef))
@@ -86,13 +90,15 @@ export class UpdateGraduationComponent {
       this.ns.showError('Formulário Inválido', 'Por favor, preencha todos os campos obrigatórios.');
       return;
     }
+    this.isSaving.set(true);
     this.graduationService.apiGraduationIdPut(this.graduation().id!, this.toDTO()).subscribe({
       next: () => {
+        this.isSaving.set(false);
         this.ns.showSuccess('Graduação Atualizada!', 'A graduação foi atualizada com sucesso.');
         this.graduationUpdated.emit();
         this.close();
       },
-      error: () => this.ns.showError('Erro ao Atualizar Graduação!', 'Não foi possível atualizar a graduação. Tente novamente.'),
+      error: (err) => { this.isSaving.set(false); this.ns.showError('Erro ao Atualizar Graduação!', extractErrorMessage(err, 'Não foi possível atualizar a graduação. Tente novamente.')); },
     });
   }
 

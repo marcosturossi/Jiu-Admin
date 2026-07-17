@@ -5,16 +5,19 @@
     <h6 class="section-title">Informações Pessoais</h6>
     <div class="row">
       <div class="col-12 mb-3">
-        <label for="userName" class="form-label">Usuário *</label>
+        <label for="userName" class="form-label">Usuário <span class="text-danger">*</span></label>
         <input id="userName" type="text" class="form-control" formControlName="userName" placeholder="Nome de usuário">
+        <app-field-error [control]="form.get('userName')" />
       </div>
       <div class="col-md-6 mb-3">
-        <label for="firstName" class="form-label">Nome *</label>
+        <label for="firstName" class="form-label">Nome <span class="text-danger">*</span></label>
         <input id="firstName" type="text" class="form-control" formControlName="firstName" placeholder="Nome">
+        <app-field-error [control]="form.get('firstName')" />
       </div>
       <div class="col-md-6 mb-3">
-        <label for="lastName" class="form-label">Sobrenome *</label>
+        <label for="lastName" class="form-label">Sobrenome <span class="text-danger">*</span></label>
         <input id="lastName" type="text" class="form-control" formControlName="lastName" placeholder="Sobrenome">
+        <app-field-error [control]="form.get('lastName')" />
       </div>
       <div class="col-md-4 mb-3">
         <label for="cpf" class="form-label">CPF</label>
@@ -25,8 +28,9 @@
         <input id="birthDay" type="date" class="form-control" formControlName="birthDay" (change)="onBirthDayChange()">
       </div>
       <div class="col-md-4 mb-3">
-        <label for="email" class="form-label">E-mail *</label>
+        <label for="email" class="form-label">E-mail <span class="text-danger">*</span></label>
         <input id="email" type="email" class="form-control" formControlName="email" placeholder="email@exemplo.com">
+        <app-field-error [control]="form.get('email')" />
       </div>
       <div class="col-md-6 mb-3">
         <label for="phoneNumber" class="form-label">Telefone</label>
@@ -85,7 +89,8 @@
   <!-- Botões -->
   <div class="d-flex justify-content-end gap-2 mt-2">
     <button type="button" class="btn btn-outline-secondary" (click)="close()">Cancelar</button>
-    <button type="button" class="btn btn-primary" (click)="save()" [disabled]="form.invalid">
+    <button type="button" class="btn btn-primary" (click)="save()" [disabled]="isSaving() || form.invalid">
+      @if (isSaving()) { <span class="spinner-border spinner-border-sm me-1" role="status"></span> }
       <i class="bi bi-check-lg me-1"></i>Salvar
     </button>
   </div>

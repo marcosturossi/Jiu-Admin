@@ -1,17 +1,19 @@
 <form [formGroup]="form">
   <div class="mb-3">
-    <label for="beltId" class="form-label">Faixa *</label>
+    <label for="beltId" class="form-label">Faixa <span class="text-danger">*</span></label>
     <select id="beltId" formControlName="beltId" class="form-select">
       <option value="" disabled>Selecione uma faixa</option>
       @for (opt of belts(); track opt.id) {
         <option [value]="opt.id">{{ opt.color }}</option>
       }
     </select>
+    <app-field-error [control]="form.get('beltId')" />
   </div>
   <div class="mb-3">
-    <label for="description" class="form-label">Descrição do Requisito *</label>
+    <label for="description" class="form-label">Descrição do Requisito <span class="text-danger">*</span></label>
     <textarea id="description" formControlName="description"
       placeholder="Digite a descrição do requisito" rows="3" class="form-control"></textarea>
+    <app-field-error [control]="form.get('description')" />
   </div>
   <div class="mb-3">
     <label for="minimumClasses" class="form-label">Número Mínimo de Aulas</label>
@@ -20,7 +22,8 @@
   </div>
   <div class="d-flex gap-2 justify-content-end mt-3">
     <button class="btn btn-outline-secondary" type="button" (click)="close()">Cancelar</button>
-    <button class="btn btn-primary" type="button" [disabled]="form.invalid" (click)="save()">
+    <button class="btn btn-primary" type="button" [disabled]="isSaving() || form.invalid" (click)="save()">
+      @if (isSaving()) { <span class="spinner-border spinner-border-sm me-1" role="status"></span> }
       <i class="bi bi-check-lg me-1"></i> Salvar
     </button>
   </div>

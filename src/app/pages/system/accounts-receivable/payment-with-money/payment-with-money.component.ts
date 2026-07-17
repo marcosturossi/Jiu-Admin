@@ -1,6 +1,7 @@
-import { ChangeDetectionStrategy, Component, inject, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, input, output, signal } from '@angular/core';
 import { AccountsReceivableService, ShowAccountsReceivableDTO, TransactionType } from '../../../../generated_services';
 import { NotificationService } from '../../../../services/notification.service';
+import { extractErrorMessage } from '../../../../utils/error.utils';
 
 @Component({
   selector: 'app-payment-with-money',
@@ -17,6 +18,8 @@ export class PaymentWithMoneyComponent {
   readonly closeEvent = output<void>();
   readonly itemUpdated = output<void>();
 
+  protected readonly isSaving = signal(false);
+
   protected getTypeLabel(type?: number | string): string {
     switch (type) {
       case 0: case TransactionType.Income: return 'Receita';
@@ -28,12 +31,14 @@ export class PaymentWithMoneyComponent {
   }
 
   protected save(): void {
+    this.isSaving.set(true);
     this.accountsReceivableService.apiAccountsReceivableIdConfirmPaymentMoneyPatch(this.item().id!).subscribe({
       next: () => {
+        this.isSaving.set(false);
         this.ns.showSuccess('Pagamento com dinheiro', 'Conta a receber paga com sucesso.')
         this.itemUpdated.emit();
       },
-      error: () => { this.ns.showError('Pagamento com dinheiro', 'Ocorreu um erro ao processar o pagamento.'); }
+      error: (err) => { this.isSaving.set(false); this.ns.showError('Pagamento com dinheiro', extractErrorMessage(err, 'Ocorreu um erro ao processar o pagamento.')); }
     });
   }
 }

@@ -62,7 +62,7 @@
 
 @if (openedCreate()) {
   <div class="modal-backdrop-custom" (click)="openedCreate.set(false)"></div>
-  <div class="modal show d-block" tabindex="-1">
+  <div class="modal show d-block" tabindex="-1" role="dialog" aria-modal="true" (document:keydown.escape)="openedCreate.set(false)">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header">
@@ -83,7 +83,7 @@
 
 @if (openedPay()) {
   <div class="modal-backdrop-custom" (click)="openedPay.set(false)"></div>
-  <div class="modal show d-block" tabindex="-1">
+  <div class="modal show d-block" tabindex="-1" role="dialog" aria-modal="true" (document:keydown.escape)="openedPay.set(false)">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header">

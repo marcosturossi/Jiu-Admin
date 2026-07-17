@@ -6,6 +6,7 @@ import { ShowContractDTO as ShowContractDTO, ContractStatus as ContractStatus } 
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
 import { ConfirmService } from '../../../services/confirm.service';
+import { extractErrorMessage } from '../../../utils/error.utils';
 import { FilterComponent } from '../../../shared/filter/filter.component';
 import { FilterField, FilterOutput } from '../../../shared/filter/filter.types';
 import { PaginationComponent } from '../../../shared/pagination/pagination.component';
@@ -132,7 +133,7 @@ export class ContractsComponent {
     if (!ok) return;
     this.contractService.apiContractIdDelete(item.id!).subscribe({
       next: () => { this.ns.showSuccess('Contrato Excluído!', 'Excluído com sucesso.'); this.load(); },
-      error: () => { this.ns.showError('Erro ao Excluir!', 'Não foi possível excluir.'); },
+      error: (err) => { this.ns.showError('Erro ao Excluir!', extractErrorMessage(err, 'Não foi possível excluir.')); },
     });
   }
 }

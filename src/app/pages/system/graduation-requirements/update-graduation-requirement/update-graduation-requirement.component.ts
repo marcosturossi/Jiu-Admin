@@ -2,11 +2,13 @@ import { ChangeDetectionStrategy, Component, effect, inject, input, output, sign
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { GraduationRequirementsService, BeltService, ShowBeltDTO as ShowBeltDTO, ShowGraduationRequirementDTO as ShowGraduationRequirementsDTO, UpdateGraduationRequirementDTO as UpdateGraduationRequirementsDTO } from '../../../../generated_services';
 import { NotificationService } from '../../../../services/notification.service';
+import { extractErrorMessage } from '../../../../utils/error.utils';
+import { FieldErrorComponent } from '../../../../shared/field-error/field-error.component';
 
 @Component({
   selector: 'app-update-graduation-requirement',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, FieldErrorComponent],
   templateUrl: './update-graduation-requirement.component.html',
   styleUrl: './update-graduation-requirement.component.scss',
 })
@@ -21,6 +23,7 @@ export class UpdateGraduationRequirementComponent {
   private readonly fb = inject(FormBuilder);
 
   protected readonly belts = signal<ShowBeltDTO[]>([]);
+  protected readonly isSaving = signal(false);
 
   protected readonly form = this.fb.group({
     beltId: ['', Validators.required],
@@ -50,13 +53,15 @@ export class UpdateGraduationRequirementComponent {
       this.ns.showError('Formulário Inválido', 'Por favor, preencha todos os campos obrigatórios.');
       return;
     }
+    this.isSaving.set(true);
     this.graduationRequirementsService.apiGraduationRequirementsIdPut(this.requirement().id!, this.toDTO()).subscribe({
       next: () => {
+        this.isSaving.set(false);
         this.ns.showSuccess('Requisito Atualizado!', 'O requisito de graduação foi atualizado com sucesso.');
         this.graduationRequirementUpdated.emit();
         this.close();
       },
-      error: () => this.ns.showError('Erro ao Atualizar Requisito!', 'Não foi possível atualizar o requisito de graduação. Tente novamente.'),
+      error: (err) => { this.isSaving.set(false); this.ns.showError('Erro ao Atualizar Requisito!', extractErrorMessage(err, 'Não foi possível atualizar o requisito de graduação. Tente novamente.')); },
     });
   }
 

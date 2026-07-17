@@ -1,13 +1,15 @@
 <form [formGroup]="frequencyForm">
   <div class="mb-3">
-    <label for="lessonSelect" class="form-label">Selecione a Aula *</label>
+    <label for="lessonSelect" class="form-label">Selecione a Aula <span class="text-danger">*</span></label>
     <app-search-select
+      inputId="lessonSelect"
       [options]="lessonOptions()"
       [selected]="selectedLesson()"
       placeholder="Selecione uma aula..."
       label="Aula"
       (selectionChange)="onLessonSelected($event)"
       (searchChange)="onLessonSearch($event)" />
+    <app-field-error [control]="frequencyForm.get('lessonId')" />
   </div>
 
   <!-- Image Recognition Section -->
@@ -49,7 +51,7 @@
 
       @if (previewUrl()) {
         <div class="recognition-preview">
-          <label>Pré-visualização</label>
+          <span class="form-label d-block">Pré-visualização</span>
           <div class="preview-box">
             <img [src]="previewUrl()" alt="Preview" class="preview-img" />
           </div>
@@ -63,7 +65,7 @@
 
   <div class="mb-3">
     <div class="students-header">
-      <label class="form-label">Selecione os Alunos *</label>
+      <span class="form-label">Selecione os Alunos <span class="text-danger">*</span></span>
       <div class="students-actions">
         <button class="btn btn-outline-secondary btn-sm" type="button" (click)="toggleSelectAll()">
           {{ isAllSelected() ? 'Desmarcar Todos' : 'Selecionar Todos' }}

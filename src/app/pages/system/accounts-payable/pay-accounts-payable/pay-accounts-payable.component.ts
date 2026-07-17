@@ -2,12 +2,14 @@ import { ChangeDetectionStrategy, Component, effect, inject, input, output, sign
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { AccountsPayableService, ShowAccountsPayableDTO } from '../../../../generated_services';
 import { NotificationService } from '../../../../services/notification.service';
+import { extractErrorMessage } from '../../../../utils/error.utils';
 import { todayDateString } from '../../../../utils/date.utils';
+import { FieldErrorComponent } from '../../../../shared/field-error/field-error.component';
 
 @Component({
   selector: 'app-pay-accounts-payable',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, FieldErrorComponent],
   templateUrl: './pay-accounts-payable.component.html',
   styleUrl: './pay-accounts-payable.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -48,8 +50,8 @@ export class PayAccountsPayableComponent {
         this.ns.showSuccess('Pagamento Registrado!', 'A conta a pagar foi paga com sucesso.');
         this.itemPaid.emit();
       },
-      error: () => {
-        this.ns.showError('Erro ao Pagar', 'Não foi possível registrar o pagamento.');
+      error: (err) => {
+        this.ns.showError('Erro ao Pagar', extractErrorMessage(err, 'Não foi possível registrar o pagamento.'));
         this.isSaving.set(false);
       },
       complete: () => this.isSaving.set(false),

@@ -4,6 +4,7 @@ import { AcademyService } from '../../../../generated_services/api/academy.servi
 import { ShowAcademyDto } from '../../../../generated_services/model/showAcademyDto';
 import { UpdateAcademyDto } from '../../../../generated_services/model/updateAcademyDto';
 import { NotificationService } from '../../../../services/notification.service';
+import { extractErrorMessage } from '../../../../utils/error.utils';
 
 @Component({
   selector: 'app-update-academy',
@@ -53,8 +54,8 @@ export class UpdateAcademyComponent {
         this.notificationService.showSuccess('Academia Atualizada!', `A academia "${a.name}" foi atualizada com sucesso.`);
         this.academyUpdated.emit();
       },
-      error: () => {
-        this.notificationService.showError('Erro ao Atualizar', 'Não foi possível atualizar a academia. Tente novamente.');
+      error: (err) => {
+        this.notificationService.showError('Erro ao Atualizar', extractErrorMessage(err, 'Não foi possível atualizar a academia. Tente novamente.'));
       },
     });
   }

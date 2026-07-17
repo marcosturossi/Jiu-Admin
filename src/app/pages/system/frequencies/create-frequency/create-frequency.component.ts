@@ -8,12 +8,14 @@ import { PersonsService } from '../../../../generated_services/api2/api/persons.
 import { RecognitionResponse } from '../../../../generated_services/api2/model/recognitionResponse';
 import { PersonListResponse } from '../../../../generated_services/api2/model/personListResponse';
 import { NotificationService } from '../../../../services/notification.service';
+import { extractErrorMessage } from '../../../../utils/error.utils';
 import { SearchOption } from '../../../../shared/search-select/search-option';
 import { SearchSelectComponent } from '../../../../shared/search-select/search-select.component';
+import { FieldErrorComponent } from '../../../../shared/field-error/field-error.component';
 
 @Component({
   selector: 'app-create-frequency',
-  imports: [ReactiveFormsModule, SearchSelectComponent],
+  imports: [ReactiveFormsModule, SearchSelectComponent, FieldErrorComponent],
   templateUrl: './create-frequency.component.html',
   styleUrl: './create-frequency.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -216,7 +218,7 @@ export class CreateFrequencyComponent {
         this.frequencyCreated.emit();
         this.close();
       },
-      error: () => { this.ns.showError('Erro ao Registrar Frequências!', 'Não foi possível registrar algumas frequências. Tente novamente.'); this.isCreating.set(false); },
+      error: (err) => { this.ns.showError('Erro ao Registrar Frequências!', extractErrorMessage(err, 'Não foi possível registrar algumas frequências. Tente novamente.')); this.isCreating.set(false); },
       complete: () => this.isCreating.set(false)
     });
   }

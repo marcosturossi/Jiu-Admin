@@ -4,14 +4,16 @@ import { AccountsReceivableService } from '../../../../generated_services/api/ac
 import { ShowTransactionCategoryDTO } from '../../../../generated_services';
 import { TransactionType } from '../../../../generated_services/model/transactionType';
 import { NotificationService } from '../../../../services/notification.service';
+import { extractErrorMessage } from '../../../../utils/error.utils';
 import { todayDateString } from '../../../../utils/date.utils';
 import { SearchOption } from '../../../../shared/search-select/search-option';
 import { SearchSelectComponent } from '../../../../shared/search-select/search-select.component';
+import { FieldErrorComponent } from '../../../../shared/field-error/field-error.component';
 
 @Component({
   selector: 'app-create-accounts-receivable',
   standalone: true,
-  imports: [ReactiveFormsModule, SearchSelectComponent],
+  imports: [ReactiveFormsModule, SearchSelectComponent, FieldErrorComponent],
   templateUrl: './create-accounts-receivable.component.html',
   styleUrl: './create-accounts-receivable.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -65,8 +67,8 @@ export class CreateAccountsReceivableComponent {
         this.ns.showSuccess('Conta a Receber Criada!', 'A conta a receber foi criada com sucesso.');
         this.itemCreated.emit();
       },
-      error: () => {
-        this.ns.showError('Erro ao Criar', 'Não foi possível criar a conta a receber.');
+      error: (err) => {
+        this.ns.showError('Erro ao Criar', extractErrorMessage(err, 'Não foi possível criar a conta a receber.'));
         this.isSaving.set(false);
       },
       complete: () => this.isSaving.set(false),

@@ -24,6 +24,12 @@ test.describe('Contas a Receber', () => {
     await saveAndWaitModalClose(page);
     await waitForTableReady(page);
 
+    // This list isn't sorted newest-first, and the "Buscar conta a receber"
+    // box only filters by type (not free text — another dead-search bug), so
+    // with enough accumulated rows the new one can land off page 1. Bump the
+    // page size to the max instead of assuming page 1.
+    await page.selectOption('select', '100').catch(() => {});
+    await waitForTableReady(page);
     const row = page.locator('tr', { hasText: TEST_DESC });
     await expect(row).toBeVisible();
 
@@ -34,10 +40,13 @@ test.describe('Contas a Receber', () => {
     // backend 404s and the row is never removed — confirmed via network
     // inspection. This looks like a real bug (should call
     // apiAccountsReceivableIdDelete for non-charge entries); asserting the
-    // current behavior here so it surfaces if/when it's fixed.
+    // current behavior here so it surfaces if/when it's fixed. The toast now
+    // surfaces the real backend detail ("Not Found") instead of a generic
+    // message, since NotificationService errors were wired to
+    // extractErrorMessage().
     await row.locator('button.btn-outline-danger').click();
     await acceptConfirmDialog(page);
-    await expect(page.getByText(/Não foi possível excluir/i)).toBeVisible({ timeout: 10_000 });
+    await expect(page.getByText('Not Found')).toBeVisible({ timeout: 10_000 });
     await expect(row).toBeVisible();
   });
 });

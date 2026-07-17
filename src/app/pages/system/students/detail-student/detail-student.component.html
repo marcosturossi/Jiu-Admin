@@ -213,7 +213,7 @@
 <!-- Update Modal -->
 @if (openedPhotoEditor()) {
   <div class="modal-backdrop fade show" (click)="closePhotoEditor()"></div>
-  <div class="modal show d-block" tabindex="-1">
+  <div class="modal show d-block" tabindex="-1" role="dialog" aria-modal="true" (document:keydown.escape)="closePhotoEditor()">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header">
@@ -254,7 +254,7 @@
 
 @if (openedUpdate() && student()) {
   <div class="modal-backdrop fade show" (click)="openedUpdate.set(false)"></div>
-  <div class="modal show d-block" tabindex="-1">
+  <div class="modal show d-block" tabindex="-1" role="dialog" aria-modal="true" (document:keydown.escape)="openedUpdate.set(false)">
     <div class="modal-dialog modal-dialog-centered modal-lg">
       <div class="modal-content">
         <div class="modal-header">

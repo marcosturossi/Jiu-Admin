@@ -3,11 +3,13 @@ import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { GraduationRequirementsService, BeltService, ShowBeltDTO as ShowBeltDTO } from '../../../../generated_services';
 import { CreateGraduationRequirementDTO } from '../../../../generated_services/model/createGraduationRequirementDTO';
 import { NotificationService } from '../../../../services/notification.service';
+import { extractErrorMessage } from '../../../../utils/error.utils';
+import { FieldErrorComponent } from '../../../../shared/field-error/field-error.component';
 
 @Component({
   selector: 'app-create-graduation-requirement',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, FieldErrorComponent],
   templateUrl: './create-graduation-requirement.component.html',
   styleUrl: './create-graduation-requirement.component.scss',
 })
@@ -21,6 +23,7 @@ export class CreateGraduationRequirementComponent {
   private readonly fb = inject(FormBuilder);
 
   protected readonly belts = signal<ShowBeltDTO[]>([]);
+  protected readonly isSaving = signal(false);
 
   protected readonly form = this.fb.group({
     beltId: ['', Validators.required],
@@ -42,13 +45,15 @@ export class CreateGraduationRequirementComponent {
       this.ns.showError('Formulário Inválido', 'Por favor, preencha todos os campos obrigatórios.');
       return;
     }
+    this.isSaving.set(true);
     this.graduationRequirementsService.apiGraduationRequirementsPost(this.toDTO()).subscribe({
       next: () => {
+        this.isSaving.set(false);
         this.ns.showSuccess('Requisito de Graduação Criado!', 'O requisito de graduação foi criado com sucesso.');
         this.graduationRequirementCreated.emit();
         this.close();
       },
-      error: () => this.ns.showError('Erro ao Criar Requisito!', 'Não foi possível criar o requisito de graduação. Tente novamente.'),
+      error: (err) => { this.isSaving.set(false); this.ns.showError('Erro ao Criar Requisito!', extractErrorMessage(err, 'Não foi possível criar o requisito de graduação. Tente novamente.')); },
     });
   }
 

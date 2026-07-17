@@ -14,6 +14,7 @@ export class SearchSelectComponent implements OnDestroy {
   readonly selected = input<SearchOption | null>(null);
   readonly disabled = input<boolean>(false);
   readonly label = input<string>('Selecionar');
+  readonly inputId = input<string | null>(null);
 
   readonly selectionChange = output<SearchOption | null>();
   readonly searchChange = output<string>();

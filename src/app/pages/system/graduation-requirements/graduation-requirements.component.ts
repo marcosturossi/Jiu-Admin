@@ -5,6 +5,9 @@ import { UpdateGraduationRequirementComponent } from './update-graduation-requir
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
 import { ConfirmService } from '../../../services/confirm.service';
+import { extractErrorMessage } from '../../../utils/error.utils';
+import { FilterComponent } from '../../../shared/filter/filter.component';
+import { FilterOutput } from '../../../shared/filter/filter.types';
 import { PaginationComponent } from '../../../shared/pagination/pagination.component';
 import { PageResult } from '../../../utils/page-result';
 
@@ -12,6 +15,7 @@ import { PageResult } from '../../../utils/page-result';
   selector: 'app-graduation-requirements',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    FilterComponent,
     CreateGraduationRequirementComponent,
     UpdateGraduationRequirementComponent,
     PaginationComponent,
@@ -32,6 +36,7 @@ export class GraduationRequirementsComponent {
   protected readonly selected = signal<ShowGraduationRequirementsDTO | null>(null);
   protected readonly currentPage = signal(1);
   protected readonly pageSize = signal(10);
+  protected readonly filterText = signal<string | undefined>(undefined);
 
   constructor() {
     this.subnavService.setTitle('Requisitos de Graduação');
@@ -42,7 +47,7 @@ export class GraduationRequirementsComponent {
     this.isLoading.set(true);
     this.graduationRequirementsService.apiGraduationRequirementsGet(
       undefined,
-      undefined,
+      this.filterText(),
       undefined,
       undefined,
       this.currentPage(),
@@ -65,6 +70,7 @@ export class GraduationRequirementsComponent {
 
   protected onPageChange(page: number): void { this.currentPage.set(page); this.load(); }
   protected onPageSizeChange(size: number): void { this.pageSize.set(size); this.currentPage.set(1); this.load(); }
+  protected onFilterChange(output: FilterOutput): void { this.filterText.set(output.text || undefined); this.currentPage.set(1); this.load(); }
   protected openCreate(): void { this.openedCreate.set(true); }
   protected openEdit(item: ShowGraduationRequirementsDTO): void { this.selected.set(item); this.openedUpdate.set(true); }
   protected onCreated(): void { this.openedCreate.set(false); this.load(); }
@@ -78,8 +84,8 @@ export class GraduationRequirementsComponent {
         this.notificationService.showSuccess('Requisito Excluído!', 'O requisito de graduação foi excluído com sucesso.');
         this.load();
       },
-      error: () => {
-        this.notificationService.showError('Erro ao Excluir Requisito!', 'Não foi possível excluir o requisito de graduação. Tente novamente.');
+      error: (err) => {
+        this.notificationService.showError('Erro ao Excluir Requisito!', extractErrorMessage(err, 'Não foi possível excluir o requisito de graduação. Tente novamente.'));
       },
     });
   }

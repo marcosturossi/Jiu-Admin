@@ -7,13 +7,15 @@ import { FeePlanService } from '../../../../generated_services/api/feePlan.servi
 import { StudentsService } from '../../../../generated_services/api/students.service';
 import { ShowStudentDTO as ShowStudentDTO, ShowFeePlanDTO as ShowFeePlanDTO, ShowContractDTO as ShowContractDTO } from '../../../../generated_services';
 import { NotificationService } from '../../../../services/notification.service';
+import { extractErrorMessage } from '../../../../utils/error.utils';
 import { SearchOption } from '../../../../shared/search-select/search-option';
 import { SearchSelectComponent } from '../../../../shared/search-select/search-select.component';
+import { FieldErrorComponent } from '../../../../shared/field-error/field-error.component';
 
 @Component({
   selector: 'app-create-contract',
   standalone: true,
-  imports: [ReactiveFormsModule, SearchSelectComponent],
+  imports: [ReactiveFormsModule, SearchSelectComponent, FieldErrorComponent],
   templateUrl: './create-contract.component.html',
   styleUrl: './create-contract.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -79,9 +81,9 @@ export class CreateContractComponent {
           );
           this.contractCreated.emit();
         },
-        error: () => {
+        error: (err) => {
           this.isSaving.set(false);
-          this.ns.showError('Erro ao Criar!', 'Não foi possível criar o contrato.');
+          this.ns.showError('Erro ao Criar!', extractErrorMessage(err, 'Não foi possível criar o contrato.'));
         },
       });
   }

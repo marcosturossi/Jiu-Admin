@@ -6,6 +6,7 @@ import { CreateMedicalClearanceComponent } from './create-medical-clearance/crea
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
 import { ConfirmService } from '../../../services/confirm.service';
+import { extractErrorMessage } from '../../../utils/error.utils';
 import { PaginationComponent } from '../../../shared/pagination/pagination.component';
 import { BlobViewerComponent } from '../../../shared/blob-viewer/blob-viewer.component';
 import { FilterComponent } from '../../../shared/filter/filter.component';
@@ -80,7 +81,7 @@ export class MedicalClearancesComponent {
     if (!ok) return;
     this.medicalClearanceService.apiMedicalClearanceIdDelete(clearance.id!).subscribe({
       next: () => { this.ns.showSuccess('Atestado Excluído!', 'O atestado médico foi excluído com sucesso.'); this.load(); },
-      error: () => this.ns.showError('Erro ao Excluir!', 'Não foi possível excluir o atestado médico. Tente novamente.')
+      error: (err) => this.ns.showError('Erro ao Excluir!', extractErrorMessage(err, 'Não foi possível excluir o atestado médico. Tente novamente.'))
     });
   }
 

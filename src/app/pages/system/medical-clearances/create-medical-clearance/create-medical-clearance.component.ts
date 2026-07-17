@@ -7,13 +7,15 @@ import { Subject, debounceTime } from 'rxjs';
 import { CreateMedicalClearanceDto } from '../../../../generated_services/model/createMedicalClearanceDto';
 import { ShowStudentDTO } from '../../../../generated_services/model/showStudentDTO';
 import { NotificationService } from '../../../../services/notification.service';
+import { extractErrorMessage } from '../../../../utils/error.utils';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { SearchOption } from '../../../../shared/search-select/search-option';
 import { SearchSelectComponent } from '../../../../shared/search-select/search-select.component';
+import { FieldErrorComponent } from '../../../../shared/field-error/field-error.component';
 
 @Component({
   selector: 'app-create-medical-clearance',
-  imports: [ReactiveFormsModule, SearchSelectComponent],
+  imports: [ReactiveFormsModule, SearchSelectComponent, FieldErrorComponent],
   templateUrl: './create-medical-clearance.component.html',
   styleUrl: './create-medical-clearance.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -33,6 +35,7 @@ export class CreateMedicalClearanceComponent implements OnDestroy {
   protected readonly studentOptions = signal<SearchOption[]>([]);
   protected readonly selectedStudent = signal<SearchOption | null>(null);
   protected readonly isLoadingStudents = signal(false);
+  protected readonly isSaving = signal(false);
   protected readonly selectedFile = signal<File | null>(null);
   protected readonly filePreviewUrl = signal<SafeResourceUrl | null>(null);
   protected readonly filePreviewLink = signal<string | null>(null);
@@ -81,22 +84,24 @@ export class CreateMedicalClearanceComponent implements OnDestroy {
 
   protected create(): void {
     if (this.form.invalid) {
+      this.form.markAllAsTouched();
       this.ns.showError('Formulário Inválido', 'Por favor, preencha todos os campos obrigatórios.');
       return;
     }
+    this.isSaving.set(true);
     this.medicalClearanceService.apiMedicalClearancePost(this.toDTO()).subscribe({
       next: result => {
         this.ns.showSuccess('Atestado Criado!', 'O atestado médico foi criado com sucesso.');
         if (this.selectedFile() && result?.id) {
           this.medicalClearanceService.apiMedicalClearanceIdAttachmentPost(result.id, this.selectedFile()!).subscribe({
             next: () => { this.ns.showSuccess('Arquivo Enviado!', 'O arquivo foi anexado ao atestado médico.'); this.finishCreate(); },
-            error: () => { this.ns.showError('Erro ao Enviar Arquivo!', 'O atestado foi criado, mas não foi possível anexar o arquivo.'); this.finishCreate(); }
+            error: (err) => { this.ns.showError('Erro ao Enviar Arquivo!', extractErrorMessage(err, 'O atestado foi criado, mas não foi possível anexar o arquivo.')); this.finishCreate(); }
           });
           return;
         }
         this.finishCreate();
       },
-      error: () => this.ns.showError('Erro ao Criar Atestado!', 'Não foi possível criar o atestado médico. Tente novamente.')
+      error: (err) => { this.isSaving.set(false); this.ns.showError('Erro ao Criar Atestado!', extractErrorMessage(err, 'Não foi possível criar o atestado médico. Tente novamente.')); }
     });
   }
 
@@ -131,7 +136,7 @@ export class CreateMedicalClearanceComponent implements OnDestroy {
     this.filePreviewType.set(null);
   }
 
-  protected finishCreate(): void { this.medicalClearanceCreated.emit(); this.close(); }
+  protected finishCreate(): void { this.isSaving.set(false); this.medicalClearanceCreated.emit(); this.close(); }
 
   private toDTO(): CreateMedicalClearanceDto {
     const v = this.form.value;

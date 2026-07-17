@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { AddressService } from '../../generated_services/api/address.service';
 import { AddressType } from '../../generated_services/model/addressType';
 import { CreateAddressDTO } from '../../generated_services/model/createAddressDTO';
+import { FieldErrorComponent } from '../field-error/field-error.component';
 
 export function buildAddressFormGroup(fb: FormBuilder, addr?: Partial<CreateAddressDTO>): FormGroup {
   return fb.group({
@@ -21,7 +22,7 @@ export function buildAddressFormGroup(fb: FormBuilder, addr?: Partial<CreateAddr
 @Component({
   selector: 'app-address-form',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, FieldErrorComponent],
   templateUrl: './address-form.component.html',
   styleUrl: './address-form.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -1,11 +1,13 @@
-import { ChangeDetectionStrategy, Component, effect, inject, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, inject, input, output, signal } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { BeltService, ShowBeltDTO as ShowBeltDTO, UpdateBeltDTO as UpdateBeltDTO } from '../../../../generated_services';
 import { NotificationService } from '../../../../services/notification.service';
+import { extractErrorMessage } from '../../../../utils/error.utils';
+import { FieldErrorComponent } from '../../../../shared/field-error/field-error.component';
 
 @Component({
   selector: 'app-update-belt',
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, FieldErrorComponent],
   templateUrl: './update-belt.component.html',
   styleUrl: './update-belt.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -24,6 +26,8 @@ export class UpdateBeltComponent {
     orderIndex: [0, [Validators.required, Validators.min(0)]],
     isForKids: [false],
   });
+
+  protected readonly isSaving = signal(false);
 
   constructor() {
     effect(() => {
@@ -44,9 +48,10 @@ export class UpdateBeltComponent {
       return;
     }
     const b = this.belt();
+    this.isSaving.set(true);
     this.beltService.apiBeltIdPut(b.id!, this.toDTO()).subscribe({
-      next: () => { this.notificationService.showSuccess('Faixa Atualizada!', `A faixa ${b.color} foi atualizada com sucesso.`); this.beltUpdated.emit(); },
-      error: () => { this.notificationService.showError('Erro ao Atualizar Faixa!', 'Não foi possível atualizar a faixa. Tente novamente.'); }
+      next: () => { this.isSaving.set(false); this.notificationService.showSuccess('Faixa Atualizada!', `A faixa ${b.color} foi atualizada com sucesso.`); this.beltUpdated.emit(); },
+      error: (err) => { this.isSaving.set(false); this.notificationService.showError('Erro ao Atualizar Faixa!', extractErrorMessage(err, 'Não foi possível atualizar a faixa. Tente novamente.')); }
     });
   }
 

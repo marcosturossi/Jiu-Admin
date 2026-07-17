@@ -3,6 +3,9 @@ import { BeltService, ShowBeltDTO as ShowBeltDTO } from '../../../generated_serv
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
 import { ConfirmService } from '../../../services/confirm.service';
+import { extractErrorMessage } from '../../../utils/error.utils';
+import { FilterComponent } from '../../../shared/filter/filter.component';
+import { FilterOutput } from '../../../shared/filter/filter.types';
 import { PaginationComponent } from '../../../shared/pagination/pagination.component';
 import { CreateBeltComponent } from './create-belt/create-belt.component';
 import { UpdateBeltComponent } from './update-belt/update-belt.component';
@@ -11,6 +14,7 @@ import { PageResult } from '../../../utils/page-result';
 @Component({
   selector: 'app-belts',
   imports: [
+    FilterComponent,
     PaginationComponent,
     CreateBeltComponent,
     UpdateBeltComponent,
@@ -32,6 +36,7 @@ export class BeltsComponent {
   protected readonly selected = signal<ShowBeltDTO | null>(null);
   protected readonly currentPage = signal(1);
   protected readonly pageSize = signal(10);
+  protected readonly filterText = signal<string | undefined>(undefined);
 
   constructor() {
     this.subnavService.setTitle('Faixas');
@@ -40,7 +45,7 @@ export class BeltsComponent {
 
   protected load(): void {
     this.isLoading.set(true);
-    this.beltService.apiBeltGet(undefined, undefined, undefined, undefined, this.currentPage(), this.pageSize()).subscribe({
+    this.beltService.apiBeltGet(this.filterText(), undefined, undefined, undefined, this.currentPage(), this.pageSize()).subscribe({
       next: result => {
         this.items.set({
           items: result?.items ?? [],
@@ -58,6 +63,7 @@ export class BeltsComponent {
 
   protected onPageChange(page: number): void { this.currentPage.set(page); this.load(); }
   protected onPageSizeChange(size: number): void { this.pageSize.set(size); this.currentPage.set(1); this.load(); }
+  protected onFilterChange(output: FilterOutput): void { this.filterText.set(output.text || undefined); this.currentPage.set(1); this.load(); }
   protected openCreate(): void { this.openedCreate.set(true); }
   protected openEdit(item: ShowBeltDTO): void { this.selected.set(item); this.openedUpdate.set(true); }
   protected onCreated(): void { this.openedCreate.set(false); this.load(); }
@@ -71,7 +77,7 @@ export class BeltsComponent {
     if (!ok) return;
     this.beltService.apiBeltIdDelete(item.id!).subscribe({
       next: () => { this.notificationService.showSuccess('Faixa Excluída!', `A faixa ${item.color} foi excluída com sucesso.`); this.load(); },
-      error: () => { this.notificationService.showError('Erro ao Excluir!', 'Não foi possível excluir a faixa. Tente novamente.'); }
+      error: (err) => { this.notificationService.showError('Erro ao Excluir!', extractErrorMessage(err, 'Não foi possível excluir a faixa. Tente novamente.')); }
     });
   }
 }

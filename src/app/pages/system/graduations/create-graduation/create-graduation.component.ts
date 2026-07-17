@@ -7,14 +7,16 @@ import { BeltService } from '../../../../generated_services/api/belt.service';
 import { StudentsService } from '../../../../generated_services/api/students.service';
 import { CreateGraduationDTO as CreateGraduationDTO, ShowBeltDTO as ShowBeltDTO, ShowStudentDTO as ShowStudentDTO } from '../../../../generated_services';
 import { NotificationService } from '../../../../services/notification.service';
+import { extractErrorMessage } from '../../../../utils/error.utils';
 import { todayDateString } from '../../../../utils/date.utils';
 import { SearchOption } from '../../../../shared/search-select/search-option';
 import { SearchSelectComponent } from '../../../../shared/search-select/search-select.component';
+import { FieldErrorComponent } from '../../../../shared/field-error/field-error.component';
 
 @Component({
   selector: 'app-create-graduation',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ReactiveFormsModule, SearchSelectComponent],
+  imports: [ReactiveFormsModule, SearchSelectComponent, FieldErrorComponent],
   templateUrl: './create-graduation.component.html',
   styleUrl: './create-graduation.component.scss',
 })
@@ -43,6 +45,8 @@ export class CreateGraduationComponent {
     beltId: ['', Validators.required],
     graduationDate: [todayDateString(), Validators.required],
   });
+
+  protected readonly isSaving = signal(false);
 
   constructor() {
     this.studentSearchSubject.pipe(debounceTime(400), takeUntilDestroyed(this.destroyRef))
@@ -77,15 +81,17 @@ export class CreateGraduationComponent {
       this.ns.showError('Formulário Inválido', 'Por favor, selecione um aluno e uma faixa.');
       return;
     }
+    this.isSaving.set(true);
     this.graduationService.apiGraduationPost(this.toDTO()).subscribe({
       next: () => {
+        this.isSaving.set(false);
         const s = this.students().find(x => x.id === this.form.value.studentId);
         const b = this.belts().find(x => x.id === this.form.value.beltId);
         this.ns.showSuccess('Graduação Criada!', `${s?.firstName} ${s?.lastName} foi graduado(a) para faixa ${b?.color}.`);
         this.graduationCreated.emit();
         this.close();
       },
-      error: () => this.ns.showError('Erro ao Criar Graduação!', 'Não foi possível criar a graduação. Tente novamente.'),
+      error: (err) => { this.isSaving.set(false); this.ns.showError('Erro ao Criar Graduação!', extractErrorMessage(err, 'Não foi possível criar a graduação. Tente novamente.')); },
     });
   }
 

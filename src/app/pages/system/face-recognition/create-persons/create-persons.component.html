@@ -1,24 +1,27 @@
 <form [formGroup]="personForm">
   <div class="mb-3">
-    <label for="studentSelect" class="form-label">Aluno *</label>
+    <label for="studentSelect" class="form-label">Aluno <span class="text-danger">*</span></label>
     <app-search-select
+      inputId="studentSelect"
       [options]="studentOptions()"
       [selected]="selectedStudent()"
       placeholder="Selecione um aluno..."
       label="Aluno"
       (selectionChange)="onStudentSelected($event)"
       (searchChange)="onStudentSearch($event)" />
+    <app-field-error [control]="personForm.get('studentId')" />
   </div>
 
   <div class="mb-3">
-    <label for="imagesInput" class="form-label">Fotos do rosto *</label>
+    <label for="imagesInput" class="form-label">Fotos do rosto <span class="text-danger">*</span></label>
     <input type="file" id="imagesInput" class="form-control" accept="image/*" multiple (change)="onFilesSelected($event)" />
     <small class="text-muted">Formatos aceitos: JPG, PNG, GIF. Tamanho máximo: 5MB por imagem. Selecione até 10 fotos.</small>
+    <app-field-error [control]="personForm.get('images')" />
   </div>
 
   @if (previewUrls().length > 0) {
     <div class="preview-section mb-3">
-      <label class="form-label">Pré-visualização</label>
+      <span class="form-label d-block">Pré-visualização</span>
       <div class="preview-grid">
         @for (url of previewUrls(); track url) {
           <div class="preview-item">

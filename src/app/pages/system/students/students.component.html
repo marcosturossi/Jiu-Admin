@@ -77,7 +77,7 @@
 
 @if (openedCreate()) {
   <div class="modal-backdrop fade show" (click)="openedCreate.set(false)"></div>
-  <div class="modal show d-block" tabindex="-1">
+  <div class="modal show d-block" tabindex="-1" role="dialog" aria-modal="true" (document:keydown.escape)="openedCreate.set(false)">
     <div class="modal-dialog modal-dialog-centered modal-xl">
       <div class="modal-content">
         <div class="modal-header">
@@ -94,7 +94,7 @@
 
 @if (openedUpdate()) {
   <div class="modal-backdrop fade show" (click)="openedUpdate.set(false)"></div>
-  <div class="modal show d-block" tabindex="-1">
+  <div class="modal show d-block" tabindex="-1" role="dialog" aria-modal="true" (document:keydown.escape)="openedUpdate.set(false)">
     <div class="modal-dialog modal-xl modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header">

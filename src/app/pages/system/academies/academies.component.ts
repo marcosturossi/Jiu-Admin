@@ -11,6 +11,7 @@ import { PageResult } from '../../../utils/page-result';
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
 import { ConfirmService } from '../../../services/confirm.service';
+import { extractErrorMessage } from '../../../utils/error.utils';
 import { PaginationComponent } from '../../../shared/pagination/pagination.component';
 import { CreateAcademyComponent } from './create-academy/create-academy.component';
 import { UpdateAcademyComponent } from './update-academy/update-academy.component';
@@ -119,8 +120,8 @@ export class AcademiesComponent {
         this.notificationService.showSuccess('Academia Excluída!', `A academia "${item.name}" foi excluída com sucesso.`);
         this.load();
       },
-      error: () => {
-        this.notificationService.showError('Erro ao Excluir', 'Não foi possível excluir a academia. Tente novamente.');
+      error: (err) => {
+        this.notificationService.showError('Erro ao Excluir', extractErrorMessage(err, 'Não foi possível excluir a academia. Tente novamente.'));
       },
     });
   }

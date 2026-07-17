@@ -1,12 +1,14 @@
-import { ChangeDetectionStrategy, Component, inject, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, output, signal } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { FeePlanService, CreateFeePlanDTO as CreateFeePlanDTO } from '../../../../generated_services';
 import { NotificationService } from '../../../../services/notification.service';
+import { extractErrorMessage } from '../../../../utils/error.utils';
+import { FieldErrorComponent } from '../../../../shared/field-error/field-error.component';
 
 @Component({
   selector: 'app-create-fee-plan',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, FieldErrorComponent],
   templateUrl: './create-fee-plan.component.html',
   styleUrl: './create-fee-plan.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -26,6 +28,8 @@ export class CreateFeePlanComponent {
     price: [null as number | null, Validators.required],
   });
 
+  protected readonly isSaving = signal(false);
+
   protected close(): void { this.closeEvent.emit(); }
 
   protected save(): void {
@@ -40,9 +44,10 @@ export class CreateFeePlanComponent {
       monthDuration: v.monthDuration!,
       price: v.price!,
     };
+    this.isSaving.set(true);
     this.service.apiFeePlanPost(dto).subscribe({
-      next: () => { this.ns.showSuccess('Criado!', 'Plano criado com sucesso.'); this.feePlanCreated.emit(); },
-      error: () => { this.ns.showError('Erro ao Criar!', 'Não foi possível criar o plano.'); }
+      next: () => { this.isSaving.set(false); this.ns.showSuccess('Criado!', 'Plano criado com sucesso.'); this.feePlanCreated.emit(); },
+      error: (err) => { this.isSaving.set(false); this.ns.showError('Erro ao Criar!', extractErrorMessage(err, 'Não foi possível criar o plano.')); }
     });
   }
 }

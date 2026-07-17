@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, effect, inject, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, inject, input, output, signal } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, FormArray, FormGroup, Validators } from '@angular/forms';
 
 import { SupplierService } from '../../../../generated_services/api/supplier.service';
@@ -9,12 +9,14 @@ import { UpdateCompanyPersonDTO } from '../../../../generated_services/model/upd
 import { UpdateAddressDTO } from '../../../../generated_services/model/updateAddressDTO';
 import { AddressType } from '../../../../generated_services/model/addressType';
 import { NotificationService } from '../../../../services/notification.service';
+import { extractErrorMessage } from '../../../../utils/error.utils';
 import { AddressFormComponent, buildAddressFormGroup } from '../../../../shared/address-form/address-form.component';
+import { FieldErrorComponent } from '../../../../shared/field-error/field-error.component';
 
 @Component({
   selector: 'app-update-supplier',
   standalone: true,
-  imports: [ReactiveFormsModule, AddressFormComponent],
+  imports: [ReactiveFormsModule, AddressFormComponent, FieldErrorComponent],
   templateUrl: './update-supplier.component.html',
   styleUrl: './update-supplier.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -31,6 +33,8 @@ export class UpdateSupplierComponent {
   protected readonly form: FormGroup = this.fb.group({
     addresses: this.fb.array([]),
   });
+
+  protected readonly isSaving = signal(false);
 
   constructor() {
     effect(() => {
@@ -98,13 +102,16 @@ export class UpdateSupplierComponent {
       return;
     }
     const s = this.supplier();
+    this.isSaving.set(true);
     this.supplierService.apiSupplierIdPut(s.id!, this.toDTO()).subscribe({
       next: () => {
+        this.isSaving.set(false);
         this.notificationService.showSuccess('Fornecedor Atualizado!', 'Os dados do fornecedor foram atualizados com sucesso.');
         this.supplierUpdated.emit();
       },
-      error: () => {
-        this.notificationService.showError('Erro ao Atualizar!', 'Não foi possível atualizar os dados do fornecedor. Tente novamente.');
+      error: (err) => {
+        this.isSaving.set(false);
+        this.notificationService.showError('Erro ao Atualizar!', extractErrorMessage(err, 'Não foi possível atualizar os dados do fornecedor. Tente novamente.'));
       },
     });
   }

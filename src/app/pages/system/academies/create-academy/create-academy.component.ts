@@ -3,6 +3,7 @@ import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { AcademyService } from '../../../../generated_services/api/academy.service';
 import { CreateAcademyDto } from '../../../../generated_services/model/createAcademyDto';
 import { NotificationService } from '../../../../services/notification.service';
+import { extractErrorMessage } from '../../../../utils/error.utils';
 
 @Component({
   selector: 'app-create-academy',
@@ -43,8 +44,8 @@ export class CreateAcademyComponent {
         this.notificationService.showSuccess('Academia Criada!', 'A nova academia foi criada com sucesso.');
         this.academyCreated.emit();
       },
-      error: () => {
-        this.notificationService.showError('Erro ao Criar', 'Não foi possível criar a academia. Tente novamente.');
+      error: (err) => {
+        this.notificationService.showError('Erro ao Criar', extractErrorMessage(err, 'Não foi possível criar a academia. Tente novamente.'));
       },
     });
   }

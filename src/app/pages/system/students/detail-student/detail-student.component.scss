@@ -122,9 +122,15 @@
   font-size: 0.9rem;
   border-bottom: 1px solid var(--brand-border);
   color: var(--brand-text);
+  flex-wrap: wrap;
 
   &:last-child {
     border-bottom: none;
+  }
+
+  > span:last-child {
+    min-width: 0;
+    overflow-wrap: break-word;
   }
 }
 

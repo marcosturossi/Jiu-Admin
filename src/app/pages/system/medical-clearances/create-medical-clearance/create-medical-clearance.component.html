@@ -1,21 +1,24 @@
 <form [formGroup]="form">
   <div class="mb-3">
-    <label for="studentId">Aluno *</label>
+    <label for="studentId">Aluno <span class="text-danger">*</span></label>
     @if (isLoadingStudents()) {
       <small class="hint">Carregando alunos...</small>
     }
     <app-search-select
+      inputId="studentId"
       [options]="studentOptions()"
       [selected]="selectedStudent()"
       placeholder="Selecione um aluno"
       label="Aluno"
       (selectionChange)="onStudentSelected($event)"
       (searchChange)="onStudentSearch($event)" />
+    <app-field-error [control]="form.get('studentId')" />
   </div>
 
   <div class="mb-3">
-    <label for="expiresAt">Data de Expiração *</label>
+    <label for="expiresAt">Data de Expiração <span class="text-danger">*</span></label>
     <input type="date" id="expiresAt" class="form-control" formControlName="expiresAt" />
+    <app-field-error [control]="form.get('expiresAt')" />
   </div>
 
   <div class="mb-3">
@@ -51,7 +54,8 @@
 
   <div class="d-flex gap-2 justify-content-end mt-3">
     <button type="button" class="btn btn-outline-secondary" (click)="close()">Cancelar</button>
-    <button type="button" class="btn btn-primary" (click)="create()" [disabled]="form.invalid">
+    <button type="button" class="btn btn-primary" (click)="create()" [disabled]="isSaving() || form.invalid">
+      @if (isSaving()) { <span class="spinner-border spinner-border-sm me-1" role="status"></span> }
       <i class="bi bi-check-lg me-1"></i>Salvar
     </button>
   </div>

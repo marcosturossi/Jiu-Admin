@@ -12,6 +12,7 @@ import {
   PaginatedResultOfShowGraduationDTO,
 } from '../../../../generated_services';
 import { NotificationService } from '../../../../services/notification.service';
+import { extractErrorMessage } from '../../../../utils/error.utils';
 import { SubnavService } from '../../../../services/subnav.service';
 import { UpdateStudentComponent } from '../update-student/update-student.component';
 
@@ -134,7 +135,7 @@ export class DetailStudentComponent implements OnInit {
         this.loadPhoto();
         this.openedPhotoEditor.set(false);
       },
-      error: () => this.notificationService.showError('Erro ao Enviar Foto', 'Não foi possível atualizar a foto do aluno. Tente novamente.'),
+      error: (err) => this.notificationService.showError('Erro ao Enviar Foto', extractErrorMessage(err, 'Não foi possível atualizar a foto do aluno. Tente novamente.')),
       complete: () => this.isUploadingPhoto.set(false),
     });
   }
@@ -149,7 +150,7 @@ export class DetailStudentComponent implements OnInit {
         this.photoUrl.set(null);
         this.openedPhotoEditor.set(false);
       },
-      error: () => this.notificationService.showError('Erro ao Remover Foto', 'Não foi possível remover a foto do aluno. Tente novamente.'),
+      error: (err) => this.notificationService.showError('Erro ao Remover Foto', extractErrorMessage(err, 'Não foi possível remover a foto do aluno. Tente novamente.')),
       complete: () => this.isRemovingPhoto.set(false),
     });
   }

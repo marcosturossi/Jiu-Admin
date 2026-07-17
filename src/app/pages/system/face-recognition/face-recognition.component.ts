@@ -7,6 +7,9 @@ import { UpdatePersonsComponent } from './update-persons/update-persons.componen
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
 import { ConfirmService } from '../../../services/confirm.service';
+import { extractErrorMessage } from '../../../utils/error.utils';
+import { FilterComponent } from '../../../shared/filter/filter.component';
+import { FilterOutput } from '../../../shared/filter/filter.types';
 import { PaginationComponent } from '../../../shared/pagination/pagination.component';
 
 @Component({
@@ -14,7 +17,7 @@ import { PaginationComponent } from '../../../shared/pagination/pagination.compo
   templateUrl: './face-recognition.component.html',
   styleUrl: './face-recognition.component.scss',
   standalone: true,
-  imports: [CreatePersonsComponent, UpdatePersonsComponent, PaginationComponent],
+  imports: [FilterComponent, CreatePersonsComponent, UpdatePersonsComponent, PaginationComponent],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FaceRecognitionComponent {
@@ -32,6 +35,7 @@ export class FaceRecognitionComponent {
   protected readonly pageSize = signal(10);
   protected readonly totalPages = signal(1);
   protected readonly totalItems = signal(0);
+  protected readonly filterText = signal<string | undefined>(undefined);
 
   constructor() {
     this.subnavService.setTitle('Reconhecimento Facial');
@@ -40,7 +44,7 @@ export class FaceRecognitionComponent {
 
   protected load(): void {
     this.isLoading.set(true);
-    this.personsService.listPersonsApiV1PersonsGet(this.currentPage(), this.pageSize()).subscribe({
+    this.personsService.listPersonsApiV1PersonsGet(this.currentPage(), this.pageSize(), this.filterText()).subscribe({
       next: (result: PersonListResponse) => {
         this.persons.set(result.persons || []);
         this.totalItems.set(result.total ?? this.persons().length);
@@ -56,6 +60,7 @@ export class FaceRecognitionComponent {
 
   protected onPageChange(p: number): void { this.currentPage.set(p); this.load(); }
   protected onPageSizeChange(s: number): void { this.pageSize.set(s); this.currentPage.set(1); this.load(); }
+  protected onFilterChange(output: FilterOutput): void { this.filterText.set(output.text || undefined); this.currentPage.set(1); this.load(); }
   protected openCreate(): void { this.openedCreate.set(true); }
   protected onPersonCreated(): void { this.openedCreate.set(false); this.load(); }
   protected openEdit(person: PersonDetailResponse): void { this.selected.set(person); this.openedUpdate.set(true); }
@@ -66,7 +71,7 @@ export class FaceRecognitionComponent {
     if (!ok) return;
     this.personsService.deletePersonApiV1PersonsPersonIdDelete(person.id).subscribe({
       next: () => { this.ns.showSuccess('Pessoa Excluída!', `A pessoa "${person.name}" foi excluída com sucesso.`); this.load(); },
-      error: () => this.ns.showError('Erro ao Excluir', 'Não foi possível excluir a pessoa.')
+      error: (err) => this.ns.showError('Erro ao Excluir', extractErrorMessage(err, 'Não foi possível excluir a pessoa.'))
     });
   }
 

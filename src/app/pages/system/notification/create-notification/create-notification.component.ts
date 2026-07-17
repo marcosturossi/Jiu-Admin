@@ -1,14 +1,16 @@
-import { ChangeDetectionStrategy, Component, inject, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, output, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NotificationService as ApiNotificationService } from '../../../../generated_services/api/notification.service';
 import { CreateNotificationDto } from '../../../../generated_services/model/createNotificationDto';
 import { NotificationType } from '../../../../generated_services/model/notificationType';
 import { NotificationService } from '../../../../services/notification.service';
+import { extractErrorMessage } from '../../../../utils/error.utils';
 import { datetimeLocalToIso } from '../../../../utils/date.utils';
+import { FieldErrorComponent } from '../../../../shared/field-error/field-error.component';
 
 @Component({
   selector: 'app-create-notification',
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, FieldErrorComponent],
   templateUrl: './create-notification.component.html',
   styleUrl: './create-notification.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -41,6 +43,8 @@ export class CreateNotificationComponent {
     expiresAt: [null as string | null],
   });
 
+  protected readonly isSaving = signal(false);
+
   protected close(): void { this.closeEvent.emit(); }
 
   protected create(): void {
@@ -50,12 +54,14 @@ export class CreateNotificationComponent {
       this.ns.showError('Formulário Inválido', 'Por favor, preencha todos os campos obrigatórios.');
       return;
     }
+    this.isSaving.set(true);
     this.apiNotificationService.apiNotificationPost(this.toDTO()).subscribe({
       next: () => {
+        this.isSaving.set(false);
         this.ns.showSuccess('Notificação Criada!', `A notificação "${this.form.value.title}" foi criada com sucesso.`);
         this.notificationCreated.emit();
       },
-      error: () => this.ns.showError('Erro ao Criar Notificação!', 'Não foi possível criar a notificação. Tente novamente.')
+      error: (err) => { this.isSaving.set(false); this.ns.showError('Erro ao Criar Notificação!', extractErrorMessage(err, 'Não foi possível criar a notificação. Tente novamente.')); }
     });
   }
 
