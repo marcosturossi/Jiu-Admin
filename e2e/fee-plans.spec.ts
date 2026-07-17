@@ -25,6 +25,12 @@ test.describe('Planos de Mensalidade', () => {
     await page.getByRole('button', { name: /Salvar|Criar/i }).click();
     await expect(page.locator('.modal.show').first()).not.toBeVisible({ timeout: 15_000 });
     await waitForTableReady(page);
+
+    // Search instead of assuming the new row lands on page 1 — the list is
+    // shared across the whole suite and can span multiple pages.
+    await page.fill('input[placeholder="Buscar plano"]', TEST_NAME);
+    await page.waitForTimeout(500); // filter debounce
+    await waitForTableReady(page);
     await expect(page.locator('table').getByText(TEST_NAME)).toBeVisible();
 
     // EDIT
@@ -34,6 +40,10 @@ test.describe('Planos de Mensalidade', () => {
     await page.fill('#name', UPDATED_NAME);
     await page.getByRole('button', { name: /Salvar|Atualizar/i }).click();
     await expect(page.locator('.modal.show').first()).not.toBeVisible({ timeout: 15_000 });
+    await waitForTableReady(page);
+
+    await page.fill('input[placeholder="Buscar plano"]', UPDATED_NAME);
+    await page.waitForTimeout(500); // filter debounce
     await waitForTableReady(page);
     await expect(page.locator('table').getByText(UPDATED_NAME)).toBeVisible();
 

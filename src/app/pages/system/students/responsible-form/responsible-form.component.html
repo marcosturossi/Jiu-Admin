@@ -1,0 +1,75 @@
+<div class="responsible-block" [formGroup]="group()">
+  <div class="responsible-block__header">
+    <span class="fw-semibold">Responsável {{ index() + 1 }}</span>
+    <button type="button" class="btn btn-sm btn-outline-danger" (click)="remove.emit()">
+      <i class="bi bi-trash"></i>
+    </button>
+  </div>
+
+  <div class="row">
+    <div class="col-md-4 mb-3">
+      <label class="form-label">Tipo de Relação <span class="text-danger">*</span></label>
+      <select class="form-select" formControlName="relationshipType">
+        <option value="" disabled>Selecione</option>
+        @for (type of relationshipTypes; track type) {
+        <option [value]="type">{{ relationshipLabel(type) }}</option>
+        }
+      </select>
+    </div>
+
+    @if (isResolved()) {
+    <div class="col-md-8 mb-3">
+      <label class="form-label">Pessoa Vinculada</label>
+      <div class="input-group">
+        <span class="form-control bg-light">
+          <i class="bi bi-person-check me-1 text-success"></i>
+          {{ group().get('personName')?.value }}
+        </span>
+        <button type="button" class="btn btn-outline-secondary" (click)="clear()">
+          <i class="bi bi-x-lg"></i>
+        </button>
+      </div>
+    </div>
+    } @else {
+    <div class="col-md-8 mb-3">
+      <label class="form-label">CPF do Responsável <span class="text-danger">*</span></label>
+      <div class="input-group">
+        <input type="text" class="form-control" formControlName="cpf" placeholder="000.000.000-00">
+        <button type="button" class="btn btn-outline-secondary" (click)="searchByCpf()" [disabled]="isSearching()">
+          <i class="bi bi-search me-1"></i>{{ isSearching() ? 'Buscando...' : 'Buscar' }}
+        </button>
+      </div>
+      <small class="text-muted">Buscamos uma pessoa já cadastrada com esse CPF antes de criar uma nova.</small>
+    </div>
+
+    @if (notFoundMode()) {
+    <div class="col-12">
+      <p class="text-muted small mb-2">
+        <i class="bi bi-info-circle me-1"></i>Nenhuma pessoa encontrada com esse CPF. Preencha os dados para cadastrar o responsável.
+      </p>
+    </div>
+    <div class="col-md-4 mb-3">
+      <label class="form-label">Nome <span class="text-danger">*</span></label>
+      <input class="form-control" formControlName="firstName" placeholder="Nome">
+    </div>
+    <div class="col-md-4 mb-3">
+      <label class="form-label">Sobrenome <span class="text-danger">*</span></label>
+      <input class="form-control" formControlName="lastName" placeholder="Sobrenome">
+    </div>
+    <div class="col-md-4 mb-3">
+      <label class="form-label">E-mail <span class="text-danger">*</span></label>
+      <input type="email" class="form-control" formControlName="email" placeholder="email@exemplo.com">
+    </div>
+    <div class="col-md-6 mb-3">
+      <label class="form-label">Telefone</label>
+      <input class="form-control" formControlName="phoneNumber" placeholder="(00) 00000-0000">
+    </div>
+    <div class="col-md-6 mb-3 d-flex align-items-end">
+      <button type="button" class="btn btn-outline-primary" (click)="createAndLink()" [disabled]="isCreating()">
+        <i class="bi bi-person-plus me-1"></i>{{ isCreating() ? 'Criando...' : 'Criar e Vincular Responsável' }}
+      </button>
+    </div>
+    }
+    }
+  </div>
+</div>

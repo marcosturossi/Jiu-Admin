@@ -1,5 +1,12 @@
 import { test, expect } from '@playwright/test';
-import { waitForTableReady, openCreateModal, selectFromSearchSelect } from './helpers';
+import {
+  waitForTableReady,
+  openCreateModal,
+  saveAndWaitModalClose,
+  selectFromSearchSelect,
+  createTestStudent,
+  createTestFeePlan,
+} from './helpers';
 
 test.describe('Contratos', () => {
   test.beforeEach(async ({ page }) => {
@@ -12,53 +19,48 @@ test.describe('Contratos', () => {
     await expect(page.locator('app-subnav')).toBeVisible();
   });
 
-  test('cria, edita status e exclui contrato', async ({ page }) => {
-    // CREATE — requires an existing student and fee-plan in the DB
+  test('cria, edita status e cancela contrato', async ({ page }) => {
+    const student = await createTestStudent(page);
+    const feePlan = await createTestFeePlan(page);
+
+    // CREATE
+    await page.goto('/system/contracts');
+    await waitForTableReady(page);
     await openCreateModal(page, /Novo Contrato/i);
 
-    // Select a student — skip if no students exist in the database
-    const field = page.locator('.mb-3', { hasText: 'Aluno' });
-    await field.locator('.search-select-trigger').click();
-    const searchModal = page.locator('.modal.show').last();
-    await expect(searchModal).toBeVisible({ timeout: 5_000 });
-    await searchModal.locator('input[placeholder="Buscar..."]').fill('');
-    const firstResult = searchModal.locator('li.list-group-item-action:not(.search-select-clear)').first();
-    const hasStudents = await firstResult.isVisible({ timeout: 5_000 }).catch(() => false);
-    if (!hasStudents) {
-      await page.keyboard.press('Escape');
-      test.skip(true, 'Sem alunos cadastrados para criar contrato');
-      return;
-    }
-    await firstResult.click();
-
-    // Select a fee-plan
-    await selectFromSearchSelect(page, 'Plano de Pagamento', '');
-
-    // Set start date
+    await selectFromSearchSelect(page, 'Aluno', student.lastName);
+    await selectFromSearchSelect(page, 'Plano de Pagamento', feePlan.name);
     await page.locator('input[type="date"]').fill('2030-01-01');
 
-    await page.getByRole('button', { name: /Criar Contrato|Salvar|Criar/i }).click();
-    await expect(page.locator('.modal.show').first()).not.toBeVisible({ timeout: 15_000 });
+    await saveAndWaitModalClose(page);
     await waitForTableReady(page);
 
-    // Verify at least one row is visible
-    const firstRow = page.locator('table tbody tr').first();
-    await expect(firstRow).toBeVisible();
+    const row = page.locator('tr', { hasText: student.lastName });
+    await expect(row).toBeVisible();
+    await expect(row).toContainText('Ativo');
 
-    // EDIT STATUS — open update modal and change status
-    await firstRow.locator('button.btn-outline-info').first().click();
+    // EDIT STATUS
+    await row.locator('button.btn-outline-info').first().click();
     await expect(page.locator('.modal.show').first()).toBeVisible();
-    // Select the second option in the status select (first is the current status)
-    const statusSelect = page.locator('select[formControlName="status"], .modal.show select').first();
-    await statusSelect.selectOption({ index: 1 });
-    await page.getByRole('button', { name: /Atualizar|Salvar/i }).click();
+    const statusSelect = page.locator('.modal.show select[formControlName="status"]');
+    await statusSelect.selectOption('Suspended');
+    await page.getByRole('button', { name: /Atualizar/i }).click();
     await expect(page.locator('.modal.show').first()).not.toBeVisible({ timeout: 15_000 });
     await waitForTableReady(page);
+    await expect(row).toContainText('Suspenso');
 
-    // DELETE
-    const row = page.locator('table tbody tr').first();
+    // "DELETE" — the backend implements this as a status change to Cancelled, not a
+    // real removal (confirmed via network inspection: DELETE returns 204 but the
+    // contract keeps appearing in the list, now Cancelled — even a second delete
+    // attempt on an already-cancelled contract doesn't remove it). Assert the real
+    // behavior instead of a row disappearing.
     page.once('dialog', d => d.accept());
     await row.locator('button.btn-outline-danger').click();
     await waitForTableReady(page);
+    await expect(row).toContainText('Cancelado');
+
+    // NOTE: the fee-plan and student created above intentionally aren't cleaned up
+    // here — since the contract is never actually removed, both remain referenced
+    // by it and the backend rejects deleting them (FK constraint on the contract).
   });
 });

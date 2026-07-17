@@ -50,3 +50,25 @@ export function dateStringToIso(dateStr: string | null | undefined): string | nu
   if (!dateStr) return null;
   return new Date(dateStr + 'T00:00:00Z').toISOString();
 }
+
+/**
+ * Age in full years for a "YYYY-MM-DD" birth date, as of today.
+ * Returns null if input is falsy.
+ */
+export function calculateAge(birthDay: string | null | undefined): number | null {
+  if (!birthDay) return null;
+  const birthDate = new Date(birthDay);
+  const today = new Date();
+  let age = today.getFullYear() - birthDate.getFullYear();
+  const monthDiff = today.getMonth() - birthDate.getMonth();
+  if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+    age--;
+  }
+  return age;
+}
+
+/** Whether a "YYYY-MM-DD" birth date is under 18 years old as of today. */
+export function isMinor(birthDay: string | null | undefined): boolean {
+  const age = calculateAge(birthDay);
+  return age !== null && age < 18;
+}

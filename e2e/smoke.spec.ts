@@ -14,11 +14,13 @@ const sections = [
   { path: '/system/finance-dashboard',       label: 'Dashboard Financeiro' },
   { path: '/system/fee-plans',               label: 'Planos de Mensalidade' },
   { path: '/system/contracts',               label: 'Contratos' },
-  { path: '/system/transactions',            label: 'Transações' },
+  { path: '/system/accounts-receivable',     label: 'Contas a Receber' },
+  { path: '/system/accounts-payable',        label: 'Contas a Pagar' },
   { path: '/system/transaction-categories',  label: 'Categorias de Transação' },
   { path: '/system/medical-clearances',      label: 'Atestados Médicos' },
   { path: '/system/face-recognition',        label: 'Reconhecimento Facial' },
   { path: '/system/academies',               label: 'Academias' },
+  { path: '/system/suppliers',               label: 'Fornecedores' },
 ];
 
 test.describe('Smoke: navegação entre seções', () => {

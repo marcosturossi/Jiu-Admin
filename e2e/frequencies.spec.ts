@@ -1,12 +1,16 @@
 import { test, expect } from '@playwright/test';
-import { waitForTableReady, openCreateModal, selectFromSearchSelect } from './helpers';
+import {
+  waitForTableReady,
+  openCreateModal,
+  saveAndWaitModalClose,
+  selectFromSearchSelect,
+  createTestStudent,
+  deleteTestStudent,
+  createTestBelt,
+  deleteTestBelt,
+} from './helpers';
 
 const TS = Date.now();
-const STUDENT_USER = `freq-e2e-${TS}`;
-const STUDENT_FIRST = 'FreqE2E';
-const STUDENT_LAST = `S${TS}`;
-const STUDENT_NAME = `${STUDENT_FIRST} ${STUDENT_LAST}`;
-const STUDENT_EMAIL = `freq-e2e-${TS}@test.com`;
 const LESSON_TITLE = `Aula-E2E-Freq-${TS}`;
 
 test.describe('Frequências', () => {
@@ -21,32 +25,26 @@ test.describe('Frequências', () => {
   });
 
   test('cria e exclui frequência', async ({ page }) => {
-    test.skip(true, 'Fluxo de criação de frequência ainda é instável com os seletores atuais');
     test.setTimeout(90_000);
-    // SETUP 1 — Create a student (backend requires graduation for frequency creation)
-    await page.goto('/system/students');
-    await waitForTableReady(page);
-    await openCreateModal(page, /Novo Aluno/i);
-    await page.fill('#userName', STUDENT_USER);
-    await page.fill('#email', STUDENT_EMAIL);
-    await page.fill('#firstName', STUDENT_FIRST);
-    await page.fill('#lastName', STUDENT_LAST);
-    await page.getByRole('button', { name: /Salvar|Criar/i }).click();
-    await expect(page.locator('.modal.show').first()).not.toBeVisible({ timeout: 15_000 });
-    await waitForTableReady(page);
 
-    // SETUP 2 — Assign a graduation to that student (required by backend rule)
+    const student = await createTestStudent(page);
+    const belt = await createTestBelt(page);
+
+    // SETUP — assign the graduation to OUR student specifically (the previous
+    // version of this test used a blank search here, which silently picked
+    // whichever student happened to be first — not necessarily the one just
+    // created — so the frequency step below could never find a graduated
+    // match. That was the actual cause of the instability, not selector flake.)
     await page.goto('/system/graduations');
     await waitForTableReady(page);
     await openCreateModal(page, /Nova Graduação/i);
-    await selectFromSearchSelect(page, 'Aluno', '');
-    await page.selectOption('#beltId', { index: 1 });
+    await selectFromSearchSelect(page, 'Aluno', student.lastName);
+    await page.selectOption('#beltId', { label: belt.color });
     await page.fill('#graduationDate', '2025-01-01');
-    await page.getByRole('button', { name: /Salvar|Criar/i }).click();
-    await expect(page.locator('.modal.show').first()).not.toBeVisible({ timeout: 15_000 });
+    await saveAndWaitModalClose(page);
     await waitForTableReady(page);
 
-    // SETUP 3 — Create a lesson (frequency requires a lesson reference)
+    // SETUP — a lesson (frequency requires a lesson reference)
     await page.goto('/system/lessons');
     await waitForTableReady(page);
     await openCreateModal(page, /Nova Aula/i);
@@ -54,8 +52,7 @@ test.describe('Frequências', () => {
     await page.fill('#title', LESSON_TITLE);
     await page.fill('#scheduledDate', '2030-12-01T10:00');
     await page.fill('#duration', '01:30');
-    await page.getByRole('button', { name: /Salvar|Criar/i }).click();
-    await expect(page.locator('.modal.show').first()).not.toBeVisible({ timeout: 15_000 });
+    await saveAndWaitModalClose(page);
     await waitForTableReady(page);
 
     // CREATE frequency — select lesson then only our graduated student
@@ -66,22 +63,22 @@ test.describe('Frequências', () => {
 
     await expect(page.locator('.student-item').first()).toBeVisible({ timeout: 10_000 });
 
-    // Check only our student's checkbox (they're the only graduated one)
-    const studentItem = page.locator('.student-item').filter({ hasText: STUDENT_LAST });
+    const studentItem = page.locator('.student-item').filter({ hasText: student.lastName });
     await studentItem.locator('.student-checkbox').check();
     await expect(page.locator('.count-badge')).not.toHaveText('0 selecionados');
 
     await page.getByRole('button', { name: /Criar \d+ frequências?/i }).click();
-    await page.waitForTimeout(1000);
     await expect(page.locator('.modal.show').first()).not.toBeVisible({ timeout: 20_000 });
     await waitForTableReady(page);
-    await expect(page.locator('table tbody tr').first()).toBeVisible();
+
+    const freqRow = page.locator('table tbody tr', { hasText: student.lastName });
+    await expect(freqRow).toBeVisible();
 
     // DELETE frequency
-    const freqRow = page.locator('table tbody tr').first();
     page.once('dialog', d => d.accept());
     await freqRow.locator('button.btn-outline-danger').click();
     await waitForTableReady(page);
+    await expect(freqRow).not.toBeVisible({ timeout: 10_000 });
 
     // CLEANUP — lesson
     await page.goto('/system/lessons');
@@ -94,20 +91,13 @@ test.describe('Frequências', () => {
     // CLEANUP — graduation
     await page.goto('/system/graduations');
     await waitForTableReady(page);
-    const gradRow = page.locator('tr', { hasText: STUDENT_LAST });
+    const gradRow = page.locator('tr', { hasText: student.lastName });
     page.once('dialog', d => d.accept());
     await gradRow.locator('button.btn-outline-danger').click();
     await waitForTableReady(page);
 
-    // CLEANUP — student
-    await page.goto('/system/students');
-    await waitForTableReady(page);
-    await page.getByPlaceholder('Buscar por nome do aluno').fill('');
-    await page.getByPlaceholder('Buscar por nome do aluno').fill(STUDENT_LAST);
-    await waitForTableReady(page);
-    const studentRow = page.locator('tr', { hasText: STUDENT_LAST });
-    page.once('dialog', d => d.accept());
-    await studentRow.locator('button.btn-outline-danger').click();
-    await waitForTableReady(page);
+    // CLEANUP — belt, student
+    await deleteTestBelt(page, belt.color);
+    await deleteTestStudent(page, student.firstName);
   });
 });

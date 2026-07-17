@@ -1,17 +1,18 @@
-import { ChangeDetectionStrategy, Component, inject, output, signal } from '@angular/core';
-import { ReactiveFormsModule, FormBuilder, Validators, FormArray, FormGroup } from '@angular/forms';
+import { ChangeDetectionStrategy, Component, inject, output } from '@angular/core';
+import { ReactiveFormsModule, FormBuilder, Validators, FormArray } from '@angular/forms';
 import { StudentsService } from '../../../../generated_services/api/students.service';
 import { CreateStudentDTO } from '../../../../generated_services/model/createStudentDTO';
 import { NotificationService } from '../../../../services/notification.service';
 import { AddressType } from '../../../../generated_services/model/addressType';
 import { RelationshipType } from '../../../../generated_services/model/relationshipType';
-import { ShowStudentDTO } from '../../../../generated_services/model/showStudentDTO';
 import { CreateAddressDTO } from '../../../../generated_services';
 import { AddressFormComponent, buildAddressFormGroup } from '../../../../shared/address-form/address-form.component';
+import { ResponsibleFormComponent, buildResponsibleFormGroup } from '../responsible-form/responsible-form.component';
+import { isMinor } from '../../../../utils/date.utils';
 
 @Component({
   selector: 'app-create-student',
-  imports: [ReactiveFormsModule, AddressFormComponent],
+  imports: [ReactiveFormsModule, AddressFormComponent, ResponsibleFormComponent],
   templateUrl: './create-student.component.html',
   styleUrl: './create-student.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -23,10 +24,6 @@ export class CreateStudentComponent {
   private readonly fb = inject(FormBuilder);
   private readonly studentsService = inject(StudentsService);
   private readonly notificationService = inject(NotificationService);
-
-  protected readonly relationshipTypes = Object.values(RelationshipType);
-
-  protected readonly responsibleSearchResults = signal<ShowStudentDTO[][]>([]);
 
   protected readonly form = this.fb.group({
     userName: ['', Validators.required],
@@ -54,19 +51,7 @@ export class CreateStudentComponent {
   }
 
   protected addResponsible(): void {
-    this.responsibles.push(this.fb.group({
-      mode: ['search'],
-      searchQuery: [''],
-      relatedPersonId: [''],
-      selectedPersonName: [''],
-      relationshipType: ['' as RelationshipType | '', Validators.required],
-      firstName: [''],
-      lastName: [''],
-      cpf: [''],
-      phoneNumber: [''],
-      email: [''],
-    }));
-    this.responsibleSearchResults.update(r => [...r, []]);
+    this.responsibles.push(buildResponsibleFormGroup(this.fb));
   }
 
   protected removeAddress(index: number): void {
@@ -75,45 +60,6 @@ export class CreateStudentComponent {
 
   protected removeResponsible(index: number): void {
     this.responsibles.removeAt(index);
-    this.responsibleSearchResults.update(r => r.filter((_, i) => i !== index));
-  }
-
-  protected getResponsibleGroup(index: number): FormGroup {
-    return this.responsibles.at(index) as FormGroup;
-  }
-
-  protected setResponsibleMode(index: number, mode: 'search' | 'create'): void {
-    const group = this.getResponsibleGroup(index);
-    group.patchValue({ mode, searchQuery: '', relatedPersonId: '', selectedPersonName: '' });
-    this.responsibleSearchResults.update(r => r.map((res, i) => i === index ? [] : res));
-  }
-
-  protected searchResponsible(index: number): void {
-    const query: string = this.getResponsibleGroup(index).get('searchQuery')?.value ?? '';
-    if (!query.trim()) {
-      this.responsibleSearchResults.update(r => r.map((res, i) => i === index ? [] : res));
-      return;
-    }
-    this.studentsService.apiStudentsGet(query).subscribe({
-      next: (data) => {
-        const results = data.items ?? [];
-        this.responsibleSearchResults.update(r => r.map((res, i) => i === index ? results : res));
-      },
-      error: () => this.notificationService.showError('Erro', 'Não foi possível buscar pessoas.'),
-    });
-  }
-
-  protected selectResponsible(index: number, student: ShowStudentDTO): void {
-    this.getResponsibleGroup(index).patchValue({
-      relatedPersonId: student.id,
-      selectedPersonName: student.fullName ?? `${student.firstName ?? ''} ${student.lastName ?? ''}`.trim(),
-      searchQuery: '',
-    });
-    this.responsibleSearchResults.update(r => r.map((res, i) => i === index ? [] : res));
-  }
-
-  protected clearSelectedResponsible(index: number): void {
-    this.getResponsibleGroup(index).patchValue({ relatedPersonId: '', selectedPersonName: '' });
   }
 
   protected close(): void { this.closeEvent.emit(); }
@@ -123,6 +69,10 @@ export class CreateStudentComponent {
       this.notificationService.showError('Formulário Inválido', 'Por favor, preencha todos os campos obrigatórios.');
       return;
     }
+    if (this.isMinor() && this.responsibles.length === 0) {
+      this.notificationService.showError('Responsável Obrigatório', 'Alunos menores de idade precisam de ao menos um responsável vinculado.');
+      return;
+    }
     this.studentsService.apiStudentsPost(this.toDTO()).subscribe({
       next: () => { this.notificationService.showSuccess('Sucesso!', 'Aluno criado com sucesso.'); this.studentCreated.emit(); },
       error: () => { this.notificationService.showError('Erro!', 'Erro ao criar aluno. Tente novamente.'); }
@@ -130,16 +80,7 @@ export class CreateStudentComponent {
   }
 
   protected isMinor(): boolean {
-    const birthDay = this.form.get('birthDay')?.value;
-    if (!birthDay) return false;
-    const birthDate = new Date(birthDay);
-    const today = new Date();
-    const age = today.getFullYear() - birthDate.getFullYear();
-    const monthDiff = today.getMonth() - birthDate.getMonth();
-    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
-      return age - 1 < 18;
-    }
-    return age < 18;
+    return isMinor(this.form.get('birthDay')?.value);
   }
 
   private toDTO(): CreateStudentDTO {
@@ -167,9 +108,9 @@ export class CreateStudentComponent {
       })),
 
       relationships: (v.responsibles ?? []).map((r: any) => ({
-        relatedPersonId: r.mode === 'search' ? r.relatedPersonId : undefined,
+        relatedPersonId: r.relatedPersonId,
         relationshipType: r.relationshipType as RelationshipType,
-      })).filter((r: any) => r.relationshipType),
+      })).filter((r: any) => r.relationshipType && r.relatedPersonId),
     };
   }
 }

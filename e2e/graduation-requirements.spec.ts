@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { waitForTableReady, openCreateModal } from './helpers';
+import { waitForTableReady, openCreateModal, saveAndWaitModalClose, createTestBelt, deleteTestBelt } from './helpers';
 
 const TS = Date.now();
 const TEST_DESC = `E2E Requisito ${TS}`;
@@ -17,14 +17,16 @@ test.describe('Requisitos de Graduação', () => {
   });
 
   test('CRUD completo de requisito de graduação', async ({ page }) => {
+    const belt = await createTestBelt(page);
+
     // CREATE
+    await page.goto('/system/graduation-requirements');
+    await waitForTableReady(page);
     await openCreateModal(page, /Novo Requisito/i);
-    // Select the first available belt (index 1 skips the placeholder)
-    await page.selectOption('#beltId', { index: 1 });
+    await page.selectOption('#beltId', { label: belt.color });
     await page.fill('#description', TEST_DESC);
     await page.fill('#minimumClasses', '30');
-    await page.getByRole('button', { name: /Salvar|Criar/i }).click();
-    await expect(page.locator('.modal.show').first()).not.toBeVisible({ timeout: 15_000 });
+    await saveAndWaitModalClose(page);
     await waitForTableReady(page);
     await expect(page.locator('table').getByText(TEST_DESC)).toBeVisible();
 
@@ -44,5 +46,8 @@ test.describe('Requisitos de Graduação', () => {
     await updatedRow.locator('button.btn-outline-danger').click();
     await waitForTableReady(page);
     await expect(page.locator('table').getByText(UPDATED_DESC)).not.toBeVisible();
+
+    // CLEANUP
+    await deleteTestBelt(page, belt.color);
   });
 });

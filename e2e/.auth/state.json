@@ -2,7 +2,7 @@
   "cookies": [
     {
       "name": "AUTH_SESSION_ID",
-      "value": "ZGY2NTg3ZjgtYWZhMC00Y2FkLWFlNWMtMWNhNTNmYTNkMTg1LmNLeGtxcTIzWXV6T2FoRURjY3k4RlA2aGZpczlzZDFhUm9KdDh5ak1xaVZhMnZYR2gwTTlvZEpTQmN1Q3dXak5lczRnN1R4SFJsWVMtRU04aFV6MDBB",
+      "value": "MWYwNDA4OTMtNmUzZS00Mzc4LTk1NTAtZWE0YTgxMDU4OTEzLm1IckJ1UEgwY3VwMkJaZldpS1Q3Q0s0dHdicHVEYXlPZ1Zsbml4eV8zVXNackk3WUJlZTRGV1dHVlhLN1NYb2I5VjF3NzZNSzZiTm51NDBwUklFNVZR",
       "domain": "localhost",
       "path": "/realms/platform-admin/",
       "expires": -1,
@@ -12,17 +12,17 @@
     },
     {
       "name": "KC_AUTH_SESSION_HASH",
-      "value": "eLHYAk7bYoQyStvcTYM+DfYqaMGOIi8ImuDxBKg5iBE",
+      "value": "\"eCm7DlSWnafi3/8X6CFdDhUfVC0RMsJyQkaDJTFdD2I\"",
       "domain": "localhost",
       "path": "/realms/platform-admin/",
-      "expires": 1783994020.780013,
+      "expires": 1784299583.428049,
       "httpOnly": false,
       "secure": true,
       "sameSite": "None"
     },
     {
       "name": "KEYCLOAK_IDENTITY",
-      "value": "eyJhbGciOiJIUzUxMiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICI0MDkyY2IxMy1hMDY4LTQ0YmUtOTJmOS02N2MxYzE3Y2U5ZTAifQ.eyJleHAiOjE3ODQwMjk5NjEsImlhdCI6MTc4Mzk5Mzk2MSwianRpIjoiMWM1MGZlODYtZDFkOC1kN2I2LWY2ZTAtYzFmNjAwOGQyNDFiIiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgyL3JlYWxtcy9wbGF0Zm9ybS1hZG1pbiIsInN1YiI6IjU1YmJlNmM4LWE2OGEtNGYxMC1hMjg4LWY1ZGQyMDhiNjNiMiIsInR5cCI6IlNlcmlhbGl6ZWQtSUQiLCJzaWQiOiJkZjY1ODdmOC1hZmEwLTRjYWQtYWU1Yy0xY2E1M2ZhM2QxODUiLCJzdGF0ZV9jaGVja2VyIjoick14SHZNME9rZjd5Q08wRVFlOUozdGkxZFVZRW9wb3dwcWdfRVdLWXllOCJ9.URnc0YWph0uDCrT28ofBQRFQnOz-4mh3UTGPtX-84BpOVl_T2E4A9W5yLL70sAAAgp80QbaD81bwGYzxYbvm8A",
+      "value": "eyJhbGciOiJIUzUxMiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICI0MDkyY2IxMy1hMDY4LTQ0YmUtOTJmOS02N2MxYzE3Y2U5ZTAifQ.eyJleHAiOjE3ODQzMzU1MjMsImlhdCI6MTc4NDI5OTUyMywianRpIjoiMjMxZjA5OWUtNTIxNC0zOThiLTRjMmMtYjFjN2QxYTIxMjU1IiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgyL3JlYWxtcy9wbGF0Zm9ybS1hZG1pbiIsInN1YiI6IjU1YmJlNmM4LWE2OGEtNGYxMC1hMjg4LWY1ZGQyMDhiNjNiMiIsInR5cCI6IlNlcmlhbGl6ZWQtSUQiLCJzaWQiOiIxZjA0MDg5My02ZTNlLTQzNzgtOTU1MC1lYTRhODEwNTg5MTMiLCJzdGF0ZV9jaGVja2VyIjoicUpwekxyU01VYlNES3BGd1llOWhXSlhNbWZlbEpHR1hZVEdFWU1MeEVZOCJ9.v0uRzUxKRWJVffkJJhTRe3yvwlBhT1wlSbI2uch7daogAu0SwZUw8M72fA_ACyGJ-dQEn3mDbn0F1Ltkn70QDA",
       "domain": "localhost",
       "path": "/realms/platform-admin/",
       "expires": -1,
@@ -32,10 +32,10 @@
     },
     {
       "name": "KEYCLOAK_SESSION",
-      "value": "eLHYAk7bYoQyStvcTYM-DfYqaMGOIi8ImuDxBKg5iBE",
+      "value": "eCm7DlSWnafi3_8X6CFdDhUfVC0RMsJyQkaDJTFdD2I",
       "domain": "localhost",
       "path": "/realms/platform-admin/",
-      "expires": 1784029961.013205,
+      "expires": 1784335523.586383,
       "httpOnly": false,
       "secure": true,
       "sameSite": "None"

@@ -1,15 +1,17 @@
 import { ChangeDetectionStrategy, Component, effect, inject, input, output, signal } from '@angular/core';
-import { ReactiveFormsModule, FormBuilder, Validators, FormArray, FormGroup } from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, Validators, FormArray } from '@angular/forms';
 import { StudentsService } from '../../../../generated_services/api/students.service';
 import { ShowStudentDTO, UpdateStudentDTO, UpdateAddressDTO } from '../../../../generated_services';
 import { AddressType } from '../../../../generated_services/model/addressType';
 import { RelationshipType } from '../../../../generated_services/model/relationshipType';
 import { NotificationService } from '../../../../services/notification.service';
 import { AddressFormComponent, buildAddressFormGroup } from '../../../../shared/address-form/address-form.component';
+import { ResponsibleFormComponent, buildResponsibleFormGroup } from '../responsible-form/responsible-form.component';
+import { isMinor } from '../../../../utils/date.utils';
 
 @Component({
   selector: 'app-update-student',
-  imports: [ReactiveFormsModule, AddressFormComponent],
+  imports: [ReactiveFormsModule, AddressFormComponent, ResponsibleFormComponent],
   templateUrl: './update-student.component.html',
   styleUrl: './update-student.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -23,7 +25,6 @@ export class UpdateStudentComponent {
   private readonly studentsService = inject(StudentsService);
   private readonly notificationService = inject(NotificationService);
 
-  protected readonly relationshipTypes = Object.values(RelationshipType);
   protected readonly isMinorSignal = signal(false);
 
   protected readonly form = this.fb.group({
@@ -63,25 +64,21 @@ export class UpdateStudentComponent {
       // Rebuild responsibles
       this.responsibles.clear();
       (s.relationships ?? []).forEach(rel => {
-        this.responsibles.push(this.fb.group({
-          relatedPersonId: [rel.relatedPersonId ?? ''],
-          selectedPersonName: [
-            rel.relatedIndividual
-              ? `${rel.relatedIndividual.firstName ?? ''} ${rel.relatedIndividual.lastName ?? ''}`.trim()
-              : ''
-          ],
-          relationshipType: [rel.relationshipType ?? '' as RelationshipType | '', Validators.required],
+        this.responsibles.push(buildResponsibleFormGroup(this.fb, {
+          relatedPersonId: rel.relatedPersonId,
+          relationshipType: rel.relationshipType,
+          personName: rel.relatedIndividual
+            ? `${rel.relatedIndividual.firstName ?? ''} ${rel.relatedIndividual.lastName ?? ''}`.trim()
+            : '',
         }));
       });
 
-      this.isMinorSignal.set(this.checkIsMinor(s.birthDay));
+      this.isMinorSignal.set(isMinor(s.birthDay));
     });
   }
 
   protected get addresses(): FormArray { return this.form.get('addresses') as FormArray; }
   protected get responsibles(): FormArray { return this.form.get('responsibles') as FormArray; }
-
-  protected getResponsibleGroup(i: number): FormGroup { return this.responsibles.at(i) as FormGroup; }
 
   protected addAddress(): void {
     this.addresses.push(buildAddressFormGroup(this.fb));
@@ -90,27 +87,13 @@ export class UpdateStudentComponent {
   protected removeAddress(i: number): void { this.addresses.removeAt(i); }
 
   protected addResponsible(): void {
-    this.responsibles.push(this.fb.group({
-      relatedPersonId: [''],
-      selectedPersonName: [''],
-      relationshipType: ['' as RelationshipType | '', Validators.required],
-    }));
+    this.responsibles.push(buildResponsibleFormGroup(this.fb));
   }
 
   protected removeResponsible(i: number): void { this.responsibles.removeAt(i); }
 
   protected onBirthDayChange(): void {
-    this.isMinorSignal.set(this.checkIsMinor(this.form.get('birthDay')?.value));
-  }
-
-  private checkIsMinor(birthDay: string | null | undefined): boolean {
-    if (!birthDay) return false;
-    const birth = new Date(birthDay);
-    const today = new Date();
-    let age = today.getFullYear() - birth.getFullYear();
-    const m = today.getMonth() - birth.getMonth();
-    if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) age--;
-    return age < 18;
+    this.isMinorSignal.set(isMinor(this.form.get('birthDay')?.value));
   }
 
   protected close(): void { this.closeEvent.emit(); }
@@ -118,6 +101,10 @@ export class UpdateStudentComponent {
   protected save(): void {
     if (this.form.invalid) {
       this.notificationService.showError('Formulário Inválido', 'Por favor, preencha todos os campos obrigatórios.');
+      return;
+    }
+    if (this.isMinorSignal() && this.responsibles.length === 0) {
+      this.notificationService.showError('Responsável Obrigatório', 'Alunos menores de idade precisam de ao menos um responsável vinculado.');
       return;
     }
     const s = this.student();
@@ -152,9 +139,9 @@ export class UpdateStudentComponent {
         zipCode: a.zipCode,
       } as UpdateAddressDTO)),
       relationships: (v.responsibles as any[])
-        .filter(r => r.relationshipType)
+        .filter(r => r.relationshipType && r.relatedPersonId)
         .map(r => ({
-          relatedPersonId: r.relatedPersonId || null,
+          relatedPersonId: r.relatedPersonId,
           relationshipType: r.relationshipType as RelationshipType,
         })),
     };

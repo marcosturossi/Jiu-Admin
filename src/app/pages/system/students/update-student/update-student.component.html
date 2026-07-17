@@ -73,40 +73,10 @@
 
     <div formArrayName="responsibles">
       @for (r of responsibles.controls; track $index) {
-      <div class="address-block" [formGroupName]="$index">
-        <div class="row">
-          <div class="col-md-5 mb-3">
-            <label class="form-label">Tipo de Relação *</label>
-            <select class="form-select" formControlName="relationshipType">
-              <option value="" disabled>Selecione</option>
-              @for (type of relationshipTypes; track type) {
-              <option [value]="type">{{ type }}</option>
-              }
-            </select>
-          </div>
-          <div class="col-md-7 mb-3">
-            <label class="form-label">Pessoa Vinculada</label>
-            @if (getResponsibleGroup($index).get('selectedPersonName')?.value) {
-            <div class="form-control bg-light d-flex align-items-center gap-2">
-              <i class="bi bi-person-check text-success"></i>
-              <span>{{ getResponsibleGroup($index).get('selectedPersonName')?.value }}</span>
-            </div>
-            } @else {
-            <input class="form-control" formControlName="relatedPersonId" placeholder="ID da pessoa responsável">
-            }
-          </div>
-        </div>
-        <div class="text-end mb-2">
-          <button type="button" class="btn btn-outline-danger btn-sm" (click)="removeResponsible($index)">
-            <i class="bi bi-trash me-1"></i>Remover
-          </button>
-        </div>
-      </div>
-      @if (!$last) {
-      <hr class="my-3"> }
+      <app-responsible-form [group]="$any(r)" [index]="$index" (remove)="removeResponsible($index)" />
       }
       @if (responsibles.length === 0) {
-      <p class="text-muted fst-italic small">Nenhum responsável cadastrado.</p>
+      <p class="text-danger fst-italic small">Aluno menor de idade precisa de ao menos um responsável.</p>
       }
     </div>
   </section>
