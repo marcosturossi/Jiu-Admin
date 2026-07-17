@@ -5,6 +5,7 @@ import {
   selectFromSearchSelect,
   createTestStudent,
   deleteTestStudent,
+  acceptConfirmDialog,
 } from './helpers';
 
 test.describe('Atestados Médicos', () => {
@@ -41,8 +42,8 @@ test.describe('Atestados Médicos', () => {
     // to the backend at all.
 
     // DELETE
-    page.once('dialog', d => d.accept());
     await row.locator('button.btn-outline-danger').click();
+    await acceptConfirmDialog(page);
     await waitForTableReady(page);
     await expect(row).not.toBeVisible({ timeout: 10_000 });
 

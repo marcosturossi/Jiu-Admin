@@ -6,6 +6,7 @@ import { CreateLessonComponent } from './create-lesson/create-lesson.component';
 import { UpdateLessonComponent } from './update-lesson/update-lesson.component';
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
+import { ConfirmService } from '../../../services/confirm.service';
 import { FilterComponent } from '../../../shared/filter/filter.component';
 import { FilterOutput } from '../../../shared/filter/filter.types';
 import { PaginationComponent } from '../../../shared/pagination/pagination.component';
@@ -28,6 +29,7 @@ export class LessonsComponent {
   private readonly lessonService = inject(LessonService);
   private readonly subnavService = inject(SubnavService);
   private readonly notificationService = inject(NotificationService);
+  private readonly confirmService = inject(ConfirmService);
 
   protected readonly isLoading = signal(false);
   protected readonly items = signal<PageResult<ShowLessonDTO> | null>(null);
@@ -69,8 +71,9 @@ export class LessonsComponent {
   protected onCreated(): void { this.openedCreate.set(false); this.load(); }
   protected onUpdated(): void { this.openedUpdate.set(false); this.load(); }
 
-  protected delete(item: ShowLessonDTO): void {
-    if (!confirm(`Tem certeza que deseja excluir a aula "${item.title}"?`)) return;
+  protected async delete(item: ShowLessonDTO): Promise<void> {
+    const ok = await this.confirmService.confirm(`Tem certeza que deseja excluir a aula "${item.title}"?`);
+    if (!ok) return;
     this.lessonService.apiLessonIdDelete(item.id!).subscribe({
       next: () => {
         this.notificationService.showSuccess('Aula Excluída!', `A aula "${item.title}" foi excluída com sucesso.`);

@@ -1,5 +1,5 @@
 import { test, expect, Page } from '@playwright/test';
-import { generateValidCpf } from './helpers';
+import { generateValidCpf, acceptConfirmDialog } from './helpers';
 
 const timestamp = Date.now();
 const TEST_USER = `e2e_user_${timestamp}`;
@@ -75,8 +75,8 @@ test.describe('Estudantes — CRUD', () => {
     await expect(page.locator('.student-card__name', { hasText: FULL_NAME })).toBeVisible({ timeout: 8_000 });
 
     const deleteCard = page.locator('.student-card', { hasText: TEST_LAST_NAME });
-    page.once('dialog', dialog => dialog.accept());
     await deleteCard.locator('.btn-outline-danger').click();
+    await acceptConfirmDialog(page);
 
     await expect(page.locator('.student-card__name', { hasText: FULL_NAME })).not.toBeVisible({ timeout: 10_000 });
   });

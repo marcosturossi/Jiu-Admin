@@ -8,6 +8,7 @@ import {
   deleteTestStudent,
   createTestBelt,
   deleteTestBelt,
+  acceptConfirmDialog,
 } from './helpers';
 
 test.describe('Graduações', () => {
@@ -49,8 +50,8 @@ test.describe('Graduações', () => {
     await expect(row).toContainText('15/07/2029');
 
     // DELETE
-    page.once('dialog', d => d.accept());
     await row.locator('button.btn-outline-danger').click();
+    await acceptConfirmDialog(page);
     await waitForTableReady(page);
     await expect(row).not.toBeVisible({ timeout: 10_000 });
 

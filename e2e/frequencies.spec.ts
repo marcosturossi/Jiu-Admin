@@ -8,6 +8,7 @@ import {
   deleteTestStudent,
   createTestBelt,
   deleteTestBelt,
+  acceptConfirmDialog,
 } from './helpers';
 
 const TS = Date.now();
@@ -75,8 +76,8 @@ test.describe('Frequências', () => {
     await expect(freqRow).toBeVisible();
 
     // DELETE frequency
-    page.once('dialog', d => d.accept());
     await freqRow.locator('button.btn-outline-danger').click();
+    await acceptConfirmDialog(page);
     await waitForTableReady(page);
     await expect(freqRow).not.toBeVisible({ timeout: 10_000 });
 
@@ -84,16 +85,16 @@ test.describe('Frequências', () => {
     await page.goto('/system/lessons');
     await waitForTableReady(page);
     const lessonRow = page.locator('tr', { hasText: LESSON_TITLE });
-    page.once('dialog', d => d.accept());
     await lessonRow.locator('button.btn-outline-danger').click();
+    await acceptConfirmDialog(page);
     await waitForTableReady(page);
 
     // CLEANUP — graduation
     await page.goto('/system/graduations');
     await waitForTableReady(page);
     const gradRow = page.locator('tr', { hasText: student.lastName });
-    page.once('dialog', d => d.accept());
     await gradRow.locator('button.btn-outline-danger').click();
+    await acceptConfirmDialog(page);
     await waitForTableReady(page);
 
     // CLEANUP — belt, student

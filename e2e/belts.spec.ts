@@ -1,4 +1,5 @@
 import { test, expect, Page } from '@playwright/test';
+import { acceptConfirmDialog } from './helpers';
 
 const timestamp = Date.now();
 const TEST_COLOR = `E2E-Cor-${timestamp}`;
@@ -53,8 +54,8 @@ test.describe('Faixas — CRUD', () => {
 
     // ── DELETE ────────────────────────────────────────────────────────
     const updatedRow = page.locator('tr', { hasText: UPDATED_COLOR });
-    page.once('dialog', dialog => dialog.accept());
     await updatedRow.locator('.btn-outline-danger').click();
+    await acceptConfirmDialog(page);
 
     await expect(page.getByText(UPDATED_COLOR)).not.toBeVisible({ timeout: 10_000 });
   });

@@ -5,6 +5,18 @@ export async function waitForTableReady(page: Page) {
   await expect(page.locator('table')).toBeVisible();
 }
 
+/**
+ * Confirms the shared custom confirm dialog (app-confirm-dialog), which
+ * replaced the native browser confirm() for all destructive actions. Call
+ * this right after clicking whatever triggered the confirmation.
+ */
+export async function acceptConfirmDialog(page: Page): Promise<void> {
+  const confirmButton = page.getByRole('button', { name: 'Confirmar', exact: true });
+  await expect(confirmButton).toBeVisible({ timeout: 5_000 });
+  await confirmButton.click();
+  await expect(confirmButton).not.toBeVisible({ timeout: 5_000 });
+}
+
 /** Interacts with app-search-select: opens it, types a search term, picks the first result. */
 export async function selectFromSearchSelect(page: Page, labelText: string, searchText: string) {
   const field = page.locator('.mb-3', { hasText: labelText });
@@ -112,8 +124,8 @@ export async function deleteTestStudent(page: Page, firstName: string): Promise<
 
   const card = page.locator('.student-card', { hasText: firstName });
   if (await card.isVisible({ timeout: 5_000 }).catch(() => false)) {
-    page.once('dialog', dialog => dialog.accept());
     await card.locator('.btn-outline-danger').click();
+    await acceptConfirmDialog(page);
     await expect(card).not.toBeVisible({ timeout: 10_000 });
   }
 }
@@ -147,8 +159,8 @@ export async function deleteTestBelt(page: Page, color: string): Promise<void> {
 
   const row = page.locator('tr', { hasText: color });
   if (await row.isVisible({ timeout: 5_000 }).catch(() => false)) {
-    page.once('dialog', dialog => dialog.accept());
     await row.locator('.btn-outline-danger').click();
+    await acceptConfirmDialog(page);
     await expect(row).not.toBeVisible({ timeout: 10_000 });
   }
 }
@@ -185,8 +197,8 @@ export async function deleteTestFeePlan(page: Page, name: string): Promise<void>
 
   const row = page.locator('tr', { hasText: name });
   if (await row.isVisible({ timeout: 5_000 }).catch(() => false)) {
-    page.once('dialog', dialog => dialog.accept());
     await row.locator('button.btn-outline-danger').click();
+    await acceptConfirmDialog(page);
     await expect(row).not.toBeVisible({ timeout: 10_000 });
   }
 }

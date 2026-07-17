@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { waitForTableReady, openCreateModal, saveAndWaitModalClose } from './helpers';
+import { waitForTableReady, openCreateModal, saveAndWaitModalClose, acceptConfirmDialog } from './helpers';
 
 const TS = Date.now();
 const TEST_DESC = `E2E-Receber-${TS}`;
@@ -35,8 +35,8 @@ test.describe('Contas a Receber', () => {
     // inspection. This looks like a real bug (should call
     // apiAccountsReceivableIdDelete for non-charge entries); asserting the
     // current behavior here so it surfaces if/when it's fixed.
-    page.once('dialog', d => d.accept());
     await row.locator('button.btn-outline-danger').click();
+    await acceptConfirmDialog(page);
     await expect(page.getByText(/Não foi possível excluir/i)).toBeVisible({ timeout: 10_000 });
     await expect(row).toBeVisible();
   });

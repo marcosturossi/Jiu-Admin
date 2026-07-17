@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/cor
 import { BeltService, ShowBeltDTO as ShowBeltDTO } from '../../../generated_services';
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
+import { ConfirmService } from '../../../services/confirm.service';
 import { PaginationComponent } from '../../../shared/pagination/pagination.component';
 import { CreateBeltComponent } from './create-belt/create-belt.component';
 import { UpdateBeltComponent } from './update-belt/update-belt.component';
@@ -22,6 +23,7 @@ export class BeltsComponent {
   private readonly beltService = inject(BeltService);
   private readonly subnavService = inject(SubnavService);
   private readonly notificationService = inject(NotificationService);
+  private readonly confirmService = inject(ConfirmService);
 
   protected readonly isLoading = signal(false);
   protected readonly items = signal<PageResult<ShowBeltDTO> | null>(null);
@@ -61,8 +63,12 @@ export class BeltsComponent {
   protected onCreated(): void { this.openedCreate.set(false); this.load(); }
   protected onUpdated(): void { this.openedUpdate.set(false); this.load(); }
 
-  protected delete(item: ShowBeltDTO): void {
-    if (!confirm('Tem certeza que deseja excluir esta faixa?')) return;
+  protected async delete(item: ShowBeltDTO): Promise<void> {
+    const ok = await this.confirmService.confirm({
+      title: 'Excluir Faixa',
+      message: `Tem certeza que deseja excluir a faixa "${item.color}"? Esta ação não pode ser desfeita.`,
+    });
+    if (!ok) return;
     this.beltService.apiBeltIdDelete(item.id!).subscribe({
       next: () => { this.notificationService.showSuccess('Faixa Excluída!', `A faixa ${item.color} foi excluída com sucesso.`); this.load(); },
       error: () => { this.notificationService.showError('Erro ao Excluir!', 'Não foi possível excluir a faixa. Tente novamente.'); }

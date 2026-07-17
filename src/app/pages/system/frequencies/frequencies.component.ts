@@ -7,6 +7,7 @@ import { CreateFrequencyComponent } from './create-frequency/create-frequency.co
 import { UpdateFrequencyComponent } from './update-frequency/update-frequency.component';
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
+import { ConfirmService } from '../../../services/confirm.service';
 import { PaginationComponent } from '../../../shared/pagination/pagination.component';
 import { PageResult } from '../../../utils/page-result';
 
@@ -21,6 +22,7 @@ export class FrequenciesComponent {
   private readonly frequencyService = inject(FrequencyService);
   private readonly subnavService = inject(SubnavService);
   private readonly ns = inject(NotificationService);
+  private readonly confirmService = inject(ConfirmService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly searchSubject = new Subject<string>();
 
@@ -69,8 +71,9 @@ export class FrequenciesComponent {
   protected onCreated(): void { this.openedCreate.set(false); this.load(); }
   protected onUpdated(): void { this.openedUpdate.set(false); this.load(); }
 
-  protected deleteFrequency(frequency: ShowFrequencyDTO): void {
-    if (!confirm('Tem certeza que deseja excluir esta frequência?')) return;
+  protected async deleteFrequency(frequency: ShowFrequencyDTO): Promise<void> {
+    const ok = await this.confirmService.confirm('Tem certeza que deseja excluir esta frequência?');
+    if (!ok) return;
     this.frequencyService.apiFrequencyIdDelete(frequency.id!).subscribe({
       next: () => { this.ns.showSuccess('Frequência Excluída!', 'A frequência foi excluída com sucesso.'); this.load(); },
       error: () => { this.ns.showError('Erro ao Excluir Frequência!', 'Não foi possível excluir a frequência. Tente novamente.'); }

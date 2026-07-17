@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { waitForTableReady } from './helpers';
+import { waitForTableReady, acceptConfirmDialog } from './helpers';
 
 const TS = Date.now();
 const TEST_TITLE = `E2E Notif ${TS}`;
@@ -65,8 +65,8 @@ test.describe('Notificações', () => {
 
     // ── DELETE ────────────────────────────────────────────────────────
     const updatedRow = page.locator('tr', { hasText: UPDATED_TITLE });
-    page.once('dialog', d => d.accept());
     await updatedRow.locator('button.btn-outline-danger').click();
+    await acceptConfirmDialog(page);
     await waitForTableReady(page);
     await expect(page.locator('table').getByText(UPDATED_TITLE)).not.toBeVisible({ timeout: 10_000 });
   });
@@ -98,8 +98,8 @@ test.describe('Notificações', () => {
 
     // Cleanup
     const row = page.locator('tr', { hasText: titleWithExpiry });
-    page.once('dialog', d => d.accept());
     await row.locator('button.btn-outline-danger').click();
+    await acceptConfirmDialog(page);
     await waitForTableReady(page);
   });
 });

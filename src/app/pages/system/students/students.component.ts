@@ -5,6 +5,7 @@ import { StudentsService } from '../../../generated_services/api/students.servic
 import { ShowStudentDTO } from '../../../generated_services/model/showStudentDTO';
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
+import { ConfirmService } from '../../../services/confirm.service';
 import { FilterComponent } from '../../../shared/filter/filter.component';
 import { FilterField, FilterOutput } from '../../../shared/filter/filter.types';
 import { PaginationComponent } from '../../../shared/pagination/pagination.component';
@@ -32,6 +33,7 @@ export class StudentsComponent {
   private readonly http = inject(HttpClient);
   private readonly subnavService = inject(SubnavService);
   private readonly notificationService = inject(NotificationService);
+  private readonly confirmService = inject(ConfirmService);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
 
@@ -117,8 +119,12 @@ export class StudentsComponent {
   protected onCreated(): void { this.openedCreate.set(false); this.load(); }
   protected onUpdated(): void { this.openedUpdate.set(false); this.load(); }
 
-  protected delete(item: ShowStudentDTO): void {
-    if (!confirm('Tem certeza que deseja excluir este aluno? Esta ação não pode ser desfeita.')) return;
+  protected async delete(item: ShowStudentDTO): Promise<void> {
+    const ok = await this.confirmService.confirm({
+      title: 'Excluir Aluno',
+      message: `Tem certeza que deseja excluir o aluno "${item.firstName} ${item.lastName}"? Esta ação não pode ser desfeita.`,
+    });
+    if (!ok) return;
     this.studentsService.apiStudentsIdDelete(item.id!).subscribe({
       next: () => { this.notificationService.showSuccess('Aluno Excluído', `O aluno ${item.firstName} ${item.lastName} foi excluído com sucesso.`); this.load(); },
       error: () => { this.notificationService.showError('Erro ao Excluir', 'Não foi possível excluir o aluno. Tente novamente.'); }

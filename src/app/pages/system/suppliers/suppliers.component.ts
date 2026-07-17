@@ -7,6 +7,7 @@ import { ShowSupplierDTO } from '../../../generated_services/model/showSupplierD
 import { PaginatedResultOfShowSupplierDTO } from '../../../generated_services/model/paginatedResultOfShowSupplierDTO';
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
+import { ConfirmService } from '../../../services/confirm.service';
 import { FilterComponent } from '../../../shared/filter/filter.component';
 import { FilterOutput } from '../../../shared/filter/filter.types';
 import { PaginationComponent } from '../../../shared/pagination/pagination.component';
@@ -32,6 +33,7 @@ export class SuppliersComponent {
   private readonly supplierService = inject(SupplierService);
   private readonly subnavService = inject(SubnavService);
   private readonly notificationService = inject(NotificationService);
+  private readonly confirmService = inject(ConfirmService);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
 
@@ -84,8 +86,12 @@ export class SuppliersComponent {
   protected onCreated(): void { this.openedCreate.set(false); this.load(); }
   protected onUpdated(): void { this.openedUpdate.set(false); this.load(); }
 
-  protected delete(item: ShowSupplierDTO): void {
-    if (!confirm('Tem certeza que deseja excluir este fornecedor? Esta ação não pode ser desfeita.')) return;
+  protected async delete(item: ShowSupplierDTO): Promise<void> {
+    const ok = await this.confirmService.confirm({
+      title: 'Excluir Fornecedor',
+      message: `Tem certeza que deseja excluir o fornecedor "${this.supplierName(item)}"? Esta ação não pode ser desfeita.`,
+    });
+    if (!ok) return;
     this.supplierService.apiSupplierIdDelete(item.id!).subscribe({
       next: () => {
         this.notificationService.showSuccess('Fornecedor Excluído', 'O fornecedor foi excluído com sucesso.');

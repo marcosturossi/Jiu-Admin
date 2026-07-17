@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { waitForTableReady, openCreateModal } from './helpers';
+import { waitForTableReady, openCreateModal, acceptConfirmDialog } from './helpers';
 
 const TS = Date.now();
 const TEST_NAME = `Academia-E2E-${TS}`;
@@ -43,8 +43,8 @@ test.describe('Academias', () => {
 
     // DELETE
     const updatedRow = page.locator('tr', { hasText: UPDATED_NAME });
-    page.once('dialog', d => d.accept());
     await updatedRow.locator('button.btn-outline-danger').click();
+    await acceptConfirmDialog(page);
     await waitForTableReady(page);
     await expect(page.locator('table').getByText(UPDATED_NAME)).not.toBeVisible();
   });

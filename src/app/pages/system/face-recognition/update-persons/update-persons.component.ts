@@ -4,6 +4,7 @@ import { PersonsService } from '../../../../generated_services/api2/api/persons.
 import { PersonDetailResponse } from '../../../../generated_services/api2/model/personDetailResponse';
 import { FaceImageResponse } from '../../../../generated_services/api2/model/faceImageResponse';
 import { NotificationService } from '../../../../services/notification.service';
+import { ConfirmService } from '../../../../services/confirm.service';
 
 @Component({
   selector: 'app-update-persons',
@@ -21,6 +22,7 @@ export class UpdatePersonsComponent {
   private readonly fb = inject(FormBuilder);
   private readonly personsService = inject(PersonsService);
   private readonly ns = inject(NotificationService);
+  private readonly confirmService = inject(ConfirmService);
 
   protected readonly isUpdating = signal(false);
   protected readonly selectedFiles = signal<File[]>([]);
@@ -88,8 +90,9 @@ export class UpdatePersonsComponent {
 
   protected close(): void { this.closeEvent.emit(); }
 
-  protected removeImage(img: FaceImageResponse): void {
-    if (!confirm('Tem certeza que deseja remover esta imagem?')) return;
+  protected async removeImage(img: FaceImageResponse): Promise<void> {
+    const ok = await this.confirmService.confirm('Tem certeza que deseja remover esta imagem?');
+    if (!ok) return;
     this.personsService.removePersonImageApiV1PersonsPersonIdImagesImageIdDelete(this.person().id, img.id).subscribe({
       next: () => {
         this.ns.showSuccess('Imagem Removida!', 'A imagem foi removida com sucesso.');

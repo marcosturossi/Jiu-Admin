@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { waitForTableReady, openCreateModal, selectFromSearchSelect, createTestStudent, deleteTestStudent } from './helpers';
+import { waitForTableReady, openCreateModal, selectFromSearchSelect, createTestStudent, deleteTestStudent, acceptConfirmDialog } from './helpers';
 import path from 'path';
 
 const FIXTURE_IMAGE = path.join(__dirname, 'fixtures', 'test-image.jpeg');
@@ -32,8 +32,8 @@ test.describe('Reconhecimento Facial', () => {
     await expect(row).toBeVisible();
 
     // DELETE
-    page.once('dialog', d => d.accept());
     await row.locator('button.btn-outline-danger').click();
+    await acceptConfirmDialog(page);
     await waitForTableReady(page);
     await expect(row).not.toBeVisible({ timeout: 10_000 });
 

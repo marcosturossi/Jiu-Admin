@@ -6,6 +6,7 @@ import {
   selectFromSearchSelect,
   createTestStudent,
   createTestFeePlan,
+  acceptConfirmDialog,
 } from './helpers';
 
 test.describe('Contratos', () => {
@@ -54,8 +55,8 @@ test.describe('Contratos', () => {
     // contract keeps appearing in the list, now Cancelled — even a second delete
     // attempt on an already-cancelled contract doesn't remove it). Assert the real
     // behavior instead of a row disappearing.
-    page.once('dialog', d => d.accept());
     await row.locator('button.btn-outline-danger').click();
+    await acceptConfirmDialog(page);
     await waitForTableReady(page);
     await expect(row).toContainText('Cancelado');
 

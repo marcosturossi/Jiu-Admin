@@ -7,6 +7,7 @@ import { UpdateNotificationComponent } from './update-notification/update-notifi
 import { NotificationType as NotificationType } from '../../../generated_services/model/notificationType';
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
+import { ConfirmService } from '../../../services/confirm.service';
 import { FilterComponent } from '../../../shared/filter/filter.component';
 import { FilterOutput } from '../../../shared/filter/filter.types';
 import { PaginationComponent } from '../../../shared/pagination/pagination.component';
@@ -23,6 +24,7 @@ export class NotificationComponent {
   private readonly apiNotificationService = inject(ApiNotificationService);
   private readonly subnavService = inject(SubnavService);
   private readonly ns = inject(NotificationService);
+  private readonly confirmService = inject(ConfirmService);
 
   protected readonly isLoading = signal(false);
   protected readonly items = signal<PageResult<ShowNotificationDTO> | null>(null);
@@ -71,8 +73,12 @@ export class NotificationComponent {
   protected onCreated(): void { this.openedCreate.set(false); this.load(); }
   protected onUpdated(): void { this.openedUpdate.set(false); this.load(); }
 
-  protected deleteNotification(notification: ShowNotificationDTO): void {
-    if (!confirm(`Tem certeza que deseja excluir esta notificação? Esta ação não pode ser desfeita.`)) return;
+  protected async deleteNotification(notification: ShowNotificationDTO): Promise<void> {
+    const ok = await this.confirmService.confirm({
+      title: 'Excluir Notificação',
+      message: 'Tem certeza que deseja excluir esta notificação? Esta ação não pode ser desfeita.',
+    });
+    if (!ok) return;
     this.apiNotificationService.apiNotificationIdDelete(notification.id!).subscribe({
       next: () => { this.ns.showSuccess('Notificação Excluída!', `A notificação "${notification.title}" foi excluída com sucesso.`); this.load(); },
       error: () => this.ns.showError('Erro ao Excluir Notificação!', 'Não foi possível excluir a notificação. Tente novamente.')

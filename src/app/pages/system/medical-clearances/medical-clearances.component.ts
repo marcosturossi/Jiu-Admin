@@ -5,6 +5,7 @@ import { ShowMedicalClearanceDto } from '../../../generated_services/model/showM
 import { CreateMedicalClearanceComponent } from './create-medical-clearance/create-medical-clearance.component';
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
+import { ConfirmService } from '../../../services/confirm.service';
 import { PaginationComponent } from '../../../shared/pagination/pagination.component';
 import { BlobViewerComponent } from '../../../shared/blob-viewer/blob-viewer.component';
 import { FilterComponent } from '../../../shared/filter/filter.component';
@@ -22,6 +23,7 @@ export class MedicalClearancesComponent {
   private readonly medicalClearanceService = inject(MedicalClearanceService);
   private readonly subnavService = inject(SubnavService);
   private readonly ns = inject(NotificationService);
+  private readonly confirmService = inject(ConfirmService);
 
   protected readonly isLoading = signal(false);
   protected readonly items = signal<PageResult<ShowMedicalClearanceDto> | null>(null);
@@ -73,8 +75,9 @@ export class MedicalClearancesComponent {
   protected openCreate(): void { this.openedCreate.set(true); }
   protected onCreated(): void { this.openedCreate.set(false); this.load(); }
 
-  protected deleteMedicalClearance(clearance: ShowMedicalClearanceDto): void {
-    if (!confirm('Tem certeza que deseja excluir este atestado médico?')) return;
+  protected async deleteMedicalClearance(clearance: ShowMedicalClearanceDto): Promise<void> {
+    const ok = await this.confirmService.confirm('Tem certeza que deseja excluir este atestado médico?');
+    if (!ok) return;
     this.medicalClearanceService.apiMedicalClearanceIdDelete(clearance.id!).subscribe({
       next: () => { this.ns.showSuccess('Atestado Excluído!', 'O atestado médico foi excluído com sucesso.'); this.load(); },
       error: () => this.ns.showError('Erro ao Excluir!', 'Não foi possível excluir o atestado médico. Tente novamente.')

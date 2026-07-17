@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { waitForTableReady, openCreateModal, saveAndWaitModalClose } from './helpers';
+import { waitForTableReady, openCreateModal, saveAndWaitModalClose, acceptConfirmDialog } from './helpers';
 
 const TS = Date.now();
 const TEST_DESC = `E2E-Pagar-${TS}`;
@@ -28,8 +28,8 @@ test.describe('Contas a Pagar', () => {
     await expect(row).toBeVisible();
 
     // DELETE
-    page.once('dialog', d => d.accept());
     await row.locator('button.btn-outline-danger').click();
+    await acceptConfirmDialog(page);
     await waitForTableReady(page);
     await expect(row).not.toBeVisible({ timeout: 10_000 });
   });

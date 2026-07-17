@@ -5,6 +5,7 @@ import { StudentsService } from '../../../generated_services/api/students.servic
 import { ShowContractDTO as ShowContractDTO, ContractStatus as ContractStatus } from '../../../generated_services';
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
+import { ConfirmService } from '../../../services/confirm.service';
 import { FilterComponent } from '../../../shared/filter/filter.component';
 import { FilterField, FilterOutput } from '../../../shared/filter/filter.types';
 import { PaginationComponent } from '../../../shared/pagination/pagination.component';
@@ -32,6 +33,7 @@ export class ContractsComponent {
   private readonly studentsService = inject(StudentsService);
   private readonly subnavService = inject(SubnavService);
   private readonly ns = inject(NotificationService);
+  private readonly confirmService = inject(ConfirmService);
 
   protected readonly isLoading = signal(false);
   protected readonly items = signal<PageResult<ShowContractDTO> | null>(null);
@@ -125,8 +127,9 @@ export class ContractsComponent {
   protected onCreated(): void { this.openedCreate.set(false); this.load(); }
   protected onUpdated(): void { this.openedUpdate.set(false); this.load(); }
 
-  protected delete(item: ShowContractDTO): void {
-    if (!confirm('Tem certeza que deseja excluir este contrato?')) return;
+  protected async delete(item: ShowContractDTO): Promise<void> {
+    const ok = await this.confirmService.confirm('Tem certeza que deseja excluir este contrato?');
+    if (!ok) return;
     this.contractService.apiContractIdDelete(item.id!).subscribe({
       next: () => { this.ns.showSuccess('Contrato Excluído!', 'Excluído com sucesso.'); this.load(); },
       error: () => { this.ns.showError('Erro ao Excluir!', 'Não foi possível excluir.'); },

@@ -10,6 +10,7 @@ import { ShowAcademyDto } from '../../../generated_services/model/showAcademyDto
 import { PageResult } from '../../../utils/page-result';
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
+import { ConfirmService } from '../../../services/confirm.service';
 import { PaginationComponent } from '../../../shared/pagination/pagination.component';
 import { CreateAcademyComponent } from './create-academy/create-academy.component';
 import { UpdateAcademyComponent } from './update-academy/update-academy.component';
@@ -31,6 +32,7 @@ export class AcademiesComponent {
   private readonly academyService = inject(AcademyService);
   private readonly subnavService = inject(SubnavService);
   private readonly notificationService = inject(NotificationService);
+  private readonly confirmService = inject(ConfirmService);
 
   protected readonly isLoading = signal(false);
   protected readonly items = signal<PageResult<ShowAcademyDto> | null>(null);
@@ -106,8 +108,12 @@ export class AcademiesComponent {
     this.load();
   }
 
-  protected delete(item: ShowAcademyDto): void {
-    if (!confirm(`Tem certeza que deseja excluir a academia "${item.name}"? Esta ação não pode ser desfeita.`)) return;
+  protected async delete(item: ShowAcademyDto): Promise<void> {
+    const ok = await this.confirmService.confirm({
+      title: 'Excluir Academia',
+      message: `Tem certeza que deseja excluir a academia "${item.name}"? Esta ação não pode ser desfeita.`,
+    });
+    if (!ok) return;
     this.academyService.apiAdminAcademiesIdDelete(item.id!).subscribe({
       next: () => {
         this.notificationService.showSuccess('Academia Excluída!', `A academia "${item.name}" foi excluída com sucesso.`);

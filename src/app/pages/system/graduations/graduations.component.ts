@@ -5,6 +5,7 @@ import { CreateGraduationComponent } from './create-graduation/create-graduation
 import { UpdateGraduationComponent } from './update-graduation/update-graduation.component';
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
+import { ConfirmService } from '../../../services/confirm.service';
 import { FilterComponent } from '../../../shared/filter/filter.component';
 import { FilterOutput } from '../../../shared/filter/filter.types';
 import { PaginationComponent } from '../../../shared/pagination/pagination.component';
@@ -27,6 +28,7 @@ export class GraduationsComponent {
   private readonly graduationService = inject(GraduationService);
   private readonly subnavService = inject(SubnavService);
   private readonly notificationService = inject(NotificationService);
+  private readonly confirmService = inject(ConfirmService);
 
   protected readonly isLoading = signal(false);
   protected readonly items = signal<PageResult<ShowGraduationDTO> | null>(null);
@@ -67,8 +69,9 @@ export class GraduationsComponent {
   protected onCreated(): void { this.openedCreate.set(false); this.load(); }
   protected onUpdated(): void { this.openedUpdate.set(false); this.load(); }
 
-  protected delete(item: ShowGraduationDTO): void {
-    if (!confirm('Tem certeza que deseja excluir esta graduação?')) return;
+  protected async delete(item: ShowGraduationDTO): Promise<void> {
+    const ok = await this.confirmService.confirm('Tem certeza que deseja excluir esta graduação?');
+    if (!ok) return;
     this.graduationService.apiGraduationIdDelete(item.id!).subscribe({
       next: () => {
         this.notificationService.showSuccess('Graduação Excluída!', 'A graduação foi excluída com sucesso.');

@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { waitForTableReady, openCreateModal, saveAndWaitModalClose, createTestBelt, deleteTestBelt } from './helpers';
+import { waitForTableReady, openCreateModal, saveAndWaitModalClose, createTestBelt, deleteTestBelt, acceptConfirmDialog } from './helpers';
 
 const TS = Date.now();
 const TEST_DESC = `E2E Requisito ${TS}`;
@@ -42,8 +42,8 @@ test.describe('Requisitos de Graduação', () => {
 
     // DELETE
     const updatedRow = page.locator('tr', { hasText: UPDATED_DESC });
-    page.once('dialog', d => d.accept());
     await updatedRow.locator('button.btn-outline-danger').click();
+    await acceptConfirmDialog(page);
     await waitForTableReady(page);
     await expect(page.locator('table').getByText(UPDATED_DESC)).not.toBeVisible();
 

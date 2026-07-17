@@ -4,6 +4,7 @@ import { CreateGraduationRequirementComponent } from './create-graduation-requir
 import { UpdateGraduationRequirementComponent } from './update-graduation-requirement/update-graduation-requirement.component';
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
+import { ConfirmService } from '../../../services/confirm.service';
 import { PaginationComponent } from '../../../shared/pagination/pagination.component';
 import { PageResult } from '../../../utils/page-result';
 
@@ -22,6 +23,7 @@ export class GraduationRequirementsComponent {
   private readonly graduationRequirementsService = inject(GraduationRequirementsService);
   private readonly subnavService = inject(SubnavService);
   private readonly notificationService = inject(NotificationService);
+  private readonly confirmService = inject(ConfirmService);
 
   protected readonly isLoading = signal(false);
   protected readonly items = signal<PageResult<ShowGraduationRequirementsDTO> | null>(null);
@@ -68,8 +70,9 @@ export class GraduationRequirementsComponent {
   protected onCreated(): void { this.openedCreate.set(false); this.load(); }
   protected onUpdated(): void { this.openedUpdate.set(false); this.load(); }
 
-  protected delete(item: ShowGraduationRequirementsDTO): void {
-    if (!confirm('Tem certeza que deseja excluir este requisito de graduação?')) return;
+  protected async delete(item: ShowGraduationRequirementsDTO): Promise<void> {
+    const ok = await this.confirmService.confirm('Tem certeza que deseja excluir este requisito de graduação?');
+    if (!ok) return;
     this.graduationRequirementsService.apiGraduationRequirementsIdDelete(item.id!).subscribe({
       next: () => {
         this.notificationService.showSuccess('Requisito Excluído!', 'O requisito de graduação foi excluído com sucesso.');

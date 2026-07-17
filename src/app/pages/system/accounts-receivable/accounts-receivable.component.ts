@@ -7,6 +7,7 @@ import { ShowAccountsReceivableDTO, ShowTransactionCategoryDTO } from '../../../
 import { TransactionType } from '../../../generated_services/model/transactionType';
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
+import { ConfirmService } from '../../../services/confirm.service';
 import { environment } from '../../../enviroments/environment';
 import { FilterComponent } from '../../../shared/filter/filter.component';
 import { FilterField, FilterOutput } from '../../../shared/filter/filter.types';
@@ -38,6 +39,7 @@ export class AccountsReceivableComponent {
   private readonly categoryService = inject(TransactionCategoryService);
   private readonly subnavService = inject(SubnavService);
   private readonly ns = inject(NotificationService);
+  private readonly confirmService = inject(ConfirmService);
 
   protected readonly isLoading = signal(false);
   protected readonly isDownloading = signal(false);
@@ -205,8 +207,9 @@ export class AccountsReceivableComponent {
     });
   }
 
-  protected delete(item: ShowAccountsReceivableDTO): void {
-    if (!confirm('Tem certeza que deseja excluir esta conta a receber?')) return;
+  protected async delete(item: ShowAccountsReceivableDTO): Promise<void> {
+    const ok = await this.confirmService.confirm('Tem certeza que deseja excluir esta conta a receber?');
+    if (!ok) return;
     this.accountsReceivableService.apiAccountsReceivableChargeIdDelete(item.id!).subscribe({
       next: () => { this.ns.showSuccess('Excluída!', 'Excluída com sucesso.'); this.load(); },
       error: () => { this.ns.showError('Erro ao Excluir!', 'Não foi possível excluir.'); },

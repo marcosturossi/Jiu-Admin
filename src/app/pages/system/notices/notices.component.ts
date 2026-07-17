@@ -4,6 +4,7 @@ import { NoticesService } from '../../../generated_services/api/notices.service'
 import { ShowNoticeDto } from '../../../generated_services/model/showNoticeDto';
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
+import { ConfirmService } from '../../../services/confirm.service';
 import { FilterComponent } from '../../../shared/filter/filter.component';
 import { FilterOutput } from '../../../shared/filter/filter.types';
 import { PaginationComponent } from '../../../shared/pagination/pagination.component';
@@ -29,6 +30,7 @@ export class NoticesComponent {
   private readonly noticesService = inject(NoticesService);
   private readonly subnavService = inject(SubnavService);
   private readonly notificationService = inject(NotificationService);
+  private readonly confirmService = inject(ConfirmService);
 
   protected readonly isLoading = signal(false);
   protected readonly items = signal<PageResult<ShowNoticeDto> | null>(null);
@@ -82,8 +84,9 @@ export class NoticesComponent {
   protected onCreated(): void { this.openedCreate.set(false); this.load(); }
   protected onUpdated(): void { this.openedUpdate.set(false); this.load(); }
 
-  protected delete(item: ShowNoticeDto): void {
-    if (!confirm(`Tem certeza que deseja excluir o aviso "${item.description}"?`)) return;
+  protected async delete(item: ShowNoticeDto): Promise<void> {
+    const ok = await this.confirmService.confirm(`Tem certeza que deseja excluir o aviso "${item.description}"?`);
+    if (!ok) return;
     this.noticesService.apiNoticesIdDelete(item.id!).subscribe({
       next: () => { this.notificationService.showSuccess('Aviso Excluído!', 'O aviso foi excluído com sucesso.'); this.load(); },
       error: () => { this.notificationService.showError('Erro ao Excluir Aviso!', 'Não foi possível excluir o aviso. Tente novamente.'); }

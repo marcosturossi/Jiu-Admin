@@ -1,5 +1,5 @@
 import { test, expect, Page } from '@playwright/test';
-import { generateValidCpf } from './helpers';
+import { generateValidCpf, acceptConfirmDialog } from './helpers';
 
 const TS = Date.now();
 const FIRST_NAME = 'E2E';
@@ -56,8 +56,8 @@ test.describe('Fornecedores — CRUD', () => {
 
     // ── DELETE ────────────────────────────────────────────────────────
     const deleteCard = page.locator('.supplier-card', { hasText: LAST_NAME });
-    page.once('dialog', dialog => dialog.accept());
     await deleteCard.locator('button[title="Excluir"]').click();
+    await acceptConfirmDialog(page);
 
     await expect(page.locator('.supplier-card__name', { hasText: FULL_NAME })).not.toBeVisible({ timeout: 10_000 });
   });

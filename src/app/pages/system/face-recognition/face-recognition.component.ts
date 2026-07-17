@@ -6,6 +6,7 @@ import { CreatePersonsComponent } from './create-persons/create-persons.componen
 import { UpdatePersonsComponent } from './update-persons/update-persons.component';
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
+import { ConfirmService } from '../../../services/confirm.service';
 import { PaginationComponent } from '../../../shared/pagination/pagination.component';
 
 @Component({
@@ -20,6 +21,7 @@ export class FaceRecognitionComponent {
   private readonly personsService = inject(PersonsService);
   private readonly subnavService = inject(SubnavService);
   private readonly ns = inject(NotificationService);
+  private readonly confirmService = inject(ConfirmService);
 
   protected readonly persons = signal<PersonDetailResponse[]>([]);
   protected readonly isLoading = signal(false);
@@ -59,8 +61,9 @@ export class FaceRecognitionComponent {
   protected openEdit(person: PersonDetailResponse): void { this.selected.set(person); this.openedUpdate.set(true); }
   protected onPersonUpdated(updated: PersonDetailResponse): void { this.openedUpdate.set(false); this.selected.set(null); this.load(); }
 
-  protected deletePerson(person: PersonDetailResponse): void {
-    if (!confirm(`Tem certeza que deseja excluir a pessoa "${person.name}"?`)) return;
+  protected async deletePerson(person: PersonDetailResponse): Promise<void> {
+    const ok = await this.confirmService.confirm(`Tem certeza que deseja excluir a pessoa "${person.name}"?`);
+    if (!ok) return;
     this.personsService.deletePersonApiV1PersonsPersonIdDelete(person.id).subscribe({
       next: () => { this.ns.showSuccess('Pessoa Excluída!', `A pessoa "${person.name}" foi excluída com sucesso.`); this.load(); },
       error: () => this.ns.showError('Erro ao Excluir', 'Não foi possível excluir a pessoa.')
