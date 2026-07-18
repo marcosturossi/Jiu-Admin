@@ -3,5 +3,5 @@
   label { font-size: .875rem; font-weight: 500; }
 }
 .dialog-actions { display: flex; justify-content: flex-end; gap: .5rem; margin-top: .5rem;
-  padding-top: 1rem; border-top: 1px solid #e9ecef;
+  padding-top: 1rem; border-top: 1px solid var(--brand-border);
 }

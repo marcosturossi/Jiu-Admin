@@ -1,16 +1,16 @@
 .dialog-form { display: flex; flex-direction: column; gap: 1rem; }
 .field { display: flex; flex-direction: column; gap: .375rem; label { font-size: .875rem; font-weight: 500; } }
-.dialog-actions { display: flex; justify-content: flex-end; gap: .5rem; margin-top: .5rem; padding-top: 1rem; border-top: 1px solid #e9ecef; }
+.dialog-actions { display: flex; justify-content: flex-end; gap: .5rem; margin-top: .5rem; padding-top: 1rem; border-top: 1px solid var(--brand-border); }
 
 .recognition-card {
-  border: 1px solid #e9ecef;
+  border: 1px solid var(--brand-border);
   border-radius: 0.375rem;
   overflow: hidden;
 }
 .recognition-header {
   display: flex; align-items: center; gap: .5rem;
   padding: .75rem 1rem;
-  background: #f8f9fa;
+  background: var(--brand-bg);
   font-weight: 500; font-size: .875rem;
 }
 .recognition-body {
@@ -20,19 +20,19 @@
 .recognition-upload { flex: 1; min-width: 200px; display: flex; flex-direction: column; gap: .75rem; }
 .recognition-actions { display: flex; gap: .5rem; flex-wrap: wrap; }
 .recognition-preview { flex: 1; min-width: 180px; display: flex; flex-direction: column; gap: .5rem; label { font-size: .875rem; font-weight: 500; } }
-.preview-box { border: 1px solid #e9ecef; border-radius: 0.375rem; padding: .5rem; text-align: center; }
+.preview-box { border: 1px solid var(--brand-border); border-radius: 0.375rem; padding: .5rem; text-align: center; }
 .preview-img { max-height: 200px; max-width: 100%; border-radius: 0.375rem; }
 
-.file-input { padding: .375rem; border: 1px solid #dee2e6; border-radius: 0.375rem; width: 100%; }
-.hint { color: #6c757d; font-size: .8rem; }
+.file-input { padding: .375rem; border: 1px solid var(--brand-border); border-radius: 0.375rem; width: 100%; }
+.hint { color: var(--brand-muted); font-size: .8rem; }
 .warning-hint { color: #fd7e14; font-size: .8rem; }
-.success-hint { color: #198754; font-size: .8rem; display: flex; align-items: center; gap: .25rem; }
+.success-hint { color: var(--brand-success); font-size: .8rem; display: flex; align-items: center; gap: .25rem; }
 
 .students-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: .5rem; }
 .students-actions { display: flex; align-items: center; gap: .5rem; }
-.count-badge { background: #e9ecef; border-radius: 0.375rem; padding: .125rem .5rem; font-size: .8rem; }
+.count-badge { background: var(--brand-border); border-radius: 0.375rem; padding: .125rem .5rem; font-size: .8rem; }
 
-.students-list { border: 1px solid #e9ecef; border-radius: 0.375rem; padding: .75rem; max-height: 300px; overflow-y: auto; display: flex; flex-direction: column; gap: .5rem; }
-.student-item { display: flex; align-items: center; gap: .5rem; padding: .25rem .375rem; border-radius: 0.375rem; &.recognized { background: color-mix(in srgb, #d1e7dd 60%, transparent); } }
+.students-list { border: 1px solid var(--brand-border); border-radius: 0.375rem; padding: .75rem; max-height: 300px; overflow-y: auto; display: flex; flex-direction: column; gap: .5rem; }
+.student-item { display: flex; align-items: center; gap: .5rem; padding: .25rem .375rem; border-radius: 0.375rem; &.recognized { background: color-mix(in srgb, var(--brand-success) 20%, transparent); } }
 .student-checkbox { cursor: pointer; }
 .student-label { cursor: pointer; font-size: .875rem; display: flex; align-items: center; gap: .375rem; }

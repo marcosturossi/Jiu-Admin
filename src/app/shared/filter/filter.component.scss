@@ -6,58 +6,10 @@
   gap: 0.75rem;
   flex-wrap: wrap;
 
-  // ── Search input ──────────────────────────────────────────────────────
+  // ── Search input (Bootstrap input-group, themed globally incl. dark mode) ──
 
   &__search {
-    display: flex;
-    align-items: center;
     width: 18rem;
-    border: 1px solid #dee2e6;
-    border-radius: 6px;
-    background: #fff;
-    transition: border-color 0.15s ease, box-shadow 0.15s ease;
-
-    &:focus-within {
-      border-color: var(--brand-primary, #3f51b5);
-      box-shadow: 0 0 0 3px rgba(63, 81, 181, 0.12);
-    }
-  }
-
-  &__icon {
-    padding: 0 0.6rem;
-    color: #6c757d;
-    font-size: 0.95rem;
-    flex-shrink: 0;
-  }
-
-  &__input {
-    flex: 1;
-    border: none;
-    outline: none;
-    background: transparent;
-    font-size: 0.9rem;
-    padding: 0.45rem 0;
-    min-width: 0;
-    color: #212529;
-
-    &::placeholder {
-      color: #adb5bd;
-    }
-  }
-
-  &__clear {
-    background: none;
-    border: none;
-    padding: 0 0.6rem;
-    color: #adb5bd;
-    cursor: pointer;
-    font-size: 0.85rem;
-    line-height: 1;
-    flex-shrink: 0;
-
-    &:hover {
-      color: #495057;
-    }
   }
 
   // ── Advanced filters button ───────────────────────────────────────────
@@ -67,24 +19,24 @@
     align-items: center;
     gap: 0.4rem;
     padding: 0.42rem 0.85rem;
-    border: 1px solid #dee2e6;
+    border: 1px solid var(--brand-border);
     border-radius: 6px;
-    background: #fff;
+    background: var(--brand-surface);
     font-size: 0.875rem;
-    color: #495057;
+    color: var(--brand-muted);
     cursor: pointer;
     white-space: nowrap;
     transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease;
 
     &:hover {
-      border-color: var(--brand-primary, #3f51b5);
-      color: var(--brand-primary, #3f51b5);
+      border-color: var(--brand-sidebar-accent);
+      color: var(--brand-sidebar-accent);
     }
 
     &--active {
-      border-color: var(--brand-primary, #3f51b5);
-      color: var(--brand-primary, #3f51b5);
-      background: rgba(63, 81, 181, 0.06);
+      border-color: var(--brand-sidebar-accent);
+      color: var(--brand-sidebar-accent);
+      background: color-mix(in srgb, var(--brand-sidebar-accent) 10%, transparent);
       font-weight: 500;
     }
   }
@@ -97,7 +49,7 @@
     height: 1.25rem;
     padding: 0 0.35rem;
     border-radius: 1rem;
-    background: var(--brand-primary, #3f51b5);
+    background: var(--brand-sidebar-accent);
     color: #fff;
     font-size: 0.7rem;
     font-weight: 700;
@@ -112,22 +64,22 @@
   align-items: center;
   gap: 0.5rem;
   padding: 0.25rem 0.5rem 0.25rem 0.75rem;
-  background: rgba(63, 81, 181, 0.08);
-  border: 1px solid rgba(63, 81, 181, 0.25);
+  background: color-mix(in srgb, var(--brand-sidebar-accent) 8%, transparent);
+  border: 1px solid color-mix(in srgb, var(--brand-sidebar-accent) 25%, transparent);
   border-radius: 2rem;
   font-size: 0.8rem;
-  color: #495057;
+  color: var(--brand-text);
 
   &__text {
     em {
       font-style: normal;
-      color: #6c757d;
+      color: var(--brand-muted);
       margin: 0 0.2em;
     }
 
     strong {
       font-weight: 600;
-      color: var(--brand-primary, #3f51b5);
+      color: var(--brand-sidebar-accent);
     }
   }
 
@@ -137,11 +89,11 @@
     padding: 0 0.1rem;
     font-size: 0.7rem;
     line-height: 1;
-    color: #adb5bd;
+    color: var(--brand-muted);
     cursor: pointer;
 
     &:hover {
-      color: #dc3545;
+      color: var(--brand-danger);
     }
   }
 }

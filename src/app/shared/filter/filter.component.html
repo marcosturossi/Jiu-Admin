@@ -1,10 +1,10 @@
 <div class="filter-bar">
   <!-- Search input -->
-  <div class="filter-bar__search">
-    <span class="filter-bar__icon"><i class="bi bi-search"></i></span>
+  <div class="input-group filter-bar__search">
+    <span class="input-group-text"><i class="bi bi-search"></i></span>
     <input
       type="text"
-      class="filter-bar__input"
+      class="form-control filter-bar__input"
       [placeholder]="placeholder()"
       [value]="inputValue()"
       (input)="onInput($any($event.target).value)"
@@ -13,7 +13,7 @@
     @if (inputValue()) {
       <button
         type="button"
-        class="filter-bar__clear"
+        class="btn btn-outline-secondary filter-bar__clear"
         (click)="onClear()"
         aria-label="Limpar busca"
       >
