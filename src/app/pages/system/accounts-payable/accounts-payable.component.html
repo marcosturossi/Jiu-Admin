@@ -11,43 +11,50 @@
       <div class="spinner-border text-secondary" role="status"><span class="visually-hidden">Carregando...</span></div>
     </div>
   } @else {
-    <div class="table-responsive">
-      <table class="table table-hover table-sm align-middle">
-        <thead class="table-light">
-          <tr>
-            <th>Categoria</th>
-            <th>Descrição</th>
-            <th>Valor</th>
-            <th>Vencimento</th>
-            <th>Referência</th>
-            <th>Status</th>
-            <th class="text-center" style="width: 8rem">Ações</th>
-          </tr>
-        </thead>
-        <tbody>
-          @if ((items()?.items ?? []).length === 0) {
-            <tr><td colspan="7" class="text-center py-5 text-muted">Nenhuma conta a pagar encontrada.</td></tr>
-          }
-          @for (item of items()?.items ?? []; track item.id) {
+    <div class="surface-card">
+      <div class="table-responsive">
+        <table class="table table-hover table-sm align-middle">
+          <thead class="table-light">
             <tr>
-              <td>{{ getCategoryName(item.transactionCategoryId) }}</td>
-              <td class="desc-cell">{{ item.description || '—' }}</td>
-              <td class="amount-expense">
-                {{ getAmount(item) | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}
-              </td>
-              <td>{{ item.dueDate | date:'dd/MM/yyyy':'UTC' }}</td>
-              <td>{{ item.reference || '—' }}</td>
-              <td>{{ item.status }}</td>
-              <td class="text-center">
-                @if (item.status !== 'Paid') {
-                  <button type="button" class="btn btn-sm btn-outline-primary me-1" (click)="pay(item)"><i class="bi bi-currency-dollar"></i></button>
-                }
-                <button type="button" class="btn btn-sm btn-outline-danger me-1" (click)="delete(item)"><i class="bi bi-trash"></i></button>
-              </td>
+              <th>Categoria</th>
+              <th>Descrição</th>
+              <th>Valor</th>
+              <th>Vencimento</th>
+              <th>Referência</th>
+              <th>Status</th>
+              <th class="text-center" style="width: 8rem">Ações</th>
             </tr>
-          }
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            @if ((items()?.items ?? []).length === 0) {
+              <tr>
+                <td colspan="7" class="empty-state">
+                  <i class="bi bi-arrow-up-circle empty-icon"></i>
+                  <p class="empty-text">Nenhuma conta a pagar encontrada.</p>
+                </td>
+              </tr>
+            }
+            @for (item of items()?.items ?? []; track item.id) {
+              <tr>
+                <td>{{ getCategoryName(item.transactionCategoryId) }}</td>
+                <td class="desc-cell">{{ item.description || '—' }}</td>
+                <td class="amount-expense">
+                  {{ getAmount(item) | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}
+                </td>
+                <td>{{ item.dueDate | date:'dd/MM/yyyy':'UTC' }}</td>
+                <td>{{ item.reference || '—' }}</td>
+                <td>{{ item.status }}</td>
+                <td class="text-center">
+                  @if (item.status !== 'Paid') {
+                    <button type="button" class="btn btn-sm btn-outline-primary me-1" (click)="pay(item)"><i class="bi bi-currency-dollar"></i></button>
+                  }
+                  <button type="button" class="btn btn-sm btn-outline-danger me-1" (click)="delete(item)"><i class="bi bi-trash"></i></button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
     </div>
   }
 

@@ -9,56 +9,63 @@
       <div class="spinner-border text-secondary" role="status"><span class="visually-hidden">Carregando...</span></div>
     </div>
   } @else {
-    <div class="table-responsive">
-      <table class="table table-hover table-sm align-middle">
-        <thead class="table-light">
-          <tr>
-            <th>Aluno</th>
-            <th>Plano</th>
-            <th>Início</th>
-            <th>Término</th>
-            <th>Mensalidade</th>
-            <th>Status</th>
-            <th>Mensalidades</th>
-            <th class="text-center" style="width: 8rem">Ações</th>
-          </tr>
-        </thead>
-        <tbody>
-          @if ((items()?.items ?? []).length === 0) {
-            <tr><td colspan="8" class="text-center py-5 text-muted">Nenhum contrato encontrado.</td></tr>
-          }
-          @for (contract of items()?.items ?? []; track contract.id) {
+    <div class="surface-card">
+      <div class="table-responsive">
+        <table class="table table-hover table-sm align-middle">
+          <thead class="table-light">
             <tr>
-              <td>
-                @if (contract.personId) {
-                  <a [routerLink]="['/system/students/details', contract.personId]">{{ contract.personName }}</a>
-                } @else {
-                  {{ contract.personName }}
-                }
-              </td>
-              <td>{{ contract.feePlanName }}</td>
-              <td>{{ contract.startDate | date:'dd/MM/yyyy':'UTC' }}</td>
-              <td>{{ contract.endDate | date:'dd/MM/yyyy':'UTC' }}</td>
-              <td>{{ $any(contract.monthlyAmount) | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}</td>
-              <td>
-                <span [class]="'badge ' + ({'success': 'bg-success', 'warn': 'bg-warning text-dark', 'danger': 'bg-danger', 'info': 'bg-info text-dark', 'secondary': 'bg-secondary'})[getStatusSeverity($any(contract.status))]">{{ getStatusLabel($any(contract.status)) }}</span>
-              </td>
-              <td>
-                <span class="fee-progress">
-                  <span class="paid">{{ contract.paidFees }}</span>/{{ contract.feePlanMonthDuration }}
-                  @if (contract.overdueFees) {
-                    <span class="badge bg-danger ms-1">{{ contract.overdueFees }} vencidas</span>
-                  }
-                </span>
-              </td>
-              <td class="text-center">
-                <button type="button" class="btn btn-sm btn-outline-info" (click)="openEdit(contract)"><i class="bi bi-pencil"></i></button>
-                <button type="button" class="btn btn-sm btn-outline-danger" (click)="delete(contract)"><i class="bi bi-trash"></i></button>
-              </td>
+              <th>Aluno</th>
+              <th>Plano</th>
+              <th>Início</th>
+              <th>Término</th>
+              <th>Mensalidade</th>
+              <th>Status</th>
+              <th>Mensalidades</th>
+              <th class="text-center" style="width: 8rem">Ações</th>
             </tr>
-          }
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            @if ((items()?.items ?? []).length === 0) {
+              <tr>
+                <td colspan="8" class="empty-state">
+                  <i class="bi bi-file-earmark-text empty-icon"></i>
+                  <p class="empty-text">Nenhum contrato encontrado.</p>
+                </td>
+              </tr>
+            }
+            @for (contract of items()?.items ?? []; track contract.id) {
+              <tr>
+                <td>
+                  @if (contract.personId) {
+                    <a [routerLink]="['/system/students/details', contract.personId]">{{ contract.personName }}</a>
+                  } @else {
+                    {{ contract.personName }}
+                  }
+                </td>
+                <td>{{ contract.feePlanName }}</td>
+                <td>{{ contract.startDate | date:'dd/MM/yyyy':'UTC' }}</td>
+                <td>{{ contract.endDate | date:'dd/MM/yyyy':'UTC' }}</td>
+                <td>{{ $any(contract.monthlyAmount) | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}</td>
+                <td>
+                  <span [class]="'badge ' + ({'success': 'bg-success', 'warn': 'bg-warning text-dark', 'danger': 'bg-danger', 'info': 'bg-info text-dark', 'secondary': 'bg-secondary'})[getStatusSeverity($any(contract.status))]">{{ getStatusLabel($any(contract.status)) }}</span>
+                </td>
+                <td>
+                  <span class="fee-progress">
+                    <span class="paid">{{ contract.paidFees }}</span>/{{ contract.feePlanMonthDuration }}
+                    @if (contract.overdueFees) {
+                      <span class="badge bg-danger ms-1">{{ contract.overdueFees }} vencidas</span>
+                    }
+                  </span>
+                </td>
+                <td class="text-center">
+                  <button type="button" class="btn btn-sm btn-outline-info" (click)="openEdit(contract)"><i class="bi bi-pencil"></i></button>
+                  <button type="button" class="btn btn-sm btn-outline-danger" (click)="delete(contract)"><i class="bi bi-trash"></i></button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
     </div>
   }
 

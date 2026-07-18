@@ -302,6 +302,68 @@ li {
 .text-danger  { color: var(--brand-danger)  !important; }
 .text-success { color: var(--brand-success) !important; }
 
+/* ── Shared page layout ─────────────────────────────────────────── */
+.page-section {
+  padding: 1.5rem;
+}
+
+.page-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+  flex-wrap: wrap;
+}
+
+/* ── Elevated surface (extracted from KPI cards) ────────────────── */
+.surface-card {
+  background: var(--brand-surface);
+  border: 1px solid var(--brand-border);
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(16, 24, 40, 0.05);
+}
+
+.surface-card--interactive {
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+.surface-card--interactive:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(16, 24, 40, 0.1);
+}
+
+/* ── Modal elevation (every modal shares this hand-rolled structure) ── */
+.modal-content {
+  border: none;
+  border-radius: 12px;
+  box-shadow: 0 12px 32px rgba(16, 24, 40, 0.18);
+}
+
+/* ── Empty state ─────────────────────────────────────────────────── */
+.empty-state {
+  text-align: center;
+  padding: 3rem 1rem;
+}
+.empty-state .empty-icon {
+  font-size: 2.5rem;
+  color: var(--brand-muted);
+  display: block;
+  margin-bottom: 0.75rem;
+}
+.empty-state .empty-text {
+  margin: 0;
+  color: var(--brand-muted);
+  font-size: 0.9375rem;
+}
+
+/* ── Action button color convention ─────────────────────────────
+   Edit    → btn-outline-info
+   Delete  → btn-outline-danger
+   Money / positive action → btn-outline-primary
+   Reversal / caution action → btn-outline-warning
+   Cancel / neutral (modals) → btn-outline-secondary
+   ─────────────────────────────────────────────────────────────── */
+
 .face-recognition-page {
   min-height: calc(100vh - 140px);
   overflow-y: auto;

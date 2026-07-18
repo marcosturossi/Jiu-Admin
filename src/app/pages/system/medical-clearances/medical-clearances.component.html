@@ -9,50 +9,57 @@
       <div class="spinner-border text-secondary" role="status"><span class="visually-hidden">Carregando...</span></div>
     </div>
   } @else {
-    <div class="table-responsive">
-      <table class="table table-hover table-sm align-middle">
-        <thead class="table-light">
-          <tr>
-            <th>Aluno</th>
-            <th>Status</th>
-            <th>Expira em</th>
-            <th>Criado em</th>
-            <th class="text-center" style="width:8rem">Ações</th>
-          </tr>
-        </thead>
-        <tbody>
-          @if ((items()?.items ?? []).length === 0) {
-            <tr><td colspan="5" class="text-center py-5 text-muted">Nenhum atestado médico encontrado.</td></tr>
-          }
-          @for (clearance of items()?.items ?? []; track clearance.id) {
+    <div class="surface-card">
+      <div class="table-responsive">
+        <table class="table table-hover table-sm align-middle">
+          <thead class="table-light">
             <tr>
-              <td>
-                @if (clearance.studentId) {
-                  <a [routerLink]="['/system/students/details', clearance.studentId]"><strong>{{ clearance.studentName }}</strong></a>
-                } @else {
-                  <strong>{{ clearance.studentName }}</strong>
-                }
-              </td>
-              <td>
-                <span [class]="'badge ' + ({'success': 'bg-success', 'warn': 'bg-warning text-dark', 'danger': 'bg-danger', 'secondary': 'bg-secondary', 'info': 'bg-info text-dark'})[getStatusSeverity(clearance)]">{{ getStatusLabel(clearance) }}</span>
-              </td>
-              <td>
-                {{ clearance.expiresAt | date:'dd/MM/yyyy':'UTC' }}
-                @if (clearance.daysUntilExpiry !== undefined && $any(clearance.daysUntilExpiry) >= 0) {
-                  <small class="text-muted"> ({{ clearance.daysUntilExpiry }} dias)</small>
-                }
-              </td>
-              <td>{{ clearance.createdAt | date:'dd/MM/yyyy HH:mm' }}</td>
-              <td class="text-center">
-                <button type="button" class="btn btn-sm btn-outline-danger" (click)="deleteMedicalClearance(clearance)"><i class="bi bi-trash"></i></button>
-                @if (clearance.hasAttachment) {
-                  <button type="button" class="btn btn-sm btn-outline-secondary" (click)="openAttachment(clearance)" title="Visualizar Arquivo"><i class="bi bi-eye"></i></button>
-                }
-              </td>
+              <th>Aluno</th>
+              <th>Status</th>
+              <th>Expira em</th>
+              <th>Criado em</th>
+              <th class="text-center" style="width:8rem">Ações</th>
             </tr>
-          }
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            @if ((items()?.items ?? []).length === 0) {
+              <tr>
+                <td colspan="5" class="empty-state">
+                  <i class="bi bi-heart-pulse empty-icon"></i>
+                  <p class="empty-text">Nenhum atestado médico encontrado.</p>
+                </td>
+              </tr>
+            }
+            @for (clearance of items()?.items ?? []; track clearance.id) {
+              <tr>
+                <td>
+                  @if (clearance.studentId) {
+                    <a [routerLink]="['/system/students/details', clearance.studentId]"><strong>{{ clearance.studentName }}</strong></a>
+                  } @else {
+                    <strong>{{ clearance.studentName }}</strong>
+                  }
+                </td>
+                <td>
+                  <span [class]="'badge ' + ({'success': 'bg-success', 'warn': 'bg-warning text-dark', 'danger': 'bg-danger', 'secondary': 'bg-secondary', 'info': 'bg-info text-dark'})[getStatusSeverity(clearance)]">{{ getStatusLabel(clearance) }}</span>
+                </td>
+                <td>
+                  {{ clearance.expiresAt | date:'dd/MM/yyyy':'UTC' }}
+                  @if (clearance.daysUntilExpiry !== undefined && $any(clearance.daysUntilExpiry) >= 0) {
+                    <small class="text-muted"> ({{ clearance.daysUntilExpiry }} dias)</small>
+                  }
+                </td>
+                <td>{{ clearance.createdAt | date:'dd/MM/yyyy HH:mm' }}</td>
+                <td class="text-center">
+                  <button type="button" class="btn btn-sm btn-outline-danger" (click)="deleteMedicalClearance(clearance)"><i class="bi bi-trash"></i></button>
+                  @if (clearance.hasAttachment) {
+                    <button type="button" class="btn btn-sm btn-outline-secondary" (click)="openAttachment(clearance)" title="Visualizar Arquivo"><i class="bi bi-eye"></i></button>
+                  }
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
     </div>
   }
 

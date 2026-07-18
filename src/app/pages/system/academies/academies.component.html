@@ -26,45 +26,52 @@
       <div class="spinner-border text-secondary" role="status"><span class="visually-hidden">Carregando...</span></div>
     </div>
   } @else {
-    <div class="table-responsive">
-      <table class="table table-hover table-sm align-middle">
-        <thead class="table-light">
-          <tr>
-            <th>Nome</th>
-            <th>Slug</th>
-            <th class="text-center">Status</th>
-            <th>Criado em</th>
-            <th class="text-center" style="width: 8rem">Ações</th>
-          </tr>
-        </thead>
-        <tbody>
-          @if ((items()?.items ?? []).length === 0) {
-            <tr><td colspan="5" class="text-center py-5 text-muted">Nenhum registro encontrado.</td></tr>
-          }
-          @for (academy of items()?.items ?? []; track academy.id) {
+    <div class="surface-card">
+      <div class="table-responsive">
+        <table class="table table-hover table-sm align-middle">
+          <thead class="table-light">
             <tr>
-              <td class="font-medium">{{ academy.name }}</td>
-              <td>
-                <code class="slug-code">{{ academy.slug }}</code>
-              </td>
-              <td>
-                <span [class]="'badge ' + (academy.isActive ? 'bg-success' : 'bg-danger')">{{ academy.isActive ? 'Ativa' : 'Inativa' }}</span>
-              </td>
-              <td class="text-center">
-                {{ academy.createdAt | date:'dd/MM/yyyy' }}
-              </td>
-              <td class="text-center">
-                <button type="button" class="btn btn-sm btn-outline-info" (click)="openEdit(academy)" title="Editar">
-                  <i class="bi bi-pencil"></i>
-                </button>
-                <button type="button" class="btn btn-sm btn-outline-danger" (click)="delete(academy)" title="Excluir">
-                  <i class="bi bi-trash"></i>
-                </button>
-              </td>
+              <th>Nome</th>
+              <th>Slug</th>
+              <th class="text-center">Status</th>
+              <th>Criado em</th>
+              <th class="text-center" style="width: 8rem">Ações</th>
             </tr>
-          }
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            @if ((items()?.items ?? []).length === 0) {
+              <tr>
+                <td colspan="5" class="empty-state">
+                  <i class="bi bi-building empty-icon"></i>
+                  <p class="empty-text">Nenhum registro encontrado.</p>
+                </td>
+              </tr>
+            }
+            @for (academy of items()?.items ?? []; track academy.id) {
+              <tr>
+                <td class="font-medium">{{ academy.name }}</td>
+                <td>
+                  <code class="slug-code">{{ academy.slug }}</code>
+                </td>
+                <td>
+                  <span [class]="'badge ' + (academy.isActive ? 'bg-success' : 'bg-danger')">{{ academy.isActive ? 'Ativa' : 'Inativa' }}</span>
+                </td>
+                <td class="text-center">
+                  {{ academy.createdAt | date:'dd/MM/yyyy' }}
+                </td>
+                <td class="text-center">
+                  <button type="button" class="btn btn-sm btn-outline-info" (click)="openEdit(academy)" title="Editar">
+                    <i class="bi bi-pencil"></i>
+                  </button>
+                  <button type="button" class="btn btn-sm btn-outline-danger" (click)="delete(academy)" title="Excluir">
+                    <i class="bi bi-trash"></i>
+                  </button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
     </div>
   }
 

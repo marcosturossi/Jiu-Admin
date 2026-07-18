@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
 import { SubnavComponent } from './subnav.component';
 import { SubnavService } from '../../services/subnav.service';
 
@@ -10,6 +11,7 @@ describe('SubnavComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [SubnavComponent],
+      providers: [provideRouter([])],
     }).compileComponents();
     fixture = TestBed.createComponent(SubnavComponent);
     component = fixture.componentInstance;

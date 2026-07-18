@@ -1,8 +1,6 @@
-.page-section { padding: 1.5rem; }
-.page-toolbar { display: flex; justify-content: flex-end; margin-bottom: 1rem; }
-.summary-bar { display: flex; flex-wrap: wrap; gap: .5rem; justify-content: flex-end; margin-bottom: 1rem; font-size: .875rem; color: #6c757d; .separator { color: #ced4da; } }
+.summary-bar { display: flex; flex-wrap: wrap; gap: .5rem; justify-content: flex-end; margin-bottom: 1rem; font-size: .875rem; color: var(--brand-muted); .separator { color: var(--brand-border); } }
 .images-row { display: flex; align-items: center; gap: .375rem; flex-wrap: wrap; justify-content: center; }
 .thumb-wrap { position: relative; flex: 0 0 auto; }
-.thumb { width: 48px; height: 48px; object-fit: cover; border-radius: 0.375rem; border: 1px solid #e9ecef; }
-.primary-badge { position: absolute; top: -4px; left: -4px; background: #198754; color: white; border-radius: 50%; width: 16px; height: 16px; display: flex; align-items: center; justify-content: center; font-size: .5rem; }
-.thumb-more { width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; border: 1px solid #e9ecef; border-radius: 0.375rem; background: #f8f9fa; font-size: .8rem; font-weight: 600; color: #6c757d; }
+.thumb { width: 48px; height: 48px; object-fit: cover; border-radius: 0.375rem; border: 1px solid var(--brand-border); }
+.primary-badge { position: absolute; top: -4px; left: -4px; background: var(--brand-success); color: white; border-radius: 50%; width: 16px; height: 16px; display: flex; align-items: center; justify-content: center; font-size: .5rem; }
+.thumb-more { width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; border: 1px solid var(--brand-border); border-radius: 0.375rem; background: var(--brand-bg); font-size: .8rem; font-weight: 600; color: var(--brand-muted); }

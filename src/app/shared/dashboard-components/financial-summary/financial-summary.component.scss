@@ -29,11 +29,11 @@
     box-shadow: 0 8px 24px rgba(16, 24, 40, 0.1);
   }
 
-  &.income    { --kpi-accent: #16a34a; }
-  &.expense   { --kpi-accent: #dc2626; }
-  &.balance-pos { --kpi-accent: #2563eb; }
-  &.balance-neg { --kpi-accent: #dc2626; }
-  &.overdue   { --kpi-accent: #d97706; }
+  &.income    { --kpi-accent: var(--brand-success); }
+  &.expense   { --kpi-accent: var(--brand-danger); }
+  &.balance-pos { --kpi-accent: var(--brand-info); }
+  &.balance-neg { --kpi-accent: var(--brand-danger); }
+  &.overdue   { --kpi-accent: var(--brand-warning); }
 }
 
 .kpi-icon {
@@ -53,7 +53,7 @@
 .kpi-label {
   font-size: 0.78rem;
   font-weight: 600;
-  color: var(--brand-text-muted);
+  color: var(--brand-muted);
   text-transform: uppercase;
   letter-spacing: 0.03em;
   white-space: nowrap;
@@ -69,5 +69,5 @@
 
 .kpi-sub {
   font-size: 0.78rem;
-  color: var(--brand-text-muted);
+  color: var(--brand-muted);
 }

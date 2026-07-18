@@ -11,50 +11,57 @@
       <div class="spinner-border text-secondary" role="status"><span class="visually-hidden">Carregando...</span></div>
     </div>
   } @else {
-    <div class="table-responsive">
-      <table class="table table-hover table-sm align-middle">
-        <thead class="table-light">
-          <tr>
-            <th>Título</th>
-            <th>Tipo</th>
-            <th>Status</th>
-            <th>Usuário</th>
-            <th>Data de Criação</th>
-            <th>Data de Expiração</th>
-            <th class="text-center" style="width:8rem">Ações</th>
-          </tr>
-        </thead>
-        <tbody>
-          @if ((items()?.items ?? []).length === 0) {
-            <tr><td colspan="7" class="text-center py-5 text-muted">Nenhuma notificação encontrada.</td></tr>
-          }
-          @for (notification of items()?.items; track notification.id) {
+    <div class="surface-card">
+      <div class="table-responsive">
+        <table class="table table-hover table-sm align-middle">
+          <thead class="table-light">
             <tr>
-              <td>
-                <strong>{{ notification.title }}</strong>
-                <br /><small class="text-muted">{{ notification.message }}</small>
-              </td>
-              <td>{{ getNotificationTypeText($any(notification.type)) }}</td>
-              <td>
-                <span [class]="'badge ' + (notification.isActive ? 'bg-success' : 'bg-secondary')">
-                  {{ getStatusText(notification.isActive) }}
-                </span>
-              </td>
-              <td>{{ notification.userName || 'Todos' }}</td>
-              <td>{{ notification.createdAt | date:'dd/MM/yyyy HH:mm' }}</td>
-              <td>{{ notification.expiresAt ? (notification.expiresAt | date:'dd/MM/yyyy HH:mm') : 'Sem expiração' }}</td>
-              <td class="text-center">
-                <button type="button" class="btn btn-sm btn-outline-info me-1" (click)="openEdit(notification)">
-                  <i class="bi bi-pencil"></i>
-                </button>
-                <button type="button" class="btn btn-sm btn-outline-danger" (click)="deleteNotification(notification)">
-                  <i class="bi bi-trash"></i>
-                </button>
-              </td>
+              <th>Título</th>
+              <th>Tipo</th>
+              <th>Status</th>
+              <th>Usuário</th>
+              <th>Data de Criação</th>
+              <th>Data de Expiração</th>
+              <th class="text-center" style="width:8rem">Ações</th>
             </tr>
-          }
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            @if ((items()?.items ?? []).length === 0) {
+              <tr>
+                <td colspan="7" class="empty-state">
+                  <i class="bi bi-megaphone empty-icon"></i>
+                  <p class="empty-text">Nenhuma notificação encontrada.</p>
+                </td>
+              </tr>
+            }
+            @for (notification of items()?.items; track notification.id) {
+              <tr>
+                <td>
+                  <strong>{{ notification.title }}</strong>
+                  <br /><small class="text-muted">{{ notification.message }}</small>
+                </td>
+                <td>{{ getNotificationTypeText($any(notification.type)) }}</td>
+                <td>
+                  <span [class]="'badge ' + (notification.isActive ? 'bg-success' : 'bg-secondary')">
+                    {{ getStatusText(notification.isActive) }}
+                  </span>
+                </td>
+                <td>{{ notification.userName || 'Todos' }}</td>
+                <td>{{ notification.createdAt | date:'dd/MM/yyyy HH:mm' }}</td>
+                <td>{{ notification.expiresAt ? (notification.expiresAt | date:'dd/MM/yyyy HH:mm') : 'Sem expiração' }}</td>
+                <td class="text-center">
+                  <button type="button" class="btn btn-sm btn-outline-info me-1" (click)="openEdit(notification)">
+                    <i class="bi bi-pencil"></i>
+                  </button>
+                  <button type="button" class="btn btn-sm btn-outline-danger" (click)="deleteNotification(notification)">
+                    <i class="bi bi-trash"></i>
+                  </button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
     </div>
   }
 

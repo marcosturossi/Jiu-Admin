@@ -11,41 +11,48 @@
       <div class="spinner-border text-secondary" role="status"><span class="visually-hidden">Carregando...</span></div>
     </div>
   } @else {
-    <div class="table-responsive">
-      <table class="table table-hover table-sm align-middle">
-        <thead class="table-light">
-          <tr>
-            <th>Descrição</th>
-            <th>Status</th>
-            <th>Data de Criação</th>
-            <th class="text-center" style="width:8rem">Ações</th>
-          </tr>
-        </thead>
-        <tbody>
-          @if ((items()?.items ?? []).length === 0) {
-            <tr><td colspan="4" class="text-center py-5 text-muted">Nenhum registro encontrado.</td></tr>
-          }
-          @for (notice of items()?.items ?? []; track notice.id) {
+    <div class="surface-card">
+      <div class="table-responsive">
+        <table class="table table-hover table-sm align-middle">
+          <thead class="table-light">
             <tr>
-              <td>{{ notice.description }}</td>
-              <td>
-                <span [class]="'badge ' + (notice.isActive ? 'bg-success' : 'bg-secondary')">
-                  {{ notice.isActive ? 'Ativo' : 'Inativo' }}
-                </span>
-              </td>
-              <td>{{ notice.createdAt | date:'dd/MM/yyyy HH:mm' }}</td>
-              <td class="text-center">
-                <button type="button" class="btn btn-sm btn-outline-info me-1" (click)="openEdit(notice)">
-                  <i class="bi bi-pencil"></i>
-                </button>
-                <button type="button" class="btn btn-sm btn-outline-danger" (click)="delete(notice)">
-                  <i class="bi bi-trash"></i>
-                </button>
-              </td>
+              <th>Descrição</th>
+              <th>Status</th>
+              <th>Data de Criação</th>
+              <th class="text-center" style="width:8rem">Ações</th>
             </tr>
-          }
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            @if ((items()?.items ?? []).length === 0) {
+              <tr>
+                <td colspan="4" class="empty-state">
+                  <i class="bi bi-bell empty-icon"></i>
+                  <p class="empty-text">Nenhum registro encontrado.</p>
+                </td>
+              </tr>
+            }
+            @for (notice of items()?.items ?? []; track notice.id) {
+              <tr>
+                <td>{{ notice.description }}</td>
+                <td>
+                  <span [class]="'badge ' + (notice.isActive ? 'bg-success' : 'bg-secondary')">
+                    {{ notice.isActive ? 'Ativo' : 'Inativo' }}
+                  </span>
+                </td>
+                <td>{{ notice.createdAt | date:'dd/MM/yyyy HH:mm' }}</td>
+                <td class="text-center">
+                  <button type="button" class="btn btn-sm btn-outline-info me-1" (click)="openEdit(notice)">
+                    <i class="bi bi-pencil"></i>
+                  </button>
+                  <button type="button" class="btn btn-sm btn-outline-danger" (click)="delete(notice)">
+                    <i class="bi bi-trash"></i>
+                  </button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
     </div>
     <app-pagination
       [currentPage]="currentPage()"

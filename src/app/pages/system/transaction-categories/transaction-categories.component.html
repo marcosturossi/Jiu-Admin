@@ -11,41 +11,48 @@
       <div class="spinner-border text-secondary" role="status"><span class="visually-hidden">Carregando...</span></div>
     </div>
   } @else {
-    <div class="table-responsive">
-      <table class="table table-hover table-sm align-middle">
-        <thead class="table-light">
-          <tr>
-            <th>Nome</th>
-            <th>Status</th>
-            <th>Data de Criação</th>
-            <th class="text-center" style="width:8rem">Ações</th>
-          </tr>
-        </thead>
-        <tbody>
-          @if ((items()?.items ?? []).length === 0) {
-            <tr><td colspan="4" class="text-center py-5 text-muted">Nenhum registro encontrado.</td></tr>
-          }
-          @for (item of items()?.items ?? []; track item.id) {
+    <div class="surface-card">
+      <div class="table-responsive">
+        <table class="table table-hover table-sm align-middle">
+          <thead class="table-light">
             <tr>
-              <td>{{ item.name }}</td>
-              <td>
-                <span [class]="item.isActive ? 'badge bg-success' : 'badge bg-secondary'">
-                  {{ item.isActive ? 'Ativo' : 'Inativo' }}
-                </span>
-              </td>
-              <td>{{ item.createdAt | date:'dd/MM/yyyy' }}</td>
-              <td class="text-center">
-                <button class="btn btn-sm btn-outline-info me-1" (click)="openEdit(item)">
-                  <i class="bi bi-pencil"></i>
-                </button>
-                <button class="btn btn-sm btn-outline-danger" (click)="delete(item)">
-                  <i class="bi bi-trash"></i>
-                </button>
-              </td>
+              <th>Nome</th>
+              <th>Status</th>
+              <th>Data de Criação</th>
+              <th class="text-center" style="width:8rem">Ações</th>
             </tr>
-          }
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            @if ((items()?.items ?? []).length === 0) {
+              <tr>
+                <td colspan="4" class="empty-state">
+                  <i class="bi bi-tags empty-icon"></i>
+                  <p class="empty-text">Nenhum registro encontrado.</p>
+                </td>
+              </tr>
+            }
+            @for (item of items()?.items ?? []; track item.id) {
+              <tr>
+                <td>{{ item.name }}</td>
+                <td>
+                  <span [class]="item.isActive ? 'badge bg-success' : 'badge bg-secondary'">
+                    {{ item.isActive ? 'Ativo' : 'Inativo' }}
+                  </span>
+                </td>
+                <td>{{ item.createdAt | date:'dd/MM/yyyy' }}</td>
+                <td class="text-center">
+                  <button class="btn btn-sm btn-outline-info me-1" (click)="openEdit(item)">
+                    <i class="bi bi-pencil"></i>
+                  </button>
+                  <button class="btn btn-sm btn-outline-danger" (click)="delete(item)">
+                    <i class="bi bi-trash"></i>
+                  </button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
     </div>
   }
 

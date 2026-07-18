@@ -23,54 +23,61 @@
       <div class="spinner-border text-secondary" role="status"><span class="visually-hidden">Carregando...</span></div>
     </div>
   } @else {
-    <div class="table-responsive">
-      <table class="table table-hover table-sm align-middle">
-        <thead class="table-light">
-          <tr>
-            <th>Nome</th>
-            <th class="text-center">Imagens</th>
-            <th class="text-center" style="width:8rem">Ações</th>
-          </tr>
-        </thead>
-        <tbody>
-          @if (persons().length === 0) {
-            <tr><td colspan="3" class="text-center py-5 text-muted">Nenhuma pessoa cadastrada.</td></tr>
-          }
-          @for (person of persons(); track person.id) {
+    <div class="surface-card">
+      <div class="table-responsive">
+        <table class="table table-hover table-sm align-middle">
+          <thead class="table-light">
             <tr>
-              <td><strong>{{ person.name }}</strong></td>
-              <td class="text-center">
-                <div class="images-row">
-                  @for (img of person.images; track img.id; let i = $index) {
-                    @if (i < 4) {
-                      <div class="thumb-wrap">
-                        <img [src]="getImageSrc(img)" [alt]="person.name" class="thumb" />
-                        @if (img.is_primary) {
-                          <span class="primary-badge" title="Principal"><i class="bi bi-star-fill"></i></span>
-                        }
-                      </div>
-                    }
-                  }
-                  @if (person.images && person.images.length > 4) {
-                    <div class="thumb-more">+{{ person.images.length - 4 }}</div>
-                  }
-                  @if (!person.images || person.images.length === 0) {
-                    <small class="text-muted">Nenhuma imagem</small>
-                  }
-                </div>
-              </td>
-              <td class="text-center">
-                <button type="button" class="btn btn-sm btn-outline-info me-1" (click)="openEdit(person)">
-                  <i class="bi bi-pencil"></i>
-                </button>
-                <button type="button" class="btn btn-sm btn-outline-danger" (click)="deletePerson(person)">
-                  <i class="bi bi-trash"></i>
-                </button>
-              </td>
+              <th>Nome</th>
+              <th class="text-center">Imagens</th>
+              <th class="text-center" style="width:8rem">Ações</th>
             </tr>
-          }
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            @if (persons().length === 0) {
+              <tr>
+                <td colspan="3" class="empty-state">
+                  <i class="bi bi-person-badge empty-icon"></i>
+                  <p class="empty-text">Nenhuma pessoa cadastrada.</p>
+                </td>
+              </tr>
+            }
+            @for (person of persons(); track person.id) {
+              <tr>
+                <td><strong>{{ person.name }}</strong></td>
+                <td class="text-center">
+                  <div class="images-row">
+                    @for (img of person.images; track img.id; let i = $index) {
+                      @if (i < 4) {
+                        <div class="thumb-wrap">
+                          <img [src]="getImageSrc(img)" [alt]="person.name" class="thumb" />
+                          @if (img.is_primary) {
+                            <span class="primary-badge" title="Principal"><i class="bi bi-star-fill"></i></span>
+                          }
+                        </div>
+                      }
+                    }
+                    @if (person.images && person.images.length > 4) {
+                      <div class="thumb-more">+{{ person.images.length - 4 }}</div>
+                    }
+                    @if (!person.images || person.images.length === 0) {
+                      <small class="text-muted">Nenhuma imagem</small>
+                    }
+                  </div>
+                </td>
+                <td class="text-center">
+                  <button type="button" class="btn btn-sm btn-outline-info me-1" (click)="openEdit(person)">
+                    <i class="bi bi-pencil"></i>
+                  </button>
+                  <button type="button" class="btn btn-sm btn-outline-danger" (click)="deletePerson(person)">
+                    <i class="bi bi-trash"></i>
+                  </button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
     </div>
   }
 

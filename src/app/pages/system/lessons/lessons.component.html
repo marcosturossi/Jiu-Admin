@@ -13,45 +13,52 @@
       </div>
     </div>
   } @else {
-    <div class="table-responsive">
-      <table class="table table-hover table-sm align-middle">
-        <thead class="table-light">
-          <tr>
-            <th>Título</th>
-            <th>Descrição</th>
-            <th>Início</th>
-            <th>Duração</th>
-            <th>Status</th>
-            <th class="text-center" style="width:8rem">Ações</th>
-          </tr>
-        </thead>
-        <tbody>
-          @if ((items()?.items ?? []).length === 0) {
-            <tr><td colspan="6" class="text-center py-5 text-muted">Nenhum registro.</td></tr>
-          }
-          @for (lesson of items()?.items ?? []; track lesson.id) {
+    <div class="surface-card">
+      <div class="table-responsive">
+        <table class="table table-hover table-sm align-middle">
+          <thead class="table-light">
             <tr>
-              <td>{{ lesson.title }}</td>
-              <td>{{ lesson.description }}</td>
-              <td>{{ lesson.scheduledDate | date:'dd/MM/yyyy HH:mm' }}</td>
-              <td>{{ lesson.duration }}</td>
-              <td>
-                <span [class]="'badge ' + (lesson.isActive ? 'bg-success' : 'bg-danger')">
-                  {{ lesson.isActive ? 'Ativa' : 'Inativa' }}
-                </span>
-              </td>
-              <td class="text-center">
-                <button type="button" class="btn btn-sm btn-outline-info me-1" (click)="openEdit(lesson)">
-                  <i class="bi bi-pencil"></i>
-                </button>
-                <button type="button" class="btn btn-sm btn-outline-danger" (click)="delete(lesson)">
-                  <i class="bi bi-trash"></i>
-                </button>
-              </td>
+              <th>Título</th>
+              <th>Descrição</th>
+              <th>Início</th>
+              <th>Duração</th>
+              <th>Status</th>
+              <th class="text-center" style="width:8rem">Ações</th>
             </tr>
-          }
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            @if ((items()?.items ?? []).length === 0) {
+              <tr>
+                <td colspan="6" class="empty-state">
+                  <i class="bi bi-calendar3 empty-icon"></i>
+                  <p class="empty-text">Nenhum registro.</p>
+                </td>
+              </tr>
+            }
+            @for (lesson of items()?.items ?? []; track lesson.id) {
+              <tr>
+                <td>{{ lesson.title }}</td>
+                <td>{{ lesson.description }}</td>
+                <td>{{ lesson.scheduledDate | date:'dd/MM/yyyy HH:mm' }}</td>
+                <td>{{ lesson.duration }}</td>
+                <td>
+                  <span [class]="'badge ' + (lesson.isActive ? 'bg-success' : 'bg-danger')">
+                    {{ lesson.isActive ? 'Ativa' : 'Inativa' }}
+                  </span>
+                </td>
+                <td class="text-center">
+                  <button type="button" class="btn btn-sm btn-outline-info me-1" (click)="openEdit(lesson)">
+                    <i class="bi bi-pencil"></i>
+                  </button>
+                  <button type="button" class="btn btn-sm btn-outline-danger" (click)="delete(lesson)">
+                    <i class="bi bi-trash"></i>
+                  </button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
     </div>
   }
 

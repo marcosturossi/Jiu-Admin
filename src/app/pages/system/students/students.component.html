@@ -16,8 +16,9 @@
     </div>
   } @else {
     @if ((items()?.items ?? []).length === 0) {
-      <div class="text-center py-5 text-muted fst-italic">
-        Nenhum aluno encontrado.
+      <div class="empty-state">
+        <i class="bi bi-people empty-icon"></i>
+        <p class="empty-text">Nenhum aluno encontrado.</p>
       </div>
     }
     <div class="students-grid">
@@ -55,7 +56,7 @@
 
           <!-- Actions -->
           <div class="student-card__actions" (click)="$event.stopPropagation()">
-            <button type="button" class="btn btn-sm btn-outline-secondary"
+            <button type="button" class="btn btn-sm btn-outline-info"
               title="Editar" (click)="openEdit(student)">
               <i class="bi bi-pencil"></i>
             </button>

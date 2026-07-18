@@ -11,26 +11,32 @@
       <div class="spinner-border text-secondary" role="status"><span class="visually-hidden">Carregando...</span></div>
     </div>
   } @else {
-    <div class="table-responsive">
-      <table class="table table-hover table-sm align-middle">
-        <thead class="table-light">
-          <tr>
-            <th>Tipo</th>
-            <th>Aluno</th>
-            <th>Categoria</th>
-            <th>Descrição</th>
-            <th>Valor</th>
-            <th>Vencimento</th>
-            <th>Referência</th>
-            <th>Status</th>
-            <th class="text-center" style="width: 10rem">Ações</th>
-          </tr>
-        </thead>
-        <tbody>
-          @if ((items()?.items ?? []).length === 0) {
-            <tr><td colspan="9" class="text-center py-5 text-muted">Nenhuma conta a receber encontrada.</td></tr>
-          }
-          @for (item of items()?.items ?? []; track item.id) {
+    <div class="surface-card">
+      <div class="table-responsive">
+        <table class="table table-hover table-sm align-middle">
+          <thead class="table-light">
+            <tr>
+              <th>Tipo</th>
+              <th>Aluno</th>
+              <th>Categoria</th>
+              <th>Descrição</th>
+              <th>Valor</th>
+              <th>Vencimento</th>
+              <th>Referência</th>
+              <th>Status</th>
+              <th class="text-center" style="width: 10rem">Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            @if ((items()?.items ?? []).length === 0) {
+              <tr>
+                <td colspan="9" class="empty-state">
+                  <i class="bi bi-arrow-down-circle empty-icon"></i>
+                  <p class="empty-text">Nenhuma conta a receber encontrada.</p>
+                </td>
+              </tr>
+            }
+            @for (item of items()?.items ?? []; track item.id) {
             <tr>
               <td>
                 <span [class]="'badge ' + ({'success':'bg-success','danger':'bg-danger','secondary':'bg-secondary'})[getTypeSeverity(item.type)]">
@@ -72,8 +78,9 @@
               </td>
             </tr>
           }
-        </tbody>
-      </table>
+          </tbody>
+        </table>
+      </div>
     </div>
   }
 

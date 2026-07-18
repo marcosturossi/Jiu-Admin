@@ -15,8 +15,9 @@
     </div>
   } @else {
     @if ((items()?.items ?? []).length === 0) {
-      <div class="text-center py-5 text-muted fst-italic">
-        Nenhum fornecedor encontrado.
+      <div class="empty-state">
+        <i class="bi bi-truck empty-icon"></i>
+        <p class="empty-text">Nenhum fornecedor encontrado.</p>
       </div>
     }
     <div class="suppliers-grid">
@@ -48,7 +49,7 @@
 
           <!-- Actions -->
           <div class="supplier-card__actions" (click)="$event.stopPropagation()">
-            <button type="button" class="btn btn-sm btn-outline-secondary"
+            <button type="button" class="btn btn-sm btn-outline-info"
               title="Editar" (click)="openEdit(supplier)">
               <i class="bi bi-pencil"></i>
             </button>

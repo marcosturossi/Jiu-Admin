@@ -13,45 +13,52 @@
       </div>
     </div>
   } @else {
-    <div class="table-responsive">
-      <table class="table table-hover table-sm align-middle">
-        <thead class="table-light">
-          <tr>
-            <th>Aluno</th>
-            <th>Data Graduação</th>
-            <th>Faixa</th>
-            <th>Ordem</th>
-            <th>Para Crianças</th>
-            <th class="text-center" style="width:8rem">Ações</th>
-          </tr>
-        </thead>
-        <tbody>
-          @if ((items()?.items ?? []).length === 0) {
-            <tr><td colspan="6" class="text-center py-5 text-muted">Nenhum registro.</td></tr>
-          }
-          @for (graduation of items()?.items ?? []; track graduation.id) {
+    <div class="surface-card">
+      <div class="table-responsive">
+        <table class="table table-hover table-sm align-middle">
+          <thead class="table-light">
             <tr>
-              <td>{{ graduation.studentName }}</td>
-              <td>{{ graduation.graduationDate | date:'dd/MM/yyyy':'UTC' }}</td>
-              <td><span class="badge bg-secondary">{{ graduation.belt?.color }}</span></td>
-              <td>{{ graduation.belt?.orderIndex }}</td>
-              <td>
-                <span [class]="'badge ' + (graduation.belt?.isForKids ? 'bg-success' : 'bg-warning text-dark')">
-                  {{ graduation.belt?.isForKids ? 'Crianças' : 'Adultos' }}
-                </span>
-              </td>
-              <td class="text-center">
-                <button type="button" class="btn btn-sm btn-outline-info me-1" (click)="openEdit(graduation)">
-                  <i class="bi bi-pencil"></i>
-                </button>
-                <button type="button" class="btn btn-sm btn-outline-danger" (click)="delete(graduation)">
-                  <i class="bi bi-trash"></i>
-                </button>
-              </td>
+              <th>Aluno</th>
+              <th>Data Graduação</th>
+              <th>Faixa</th>
+              <th>Ordem</th>
+              <th>Para Crianças</th>
+              <th class="text-center" style="width:8rem">Ações</th>
             </tr>
-          }
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            @if ((items()?.items ?? []).length === 0) {
+              <tr>
+                <td colspan="6" class="empty-state">
+                  <i class="bi bi-award empty-icon"></i>
+                  <p class="empty-text">Nenhum registro.</p>
+                </td>
+              </tr>
+            }
+            @for (graduation of items()?.items ?? []; track graduation.id) {
+              <tr>
+                <td>{{ graduation.studentName }}</td>
+                <td>{{ graduation.graduationDate | date:'dd/MM/yyyy':'UTC' }}</td>
+                <td><span class="badge bg-secondary">{{ graduation.belt?.color }}</span></td>
+                <td>{{ graduation.belt?.orderIndex }}</td>
+                <td>
+                  <span [class]="'badge ' + (graduation.belt?.isForKids ? 'bg-success' : 'bg-warning text-dark')">
+                    {{ graduation.belt?.isForKids ? 'Crianças' : 'Adultos' }}
+                  </span>
+                </td>
+                <td class="text-center">
+                  <button type="button" class="btn btn-sm btn-outline-info me-1" (click)="openEdit(graduation)">
+                    <i class="bi bi-pencil"></i>
+                  </button>
+                  <button type="button" class="btn btn-sm btn-outline-danger" (click)="delete(graduation)">
+                    <i class="bi bi-trash"></i>
+                  </button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
     </div>
   }
 
