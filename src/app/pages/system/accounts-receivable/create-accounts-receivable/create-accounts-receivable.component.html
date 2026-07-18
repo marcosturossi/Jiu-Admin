@@ -40,6 +40,12 @@
   </div>
 
   <div class="mb-3">
+    <label for="dueDate">Vencimento <span class="text-danger">*</span></label>
+    <input type="date" class="form-control" id="dueDate" formControlName="dueDate" />
+    <app-field-error [control]="form.get('dueDate')" />
+  </div>
+
+  <div class="mb-3">
     <label for="reference">Referência</label>
     <input type="text" class="form-control" id="reference" formControlName="reference" placeholder="Opcional" />
   </div>

@@ -13,6 +13,7 @@ import { FilterComponent } from '../../../shared/filter/filter.component';
 import { FilterOutput } from '../../../shared/filter/filter.types';
 import { PaginationComponent } from '../../../shared/pagination/pagination.component';
 import { PageResult } from '../../../utils/page-result';
+import { activeBadge } from '../../../shared/status-badge';
 
 @Component({
   selector: 'app-notification',
@@ -100,9 +101,7 @@ export class NotificationComponent {
     }
   }
 
-  protected getStatusSeverity(isActive?: boolean): 'success' | 'secondary' {
-    return isActive ? 'success' : 'secondary';
-  }
+  protected readonly activeBadgeClass = (isActive: boolean | undefined) => activeBadge(isActive).cssClass;
 
   protected getStatusText(isActive?: boolean): string {
     return isActive ? 'Ativa' : 'Inativa';

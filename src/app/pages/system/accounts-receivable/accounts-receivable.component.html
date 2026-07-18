@@ -39,7 +39,7 @@
             @for (item of items()?.items ?? []; track item.id) {
             <tr>
               <td>
-                <span [class]="'badge ' + ({'success':'bg-success','danger':'bg-danger','secondary':'bg-secondary'})[getTypeSeverity(item.type)]">
+                <span [class]="'badge ' + getTypeBadge(item.type).cssClass">
                   {{ getTypeLabel(item.type) }}
                 </span>
               </td>
@@ -58,7 +58,9 @@
 
               <td>{{ item.dueDate | date:'dd/MM/yyyy':'UTC' }}</td>
               <td>{{ item.reference || '—' }}</td>
-              <td>{{ item.status }}</td>
+              <td>
+                <span [class]="'badge ' + getFeeStatusBadge(item.status).cssClass">{{ getFeeStatusBadge(item.status).label }}</span>
+              </td>
               <td class="text-center">
                 @if (item.status === "Paid") {
                   <button type="button" class="btn btn-sm btn-outline-secondary" title="Baixar Recibo" (click)="getPdfReceipt(item)" [disabled]="isDownloading()">

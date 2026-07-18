@@ -38,11 +38,11 @@ const NAV_ITEMS = NAV_SECTIONS.flatMap(section => section.items);
       background: var(--brand-bg);
       border: 1px solid var(--brand-border);
       color: var(--brand-primary);
-      font-size: 1.1rem;
+      font-size: 1rem;
       flex-shrink: 0;
     }
     .page-title {
-      font-size: 1.35rem;
+      font-size: 1.25rem;
       font-weight: 600;
       color: var(--brand-text);
       margin: 0;

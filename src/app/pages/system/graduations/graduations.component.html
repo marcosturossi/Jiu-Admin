@@ -42,7 +42,7 @@
                 <td><span class="badge bg-secondary">{{ graduation.belt?.color }}</span></td>
                 <td>{{ graduation.belt?.orderIndex }}</td>
                 <td>
-                  <span [class]="'badge ' + (graduation.belt?.isForKids ? 'bg-success' : 'bg-warning text-dark')">
+                  <span [class]="'badge ' + forKidsBadgeClass(graduation.belt?.isForKids)">
                     {{ graduation.belt?.isForKids ? 'Crianças' : 'Adultos' }}
                   </span>
                 </td>

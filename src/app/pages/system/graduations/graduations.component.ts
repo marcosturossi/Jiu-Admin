@@ -11,6 +11,7 @@ import { FilterComponent } from '../../../shared/filter/filter.component';
 import { FilterOutput } from '../../../shared/filter/filter.types';
 import { PaginationComponent } from '../../../shared/pagination/pagination.component';
 import { PageResult } from '../../../utils/page-result';
+import { forKidsBadgeClass } from '../../../shared/status-badge';
 
 @Component({
   selector: 'app-graduations',
@@ -36,6 +37,7 @@ export class GraduationsComponent {
   protected readonly openedCreate = signal(false);
   protected readonly openedUpdate = signal(false);
   protected readonly selected = signal<ShowGraduationDTO | null>(null);
+  protected readonly forKidsBadgeClass = forKidsBadgeClass;
   protected readonly currentPage = signal(1);
   protected readonly pageSize = signal(10);
 

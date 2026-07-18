@@ -35,7 +35,7 @@
               <tr>
                 <td>{{ belt.color }}</td>
                 <td><span class="badge bg-info text-dark">{{ belt.orderIndex }}</span></td>
-                <td><span [class]="'badge ' + (belt.isForKids ? 'bg-success' : 'bg-warning text-dark')">{{ belt.isForKids ? 'Sim' : 'Não' }}</span></td>
+                <td><span [class]="'badge ' + forKidsBadgeClass(belt.isForKids)">{{ belt.isForKids ? 'Sim' : 'Não' }}</span></td>
                 <td class="text-center">
                   <button type="button" class="btn btn-sm btn-outline-info" (click)="openEdit(belt)" title="Editar">
                     <i class="bi bi-pencil"></i>

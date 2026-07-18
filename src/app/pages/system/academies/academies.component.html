@@ -54,7 +54,7 @@
                   <code class="slug-code">{{ academy.slug }}</code>
                 </td>
                 <td>
-                  <span [class]="'badge ' + (academy.isActive ? 'bg-success' : 'bg-danger')">{{ academy.isActive ? 'Ativa' : 'Inativa' }}</span>
+                  <span [class]="'badge ' + activeBadgeClass(academy.isActive)">{{ academy.isActive ? 'Ativa' : 'Inativa' }}</span>
                 </td>
                 <td class="text-center">
                   {{ academy.createdAt | date:'dd/MM/yyyy' }}

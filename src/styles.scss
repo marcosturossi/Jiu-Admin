@@ -302,6 +302,11 @@ li {
 .text-danger  { color: var(--brand-danger)  !important; }
 .text-success { color: var(--brand-success) !important; }
 
+/* One step past Bootstrap's own .fs-1–.fs-6 scale (which bottoms out at 1rem) —
+   this app has a heavily-used sub-1rem "meta text" size (badges/labels/hints)
+   that Bootstrap doesn't provide natively. Not a new scale, just the missing step. */
+.fs-7 { font-size: .75rem; }
+
 /* ── Shared page layout ─────────────────────────────────────────── */
 .page-section {
   padding: 1.5rem;
@@ -353,7 +358,7 @@ li {
 .empty-state .empty-text {
   margin: 0;
   color: var(--brand-muted);
-  font-size: 0.9375rem;
+  font-size: 0.875rem;
 }
 
 /* ── Action button color convention ─────────────────────────────

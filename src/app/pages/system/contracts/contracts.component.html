@@ -47,7 +47,7 @@
                 <td>{{ contract.endDate | date:'dd/MM/yyyy':'UTC' }}</td>
                 <td>{{ $any(contract.monthlyAmount) | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}</td>
                 <td>
-                  <span [class]="'badge ' + ({'success': 'bg-success', 'warn': 'bg-warning text-dark', 'danger': 'bg-danger', 'info': 'bg-info text-dark', 'secondary': 'bg-secondary'})[getStatusSeverity($any(contract.status))]">{{ getStatusLabel($any(contract.status)) }}</span>
+                  <span [class]="'badge ' + getStatusBadge($any(contract.status)).cssClass">{{ getStatusBadge($any(contract.status)).label }}</span>
                 </td>
                 <td>
                   <span class="fee-progress">

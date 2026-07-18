@@ -15,6 +15,7 @@ import { extractErrorMessage } from '../../../utils/error.utils';
 import { PaginationComponent } from '../../../shared/pagination/pagination.component';
 import { CreateAcademyComponent } from './create-academy/create-academy.component';
 import { UpdateAcademyComponent } from './update-academy/update-academy.component';
+import { activeBadge } from '../../../shared/status-badge';
 
 @Component({
   selector: 'app-academies',
@@ -40,6 +41,7 @@ export class AcademiesComponent {
   protected readonly openedCreate = signal(false);
   protected readonly openedUpdate = signal(false);
   protected readonly selected = signal<ShowAcademyDto | null>(null);
+  protected readonly activeBadgeClass = (isActive: boolean | undefined) => activeBadge(isActive).cssClass;
   protected readonly currentPage = signal(1);
   protected readonly pageSize = signal(10);
   protected readonly searchName = signal('');

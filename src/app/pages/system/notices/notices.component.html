@@ -35,8 +35,8 @@
               <tr>
                 <td>{{ notice.description }}</td>
                 <td>
-                  <span [class]="'badge ' + (notice.isActive ? 'bg-success' : 'bg-secondary')">
-                    {{ notice.isActive ? 'Ativo' : 'Inativo' }}
+                  <span [class]="'badge ' + activeBadge(notice.isActive).cssClass">
+                    {{ activeBadge(notice.isActive).label }}
                   </span>
                 </td>
                 <td>{{ notice.createdAt | date:'dd/MM/yyyy HH:mm' }}</td>

@@ -48,6 +48,7 @@ export class CreateAccountsReceivableComponent {
     description: [''],
     amount: [null as number | null, [Validators.required, Validators.min(0.01)]],
     transactionDate: [todayDateString(), Validators.required],
+    dueDate: [todayDateString(), Validators.required],
     reference: [''],
   });
 
@@ -61,6 +62,7 @@ export class CreateAccountsReceivableComponent {
       description: v.description || undefined,
       amount: v.amount as any,
       transactionDate: v.transactionDate ?? undefined,
+      dueDate: v.dueDate ?? undefined,
       reference: v.reference || null,
     }).subscribe({
       next: () => {

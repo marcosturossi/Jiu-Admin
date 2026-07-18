@@ -12,6 +12,7 @@ import { PaginationComponent } from '../../../shared/pagination/pagination.compo
 import { PageResult } from '../../../utils/page-result';
 import { CreateNoticeComponent } from './create-notice/create-notice.component';
 import { UpdateNoticeComponent } from './update-notice/update-notice.component';
+import { activeBadge } from '../../../shared/status-badge';
 
 @Component({
   selector: 'app-notices',
@@ -38,6 +39,7 @@ export class NoticesComponent {
   protected readonly openedCreate = signal(false);
   protected readonly openedUpdate = signal(false);
   protected readonly selected = signal<ShowNoticeDto | null>(null);
+  protected readonly activeBadge = activeBadge;
   protected readonly currentPage = signal(1);
   protected readonly pageSize = signal(10);
   protected readonly filterText = signal<string | undefined>(undefined);

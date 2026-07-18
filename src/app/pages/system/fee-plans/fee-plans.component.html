@@ -40,8 +40,8 @@
                 <td>{{ item.monthDuration }} meses</td>
                 <td>{{ $any(item.price) | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}</td>
                 <td>
-                  <span [class]="'badge ' + (item.isActive ? 'bg-success' : 'bg-secondary')">
-                    {{ item.isActive ? 'Ativo' : 'Inativo' }}
+                  <span [class]="'badge ' + activeBadge(item.isActive).cssClass">
+                    {{ activeBadge(item.isActive).label }}
                   </span>
                 </td>
                 <td class="text-center">

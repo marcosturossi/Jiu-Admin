@@ -14,6 +14,7 @@ import { PaginationComponent } from '../../../shared/pagination/pagination.compo
 import { CreateContractComponent } from './create-contract/create-contract.component';
 import { UpdateContractComponent } from './update-contract/update-contract.component';
 import { PageResult } from '../../../utils/page-result';
+import { contractStatusBadge } from '../../../shared/status-badge';
 
 @Component({
   selector: 'app-contracts',
@@ -90,29 +91,7 @@ export class ContractsComponent {
     });
   }
 
-  protected getStatusSeverity(status?: number | string): 'success' | 'warn' | 'danger' | 'info' | 'secondary' {
-    switch (status) {
-      case ContractStatus.Active: return 'success';
-      case ContractStatus.Inactive:
-      case ContractStatus.Expired: return 'secondary';
-      case ContractStatus.Suspended: return 'warn';
-      case ContractStatus.Terminated: return 'info';
-      case ContractStatus.Cancelled: return 'danger';
-      default: return 'secondary';
-    }
-  }
-
-  protected getStatusLabel(status?: number | string): string {
-    switch (status) {
-      case ContractStatus.Active: return 'Ativo';
-      case ContractStatus.Inactive: return 'Inativo';
-      case ContractStatus.Suspended: return 'Suspenso';
-      case ContractStatus.Terminated: return 'Encerrado';
-      case ContractStatus.Cancelled: return 'Cancelado';
-      case ContractStatus.Expired: return 'Expirado';
-      default: return '—';
-    }
-  }
+  protected readonly getStatusBadge = contractStatusBadge;
 
   protected getStudentName(id?: string): string {
     return id ? (this.studentMap().get(id) ?? id) : '—';

@@ -10,6 +10,7 @@ import { FilterOutput } from '../../../shared/filter/filter.types';
 import { PaginationComponent } from '../../../shared/pagination/pagination.component';
 import { CreateFeePlanComponent } from './create-fee-plan/create-fee-plan.component';
 import { UpdateFeePlanComponent } from './update-fee-plan/update-fee-plan.component';
+import { activeBadge } from '../../../shared/status-badge';
 import { PageResult } from '../../../utils/page-result';
 
 @Component({
@@ -37,6 +38,7 @@ export class FeePlansComponent {
   protected readonly openedCreate = signal(false);
   protected readonly openedUpdate = signal(false);
   protected readonly selected = signal<ShowFeePlanDTO | null>(null);
+  protected readonly activeBadge = activeBadge;
   protected readonly currentPage = signal(1);
   protected readonly pageSize = signal(10);
   protected readonly filterText = signal<string | undefined>(undefined);

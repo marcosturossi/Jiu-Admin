@@ -54,14 +54,16 @@ export class OverdueFeesComponent implements OnInit {
 
   protected formatDate(dateStr: string | null | undefined): string {
     if (!dateStr) return '—';
-    const d = new Date(dateStr);
-    return d.toLocaleDateString('pt-BR');
+    const [y, m, d] = dateStr.split('-').map(Number);
+    return `${String(d).padStart(2, '0')}/${String(m).padStart(2, '0')}/${y}`;
   }
 
   protected daysOverdue(dateStr: string | null | undefined): number {
     if (!dateStr) return 0;
-    const due = new Date(dateStr);
-    const today = new Date();
-    return Math.max(0, Math.floor((today.getTime() - due.getTime()) / 86_400_000));
+    const [y, m, d] = dateStr.split('-').map(Number);
+    const due = Date.UTC(y, m - 1, d);
+    const now = new Date();
+    const today = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate());
+    return Math.max(0, Math.floor((today - due) / 86_400_000));
   }
 }

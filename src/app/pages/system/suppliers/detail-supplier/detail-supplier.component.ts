@@ -9,6 +9,7 @@ import { ShowAccountsPayableDTO } from '../../../../generated_services/model/sho
 import { NotificationService } from '../../../../services/notification.service';
 import { SubnavService } from '../../../../services/subnav.service';
 import { UpdateSupplierComponent } from '../update-supplier/update-supplier.component';
+import { feeStatusBadge as getFeeStatusBadge } from '../../../../shared/status-badge';
 
 @Component({
   selector: 'app-detail-supplier',
@@ -91,25 +92,11 @@ export class DetailSupplierComponent implements OnInit {
   }
 
   protected transactionStatusBadge(status: string | undefined): string {
-    switch (status) {
-      case 'Paid':      return 'bg-success';
-      case 'Pending':   return 'bg-warning text-dark';
-      case 'Overdue':   return 'bg-danger';
-      case 'Cancelled': return 'bg-secondary';
-      case 'Refunded':  return 'bg-secondary';
-      default:          return 'bg-secondary';
-    }
+    return getFeeStatusBadge(status).cssClass;
   }
 
   protected transactionStatusLabel(status: string | undefined): string {
-    const map: Record<string, string> = {
-      Paid:      'Pago',
-      Pending:   'Pendente',
-      Overdue:   'Vencido',
-      Cancelled: 'Cancelado',
-      Refunded:  'Reembolsado',
-    };
-    return map[status ?? ''] ?? status ?? '';
+    return getFeeStatusBadge(status).label;
   }
 
   protected addressTypeLabel(type: string | undefined): string {

@@ -13,6 +13,7 @@ import { PaginationComponent } from '../../../shared/pagination/pagination.compo
 import { CreateAccountsPayableComponent } from './create-accounts-payable/create-accounts-payable.component';
 import { PayAccountsPayableComponent } from './pay-accounts-payable/pay-accounts-payable.component';
 import { PageResult } from '../../../utils/page-result';
+import { feeStatusBadge } from '../../../shared/status-badge';
 
 @Component({
   selector: 'app-accounts-payable',
@@ -93,6 +94,8 @@ export class AccountsPayableComponent {
   protected getAmount(item: ShowAccountsPayableDTO): number {
     return (item.amount as unknown as number) ?? 0;
   }
+
+  protected readonly getFeeStatusBadge = feeStatusBadge;
 
   protected getCategoryName(id?: string | null): string {
     if (!id) return '—';

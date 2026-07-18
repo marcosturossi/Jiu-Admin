@@ -35,8 +35,8 @@
               <tr>
                 <td>{{ item.name }}</td>
                 <td>
-                  <span [class]="item.isActive ? 'badge bg-success' : 'badge bg-secondary'">
-                    {{ item.isActive ? 'Ativo' : 'Inativo' }}
+                  <span [class]="'badge ' + activeBadge(item.isActive).cssClass">
+                    {{ activeBadge(item.isActive).label }}
                   </span>
                 </td>
                 <td>{{ item.createdAt | date:'dd/MM/yyyy' }}</td>

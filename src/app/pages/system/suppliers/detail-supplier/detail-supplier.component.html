@@ -140,10 +140,10 @@
                 </div>
                 <div class="transaction-item__dates">
                   @if (tx.transactionDate) {
-                    <span class="text-muted small">Data: {{ tx.transactionDate | date:'dd/MM/yyyy' }}</span>
+                    <span class="text-muted small">Data: {{ tx.transactionDate | date:'dd/MM/yyyy':'UTC' }}</span>
                   }
                   @if (tx.dueDate) {
-                    <span class="text-muted small">Vencimento: {{ tx.dueDate | date:'dd/MM/yyyy' }}</span>
+                    <span class="text-muted small">Vencimento: {{ tx.dueDate | date:'dd/MM/yyyy':'UTC' }}</span>
                   }
                   @if (tx.paidAt) {
                     <span class="text-muted small">Pago em: {{ tx.paidAt | date:'dd/MM/yyyy' }}</span>

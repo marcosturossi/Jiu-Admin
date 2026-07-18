@@ -12,6 +12,7 @@ import { FilterComponent } from '../../../shared/filter/filter.component';
 import { FilterOutput } from '../../../shared/filter/filter.types';
 import { PaginationComponent } from '../../../shared/pagination/pagination.component';
 import { PageResult } from '../../../utils/page-result';
+import { activeBadge } from '../../../shared/status-badge';
 
 @Component({
   selector: 'app-lessons',
@@ -37,6 +38,7 @@ export class LessonsComponent {
   protected readonly openedCreate = signal(false);
   protected readonly openedUpdate = signal(false);
   protected readonly selected = signal<ShowLessonDTO | null>(null);
+  protected readonly activeBadgeClass = (isActive: boolean | undefined) => activeBadge(isActive).cssClass;
   protected readonly currentPage = signal(1);
   protected readonly pageSize = signal(10);
   protected readonly filterText = signal<string | undefined>(undefined);

@@ -43,7 +43,9 @@
                 </td>
                 <td>{{ item.dueDate | date:'dd/MM/yyyy':'UTC' }}</td>
                 <td>{{ item.reference || '—' }}</td>
-                <td>{{ item.status }}</td>
+                <td>
+                  <span [class]="'badge ' + getFeeStatusBadge(item.status).cssClass">{{ getFeeStatusBadge(item.status).label }}</span>
+                </td>
                 <td class="text-center">
                   @if (item.status !== 'Paid') {
                     <button type="button" class="btn btn-sm btn-outline-primary me-1" (click)="pay(item)"><i class="bi bi-currency-dollar"></i></button>

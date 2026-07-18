@@ -10,6 +10,7 @@ import { FilterOutput } from '../../../shared/filter/filter.types';
 import { PaginationComponent } from '../../../shared/pagination/pagination.component';
 import { CreateTransactionCategoryComponent } from './create-transaction-category/create-transaction-category.component';
 import { UpdateTransactionCategoryComponent } from './update-transaction-category/update-transaction-category.component';
+import { activeBadge } from '../../../shared/status-badge';
 import { PageResult } from '../../../utils/page-result';
 
 @Component({
@@ -37,6 +38,7 @@ export class TransactionCategoriesComponent {
   protected readonly openedCreate = signal(false);
   protected readonly openedUpdate = signal(false);
   protected readonly selected = signal<ShowTransactionCategoryDTO | null>(null);
+  protected readonly activeBadge = activeBadge;
   protected readonly currentPage = signal(1);
   protected readonly pageSize = signal(10);
   protected readonly filterText = signal<string | undefined>(undefined);

@@ -73,7 +73,7 @@
         <div class="info-row"><span class="info-label">Telefone</span><span>{{ student()?.phoneNumber ?? '—' }}</span></div>
         <div class="info-row">
           <span class="info-label">Data de Nascimento</span>
-          <span>{{ student()?.birthDay ? (student()!.birthDay! | date:'dd/MM/yyyy') : '—' }}</span>
+          <span>{{ student()?.birthDay ? (student()!.birthDay! | date:'dd/MM/yyyy':'UTC') : '—' }}</span>
         </div>
         <div class="info-row">
           <span class="info-label">Cadastrado em</span>
@@ -158,9 +158,9 @@
             <div class="info-row">
               <span class="info-label">Período</span>
               <span>
-                {{ contract.startDate ? (contract.startDate | date:'dd/MM/yyyy') : '—' }}
+                {{ contract.startDate ? (contract.startDate | date:'dd/MM/yyyy':'UTC') : '—' }}
                 →
-                {{ contract.endDate ? (contract.endDate | date:'dd/MM/yyyy') : '—' }}
+                {{ contract.endDate ? (contract.endDate | date:'dd/MM/yyyy':'UTC') : '—' }}
               </span>
             </div>
             <div class="info-row">
@@ -199,7 +199,7 @@
                 <strong>{{ grad.belt?.color ?? 'Faixa não informada' }}</strong>
                 <span class="text-muted small ms-2">{{ stripesLabel(grad.stripes) }}</span>
                 <br>
-                <span class="text-muted small">{{ grad.graduationDate | date:'dd/MM/yyyy' }}</span>
+                <span class="text-muted small">{{ grad.graduationDate | date:'dd/MM/yyyy':'UTC' }}</span>
               </div>
             </div>
           }

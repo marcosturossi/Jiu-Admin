@@ -18,6 +18,7 @@ import { CreateAccountsReceivableComponent } from './create-accounts-receivable/
 import { PageResult } from '../../../utils/page-result';
 import { PaymentWithMoneyComponent } from './payment-with-money/payment-with-money.component';
 import { RefundAccountsReceivableComponent } from './refund-accounts-receivable/refund-accounts-receivable.component';
+import { transactionTypeBadge, feeStatusBadge } from '../../../shared/status-badge';
 
 @Component({
   selector: 'app-accounts-receivable',
@@ -134,14 +135,8 @@ export class AccountsReceivableComponent {
     });
   }
 
-  protected getTypeSeverity(type?: number | string): 'success' | 'danger' | 'secondary' {
-    switch (type) {
-      case 0: case TransactionType.Income: return 'success';
-      case 2: case TransactionType.Refund:
-      case 3: case TransactionType.Adjustment:
-      default: return 'secondary';
-    }
-  }
+  protected readonly getTypeBadge = transactionTypeBadge;
+  protected readonly getFeeStatusBadge = feeStatusBadge;
 
   protected openRefund(item: ShowAccountsReceivableDTO): void {
     this.selectedItem.set(item);

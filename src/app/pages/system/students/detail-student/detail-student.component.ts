@@ -15,6 +15,7 @@ import { NotificationService } from '../../../../services/notification.service';
 import { extractErrorMessage } from '../../../../utils/error.utils';
 import { SubnavService } from '../../../../services/subnav.service';
 import { UpdateStudentComponent } from '../update-student/update-student.component';
+import { contractStatusBadge as getContractStatusBadge } from '../../../../shared/status-badge';
 
 @Component({
   selector: 'app-detail-student',
@@ -201,24 +202,11 @@ export class DetailStudentComponent implements OnInit {
   }
 
   protected contractStatusBadge(status: string | undefined): string {
-    switch (status) {
-      case 'Active':      return 'bg-success';
-      case 'Inactive':    return 'bg-secondary';
-      case 'Suspended':   return 'bg-warning text-dark';
-      default:            return 'bg-danger';
-    }
+    return getContractStatusBadge(status).cssClass;
   }
 
   protected contractStatusLabel(status: string | undefined): string {
-    const map: Record<string, string> = {
-      Active:      'Ativo',
-      Inactive:    'Inativo',
-      Suspended:   'Suspenso',
-      Terminated:  'Encerrado',
-      Cancelled:   'Cancelado',
-      Expired:     'Expirado',
-    };
-    return map[status ?? ''] ?? status ?? '';
+    return getContractStatusBadge(status).label;
   }
 
   protected stripesLabel(stripes: string | undefined): string {

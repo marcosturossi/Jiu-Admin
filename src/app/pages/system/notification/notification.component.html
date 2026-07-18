@@ -42,7 +42,7 @@
                 </td>
                 <td>{{ getNotificationTypeText($any(notification.type)) }}</td>
                 <td>
-                  <span [class]="'badge ' + (notification.isActive ? 'bg-success' : 'bg-secondary')">
+                  <span [class]="'badge ' + activeBadgeClass(notification.isActive)">
                     {{ getStatusText(notification.isActive) }}
                   </span>
                 </td>

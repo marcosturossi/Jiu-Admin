@@ -17,7 +17,7 @@
   display: flex;
   align-items: center;
   gap: 1rem;
-  padding: 1.1rem 1.25rem;
+  padding: 1rem 1.25rem;
   border-radius: 10px;
   background: var(--brand-surface);
   border: 1px solid var(--brand-border);
@@ -51,7 +51,7 @@
 }
 
 .kpi-label {
-  font-size: 0.78rem;
+  font-size: 0.75rem;
   font-weight: 600;
   color: var(--brand-muted);
   text-transform: uppercase;
@@ -60,7 +60,7 @@
 }
 
 .kpi-value {
-  font-size: 1.35rem;
+  font-size: 1.25rem;
   font-weight: 700;
   color: var(--kpi-accent);
   line-height: 1.2;
@@ -68,6 +68,6 @@
 }
 
 .kpi-sub {
-  font-size: 0.78rem;
+  font-size: 0.75rem;
   color: var(--brand-muted);
 }

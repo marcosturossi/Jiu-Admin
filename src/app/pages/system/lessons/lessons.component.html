@@ -42,7 +42,7 @@
                 <td>{{ lesson.scheduledDate | date:'dd/MM/yyyy HH:mm' }}</td>
                 <td>{{ lesson.duration }}</td>
                 <td>
-                  <span [class]="'badge ' + (lesson.isActive ? 'bg-success' : 'bg-danger')">
+                  <span [class]="'badge ' + activeBadgeClass(lesson.isActive)">
                     {{ lesson.isActive ? 'Ativa' : 'Inativa' }}
                   </span>
                 </td>

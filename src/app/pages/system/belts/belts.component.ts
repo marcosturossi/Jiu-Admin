@@ -10,6 +10,7 @@ import { PaginationComponent } from '../../../shared/pagination/pagination.compo
 import { CreateBeltComponent } from './create-belt/create-belt.component';
 import { UpdateBeltComponent } from './update-belt/update-belt.component';
 import { PageResult } from '../../../utils/page-result';
+import { forKidsBadgeClass } from '../../../shared/status-badge';
 
 @Component({
   selector: 'app-belts',
@@ -34,6 +35,7 @@ export class BeltsComponent {
   protected readonly openedCreate = signal(false);
   protected readonly openedUpdate = signal(false);
   protected readonly selected = signal<ShowBeltDTO | null>(null);
+  protected readonly forKidsBadgeClass = forKidsBadgeClass;
   protected readonly currentPage = signal(1);
   protected readonly pageSize = signal(10);
   protected readonly filterText = signal<string | undefined>(undefined);
