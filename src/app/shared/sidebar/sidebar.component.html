@@ -1,107 +1,50 @@
-<nav class="sidebar navbar-expand-lg my-0 pe-1">
-  <!-- Mobile overlay background -->
-  <div class="sidebar-overlay d-lg-none" (click)="closeSidebar()"></div>
-  
-  <!-- Sidebar header for mobile -->
-  <div class="sidebar-header d-lg-none">
-    <div class="d-flex justify-content-between align-items-center p-3">
-      <span class="sidebar-title text-white">Menu</span>
-      <button class="btn btn-close-sidebar" (click)="closeSidebar()">
-        <i class="bi bi-x-lg text-white"></i>
-      </button>
-    </div>
-  </div>
-
-  <div class="sidebar-content">
-    <ul class="pt-3">
-      <li>
-        <a class="d-flex p-3 p-lg-4 sidebar-link" 
-           [class.active]="isActiveRoute('/system/home')"
-           (click)="navigateTo('/system/home', $event)">
-          <img class="pe-2 sidebar-icon" src="../../../assets/icons/sidebar/house.svg">
-          <p class="nav mb-0">Home</p>
-        </a>
-      </li>
-      <li>
-        <a class="d-flex p-3 p-lg-4 sidebar-link" 
-           [class.active]="isActiveRoute('/system/students')"
-           (click)="navigateTo('/system/students', $event)">
-          <img class="pe-2 sidebar-icon" src="../../../assets/icons/sidebar/person.svg" alt="Alunos">
-          <p class="nav mb-0">Alunos</p>
-        </a>
-      </li>
-      <li>
-        <a class="d-flex p-3 p-lg-4 sidebar-link" 
-           [class.active]="isActiveRoute('/system/lessons')"
-           (click)="navigateTo('/system/lessons', $event)">
-          <img class="pe-2 sidebar-icon" src="../../../assets/icons/sidebar/calendar3.svg" alt="Aulas">
-          <p class="nav mb-0">Aulas</p>
-        </a>
-      </li>
-      <li>
-        <a class="d-flex p-3 p-lg-4 sidebar-link" 
-           [class.active]="isActiveRoute('/system/graduations')"
-           (click)="navigateTo('/system/graduations', $event)">
-          <img class="pe-2 sidebar-icon" src="../../../assets/icons/sidebar/award.svg" alt="Graduações">
-          <p class="nav mb-0">Graduações</p>
-        </a>
-      </li>
-      <li>
-        <a class="d-flex p-3 p-lg-4 sidebar-link" 
-           [class.active]="isActiveRoute('/system/frequencies')"
-           (click)="navigateTo('/system/frequencies', $event)">
-          <img class="pe-2 sidebar-icon" src="../../../assets/icons/sidebar/check2-square.svg" alt="Frequencias">
-          <p class="nav mb-0">Frequências</p>
-        </a>
-      </li>
-      <li>
-        <a class="d-flex p-3 p-lg-4 sidebar-link" 
-           [class.active]="isActiveRoute('/system/belts')"
-           (click)="navigateTo('/system/belts', $event)">
-          <img class="pe-2 sidebar-icon" src="../../../assets/icons/sidebar/bookmark-star.svg" alt="Faixas">
-          <p class="nav mb-0">Faixas</p>
-        </a>
-      </li>
-      <li>
-        <a class="d-flex p-3 p-lg-4 sidebar-link" 
-           [class.active]="isActiveRoute('/system/graduation-requirements')"
-           (click)="navigateTo('/system/graduation-requirements', $event)">
-          <img class="pe-2 sidebar-icon" src="../../../assets/icons/sidebar/list-check.svg" alt="Requisitos de Faixas">
-          <p class="nav mb-0">Requisitos de Faixas</p>
-        </a>
-      </li>
-      <li>
-        <a class="d-flex p-3 p-lg-4 sidebar-link" 
-           [class.active]="isActiveRoute('/system/notices')"
-           (click)="navigateTo('/system/notices', $event)">
-          <img class="pe-2 sidebar-icon" src="../../../assets/icons/sidebar/bell.svg" alt="Noticias">
-          <p class="nav mb-0">Avisos</p>
-        </a>
-      </li>
-      <li>
-        <a class="d-flex p-3 p-lg-4 sidebar-link" 
-           [class.active]="isActiveRoute('/system/notification')"
-           (click)="navigateTo('/system/notification', $event)">
-          <img class="pe-2 sidebar-icon" src="../../../assets/icons/sidebar/megaphone.svg" alt="Notificações">
-          <p class="nav mb-0">Notificações</p>
-        </a>
-      </li>
-      <li>
-        <a class="d-flex p-3 p-lg-4 sidebar-link" 
-           [class.active]="isActiveRoute('/system/face-recognition')"
-           (click)="navigateTo('/system/face-recognition', $event)">
-          <img class="pe-2 sidebar-icon" src="../../../assets/icons/sidebar/person-check.svg" alt="Reconhecimento">
-          <p class="nav mb-0">Reconhecimento</p>
-        </a>
-      </li>
-      <li>
-        <a class="d-flex p-3 p-lg-4 sidebar-link" 
-           [class.active]="isActiveRoute('/system/medical-clearances')"
-           (click)="navigateTo('/system/medical-clearances', $event)">
-          <img class="pe-2 sidebar-icon" src="../../../assets/icons/sidebar/file-medical.svg" alt="Atestados Médicos">
-          <p class="nav mb-0">Atestados Médicos</p>
-        </a>
-      </li>
-    </ul>
-  </div>
+<nav class="sidebar" [class.expanded]="sidebarExpanded()">
+  <nav class="sidebar-nav">
+    @if (sidebarExpanded()) {
+      @for (section of sections; track section.title) {
+        <div class="sidebar-section">
+          <button class="sidebar-group-header" (click)="toggleSection(section.title)">
+            <span class="sidebar-section-title">{{ section.title }}</span>
+            <i class="bi sidebar-chevron"
+               [class.bi-chevron-down]="isSectionOpen(section.title)"
+               [class.bi-chevron-right]="!isSectionOpen(section.title)">
+            </i>
+          </button>
+          <div class="sidebar-section-items" [class.open]="isSectionOpen(section.title)">
+            @for (item of section.items; track item.route) {
+              <a
+                class="sidebar-link"
+                [class.active]="isActive(item.route)"
+                (click)="navigate(item.route)"
+                role="button"
+                tabindex="0"
+                (keydown.enter)="navigate(item.route)"
+              >
+                <i [class]="item.icon" class="sidebar-icon"></i>
+                <span class="sidebar-label">{{ item.label }}</span>
+              </a>
+            }
+          </div>
+        </div>
+      }
+    } @else {
+      @for (section of sections; track section.title) {
+        <div class="sidebar-section-collapsed">
+          @for (item of section.items; track item.route) {
+            <a
+              class="sidebar-link"
+              [class.active]="isActive(item.route)"
+              (click)="navigate(item.route)"
+              [attr.title]="item.label"
+              role="button"
+              tabindex="0"
+              (keydown.enter)="navigate(item.route)"
+            >
+              <i [class]="item.icon" class="sidebar-icon"></i>
+            </a>
+          }
+        </div>
+      }
+    }
+  </nav>
 </nav>

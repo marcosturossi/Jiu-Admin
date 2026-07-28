@@ -1,17 +1,45 @@
 import { TestBed } from '@angular/core/testing';
-import { CanActivateFn } from '@angular/router';
+import { CanActivateFn, provideRouter } from '@angular/router';
+import Keycloak from 'keycloak-js';
+import { AuthGuard } from './auth.guard';
 
-import { authGuard } from './auth.guard';
+describe('AuthGuard', () => {
+  let keycloakStub: Partial<Keycloak>;
 
-describe('authGuard', () => {
-  const executeGuard: CanActivateFn = (...guardParameters) => 
-      TestBed.runInInjectionContext(() => authGuard(...guardParameters));
+  const executeGuard: CanActivateFn = (...args) =>
+    TestBed.runInInjectionContext(() => (AuthGuard as CanActivateFn)(...args));
 
   beforeEach(() => {
-    TestBed.configureTestingModule({});
+    keycloakStub = {
+      authenticated: false,
+      login:  jasmine.createSpy('login').and.returnValue(Promise.resolve()),
+      logout: jasmine.createSpy('logout').and.returnValue(Promise.resolve()),
+    };
+    TestBed.configureTestingModule({
+      providers: [
+        provideRouter([]),
+        { provide: Keycloak, useValue: keycloakStub },
+      ],
+    });
   });
 
-  it('should be created', () => {
-    expect(executeGuard).toBeTruthy();
+  it('should be defined', () => {
+    expect(AuthGuard).toBeTruthy();
+  });
+
+  it('returns true when authenticated', async () => {
+    keycloakStub.authenticated = true;
+    const result = await executeGuard({} as any, {} as any);
+    expect(result).toBeTrue();
+    expect(keycloakStub.login).not.toHaveBeenCalled();
+  });
+
+  it('calls keycloak.login and returns false when not authenticated', async () => {
+    keycloakStub.authenticated = false;
+    const result = await executeGuard({} as any, {} as any);
+    expect(keycloakStub.login).toHaveBeenCalledWith({
+      redirectUri: jasmine.stringContaining('/system'),
+    });
+    expect(result).toBeFalse();
   });
 });

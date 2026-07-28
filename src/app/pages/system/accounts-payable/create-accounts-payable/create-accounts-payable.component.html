@@ -1,0 +1,49 @@
+<form [formGroup]="form" (ngSubmit)="save()">
+  <div class="mb-3">
+    <label for="category">Categoria</label>
+    <app-search-select
+      inputId="category"
+      [options]="categoryOptions()"
+      [selected]="selectedCategory()"
+      placeholder="Sem categoria"
+      label="Categoria"
+      (selectionChange)="onCategorySelected($event)"
+      (searchChange)="onCategorySearch($event)" />
+  </div>
+
+  <div class="mb-3">
+    <label for="description">Descrição</label>
+    <input type="text" class="form-control" id="description" formControlName="description" placeholder="Opcional" />
+  </div>
+
+  <div class="mb-3">
+    <label for="amount">Valor <span class="text-danger">*</span></label>
+    <input type="number" class="form-control" id="amount" formControlName="amount" step="0.01" min="0.01" />
+    <app-field-error [control]="form.get('amount')" />
+  </div>
+
+  <div class="mb-3">
+    <label for="transactionDate">Data <span class="text-danger">*</span></label>
+    <input type="date" class="form-control" id="transactionDate" formControlName="transactionDate" />
+    <app-field-error [control]="form.get('transactionDate')" />
+  </div>
+
+  <div class="mb-3">
+    <label for="dueDate">Vencimento <span class="text-danger">*</span></label>
+    <input type="date" class="form-control" id="dueDate" formControlName="dueDate" />
+    <app-field-error [control]="form.get('dueDate')" />
+  </div>
+
+  <div class="mb-3">
+    <label for="reference">Referência</label>
+    <input type="text" class="form-control" id="reference" formControlName="reference" placeholder="Opcional" />
+  </div>
+
+  <div class="d-flex gap-2 justify-content-end mt-3">
+    <button type="button" class="btn btn-outline-secondary" (click)="close()">Cancelar</button>
+    <button type="submit" class="btn btn-primary" [disabled]="isSaving() || form.invalid">
+      @if (isSaving()) { <span class="spinner-border spinner-border-sm me-1" role="status"></span> }
+      <i class="bi bi-check-lg me-1"></i>Salvar
+    </button>
+  </div>
+</form>

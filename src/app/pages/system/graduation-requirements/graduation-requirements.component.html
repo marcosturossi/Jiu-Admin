@@ -1,101 +1,98 @@
-<section class="mt-3 mt-md-5 p-2 p-md-3">
-  <div class="container-fluid">
-    <!-- Header with responsive button -->
-    <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center mb-3 mb-md-4">
-      <button class="btn btn-custom-primary btn-desktop-compact" (click)="openCreateGraduationRequirement()">
-        <i class="bi bi-list-check me-2"></i>Novo Requisito
-      </button>
-    </div>
-
-    @if (isLoading) {
-      <div class="text-center my-5">
-        <div class="spinner-border text-primary" role="status">
-          <span class="visually-hidden">Carregando...</span>
-        </div>
-        <p class="mt-2 text-muted">Carregando...</p>
-      </div>
-    }
-
-    <!-- Responsive table wrapper -->
-    @if (!isLoading) {
-    <div class="table-responsive">
-      <table class="table table-hover">
-        <thead class="table-light">
-          <tr>
-            <th scope="col" class="d-none d-lg-table-cell">Faixa</th>
-            <th scope="col" class="d-table-cell d-lg-none">Requisito</th>
-            <th scope="col" class="d-none d-md-table-cell">Descrição</th>
-            <th scope="col" class="d-none d-lg-table-cell">Aulas Mínimas</th>
-            <th scope="col" class="text-center">Ações</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (requirement of graduationRequirements; track requirement.id){
-          <tr>
-            <!-- Desktop view - belt color only -->
-            <td class="d-none d-lg-table-cell">
-              <div>
-                <span class="badge bg-outline-primary text-primary border">{{requirement.belt?.color || getBeltColor(requirement.beltId)}}</span>
-              </div>
-            </td>
-            
-            <!-- Mobile/Tablet view - condensed info -->
-            <td class="d-table-cell d-lg-none">
-              <div>
-                <span class="badge bg-outline-primary text-primary border d-block mb-2">{{requirement.belt?.color || getBeltColor(requirement.beltId)}}</span>
-                <small class="text-muted d-block d-md-none">{{requirement.description}}</small>
-                <div class="d-flex flex-wrap gap-1 mt-1">
-                  <span class="badge bg-outline-info text-info border d-lg-none">
-                    <i class="bi bi-calendar-check me-1"></i>{{requirement.minimumClasses || 0}} aulas
-                  </span>
-                </div>
-              </div>
-            </td>
-            
-            <td class="d-none d-md-table-cell">
-              <small class="text-muted">{{requirement.description}}</small>
-            </td>
-            <td class="d-none d-lg-table-cell">
-              <span class="badge bg-outline-info text-info border">
-                <i class="bi bi-calendar-check me-1"></i>{{requirement.minimumClasses || 0}}
-              </span>
-            </td>
-            <td class="text-center">
-              <div class="btn-group" role="group">
-                <button type="button" class="btn btn-sm btn-outline-primary" (click)="openUpdateGraduationRequirement(requirement)" title="Editar">
-                  <img src="../../../../assets/icons/structural-icons/pencil-square.svg" alt="Editar" style="width: 16px; height: 16px;" />
-                </button>
-                <button type="button" class="btn btn-sm btn-outline-danger" (click)="deleteGraduationRequirement(requirement)" title="Excluir">
-                  <img src="../../../../assets/icons/structural-icons/trash.svg" alt="Excluir" style="width: 16px; height: 16px;" />
-                </button>
-              </div>
-            </td>
-          </tr>
-          }
-        </tbody>
-      </table>
-    </div>
-
-    <!-- Empty state -->
-    @if (graduationRequirements.length === 0) {
-      <div class="text-center py-5">
-        <div class="mb-3">
-          <i class="bi bi-list-check display-1 text-muted"></i>
-        </div>
-        <h5 class="text-muted">Nenhum requisito encontrado</h5>
-        <p class="text-muted">Clique em "Novo Requisito" para definir o primeiro requisito de graduação.</p>
-      </div>
-    }
-    }
+<section class="page-section">
+  <div class="page-toolbar">
+    <app-filter [placeholder]="'Buscar por descrição'" (filterChange)="onFilterChange($event)" />
+    <button class="btn btn-primary" (click)="openCreate()">
+      <i class="bi bi-plus-lg me-1"></i> Novo Requisito
+    </button>
   </div>
+
+  @if (isLoading()) {
+    <div class="d-flex justify-content-center py-5">
+      <div class="spinner-border text-secondary" role="status"><span class="visually-hidden">Carregando...</span></div>
+    </div>
+  } @else {
+    <div class="surface-card">
+      <div class="table-responsive">
+        <table class="table table-hover table-sm align-middle">
+          <thead class="table-light">
+            <tr>
+              <th>Faixa</th>
+              <th>Descrição</th>
+              <th>Aulas Mínimas</th>
+              <th class="text-center" style="width:8rem">Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            @if ((items()?.items ?? []).length === 0) {
+              <tr>
+                <td colspan="4" class="empty-state">
+                  <i class="bi bi-list-check empty-icon"></i>
+                  <p class="empty-text">Nenhum registro.</p>
+                </td>
+              </tr>
+            }
+            @for (req of items()?.items ?? []; track req.id) {
+              <tr>
+                <td><span class="badge bg-secondary">{{ req.belt?.color ?? 'N/A' }}</span></td>
+                <td>{{ req.description }}</td>
+                <td>{{ req.minimumClasses ?? 0 }}</td>
+                <td class="text-center">
+                  <button class="btn btn-sm btn-outline-info me-1" (click)="openEdit(req)">
+                    <i class="bi bi-pencil"></i>
+                  </button>
+                  <button class="btn btn-sm btn-outline-danger" (click)="delete(req)">
+                    <i class="bi bi-trash"></i>
+                  </button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <app-pagination
+      [currentPage]="currentPage()"
+      [totalPages]="items()?.totalPages ?? 0"
+      [pageSize]="pageSize()"
+      [totalItems]="items()?.totalCount ?? 0"
+      (pageChange)="onPageChange($event)"
+      (pageSizeChange)="onPageSizeChange($event)" />
+  }
 </section>
 
-@if(openedCreateGraduationRequirement){
-<app-create-graduation-requirement (closeEvent)="closeCreateGraduationRequirement()" (graduationRequirementCreated)="onGraduationRequirementCreated()">
-</app-create-graduation-requirement>
+@if (openedCreate()) {
+  <div class="modal-backdrop-custom" (click)="openedCreate.set(false)"></div>
+  <div class="modal show d-block" tabindex="-1" role="dialog" aria-modal="true" (document:keydown.escape)="openedCreate.set(false)">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Novo Requisito</h5>
+          <button type="button" class="btn-close" (click)="openedCreate.set(false)" aria-label="Fechar"></button>
+        </div>
+        <div class="modal-body">
+          <app-create-graduation-requirement (closeEvent)="openedCreate.set(false)" (graduationRequirementCreated)="onCreated()" />
+        </div>
+      </div>
+    </div>
+  </div>
 }
 
-@if(openedUpdateGraduationRequirement){
-<app-update-graduation-requirement [graduationRequirement]="selectedGraduationRequirement" (closeEvent)="closeUpdateGraduationRequirement()" (graduationRequirementUpdated)="onGraduationRequirementUpdated()">
-</app-update-graduation-requirement>
+@if (openedUpdate()) {
+  <div class="modal-backdrop-custom" (click)="openedUpdate.set(false)"></div>
+  <div class="modal show d-block" tabindex="-1" role="dialog" aria-modal="true" (document:keydown.escape)="openedUpdate.set(false)">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Editar Requisito</h5>
+          <button type="button" class="btn-close" (click)="openedUpdate.set(false)" aria-label="Fechar"></button>
+        </div>
+        <div class="modal-body">
+          @if (selected()) {
+            <app-update-graduation-requirement [requirement]="selected()!" (closeEvent)="openedUpdate.set(false)" (graduationRequirementUpdated)="onUpdated()" />
+          }
+        </div>
+      </div>
+    </div>
+  </div>
 }
+

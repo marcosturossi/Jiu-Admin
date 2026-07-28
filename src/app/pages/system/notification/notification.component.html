@@ -1,134 +1,107 @@
-<section class="mt-3 mt-md-5 p-2 p-md-3">
-  <div class="container-fluid">
-    <!-- Header with responsive button -->
-    <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center mb-3 mb-md-4">
-      <button class="btn btn-custom-primary btn-desktop-compact" (click)="openCreateNotification()">
-        <i class="bi bi-plus-circle me-2"></i>Nova Notificação
-      </button>
-    </div>
-
-    @if (isLoading) {
-      <div class="text-center my-5">
-        <div class="spinner-border text-primary" role="status">
-          <span class="visually-hidden">Carregando...</span>
-        </div>
-        <p class="mt-2 text-muted">Carregando...</p>
-      </div>
-    }
-
-    <!-- Responsive table wrapper -->
-    @if (!isLoading) {
-    <div class="table-responsive">
-      <table class="table table-hover">
-        <thead class="table-light">
-          <tr>
-            <th scope="col" class="d-none d-lg-table-cell">Título</th>
-            <th scope="col" class="d-table-cell d-lg-none">Notificação</th>
-            <th scope="col" class="d-none d-md-table-cell">Tipo</th>
-            <th scope="col" class="d-none d-md-table-cell">Prioridade</th>
-            <th scope="col" class="d-none d-lg-table-cell">Status</th>
-            <th scope="col" class="d-none d-lg-table-cell">Usuário</th>
-            <th scope="col" class="d-none d-xl-table-cell">Data de Criação</th>
-            <th scope="col" class="d-none d-xl-table-cell">Data de Expiração</th>
-            <th scope="col" class="text-center">Ações</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (notification of notifications.items; track notification.id){
-          <tr>
-            <!-- Desktop view - full title and message -->
-            <td class="d-none d-lg-table-cell">
-              <div>
-                <strong class="text-primary">{{notification.title}}</strong>
-                <br>
-                <small class="text-muted">{{notification.message}}</small>
-              </div>
-            </td>
-            
-            <!-- Mobile/Tablet view - condensed info -->
-            <td class="d-table-cell d-lg-none">
-              <div>
-                <strong class="text-primary d-block">{{notification.title}}</strong>
-                <small class="text-muted d-block mb-1">{{notification.message}}</small>
-                <div class="d-flex flex-wrap gap-1">
-                  <span class="badge bg-outline-secondary text-dark border">{{getNotificationTypeText(notification.type)}}</span>
-                  <span [class]="getStatusClass(notification.isActive)" class="d-md-none">{{getStatusText(notification.isActive)}}</span>
-                </div>
-                <small class="text-muted d-block mt-1">
-                  <i class="bi bi-person me-1"></i>{{notification.userName || 'Todos'}}
-                  <span class="d-xl-none ms-2">
-                    <i class="bi bi-calendar me-1"></i>{{notification.createdAt | date:'dd/MM/yyyy'}}
-                  </span>
-                </small>
-              </div>
-            </td>
-            
-            <td class="d-none d-md-table-cell">
-              <span class="badge bg-outline-primary text-primary border">{{getNotificationTypeText(notification.type)}}</span>
-            </td>
-    
-            <td class="d-none d-lg-table-cell">
-              <span [class]="getStatusClass(notification.isActive)">
-                {{getStatusText(notification.isActive)}}
-              </span>
-            </td>
-            <td class="d-none d-lg-table-cell">
-              <i class="bi bi-person me-1"></i>{{notification.userName || 'Todos'}}
-            </td>
-            <td class="d-none d-xl-table-cell">
-              <small>{{notification.createdAt | date:'dd/MM/yyyy HH:mm'}}</small>
-            </td>
-            <td class="d-none d-xl-table-cell">
-              <small>{{notification.expiresAt ? (notification.expiresAt | date:'dd/MM/yyyy HH:mm') : 'Sem expiração'}}</small>
-            </td>
-            <td class="text-center">
-              <div class="btn-group" role="group">
-                <button type="button" class="btn btn-sm btn-outline-primary" (click)="openUpdateNotification(notification)" title="Editar">
-                  <img src="../../../../assets/icons/structural-icons/pencil-square.svg" alt="Editar" style="width: 16px; height: 16px;" />
-                </button>
-                <button type="button" class="btn btn-sm btn-outline-danger" (click)="deleteNotification(notification)" title="Excluir">
-                  <img src="../../../../assets/icons/structural-icons/trash.svg" alt="Excluir" style="width: 16px; height: 16px;" />
-                </button>
-              </div>
-            </td>
-          </tr>
-          }
-        </tbody>
-      </table>
-    </div>
-
-    <!-- Empty state -->
-    @if (notifications.items!.length === 0) {
-      <div class="text-center py-5">
-        <div class="mb-3">
-          <i class="bi bi-bell-slash display-1 text-muted"></i>
-        </div>
-        <h5 class="text-muted">Nenhuma notificação encontrada</h5>
-        <p class="text-muted">Clique em "Nova Notificação" para criar sua primeira notificação.</p>
-      </div>
-    }
-
-    <!-- Pagination -->
-    @if (notifications.items!.length > 0) {
-      <app-pagination
-        [currentPage]="currentPage"
-        [totalPages]="notifications.totalPages ?? 1"
-        [pageSize]="pageSize"
-        [totalItems]="notifications.totalCount ?? 0"
-        (pageChange)="onPageChange($event)"
-        (pageSizeChange)="onPageSizeChange($event)">
-      </app-pagination>
-    }
-    }
+<section class="page-section">
+  <div class="page-toolbar">
+    <app-filter [placeholder]="'Buscar notificação'" (filterChange)="onFilterChange($event)" />
+    <button type="button" class="btn btn-primary" (click)="openCreate()">
+      <i class="bi bi-plus-lg me-1"></i>Nova Notificação
+    </button>
   </div>
+
+  @if (isLoading()) {
+    <div class="d-flex justify-content-center py-5">
+      <div class="spinner-border text-secondary" role="status"><span class="visually-hidden">Carregando...</span></div>
+    </div>
+  } @else {
+    <div class="surface-card">
+      <div class="table-responsive">
+        <table class="table table-hover table-sm align-middle">
+          <thead class="table-light">
+            <tr>
+              <th>Título</th>
+              <th>Tipo</th>
+              <th>Status</th>
+              <th>Usuário</th>
+              <th>Data de Criação</th>
+              <th>Data de Expiração</th>
+              <th class="text-center" style="width:8rem">Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            @if ((items()?.items ?? []).length === 0) {
+              <tr>
+                <td colspan="7" class="empty-state">
+                  <i class="bi bi-megaphone empty-icon"></i>
+                  <p class="empty-text">Nenhuma notificação encontrada.</p>
+                </td>
+              </tr>
+            }
+            @for (notification of items()?.items; track notification.id) {
+              <tr>
+                <td>
+                  <strong>{{ notification.title }}</strong>
+                  <br /><small class="text-muted">{{ notification.message }}</small>
+                </td>
+                <td>{{ getNotificationTypeText($any(notification.type)) }}</td>
+                <td>
+                  <span [class]="'badge ' + activeBadgeClass(notification.isActive)">
+                    {{ getStatusText(notification.isActive) }}
+                  </span>
+                </td>
+                <td>{{ notification.userName || 'Todos' }}</td>
+                <td>{{ notification.createdAt | date:'dd/MM/yyyy HH:mm' }}</td>
+                <td>{{ notification.expiresAt ? (notification.expiresAt | date:'dd/MM/yyyy HH:mm') : 'Sem expiração' }}</td>
+                <td class="text-center">
+                  <button type="button" class="btn btn-sm btn-outline-info me-1" (click)="openEdit(notification)">
+                    <i class="bi bi-pencil"></i>
+                  </button>
+                  <button type="button" class="btn btn-sm btn-outline-danger" (click)="deleteNotification(notification)">
+                    <i class="bi bi-trash"></i>
+                  </button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  }
+
+  <app-pagination [currentPage]="currentPage()" [totalPages]="items()?.totalPages ?? 1"
+    [pageSize]="pageSize()" [totalItems]="items()?.totalCount ?? 0"
+    (pageChange)="onPageChange($event)" (pageSizeChange)="onPageSizeChange($event)" />
 </section>
 
-@if(openedCreateNotification){
-<app-create-notification (closeEvent)="closeCreateNotification()" (notificationCreated)="onNotificationCreated()">
-</app-create-notification>
+@if (openedCreate()) {
+  <div class="modal-backdrop-custom" (click)="openedCreate.set(false)"></div>
+  <div class="modal show d-block" tabindex="-1" role="dialog" aria-modal="true" (document:keydown.escape)="openedCreate.set(false)">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Nova Notificação</h5>
+          <button type="button" class="btn-close" (click)="openedCreate.set(false)" aria-label="Fechar"></button>
+        </div>
+        <div class="modal-body">
+          <app-create-notification (closeEvent)="openedCreate.set(false)" (notificationCreated)="onCreated()" />
+        </div>
+      </div>
+    </div>
+  </div>
 }
 
-@if(openedUpdateNotification){
-<app-update-notification [notification]="selectedNotification" (closeEvent)="closeUpdateNotification()" (notificationUpdated)="onNotificationUpdated()">
-</app-update-notification>
+@if (openedUpdate()) {
+  <div class="modal-backdrop-custom" (click)="openedUpdate.set(false)"></div>
+  <div class="modal show d-block" tabindex="-1" role="dialog" aria-modal="true" (document:keydown.escape)="openedUpdate.set(false)">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Editar Notificação</h5>
+          <button type="button" class="btn-close" (click)="openedUpdate.set(false)" aria-label="Fechar"></button>
+        </div>
+        <div class="modal-body">
+          @if (selected()) {
+            <app-update-notification [notification]="selected()!" (closeEvent)="openedUpdate.set(false)" (notificationUpdated)="onUpdated()" />
+          }
+        </div>
+      </div>
+    </div>
+  </div>
 }

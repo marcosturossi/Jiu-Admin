@@ -1,15 +1,11 @@
-import { EventEmitter, Injectable } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class SubnavService {
-  title: string = ""
-  setTitleEvent: EventEmitter<string> = new EventEmitter()
-  constructor() { }
+  private readonly _title = signal('');
+  readonly title = this._title.asReadonly();
 
-
-  setTitle(title: string) {
-    this.setTitleEvent.emit(title);
+  setTitle(title: string): void {
+    this._title.set(title);
   }
 }

@@ -31,7 +31,7 @@ export interface PersonsServiceInterface {
 
     /**
      * Add Person Images
-     * Adiciona mais imagens a uma pessoa existente.  - **person_id**: ID da pessoa (UUID) - **images**: Lista de imagens contendo o rosto da pessoa (máximo 10)
+     * Adiciona mais imagens a uma pessoa existente.
      * @param personId 
      * @param images 
      */
@@ -39,7 +39,7 @@ export interface PersonsServiceInterface {
 
     /**
      * Delete Person
-     * Remove uma pessoa do sistema.  - **person_id**: ID da pessoa (UUID)
+     * Remove uma pessoa do sistema.
      * @param personId 
      */
     deletePersonApiV1PersonsPersonIdDelete(personId: string, extraHttpRequestParams?: any): Observable<{ [key: string]: any; }>;
@@ -53,15 +53,19 @@ export interface PersonsServiceInterface {
 
     /**
      * List Persons
-     * Lista todas as pessoas registradas no sistema.
+     * Lista pessoas registradas no sistema com suporte a filtros.
      * @param page Página atual
      * @param pageSize Tamanho da página
+     * @param name Filtrar por nome (parcial, sem distinção de maiúsculas)
+     * @param isActive Filtrar por status ativo
+     * @param createdFrom Data de criação a partir de (YYYY-MM-DD)
+     * @param createdTo Data de criação até (YYYY-MM-DD)
      */
-    listPersonsApiV1PersonsGet(page?: number, pageSize?: number, extraHttpRequestParams?: any): Observable<PersonListResponse>;
+    listPersonsApiV1PersonsGet(page?: number, pageSize?: number, name?: string, isActive?: boolean, createdFrom?: string, createdTo?: string, extraHttpRequestParams?: any): Observable<PersonListResponse>;
 
     /**
      * Recognize Faces
-     * Reconhece todas as faces presentes na imagem.  - **image**: Imagem para análise - **draw_boxes**: Se verdadeiro, retorna a imagem com caixas desenhadas ao redor das faces  Retorna a lista de faces encontradas com seus nomes e posições.
+     * Reconhece todas as faces presentes na imagem.
      * @param image 
      * @param drawBoxes 
      */
@@ -69,7 +73,7 @@ export interface PersonsServiceInterface {
 
     /**
      * Register Multiple Photos
-     * Registra múltiplas fotos da mesma pessoa para melhor reconhecimento.  - **name**: Nome da pessoa - **images**: Lista de imagens contendo o rosto da pessoa - **person_id**: ID opcional da pessoa (UUID)  Retorna informações da pessoa registrada com múltiplas fotos.
+     * Registra múltiplas fotos da mesma pessoa para melhor reconhecimento.
      * @param name 
      * @param images 
      * @param personId 
@@ -78,7 +82,7 @@ export interface PersonsServiceInterface {
 
     /**
      * Register Person
-     * Registra uma nova pessoa no sistema.  - **name**: Nome da pessoa - **image**: Imagem contendo o rosto da pessoa - **person_id**: ID opcional da pessoa (UUID)  Retorna o ID único da pessoa registrada.
+     * Registra uma nova pessoa no sistema.
      * @param name 
      * @param image 
      * @param personId 
@@ -87,7 +91,7 @@ export interface PersonsServiceInterface {
 
     /**
      * Remove Person Image
-     * Remove uma imagem específica de uma pessoa.  - **person_id**: ID da pessoa (UUID) - **image_id**: ID da imagem a ser removida  Nota: Não é possível remover a única imagem de uma pessoa. Se a imagem removida for a primária, outra imagem será automaticamente definida como primária.
+     * Remove uma imagem específica de uma pessoa.
      * @param personId 
      * @param imageId 
      */

@@ -5,9 +5,9 @@ import { RouterModule, RouterOutlet, Routes } from "@angular/router";
 import { SidebarComponent } from "../../shared/sidebar/sidebar.component";
 import { FilterComponent } from "../../shared/filter/filter.component";
 import { AuthGuard } from "../../guard/auth.guard";
-import {NavbarComponent} from "../../shared/navbar/navbar.component";
-import {HomeComponent} from "./home/home.component";
-import {SubnavComponent} from "../../shared/subnav/subnav.component";
+import { NavbarComponent } from "../../shared/navbar/navbar.component";
+import { HomeComponent } from "./home/home.component";
+import { SubnavComponent } from "../../shared/subnav/subnav.component";
 import { StudentsComponent } from './students/students.component';
 import { LessonsComponent } from './lessons/lessons.component';
 import { GraduationsComponent } from './graduations/graduations.component';
@@ -18,73 +18,53 @@ import { NoticesComponent } from './notices/notices.component';
 import { FaceRecognitionComponent } from './face-recognition/face-recognition.component';
 import { NotificationComponent } from './notification/notification.component';
 import { MedicalClearancesComponent } from './medical-clearances/medical-clearances.component';
+import { FeePlansComponent } from './fee-plans/fee-plans.component';
+import { ContractsComponent } from './contracts/contracts.component';
+import { AccountsReceivableComponent } from './accounts-receivable/accounts-receivable.component';
+import { AccountsPayableComponent } from './accounts-payable/accounts-payable.component';
+import { TransactionCategoriesComponent } from './transaction-categories/transaction-categories.component';
+import { AcademiesComponent } from './academies/academies.component';
+import { StudentOnboardingComponent } from './student-onboarding/student-onboarding.component';
+import { FinanceDashboardComponent } from './finance-dashboard/finance-dashboard.component';
+import { SuppliersComponent } from './suppliers/suppliers.component';
 
 export const routes: Routes = [
   {
     path: '',
-    component: SystemComponent,  // Main layout component with <router-outlet>
+    component: SystemComponent,
     canActivate: [AuthGuard],
     children: [
-      {
-        path: 'home',
-        component: HomeComponent,
-        canActivate: [AuthGuard]
-      },
-      {
-        path: '',
-        redirectTo: 'home',  // Default redirect to HomeComponent
-        pathMatch: 'full'
-      },
-      {
-        path: 'students',
-        pathMatch: 'full',
-        component:StudentsComponent
-      },
-      {
-        path: 'lessons',
-        pathMatch: 'full',
-        component: LessonsComponent
-      },
-      {
-        path: 'graduations',
-        pathMatch: 'full',
-        component: GraduationsComponent
-      },
-      {
-        path: 'frequencies',
-        pathMatch: 'full',
-        component: FrequenciesComponent
-      },
-      {
-        path: 'belts',
-        pathMatch: 'full',
-        component: BeltsComponent
-      },
-      {
-        path: 'graduation-requirements',
-        pathMatch: 'full',
-        component: GraduationRequirementsComponent
-      },
-      {
-        path: 'notices',
-        pathMatch: 'full',
-        component: NoticesComponent,
-      },
-      {
-        path: 'notification',
-        pathMatch: 'full',
-        component: NotificationComponent,
-      },
-      {
-        path: 'face-recognition',
-        pathMatch: 'full',
-        component: FaceRecognitionComponent,
-      },
-      {
-        path: 'medical-clearances',
-        pathMatch: 'full',
-        component: MedicalClearancesComponent,
-      }
+      { path: '', redirectTo: 'home', pathMatch: 'full' },
+      { path: 'home', component: HomeComponent },
+      // Acadêmico
+      { path: 'student-onboarding', component: StudentOnboardingComponent },
+      { path: 'students', component: StudentsComponent},
+  
+      {path: 'students/details/:id', loadComponent: () => import('./students/detail-student/detail-student.component').then(m => m.DetailStudentComponent)},
+
+      { path: 'lessons', component: LessonsComponent },
+      { path: 'graduations', component: GraduationsComponent },
+      { path: 'frequencies', component: FrequenciesComponent },
+      { path: 'belts', component: BeltsComponent },
+      { path: 'graduation-requirements', component: GraduationRequirementsComponent },
+      // Comunicação
+      { path: 'notices', component: NoticesComponent },
+      { path: 'notification', component: NotificationComponent },
+      // Financeiro
+      { path: 'finance-dashboard', component: FinanceDashboardComponent },
+      { path: 'fee-plans', component: FeePlansComponent },
+      { path: 'contracts', component: ContractsComponent },
+      { path: 'accounts-receivable', component: AccountsReceivableComponent },
+      { path: 'accounts-payable', component: AccountsPayableComponent },
+      { path: 'transaction-categories', component: TransactionCategoriesComponent },
+      // Saúde e Segurança
+      { path: 'medical-clearances', component: MedicalClearancesComponent },
+      { path: 'face-recognition', component: FaceRecognitionComponent },
+      // Fornecedores
+      { path: 'suppliers', component: SuppliersComponent },
+      { path: 'suppliers/details/:id', loadComponent: () => import('./suppliers/detail-supplier/detail-supplier.component').then(m => m.DetailSupplierComponent) },
+      // Configurações
+      { path: 'academies', component: AcademiesComponent },
     ]
   }
 ];
@@ -96,7 +76,7 @@ export const routes: Routes = [
   imports: [
     CommonModule,
     RouterOutlet,
-    RouterModule.forChild(routes), // Child routes setup
+    RouterModule.forChild(routes),
     SidebarComponent,
     NavbarComponent,
     FilterComponent,

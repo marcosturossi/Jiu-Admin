@@ -1,62 +1,75 @@
-import { Component, OnInit } from '@angular/core';
-import { RouterModule, Router } from '@angular/router';
+import { ChangeDetectionStrategy, Component, inject, signal, OnInit, OnDestroy } from '@angular/core';
+import { Router, RouterModule, NavigationEnd } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { filter } from 'rxjs/operators';
+import { NAV_SECTIONS, NavSection } from '../nav-config';
 
 @Component({
   selector: 'app-sidebar',
-  templateUrl: './sidebar.component.html',
   standalone: true,
-  imports: [RouterModule],
-  styleUrls: ['./sidebar.component.scss']
+  imports: [RouterModule, CommonModule],
+  templateUrl: './sidebar.component.html',
+  styleUrl: './sidebar.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SidebarComponent implements OnInit {
+export class SidebarComponent implements OnInit, OnDestroy {
+  private readonly router = inject(Router);
+  protected readonly sidebarExpanded = signal(false);
+  protected readonly openSections = signal<Set<string>>(new Set());
 
-  constructor(private router: Router) { }
+  protected readonly sections: NavSection[] = NAV_SECTIONS;
+
+  constructor() {
+    this.router.events.pipe(
+      filter(event => event instanceof NavigationEnd),
+      takeUntilDestroyed()
+    ).subscribe(() => this.initOpenSections());
+  }
+
+  private toggleHandler = (event: Event) => {
+    const customEvent = event as CustomEvent;
+    this.sidebarExpanded.set(customEvent.detail.expanded);
+  };
 
   ngOnInit(): void {
+    window.addEventListener('sidebar-toggle', this.toggleHandler);
+    this.initOpenSections();
   }
 
-  closeSidebar() {
-    console.log('closeSidebar called');
-    document.body.classList.remove('sidebar-open');
-    
-    // Also emit an event or use a service to sync with navbar
-    // For now, we'll just ensure the body class is removed
-    console.log('Sidebar closed from sidebar component');
+  ngOnDestroy(): void {
+    window.removeEventListener('sidebar-toggle', this.toggleHandler);
   }
 
-  closeSidebarOnMobile() {
-    // Only close sidebar on mobile/tablet devices
-    if (window.innerWidth < 992) {
-      this.closeSidebar();
-    }
-  }
-
-  navigateTo(route: string, event?: Event) {
-    // Prevent event propagation to avoid closing sidebar before navigation
-    if (event) {
-      event.preventDefault();
-      event.stopPropagation();
-    }
-    
-    console.log('Navigating to:', route);
-    console.log('Current URL:', this.router.url);
-    
-    // Navigate first, then close sidebar after a small delay to ensure navigation completes
-    this.router.navigate([route]).then(success => {
-      console.log('Navigation success:', success);
-      if (success) {
-        // Add a small delay to ensure the route change is processed
-        setTimeout(() => {
-          this.closeSidebarOnMobile();
-        }, 100);
-      }
-    }).catch(error => {
-      console.error('Navigation error:', error);
+  private initOpenSections(): void {
+    const url = this.router.url;
+    const active = this.sections.find(s => s.items.some(i => url.startsWith(i.route)));
+    this.openSections.update(current => {
+      const next = new Set(current);
+      next.add(active ? active.title : 'Principal');
+      return next;
     });
   }
 
-  isActiveRoute(route: string): boolean {
-    return this.router.url === route;
+  protected isSectionOpen(title: string): boolean {
+    return this.openSections().has(title);
   }
 
+  protected toggleSection(title: string): void {
+    this.openSections.update(set => {
+      const next = new Set(set);
+      if (next.has(title)) next.delete(title);
+      else next.add(title);
+      return next;
+    });
+  }
+
+  protected isActive(route: string): boolean {
+    return this.router.url.startsWith(route);
+  }
+
+  protected navigate(route: string): void {
+    this.router.navigate([route]);
+  }
 }
+

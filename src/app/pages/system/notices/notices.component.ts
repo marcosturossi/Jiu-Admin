@@ -1,102 +1,98 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { NoticesService } from '../../../generated_services/api/notices.service';
-import { ShowNoticesDTO } from '../../../generated_services/model/showNoticesDTO';
-import { CreateNoticeComponent } from './create-notice/create-notice.component';
-import { UpdateNoticeComponent } from './update-notice/update-notice.component';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
+import { NoticesService } from '../../../generated_services/api/notices.service';
+import { ShowNoticeDto } from '../../../generated_services/model/showNoticeDto';
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
+import { ConfirmService } from '../../../services/confirm.service';
+import { extractErrorMessage } from '../../../utils/error.utils';
+import { FilterComponent } from '../../../shared/filter/filter.component';
+import { FilterOutput } from '../../../shared/filter/filter.types';
+import { PaginationComponent } from '../../../shared/pagination/pagination.component';
+import { PageResult } from '../../../utils/page-result';
+import { CreateNoticeComponent } from './create-notice/create-notice.component';
+import { UpdateNoticeComponent } from './update-notice/update-notice.component';
+import { activeBadge } from '../../../shared/status-badge';
 
 @Component({
   selector: 'app-notices',
-  imports: [CommonModule, CreateNoticeComponent, UpdateNoticeComponent, DatePipe],
+  standalone: true,
+  imports: [
+    DatePipe,
+    FilterComponent,
+    PaginationComponent,
+    CreateNoticeComponent,
+    UpdateNoticeComponent,
+  ],
   templateUrl: './notices.component.html',
-  styleUrl: './notices.component.scss'
+  styleUrl: './notices.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class NoticesComponent implements OnInit {
-  notices: ShowNoticesDTO[] = [];
-  isLoading: boolean = false;
-  openedCreateNotice: boolean = false;
-  selectedNotice!: ShowNoticesDTO;
-  openedUpdateNotice: boolean = false;
+export class NoticesComponent {
+  private readonly noticesService = inject(NoticesService);
+  private readonly subnavService = inject(SubnavService);
+  private readonly notificationService = inject(NotificationService);
+  private readonly confirmService = inject(ConfirmService);
 
-  constructor(
-    private noticesService: NoticesService,
-    private subnavService: SubnavService,
-    private notificationService: NotificationService
-  ) { }
+  protected readonly isLoading = signal(false);
+  protected readonly items = signal<PageResult<ShowNoticeDto> | null>(null);
+  protected readonly openedCreate = signal(false);
+  protected readonly openedUpdate = signal(false);
+  protected readonly selected = signal<ShowNoticeDto | null>(null);
+  protected readonly activeBadge = activeBadge;
+  protected readonly currentPage = signal(1);
+  protected readonly pageSize = signal(10);
+  protected readonly filterText = signal<string | undefined>(undefined);
 
-  ngOnInit(): void {
-    this.subnavService.setTitle("Avisos");
-    this.loadNotices();
+  constructor() {
+    this.subnavService.setTitle('Avisos');
+    this.load();
   }
 
-  loadNotices(): void {
-    this.isLoading = true;
-    this.noticesService.apiNoticesGet().subscribe(
-      {
-        next: (result) => {
-          this.notices = result;
-          this.isLoading = false;
-        },
-        error: (error) => {
-          console.log(error);
-          this.isLoading = false;
-          this.notificationService.showError(
-            'Erro ao Carregar Avisos!', 
-            'Não foi possível carregar a lista de avisos. Tente novamente.'
-          );
-        }
-      }
-    )
+  protected load(): void {
+    this.isLoading.set(true);
+    this.noticesService.apiNoticesGet(
+      this.filterText() || undefined,
+      undefined,
+      undefined,
+      undefined,
+      this.currentPage(),
+      this.pageSize(),
+    ).subscribe({
+      next: result => {
+        this.items.set({
+          items: result?.items ?? [],
+          totalCount: (result?.totalCount as unknown as number) ?? 0,
+          totalPages: (result?.totalPages as unknown as number) ?? 1,
+        });
+        this.isLoading.set(false);
+      },
+      error: () => {
+        this.isLoading.set(false);
+        this.notificationService.showError('Erro ao Carregar Avisos!', 'Não foi possível carregar a lista de avisos. Tente novamente.');
+      },
+    });
   }
 
-  openCreateNotice() {
-    this.openedCreateNotice = true
+  protected onFilterChange(output: FilterOutput): void {
+    this.filterText.set(output.text || undefined);
+    this.currentPage.set(1);
+    this.load();
   }
 
-  closeCreateNotice() {
-    this.openedCreateNotice = false
-  }
+  protected onPageChange(page: number): void { this.currentPage.set(page); this.load(); }
+  protected onPageSizeChange(size: number): void { this.pageSize.set(size); this.currentPage.set(1); this.load(); }
+  protected openCreate(): void { this.openedCreate.set(true); }
+  protected openEdit(item: ShowNoticeDto): void { this.selected.set(item); this.openedUpdate.set(true); }
+  protected onCreated(): void { this.openedCreate.set(false); this.load(); }
+  protected onUpdated(): void { this.openedUpdate.set(false); this.load(); }
 
-  openUpdateNotice(notice: ShowNoticesDTO) {
-    this.selectedNotice = notice
-    this.openedUpdateNotice = true
-  }
-
-  closeUpdateNotice() {
-    this.openedUpdateNotice = false
-  }
-
-  onNoticeCreated() {
-    this.loadNotices();
-    this.closeCreateNotice();
-  }
-
-  onNoticeUpdated() {
-    this.loadNotices();
-    this.closeUpdateNotice();
-  }
-
-  deleteNotice(notice: ShowNoticesDTO) {
-    if (confirm(`Tem certeza que deseja excluir o aviso "${notice.description}"?`)) {
-      this.noticesService.apiNoticesIdDelete(notice.id!).subscribe({
-        next: () => {
-          this.notificationService.showSuccess(
-            'Aviso Excluído!', 
-            'O aviso foi excluído com sucesso.'
-          );
-          this.loadNotices();
-        },
-        error: (error) => {
-          console.log(error);
-          this.notificationService.showError(
-            'Erro ao Excluir Aviso!', 
-            'Não foi possível excluir o aviso. Tente novamente.'
-          );
-        }
-      });
-    }
+  protected async delete(item: ShowNoticeDto): Promise<void> {
+    const ok = await this.confirmService.confirm(`Tem certeza que deseja excluir o aviso "${item.description}"?`);
+    if (!ok) return;
+    this.noticesService.apiNoticesIdDelete(item.id!).subscribe({
+      next: () => { this.notificationService.showSuccess('Aviso Excluído!', 'O aviso foi excluído com sucesso.'); this.load(); },
+      error: (err) => { this.notificationService.showError('Erro ao Excluir Aviso!', extractErrorMessage(err, 'Não foi possível excluir o aviso. Tente novamente.')); }
+    });
   }
 }

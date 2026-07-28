@@ -38,7 +38,6 @@ import { Configuration }                                     from '../configurat
 import {
     PersonsServiceInterface
 } from './persons.serviceInterface';
-import { environment } from '../../../enviroments/environment';
 
 
 
@@ -47,7 +46,7 @@ import { environment } from '../../../enviroments/environment';
 })
 export class PersonsService implements PersonsServiceInterface {
 
-    protected basePath = environment.face_api;
+    protected basePath = 'http://localhost:8003';
     public defaultHeaders = new HttpHeaders();
     public configuration = new Configuration();
     public encoder: HttpParameterCodec;
@@ -122,7 +121,7 @@ export class PersonsService implements PersonsServiceInterface {
 
     /**
      * Add Person Images
-     * Adiciona mais imagens a uma pessoa existente.  - **person_id**: ID da pessoa (UUID) - **images**: Lista de imagens contendo o rosto da pessoa (máximo 10)
+     * Adiciona mais imagens a uma pessoa existente.
      * @param personId 
      * @param images 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
@@ -174,7 +173,6 @@ export class PersonsService implements PersonsServiceInterface {
         let localVarUseForm = false;
         let localVarConvertFormParamsToString = false;
         // use FormData to transmit files using content-type "multipart/form-data"
-        // see https://stackoverflow.com/questions/4007969/application-x-www-form-urlencoded-or-multipart-form-data
         localVarUseForm = canConsumeForm;
         if (localVarUseForm) {
             localVarFormParams = new FormData();
@@ -203,7 +201,7 @@ export class PersonsService implements PersonsServiceInterface {
             }
         }
 
-        let localVarPath = `/api/v1/persons/${this.configuration.encodeParam({name: "personId", value: personId, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}/images`;
+        let localVarPath = `/api/v1/persons/${this.configuration.encodeParam({name: "personId", value: personId, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: "uuid"})}/images`;
         return this.httpClient.request<{ [key: string]: any; }>('post', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
@@ -220,7 +218,7 @@ export class PersonsService implements PersonsServiceInterface {
 
     /**
      * Delete Person
-     * Remove uma pessoa do sistema.  - **person_id**: ID da pessoa (UUID)
+     * Remove uma pessoa do sistema.
      * @param personId 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
@@ -269,7 +267,7 @@ export class PersonsService implements PersonsServiceInterface {
             }
         }
 
-        let localVarPath = `/api/v1/persons/${this.configuration.encodeParam({name: "personId", value: personId, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`;
+        let localVarPath = `/api/v1/persons/${this.configuration.encodeParam({name: "personId", value: personId, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: "uuid"})}`;
         return this.httpClient.request<{ [key: string]: any; }>('delete', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
@@ -334,7 +332,7 @@ export class PersonsService implements PersonsServiceInterface {
             }
         }
 
-        let localVarPath = `/api/v1/persons/${this.configuration.encodeParam({name: "personId", value: personId, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`;
+        let localVarPath = `/api/v1/persons/${this.configuration.encodeParam({name: "personId", value: personId, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: "uuid"})}`;
         return this.httpClient.request<PersonDetailResponse>('get', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
@@ -350,16 +348,20 @@ export class PersonsService implements PersonsServiceInterface {
 
     /**
      * List Persons
-     * Lista todas as pessoas registradas no sistema.
+     * Lista pessoas registradas no sistema com suporte a filtros.
      * @param page Página atual
      * @param pageSize Tamanho da página
+     * @param name Filtrar por nome (parcial, sem distinção de maiúsculas)
+     * @param isActive Filtrar por status ativo
+     * @param createdFrom Data de criação a partir de (YYYY-MM-DD)
+     * @param createdTo Data de criação até (YYYY-MM-DD)
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public listPersonsApiV1PersonsGet(page?: number, pageSize?: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<PersonListResponse>;
-    public listPersonsApiV1PersonsGet(page?: number, pageSize?: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<PersonListResponse>>;
-    public listPersonsApiV1PersonsGet(page?: number, pageSize?: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<PersonListResponse>>;
-    public listPersonsApiV1PersonsGet(page?: number, pageSize?: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public listPersonsApiV1PersonsGet(page?: number, pageSize?: number, name?: string, isActive?: boolean, createdFrom?: string, createdTo?: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<PersonListResponse>;
+    public listPersonsApiV1PersonsGet(page?: number, pageSize?: number, name?: string, isActive?: boolean, createdFrom?: string, createdTo?: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<PersonListResponse>>;
+    public listPersonsApiV1PersonsGet(page?: number, pageSize?: number, name?: string, isActive?: boolean, createdFrom?: string, createdTo?: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<PersonListResponse>>;
+    public listPersonsApiV1PersonsGet(page?: number, pageSize?: number, name?: string, isActive?: boolean, createdFrom?: string, createdTo?: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
 
         let localVarQueryParameters = new HttpParams({encoder: this.encoder});
         if (page !== undefined && page !== null) {
@@ -369,6 +371,22 @@ export class PersonsService implements PersonsServiceInterface {
         if (pageSize !== undefined && pageSize !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
             <any>pageSize, 'page_size');
+        }
+        if (name !== undefined && name !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>name, 'name');
+        }
+        if (isActive !== undefined && isActive !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>isActive, 'is_active');
+        }
+        if (createdFrom !== undefined && createdFrom !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>createdFrom, 'created_from');
+        }
+        if (createdTo !== undefined && createdTo !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>createdTo, 'created_to');
         }
 
         let localVarHeaders = this.defaultHeaders;
@@ -424,7 +442,7 @@ export class PersonsService implements PersonsServiceInterface {
 
     /**
      * Recognize Faces
-     * Reconhece todas as faces presentes na imagem.  - **image**: Imagem para análise - **draw_boxes**: Se verdadeiro, retorna a imagem com caixas desenhadas ao redor das faces  Retorna a lista de faces encontradas com seus nomes e posições.
+     * Reconhece todas as faces presentes na imagem.
      * @param image 
      * @param drawBoxes 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
@@ -473,7 +491,6 @@ export class PersonsService implements PersonsServiceInterface {
         let localVarUseForm = false;
         let localVarConvertFormParamsToString = false;
         // use FormData to transmit files using content-type "multipart/form-data"
-        // see https://stackoverflow.com/questions/4007969/application-x-www-form-urlencoded-or-multipart-form-data
         localVarUseForm = canConsumeForm;
         if (localVarUseForm) {
             localVarFormParams = new FormData();
@@ -516,7 +533,7 @@ export class PersonsService implements PersonsServiceInterface {
 
     /**
      * Register Multiple Photos
-     * Registra múltiplas fotos da mesma pessoa para melhor reconhecimento.  - **name**: Nome da pessoa - **images**: Lista de imagens contendo o rosto da pessoa - **person_id**: ID opcional da pessoa (UUID)  Retorna informações da pessoa registrada com múltiplas fotos.
+     * Registra múltiplas fotos da mesma pessoa para melhor reconhecimento.
      * @param name 
      * @param images 
      * @param personId 
@@ -569,7 +586,6 @@ export class PersonsService implements PersonsServiceInterface {
         let localVarUseForm = false;
         let localVarConvertFormParamsToString = false;
         // use FormData to transmit files using content-type "multipart/form-data"
-        // see https://stackoverflow.com/questions/4007969/application-x-www-form-urlencoded-or-multipart-form-data
         localVarUseForm = canConsumeForm;
         if (localVarUseForm) {
             localVarFormParams = new FormData();
@@ -621,7 +637,7 @@ export class PersonsService implements PersonsServiceInterface {
 
     /**
      * Register Person
-     * Registra uma nova pessoa no sistema.  - **name**: Nome da pessoa - **image**: Imagem contendo o rosto da pessoa - **person_id**: ID opcional da pessoa (UUID)  Retorna o ID único da pessoa registrada.
+     * Registra uma nova pessoa no sistema.
      * @param name 
      * @param image 
      * @param personId 
@@ -674,7 +690,6 @@ export class PersonsService implements PersonsServiceInterface {
         let localVarUseForm = false;
         let localVarConvertFormParamsToString = false;
         // use FormData to transmit files using content-type "multipart/form-data"
-        // see https://stackoverflow.com/questions/4007969/application-x-www-form-urlencoded-or-multipart-form-data
         localVarUseForm = canConsumeForm;
         if (localVarUseForm) {
             localVarFormParams = new FormData();
@@ -720,7 +735,7 @@ export class PersonsService implements PersonsServiceInterface {
 
     /**
      * Remove Person Image
-     * Remove uma imagem específica de uma pessoa.  - **person_id**: ID da pessoa (UUID) - **image_id**: ID da imagem a ser removida  Nota: Não é possível remover a única imagem de uma pessoa. Se a imagem removida for a primária, outra imagem será automaticamente definida como primária.
+     * Remove uma imagem específica de uma pessoa.
      * @param personId 
      * @param imageId 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
@@ -773,7 +788,7 @@ export class PersonsService implements PersonsServiceInterface {
             }
         }
 
-        let localVarPath = `/api/v1/persons/${this.configuration.encodeParam({name: "personId", value: personId, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}/images/${this.configuration.encodeParam({name: "imageId", value: imageId, in: "path", style: "simple", explode: false, dataType: "number", dataFormat: undefined})}`;
+        let localVarPath = `/api/v1/persons/${this.configuration.encodeParam({name: "personId", value: personId, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: "uuid"})}/images/${this.configuration.encodeParam({name: "imageId", value: imageId, in: "path", style: "simple", explode: false, dataType: "number", dataFormat: undefined})}`;
         return this.httpClient.request<{ [key: string]: any; }>('delete', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,

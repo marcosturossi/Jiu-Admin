@@ -1,0 +1,49 @@
+.dashboard-card {
+  --accent: #d97706;
+  --accent-2: #dc2626;
+  background: linear-gradient(180deg, var(--brand-white), var(--brand-surface));
+  border-radius: 10px;
+  box-shadow: 0 6px 18px rgba(16, 24, 40, 0.06);
+  border: 1px solid var(--brand-border);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.3s ease;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 14px 40px rgba(16, 24, 40, 0.1);
+  }
+}
+
+.dashboard-card .card-header {
+  padding: 0.5rem 0.75rem;
+  font-weight: 700;
+  font-size: 0.9rem;
+  background: var(--brand-surface);
+  color: var(--brand-text);
+  border-bottom: none;
+  display: flex;
+  align-items: center;
+}
+
+.dashboard-card .card-body {
+  padding: 0.5rem;
+  flex: 1 1 auto;
+  overflow-y: auto;
+  max-height: 360px;
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1rem;
+  color: var(--brand-muted);
+  text-align: center;
+}
+
+.badge.bg-warning {
+  color: #1a1a1a;
+}

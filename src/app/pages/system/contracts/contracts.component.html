@@ -1,0 +1,115 @@
+<section class="page-section">
+  <div class="page-toolbar">
+    <app-filter [placeholder]="'Buscar contrato'" [fields]="filterFields" (filterChange)="onFilterChange($event)" />
+    <button type="button" class="btn btn-primary" (click)="openCreate()"><i class="bi bi-plus-lg me-1"></i>Novo Contrato</button>
+  </div>
+
+  @if (isLoading()) {
+    <div class="d-flex justify-content-center py-5">
+      <div class="spinner-border text-secondary" role="status"><span class="visually-hidden">Carregando...</span></div>
+    </div>
+  } @else {
+    <div class="surface-card">
+      <div class="table-responsive">
+        <table class="table table-hover table-sm align-middle">
+          <thead class="table-light">
+            <tr>
+              <th>Aluno</th>
+              <th>Plano</th>
+              <th>Início</th>
+              <th>Término</th>
+              <th>Mensalidade</th>
+              <th>Status</th>
+              <th>Mensalidades</th>
+              <th class="text-center" style="width: 8rem">Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            @if ((items()?.items ?? []).length === 0) {
+              <tr>
+                <td colspan="8" class="empty-state">
+                  <i class="bi bi-file-earmark-text empty-icon"></i>
+                  <p class="empty-text">Nenhum contrato encontrado.</p>
+                </td>
+              </tr>
+            }
+            @for (contract of items()?.items ?? []; track contract.id) {
+              <tr>
+                <td>
+                  @if (contract.personId) {
+                    <a [routerLink]="['/system/students/details', contract.personId]">{{ contract.personName }}</a>
+                  } @else {
+                    {{ contract.personName }}
+                  }
+                </td>
+                <td>{{ contract.feePlanName }}</td>
+                <td>{{ contract.startDate | date:'dd/MM/yyyy':'UTC' }}</td>
+                <td>{{ contract.endDate | date:'dd/MM/yyyy':'UTC' }}</td>
+                <td>{{ $any(contract.monthlyAmount) | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}</td>
+                <td>
+                  <span [class]="'badge ' + getStatusBadge($any(contract.status)).cssClass">{{ getStatusBadge($any(contract.status)).label }}</span>
+                </td>
+                <td>
+                  <span class="fee-progress">
+                    <span class="paid">{{ contract.paidFees }}</span>/{{ contract.feePlanMonthDuration }}
+                    @if (contract.overdueFees) {
+                      <span class="badge bg-danger ms-1">{{ contract.overdueFees }} vencidas</span>
+                    }
+                  </span>
+                </td>
+                <td class="text-center">
+                  <button type="button" class="btn btn-sm btn-outline-info" (click)="openEdit(contract)"><i class="bi bi-pencil"></i></button>
+                  <button type="button" class="btn btn-sm btn-outline-danger" (click)="delete(contract)"><i class="bi bi-trash"></i></button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  }
+
+  <app-pagination
+    [currentPage]="currentPage()"
+    [totalPages]="items()?.totalPages ?? 1"
+    [pageSize]="pageSize()"
+    [totalItems]="items()?.totalCount ?? 0"
+    (pageChange)="onPageChange($event)"
+    (pageSizeChange)="onPageSizeChange($event)" />
+</section>
+
+@if (openedCreate()) {
+  <div class="modal-backdrop-custom" (click)="openedCreate.set(false)"></div>
+  <div class="modal show d-block" tabindex="-1" role="dialog" aria-modal="true" (document:keydown.escape)="openedCreate.set(false)">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Novo Contrato</h5>
+          <button type="button" class="btn-close" (click)="openedCreate.set(false)" aria-label="Fechar"></button>
+        </div>
+        <div class="modal-body">
+          <app-create-contract (closeEvent)="openedCreate.set(false)" (contractCreated)="onCreated()" />
+        </div>
+      </div>
+    </div>
+  </div>
+}
+
+@if (openedUpdate()) {
+  <div class="modal-backdrop-custom" (click)="openedUpdate.set(false)"></div>
+  <div class="modal show d-block" tabindex="-1" role="dialog" aria-modal="true" (document:keydown.escape)="openedUpdate.set(false)">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Atualizar Contrato</h5>
+          <button type="button" class="btn-close" (click)="openedUpdate.set(false)" aria-label="Fechar"></button>
+        </div>
+        <div class="modal-body">
+          @if (selected()) {
+            <app-update-contract [contract]="selected()!" (closeEvent)="openedUpdate.set(false)" (contractUpdated)="onUpdated()" />
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+}

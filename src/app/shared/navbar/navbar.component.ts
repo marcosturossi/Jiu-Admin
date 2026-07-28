@@ -1,74 +1,48 @@
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { ChangeDetectionStrategy, Component, inject, signal, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import Keycloak from 'keycloak-js';
+import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
 import { AuthServiceService } from '../../services/auth-service.service';
+import { ThemeService } from '../../services/theme.service';
 
 @Component({
   selector: 'app-navbar',
-  templateUrl: './navbar.component.html',
   standalone: true,
-  imports: [CommonModule],
-  styleUrls: ['./navbar.component.scss']
+  imports: [CommonModule, NgbDropdownModule],
+  templateUrl: './navbar.component.html',
+  styleUrl: './navbar.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class NavbarComponent implements OnInit {
+export class NavbarComponent implements OnInit, OnDestroy {
+  private readonly keycloak       = inject(Keycloak);
+  private readonly authService    = inject(AuthServiceService);
+  protected readonly themeService = inject(ThemeService);
 
-  userName:string|null = ""
-  profileDropDown = false
-  sidebarOpen = false
+  protected readonly userName        = signal<string>('');
+  protected readonly sidebarExpanded = signal(false);
 
-  constructor(
-    private router:Router,
-    private authService: AuthServiceService,
-  ){
+  private readonly syncHandler = (event: Event) => {
+    this.sidebarExpanded.set((event as CustomEvent).detail.expanded);
+  };
 
-  }
   ngOnInit(): void {
-    this.setUserName()
-    
-    // Listen for sidebar state changes
-    this.checkSidebarState()
-  }
-  
-  checkSidebarState() {
-    // Check if sidebar is open by looking at body class
-    const observer = new MutationObserver(() => {
-      this.sidebarOpen = document.body.classList.contains('sidebar-open');
-    });
-    
-    observer.observe(document.body, {
-      attributes: true,
-      attributeFilter: ['class']
-    });
+    this.userName.set(this.authService.getUsernameFromToken() ?? '');
+    window.addEventListener('sidebar-toggle', this.syncHandler);
   }
 
-  setUserName(){
-    this.userName = this.authService.getUsernameFromToken()
+  ngOnDestroy(): void {
+    window.removeEventListener('sidebar-toggle', this.syncHandler);
   }
 
-  openProfileDropDown(){
-    this.profileDropDown = !this.profileDropDown
+  protected toggleSidebar(): void {
+    const newState = !this.sidebarExpanded();
+    this.sidebarExpanded.set(newState);
+    window.dispatchEvent(new CustomEvent('sidebar-toggle', {
+      detail: { expanded: newState }
+    }));
   }
 
-  toggleSidebar(){
-    // Toggle sidebar visibility by adding/removing CSS class to body
-    this.sidebarOpen = !this.sidebarOpen;
-    
-    console.log('Toggle sidebar clicked. New state:', this.sidebarOpen);
-    
-    if (this.sidebarOpen) {
-      document.body.classList.add('sidebar-open');
-      console.log('Added sidebar-open class to body');
-    } else {
-      document.body.classList.remove('sidebar-open');
-      console.log('Removed sidebar-open class from body');
-    }
-    
-    console.log('Current body classes:', document.body.className);
-    console.log('Sidebar element:', document.querySelector('.sidebar'));
+  protected logout(): void {
+    this.keycloak.logout({ redirectUri: window.location.origin });
   }
-
-  logout(){
-    this.router.navigateByUrl("authentication/logout")
-  }
-
 }

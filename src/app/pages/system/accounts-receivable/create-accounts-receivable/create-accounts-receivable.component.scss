@@ -1,0 +1,21 @@
+.transaction-form {
+  display: grid;
+  gap: 1rem;
+
+  .field {
+    display: grid;
+    gap: 0.4rem;
+
+    label {
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
+  }
+
+  .form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    padding-top: 0.5rem;
+  }
+}

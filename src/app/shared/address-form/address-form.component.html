@@ -1,0 +1,62 @@
+<div class="address-block" [formGroup]="group()">
+  <div class="address-block__header">
+    <span class="fw-semibold">Endereço {{ index() + 1 }}</span>
+    <button type="button" class="btn btn-sm btn-outline-danger" (click)="remove.emit()">
+      <i class="bi bi-trash"></i>
+    </button>
+  </div>
+
+  <div class="address-grid">
+    <div class="mb-3">
+      <label class="form-label" [for]="'address-' + index() + '-typeAddress'">Tipo <span class="text-danger">*</span></label>
+      <select class="form-select" [id]="'address-' + index() + '-typeAddress'" formControlName="typeAddress">
+        <option value="" disabled>Selecione</option>
+        @for (t of addressTypes; track t) {
+          <option [value]="t">{{ t === 'Comercial' ? 'Comercial' : 'Residencial' }}</option>
+        }
+      </select>
+      <app-field-error [control]="group().get('typeAddress')" />
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label" [for]="'address-' + index() + '-zipCode'">CEP <span class="text-danger">*</span></label>
+      <input type="text" class="form-control" [id]="'address-' + index() + '-zipCode'" formControlName="zipCode" placeholder="00000-000" (blur)="onZipCodeChange()" />
+      <app-field-error [control]="group().get('zipCode')" />
+    </div>
+
+    <div class="mb-3 col-full">
+      <label class="form-label" [for]="'address-' + index() + '-street'">Rua <span class="text-danger">*</span></label>
+      <input type="text" class="form-control" [id]="'address-' + index() + '-street'" formControlName="street" placeholder="Nome da rua" />
+      <app-field-error [control]="group().get('street')" />
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label" [for]="'address-' + index() + '-number'">Número <span class="text-danger">*</span></label>
+      <input type="text" class="form-control" [id]="'address-' + index() + '-number'" formControlName="number" placeholder="123" />
+      <app-field-error [control]="group().get('number')" />
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label" [for]="'address-' + index() + '-complement'">Complemento</label>
+      <input type="text" class="form-control" [id]="'address-' + index() + '-complement'" formControlName="complement" placeholder="Apto, sala..." />
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label" [for]="'address-' + index() + '-neighborhood'">Bairro <span class="text-danger">*</span></label>
+      <input type="text" class="form-control" [id]="'address-' + index() + '-neighborhood'" formControlName="neighborhood" placeholder="Bairro" />
+      <app-field-error [control]="group().get('neighborhood')" />
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label" [for]="'address-' + index() + '-city'">Cidade <span class="text-danger">*</span></label>
+      <input type="text" class="form-control" [id]="'address-' + index() + '-city'" formControlName="city" placeholder="Cidade" />
+      <app-field-error [control]="group().get('city')" />
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label" [for]="'address-' + index() + '-state'">Estado <span class="text-danger">*</span></label>
+      <input type="text" class="form-control" [id]="'address-' + index() + '-state'" formControlName="state" placeholder="SP" maxlength="2" />
+      <app-field-error [control]="group().get('state')" />
+    </div>
+  </div>
+</div>

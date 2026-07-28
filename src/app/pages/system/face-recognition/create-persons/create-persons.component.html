@@ -1,59 +1,45 @@
-<div class="modal fade show" tabindex="-1" role="dialog" style="display:block">
-  <div class="modal-dialog modal-dialog-centered modal-dialog-custom" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Nova Pessoa</h5>
-        <button type="button" (click)="close()" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <form [formGroup]="personForm">
-          <div class="mb-3">
-            <label for="studentSelect" class="form-label">Aluno *</label>
-            <select id="studentSelect" class="form-select" formControlName="studentId">
-              <option value="">Selecione um aluno...</option>
-              <option *ngFor="let student of students" [value]="student.id">
-                {{student.firstName}} {{student.lastName}} ({{student.preferredUsername || student.userName}})
-              </option>
-            </select>
-          </div>
-          <div class="mb-3">
-            <label for="imagesInput" class="form-label">Fotos do rosto *</label>
-            <input 
-              type="file" 
-              class="form-control" 
-              id="imagesInput"
-              accept="image/*"
-              multiple
-              (change)="onFilesSelected($event)">
-            <div class="form-text">
-              Formatos aceitos: JPG, PNG, GIF. Tamanho máximo: 5MB por imagem. Selecione até 10 fotos.
-            </div>
-          </div>
-          <div *ngIf="previewUrls.length > 0" class="mb-3 text-center">
-            <label class="form-label">Pré-visualização</label>
-            <div class="d-flex flex-wrap gap-2 justify-content-center">
-              <div *ngFor="let url of previewUrls" class="border rounded p-2">
-                <img [src]="url" alt="Preview" class="img-fluid rounded" style="max-height: 120px; max-width: 100px">
-              </div>
-            </div>
-            <button type="button" class="btn btn-outline-secondary mt-2" (click)="clearImages()">
-              <i class="bi bi-trash me-1"></i> Limpar
-            </button>
-          </div>
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button 
-          type="button" 
-          class="btn btn-primary" 
-          style="background-color:#383838"
-          (click)="create()" 
-          [disabled]="!personForm.valid || isCreating">
-          <span *ngIf="isCreating" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-          {{isCreating ? 'Criando...' : 'Criar Pessoa'}}
-        </button>
-        <button type="button" (click)="close()" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
-      </div>
-    </div>
+<form [formGroup]="personForm">
+  <div class="mb-3">
+    <label for="studentSelect" class="form-label">Aluno <span class="text-danger">*</span></label>
+    <app-search-select
+      inputId="studentSelect"
+      [options]="studentOptions()"
+      [selected]="selectedStudent()"
+      placeholder="Selecione um aluno..."
+      label="Aluno"
+      (selectionChange)="onStudentSelected($event)"
+      (searchChange)="onStudentSearch($event)" />
+    <app-field-error [control]="personForm.get('studentId')" />
   </div>
-</div>
+
+  <div class="mb-3">
+    <label for="imagesInput" class="form-label">Fotos do rosto <span class="text-danger">*</span></label>
+    <input type="file" id="imagesInput" class="form-control" accept="image/*" multiple (change)="onFilesSelected($event)" />
+    <small class="text-muted">Formatos aceitos: JPG, PNG, GIF. Tamanho máximo: 5MB por imagem. Selecione até 10 fotos.</small>
+    <app-field-error [control]="personForm.get('images')" />
+  </div>
+
+  @if (previewUrls().length > 0) {
+    <div class="preview-section mb-3">
+      <span class="form-label d-block">Pré-visualização</span>
+      <div class="preview-grid">
+        @for (url of previewUrls(); track url) {
+          <div class="preview-item">
+            <img [src]="url" alt="Preview" class="preview-img" />
+          </div>
+        }
+      </div>
+      <button type="button" class="btn btn-sm btn-outline-secondary mt-2" (click)="clearImages()">
+        <i class="bi bi-trash me-1"></i>Limpar
+      </button>
+    </div>
+  }
+
+  <div class="d-flex gap-2 justify-content-end mt-3">
+    <button type="button" class="btn btn-outline-secondary" (click)="close()">Cancelar</button>
+    <button type="button" class="btn btn-primary" (click)="create()" [disabled]="!personForm.valid || isCreating()">
+      @if (isCreating()) { <span class="spinner-border spinner-border-sm me-1" role="status"></span> }
+      <i class="bi bi-check-lg me-1"></i>{{ isCreating() ? 'Criando...' : 'Criar Pessoa' }}
+    </button>
+  </div>
+</form>

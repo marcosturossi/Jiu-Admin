@@ -1,50 +1,109 @@
-<div class="modal fade show" tabindex="-1" role="dialog" style="display:block">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Novo Aluno</h5>
-        <button type="button" (click)="close()" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <form [formGroup]="studentForm">
-          <div class="mb-3">
-            <label for="userName" class="form-label">Usuário *</label>
-            <input id="userName" class="form-control" placeholder="Digite o nome de usuário" formControlName="userName" />
+<form [formGroup]="form">
+
+  <!-- Informações Pessoais -->
+  <section class="mb-4">
+    <h2 class="h5 mb-3">Informações Pessoais</h2>
+    <div class="card">
+      <div class="card-body">
+        <div class="row">
+          <div class="col-12 mb-3">
+            <label for="userName" class="form-label">Usuário <span class="text-danger">*</span></label>
+            <input id="userName" type="text" class="form-control" formControlName="userName"
+              placeholder="Nome de usuário">
+            <app-field-error [control]="form.get('userName')" />
           </div>
-          <div class="mb-3">
-            <label for="email" class="form-label">E-mail *</label>
-            <input id="email" class="form-control" placeholder="Digite o e-mail" type="email" formControlName="email" />
+
+          <div class="col-md-4 mb-3">
+            <label for="firstName" class="form-label">Nome <span class="text-danger">*</span></label>
+            <input id="firstName" type="text" class="form-control" formControlName="firstName" placeholder="Nome">
+            <app-field-error [control]="form.get('firstName')" />
           </div>
-          <div class="mb-3">
-            <label for="phoneNumber" class="form-label">Telefone</label>
-            <input id="phoneNumber" class="form-control" placeholder="Digite o telefone" formControlName="phoneNumber" />
+
+          <div class="col-md-4 mb-3">
+            <label for="lastName" class="form-label">Sobrenome <span class="text-danger">*</span></label>
+            <input id="lastName" type="text" class="form-control" formControlName="lastName" placeholder="Sobrenome">
+            <app-field-error [control]="form.get('lastName')" />
           </div>
-          <div class="mb-3">
-            <label for="firstName" class="form-label">Nome</label>
-            <input id="firstName" class="form-control" placeholder="Digite o primeiro nome" formControlName="firstName" />
+
+          <div class="col-md-4 mb-3">
+            <label for="cpf" class="form-label">CPF <span class="text-danger">*</span></label>
+            <input id="cpf" type="text" class="form-control" formControlName="cpf" placeholder="000.000.000-00">
+            <app-field-error [control]="form.get('cpf')" />
           </div>
-          <div class="mb-3">
-            <label for="lastName" class="form-label">Sobrenome</label>
-            <input id="lastName" class="form-control" placeholder="Digite o sobrenome" formControlName="lastName" />
+
+          <div class="col-md-4 mb-3">
+            <label for="birthDay" class="form-label">Data de Nascimento <span class="text-danger">*</span></label>
+            <input id="birthDay" type="date" class="form-control" formControlName="birthDay">
+            <app-field-error [control]="form.get('birthDay')" />
           </div>
-          <div class="mb-3">
-            <label for="birthDay" class="form-label">Data de Nascimento</label>
-            <input id="birthDay" class="form-control" type="date" formControlName="birthDay" />
+
+          <div class="col-md-4 mb-3">
+            <label for="email" class="form-label">E-mail <span class="text-danger">*</span></label>
+            <input id="email" type="email" class="form-control" formControlName="email" placeholder="email@exemplo.com">
+            <app-field-error [control]="form.get('email')" />
           </div>
-          <div class="form-check mb-3">
-            <input class="form-check-input" type="checkbox" formControlName="isActive" id="isActiveCheck">
-            <label class="form-check-label" for="isActiveCheck">Ativo</label>
+
+          <div class="col-md-4 mb-3">
+            <label for="phoneNumber" class="form-label">Telefone <span class="text-danger">*</span></label>
+            <input id="phoneNumber" type="text" class="form-control" formControlName="phoneNumber"
+              placeholder="(00) 00000-0000">
+            <app-field-error [control]="form.get('phoneNumber')" />
           </div>
-          <div class="mb-3">
-            <label for="preferredUsername" class="form-label">Usuário Preferido</label>
-            <input id="preferredUsername" class="form-control" placeholder="Digite o usuário preferido" formControlName="preferredUsername" />
-          </div>
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-primary" (click)="create()" [disabled]="!studentForm.valid">Salvar</button>
-        <button type="button" (click)="close()" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+        </div>
       </div>
     </div>
+  </section>
+
+  <!-- Endereços -->
+  <section class="mb-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h2 class="h5 mb-0">Endereços</h2>
+      <button type="button" class="btn btn-outline-primary btn-sm" (click)="addAddress()">
+        <i class="bi bi-plus-lg me-1"></i>Adicionar Endereço
+      </button>
+    </div>
+
+    <div formArrayName="addresses">
+      @for (address of addresses.controls; track $index) {
+        <app-address-form [group]="$any(address)" [index]="$index" (remove)="removeAddress($index)" />
+      }
+    </div>
+  </section>
+
+  <!-- Responsáveis (apenas para menores de idade) -->
+  @if (isMinor()) {
+  <section class="mb-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h2 class="h5 mb-0">Responsáveis</h2>
+      <button type="button" class="btn btn-outline-primary btn-sm" (click)="addResponsible()">
+        <i class="bi bi-plus-lg me-1"></i>Adicionar Responsável
+      </button>
+    </div>
+
+    <div formArrayName="responsibles">
+      @for (responsible of responsibles.controls; track $index) {
+      <app-responsible-form [group]="$any(responsible)" [index]="$index" (remove)="removeResponsible($index)" />
+      }
+      @if (responsibles.length === 0) {
+      <p class="text-danger fst-italic small">Aluno menor de idade precisa de ao menos um responsável.</p>
+      }
+    </div>
+  </section>
+  }
+
+  <!-- Ativo -->
+  <div class="form-check mb-4">
+    <input id="isActive" type="checkbox" class="form-check-input" formControlName="isActive">
+    <label class="form-check-label" for="isActive">Ativo</label>
   </div>
-</div>
+
+  <!-- Botões -->
+  <div class="d-flex justify-content-end gap-2">
+    <button type="button" class="btn btn-outline-secondary" (click)="close()">Cancelar</button>
+    <button type="button" class="btn btn-primary" (click)="save()" [disabled]="isSaving() || form.invalid">
+      @if (isSaving()) { <span class="spinner-border spinner-border-sm me-1" role="status"></span> }
+      <i class="bi bi-check-lg me-1"></i>Salvar
+    </button>
+  </div>
+
+</form>

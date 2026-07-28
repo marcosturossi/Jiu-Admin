@@ -1,0 +1,19 @@
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+.dashboard-full {
+  grid-column: 1 / -1;
+}
+
+.dashboard-half {
+  min-height: 280px;
+}
+
+@media (max-width: 767px) {
+  .dashboard-half {
+    grid-column: 1 / -1;
+  }
+}

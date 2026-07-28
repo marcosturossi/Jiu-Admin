@@ -1,5 +1,5 @@
 /**
- * BjjClutch Backend API
+ * CarlsonGracie Backend API
  * API for managing students, belts, graduation requirements, notices, frequencies and user authentication with Keycloak
  *
  * Contact: marcosturossi@gmail.com.com
@@ -8,11 +8,16 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { StripesEnum } from './stripesEnum';
 
 
 export interface BaseGraduationDTO { 
     studentId: string;
     beltId: string;
     graduationDate: string;
+    stripes?: StripesEnum;
 }
+export namespace BaseGraduationDTO {
+}
+
 

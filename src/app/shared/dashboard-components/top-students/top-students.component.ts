@@ -1,34 +1,31 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { DashboardService } from '../../../generated_services';
-import { TopStudentDTO } from '../../../generated_services';
+import { TopStudentDTO } from '../../../generated_services/model/topStudentDTO';
 
 @Component({
   selector: 'app-top-students',
-  imports: [CommonModule],
+  imports: [],
   templateUrl: './top-students.component.html',
-  styleUrl: './top-students.component.scss'
+  styleUrl: './top-students.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TopStudentsComponent implements OnInit {
-  topStudents: TopStudentDTO[] = [];
-  loading = true;
-  error = '';
+export class TopStudentsComponent {
+  private readonly dashboardService = inject(DashboardService);
 
-  constructor(private dashboardService: DashboardService) {
-  }
+  protected readonly topStudents = signal<TopStudentDTO[]>([]);
+  protected readonly loading = signal(true);
+  protected readonly error = signal('');
 
-  ngOnInit(): void {
+  constructor() {
     this.dashboardService.apiDashboardTopStudentsGet().subscribe({
       next: (data) => {
-        this.topStudents = data || [];
-        this.loading = false;
+        this.topStudents.set(data ?? []);
+        this.loading.set(false);
       },
-      error: (err) => {
-        this.error = 'Failed to load top students';
-        this.loading = false;
-        console.error(err);
-      }
+      error: () => {
+        this.error.set('Falha ao carregar ranking');
+        this.loading.set(false);
+      },
     });
   }
-
 }

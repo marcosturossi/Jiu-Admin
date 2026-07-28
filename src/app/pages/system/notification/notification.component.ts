@@ -1,162 +1,109 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule, DatePipe } from '@angular/common';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { DatePipe } from '@angular/common';
 import { NotificationService as ApiNotificationService } from '../../../generated_services/api/notification.service';
-import { ShowNotificationDTO } from '../../../generated_services/model/showNotificationDTO';
+import { ShowNotificationDto as ShowNotificationDTO } from '../../../generated_services/model/showNotificationDto';
 import { CreateNotificationComponent } from './create-notification/create-notification.component';
 import { UpdateNotificationComponent } from './update-notification/update-notification.component';
-import { NotificationType } from '../../../generated_services/model/notificationType';
-import { NotificationPriority } from '../../../generated_services/model/notificationPriority';
+import { NotificationType as NotificationType } from '../../../generated_services/model/notificationType';
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
-import { PaginationNotificationDTO } from '../../../generated_services';
+import { ConfirmService } from '../../../services/confirm.service';
+import { extractErrorMessage } from '../../../utils/error.utils';
+import { FilterComponent } from '../../../shared/filter/filter.component';
+import { FilterOutput } from '../../../shared/filter/filter.types';
 import { PaginationComponent } from '../../../shared/pagination/pagination.component';
+import { PageResult } from '../../../utils/page-result';
+import { activeBadge } from '../../../shared/status-badge';
 
 @Component({
   selector: 'app-notification',
-  imports: [CommonModule, DatePipe, CreateNotificationComponent, UpdateNotificationComponent, PaginationComponent],
+  imports: [DatePipe, FilterComponent, CreateNotificationComponent, UpdateNotificationComponent, PaginationComponent],
   templateUrl: './notification.component.html',
-  styleUrl: './notification.component.scss'
+  styleUrl: './notification.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class NotificationComponent implements OnInit {
-  notifications: PaginationNotificationDTO = { items: [], totalCount: 0, pageNumber: 1, pageSize: 10, totalPages: 0 };
-  isLoading: boolean = false;
-  openedCreateNotification: boolean = false;
-  selectedNotification!: ShowNotificationDTO;
-  openedUpdateNotification: boolean = false;
-  currentPage: number = 1;
-  pageSize: number = 10;
+export class NotificationComponent {
+  private readonly apiNotificationService = inject(ApiNotificationService);
+  private readonly subnavService = inject(SubnavService);
+  private readonly ns = inject(NotificationService);
+  private readonly confirmService = inject(ConfirmService);
 
-  constructor(
-    private apiNotificationService: ApiNotificationService,
-    private subnavService: SubnavService,
-    private notificationService: NotificationService
-  ) { }
+  protected readonly isLoading = signal(false);
+  protected readonly items = signal<PageResult<ShowNotificationDTO> | null>(null);
+  protected readonly openedCreate = signal(false);
+  protected readonly openedUpdate = signal(false);
+  protected readonly selected = signal<ShowNotificationDTO | null>(null);
+  protected readonly currentPage = signal(1);
+  protected readonly pageSize = signal(10);
+  protected readonly filterText = signal('');
 
-  ngOnInit(): void {
-    this.subnavService.setTitle("Notificações");
-    this.loadNotifications();
+  constructor() {
+    this.subnavService.setTitle('Notificações');
+    this.load();
   }
 
-  loadNotifications(): void {
-    this.isLoading = true;
-    this.apiNotificationService.apiNotificationGet(this.currentPage, this.pageSize).subscribe(
-      {
-        next: (result) => {
-          this.notifications = result;
-          this.isLoading = false;
-        },
-        error: (error) => {
-          console.log(error);
-          this.isLoading = false;
-          this.notificationService.showError(
-            'Erro ao Carregar Notificações!', 
-            'Não foi possível carregar a lista de notificações. Tente novamente.'
-          );
-        }
-      }
-    )
+  protected load(): void {
+    this.isLoading.set(true);
+    this.apiNotificationService.apiNotificationGet(
+      this.currentPage(),
+      this.pageSize(),
+      this.filterText() || undefined,
+    ).subscribe({
+      next: data => {
+        const arr = data ?? [];
+        const hasMore = arr.length === this.pageSize();
+        this.items.set({
+          items: arr,
+          totalCount: (this.currentPage() - 1) * this.pageSize() + arr.length + (hasMore ? 1 : 0),
+          totalPages: hasMore ? this.currentPage() + 1 : this.currentPage(),
+        });
+        this.isLoading.set(false);
+      },
+      error: () => {
+        this.isLoading.set(false);
+        this.ns.showError('Erro ao Carregar Notificações!', 'Não foi possível carregar a lista de notificações. Tente novamente.');
+      },
+    });
   }
 
-  onPageChange(page: number): void {
-    this.currentPage = page;
-    this.loadNotifications();
+  protected onFilterChange(output: FilterOutput): void { this.filterText.set(output.text); this.currentPage.set(1); this.load(); }
+
+  protected onPageChange(p: number): void { this.currentPage.set(p); this.load(); }
+  protected onPageSizeChange(s: number): void { this.pageSize.set(s); this.currentPage.set(1); this.load(); }
+  protected openCreate(): void { this.openedCreate.set(true); }
+  protected openEdit(item: ShowNotificationDTO): void { this.selected.set(item); this.openedUpdate.set(true); }
+  protected onCreated(): void { this.openedCreate.set(false); this.load(); }
+  protected onUpdated(): void { this.openedUpdate.set(false); this.load(); }
+
+  protected async deleteNotification(notification: ShowNotificationDTO): Promise<void> {
+    const ok = await this.confirmService.confirm({
+      title: 'Excluir Notificação',
+      message: 'Tem certeza que deseja excluir esta notificação? Esta ação não pode ser desfeita.',
+    });
+    if (!ok) return;
+    this.apiNotificationService.apiNotificationIdDelete(notification.id!).subscribe({
+      next: () => { this.ns.showSuccess('Notificação Excluída!', `A notificação "${notification.title}" foi excluída com sucesso.`); this.load(); },
+      error: (err) => this.ns.showError('Erro ao Excluir Notificação!', extractErrorMessage(err, 'Não foi possível excluir a notificação. Tente novamente.'))
+    });
   }
 
-  onPageSizeChange(size: number): void {
-    this.pageSize = size;
-    this.currentPage = 1;
-    this.loadNotifications();
-  }
-
-  openCreateNotification() {
-    this.openedCreateNotification = true
-  }
-
-  closeCreateNotification() {
-    this.openedCreateNotification = false
-  }
-
-  openUpdateNotification(notification: ShowNotificationDTO) {
-    this.selectedNotification = notification
-    this.openedUpdateNotification = true
-  }
-
-  closeUpdateNotification() {
-    this.openedUpdateNotification = false
-  }
-
-  onNotificationCreated() {
-    this.loadNotifications();
-    this.closeCreateNotification();
-  }
-
-  onNotificationUpdated() {
-    this.loadNotifications();
-    this.closeUpdateNotification();
-  }
-
-  deleteNotification(notification: ShowNotificationDTO) {
-    if (confirm('Tem certeza que deseja excluir esta notificação? Esta ação não pode ser desfeita.')) {
-      this.apiNotificationService.apiNotificationIdDelete(notification.id!).subscribe({
-        next: () => {
-          this.notificationService.showSuccess(
-            'Notificação Excluída!', 
-            `A notificação "${notification.title}" foi excluída com sucesso.`
-          );
-          this.loadNotifications();
-        },
-        error: (error) => {
-          console.log(error);
-          this.notificationService.showError(
-            'Erro ao Excluir Notificação!', 
-            'Não foi possível excluir a notificação. Tente novamente.'
-          );
-        }
-      });
-    }
-  }
-
-  getNotificationTypeText(type: NotificationType): string {
+  protected getNotificationTypeText(type: NotificationType | undefined): string {
     switch (type) {
-      case NotificationType.NUMBER_0: return 'Informação';
-      case NotificationType.NUMBER_1: return 'Aviso';
-      case NotificationType.NUMBER_2: return 'Erro';
-      case NotificationType.NUMBER_3: return 'Sucesso';
-      case NotificationType.NUMBER_4: return 'Sistema';
-      case NotificationType.NUMBER_5: return 'Graduação';
-      case NotificationType.NUMBER_6: return 'Frequência';
-      case NotificationType.NUMBER_7: return 'Geral';
+      case NotificationType.Info: return 'Informação';
+      case NotificationType.Success: return 'Sucesso';
+      case NotificationType.Warning: return 'Aviso';
+      case NotificationType.Error: return 'Erro';
+      case NotificationType.Graduation: return 'Graduação';
+      case NotificationType.Lesson: return 'Aula';
+      case NotificationType.Payment: return 'Pagamento';
+      case NotificationType.System: return 'Sistema';
       default: return 'Desconhecido';
     }
   }
 
-  getNotificationPriorityText(priority?: NotificationPriority): string {
-    if (priority === undefined) return 'Normal';
-    switch (priority) {
-      case NotificationPriority.NUMBER_0: return 'Baixa';
-      case NotificationPriority.NUMBER_1: return 'Normal';
-      case NotificationPriority.NUMBER_2: return 'Alta';
-      case NotificationPriority.NUMBER_3: return 'Crítica';
-      default: return 'Normal';
-    }
-  }
+  protected readonly activeBadgeClass = (isActive: boolean | undefined) => activeBadge(isActive).cssClass;
 
-  getPriorityClass(priority?: NotificationPriority): string {
-    if (priority === undefined) return 'badge bg-secondary';
-    switch (priority) {
-      case NotificationPriority.NUMBER_0: return 'badge bg-success';
-      case NotificationPriority.NUMBER_1: return 'badge bg-secondary';
-      case NotificationPriority.NUMBER_2: return 'badge bg-warning';
-      case NotificationPriority.NUMBER_3: return 'badge bg-danger';
-      default: return 'badge bg-secondary';
-    }
-  }
-
-  getStatusClass(isActive?: boolean): string {
-    return isActive ? 'badge bg-success' : 'badge bg-secondary';
-  }
-
-  getStatusText(isActive?: boolean): string {
+  protected getStatusText(isActive?: boolean): string {
     return isActive ? 'Ativa' : 'Inativa';
   }
 }

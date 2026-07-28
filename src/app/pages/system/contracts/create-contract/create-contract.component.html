@@ -1,0 +1,54 @@
+<form [formGroup]="form" (ngSubmit)="save()">
+  <div class="mb-3">
+    <label for="studentSelect">Aluno <span class="text-danger">*</span></label>
+    <app-search-select
+      inputId="studentSelect"
+      [options]="studentOptions()"
+      [selected]="selectedStudent()"
+      placeholder="Selecione o aluno"
+      label="Aluno"
+      (selectionChange)="onStudentSelected($event)"
+      (searchChange)="onStudentSearch($event)" />
+    <app-field-error [control]="form.get('studentId')" />
+  </div>
+  <div class="mb-3">
+    <label for="feePlanSelect">Plano de Pagamento <span class="text-danger">*</span></label>
+    <app-search-select
+      inputId="feePlanSelect"
+      [options]="feePlanOptions()"
+      [selected]="selectedFeePlan()"
+      placeholder="Selecione o plano"
+      label="Plano de Pagamento"
+      (selectionChange)="onFeePlanSelected($event)"
+      (searchChange)="onFeePlanSearch($event)" />
+    @if (selectedFeePlanData(); as plan) {
+      <div class="fee-plan-info mt-2">
+        <i class="bi bi-info-circle me-1"></i>
+        <strong>{{ plan.monthDuration }} {{ plan.monthDuration === 1 ? 'mês' : 'meses' }}</strong> de duração
+        · R$ {{ $any(plan.price)?.toFixed(2) }}/mês
+        · Total: R$ {{ (($any(plan.price) ?? 0) * ($any(plan.monthDuration) ?? 0)).toFixed(2) }}
+        <br>
+        <small class="text-muted">{{ plan.monthDuration }} mensalidade{{ ($any(plan.monthDuration) ?? 0) > 1 ? 's' : '' }} será{{ ($any(plan.monthDuration) ?? 0) > 1 ? 'ão' : '' }} gerada{{ ($any(plan.monthDuration) ?? 0) > 1 ? 's' : '' }} automaticamente.</small>
+      </div>
+    }
+    <app-field-error [control]="form.get('feePlanId')" />
+  </div>
+  <div class="mb-3">
+    <label for="startDate">Data de Início <span class="text-danger">*</span></label>
+    <input id="startDate" type="date" class="form-control" formControlName="startDate" />
+    <app-field-error [control]="form.get('startDate')" />
+  </div>
+  <div class="mb-3">
+    <label for="notes">Observações</label>
+    <textarea id="notes" class="form-control" formControlName="notes" rows="3" placeholder="Observações opcionais"></textarea>
+  </div>
+  <div class="d-flex gap-2 justify-content-end mt-3">
+    <button type="button" class="btn btn-outline-secondary" (click)="close()">Cancelar</button>
+    <button type="submit" class="btn btn-primary" [disabled]="isSaving()">
+      @if (isSaving()) {
+        <span class="spinner-border spinner-border-sm me-1" role="status"></span>
+      }
+      <i class="bi bi-check-lg me-1"></i>Criar Contrato
+    </button>
+  </div>
+</form>

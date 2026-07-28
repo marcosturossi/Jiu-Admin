@@ -1,92 +1,71 @@
-import { Component, Output, EventEmitter, OnInit } from '@angular/core';
-import { FrequencyService, StudentsService, ShowStudentDTO, ShowLessonDTO, LessonService, PaginationStudentDTO, PaginationLessonDTO } from '../../../../generated_services';
-import { FormBuilder, FormGroup, FormArray, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, output, signal } from '@angular/core';
+import { FrequencyService, StudentsService, ShowStudentDTO as ShowStudentDTO, ShowLessonDTO as ShowLessonDTO, LessonService } from '../../../../generated_services';
+import { FormBuilder, FormArray, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CreateFrequencyDTO } from '../../../../generated_services/model/createFrequencyDTO';
-import { CommonModule } from '@angular/common';
-import { forkJoin, Observable } from 'rxjs';
-// Import PersonsService and models from api2
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Subject, debounceTime, forkJoin, Observable } from 'rxjs';
 import { PersonsService } from '../../../../generated_services/api2/api/persons.service';
 import { RecognitionResponse } from '../../../../generated_services/api2/model/recognitionResponse';
 import { PersonListResponse } from '../../../../generated_services/api2/model/personListResponse';
 import { NotificationService } from '../../../../services/notification.service';
+import { extractErrorMessage } from '../../../../utils/error.utils';
+import { SearchOption } from '../../../../shared/search-select/search-option';
+import { SearchSelectComponent } from '../../../../shared/search-select/search-select.component';
+import { FieldErrorComponent } from '../../../../shared/field-error/field-error.component';
 
 @Component({
   selector: 'app-create-frequency',
-  imports: [ReactiveFormsModule, CommonModule],
+  imports: [ReactiveFormsModule, SearchSelectComponent, FieldErrorComponent],
   templateUrl: './create-frequency.component.html',
-  styleUrl: './create-frequency.component.scss'
+  styleUrl: './create-frequency.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class CreateFrequencyComponent implements OnInit {
-  @Output() closeEvent = new EventEmitter<void>();
-  @Output() frequencyCreated = new EventEmitter<void>();
-  frequencyForm!: FormGroup;
-  students!: ShowStudentDTO[];
-  lessons!: ShowLessonDTO[];
-  isCreating = false;
-  
-  // Image recognition properties
-  isRecognizing = false;
-  selectedFile: File | null = null;
-  previewUrl: string | null = null;
-  recognizedStudentIds: string[] = [];
+export class CreateFrequencyComponent {
+  readonly closeEvent = output<void>();
+  readonly frequencyCreated = output<void>();
 
-  // Add property to cache person list from api2
+  private readonly frequencyService = inject(FrequencyService);
+  private readonly studentsService = inject(StudentsService);
+  private readonly lessonService = inject(LessonService);
+  private readonly fb = inject(FormBuilder);
+  private readonly personsService = inject(PersonsService);
+  private readonly ns = inject(NotificationService);
+  private readonly destroyRef = inject(DestroyRef);
+
+  protected readonly students = signal<ShowStudentDTO[]>([]);
+  protected readonly lessons = signal<ShowLessonDTO[]>([]);
+  protected readonly lessonOptions = signal<SearchOption[]>([]);
+  protected readonly selectedLesson = signal<SearchOption | null>(null);
+  protected readonly isCreating = signal(false);
+  protected readonly isRecognizing = signal(false);
+  protected readonly selectedFile = signal<File | null>(null);
+  protected readonly previewUrl = signal<string | null>(null);
+  protected readonly recognizedStudentIds = signal<string[]>([]);
+
   private api2Persons: PersonListResponse | null = null;
+  private readonly lessonSearchSubject = new Subject<string>();
 
-  constructor(
-    private frequencyService: FrequencyService,
-    private studentsService: StudentsService,
-    private lessonService: LessonService,
-    private formBuilder: FormBuilder,
-    private personsService: PersonsService, // Inject api2 PersonsService
-    private notificationService: NotificationService
-  ) {
-    this.frequencyForm = this.formBuilder.group({
-      lessonId: ["", Validators.required],
-      students: this.formBuilder.array([])
-    })
-  }
+  protected readonly frequencyForm = this.fb.group({
+    lessonId: ['', Validators.required],
+    students: this.fb.array([])
+  });
 
-  ngOnInit(): void {
-    this.studentsService.apiStudentsActiveGet().subscribe(
-      {
-        next: (result) => {
-          this.students = result;
-          this.initializeStudentFormArray();
-        },
-        error: (error) => {
-          console.log(error);
-          this.notificationService.showError(
-            'Erro ao Carregar Alunos!', 
-            'Não foi possível carregar a lista de alunos. Tente novamente.'
-          );
-        }
-      }
-    )
-
-    this.lessonService.apiLessonActiveGet().subscribe({
-      next: (result) => {
-        this.lessons = result;
+  constructor() {
+    this.lessonSearchSubject.pipe(debounceTime(400), takeUntilDestroyed(this.destroyRef))
+      .subscribe(term => this.loadLessons(term));
+    this.studentsService.apiStudentsGet(undefined, undefined, undefined, undefined, undefined, undefined, 1, 100).subscribe({
+      next: result => {
+        const students = result?.items ?? [];
+        this.students.set(students);
+        this.initializeStudentFormArray(students);
       },
-      error: (error) => {
-        console.log(error);
-        this.notificationService.showError(
-          'Erro ao Carregar Aulas!', 
-          'Não foi possível carregar a lista de aulas. Tente novamente.'
-        );
-      }
+      error: () => this.ns.showError('Erro ao Carregar Alunos!', 'Não foi possível carregar a lista de alunos. Tente novamente.')
     });
+    this.loadLessons();
 
-    // Load api2 persons for recognition mapping
     this.personsService.listPersonsApiV1PersonsGet().subscribe({
-      next: (result) => this.api2Persons = result,
-      error: (error) => {
-        console.log(error);
-        this.notificationService.showError(
-          'Erro ao Carregar Dados de Reconhecimento!', 
-          'Não foi possível carregar os dados para reconhecimento facial.'
-        );
-      }
+      next: result => { this.api2Persons = result; },
+      error: () => this.ns.showError('Erro ao Carregar Dados de Reconhecimento!', 'Não foi possível carregar os dados para reconhecimento facial.')
     });
   }
 
@@ -94,237 +73,153 @@ export class CreateFrequencyComponent implements OnInit {
     return this.frequencyForm.get('students') as FormArray;
   }
 
-  private initializeStudentFormArray(): void {
-    const studentsArray = this.formBuilder.array([]);
-    this.students?.forEach(() => {
-      studentsArray.push(new FormControl(false));
-    });
-    this.frequencyForm.setControl('students', studentsArray);
+  private initializeStudentFormArray(students: ShowStudentDTO[]): void {
+    const arr = this.fb.array(students.map(() => new FormControl(false)));
+    this.frequencyForm.setControl('students', arr as any); // eslint-disable-line @typescript-eslint/no-explicit-any
   }
 
-  getSelectedStudents(): ShowStudentDTO[] {
-    return this.students?.filter((student, index) => 
-      this.studentsFormArray.at(index).value === true
-    ) || [];
+  protected getSelectedStudents(): ShowStudentDTO[] {
+    return this.students().filter((_, i) => this.studentsFormArray.at(i).value === true);
   }
 
-  getSelectedStudentsCount(): number {
-    return this.studentsFormArray.value.filter((selected: boolean) => selected).length;
+  protected getSelectedStudentsCount(): number {
+    return this.studentsFormArray.value.filter((v: boolean) => v).length;
   }
 
-  isFormValid(): boolean {
-    const hasSelectedStudents = this.studentsFormArray.value.some((selected: boolean) => selected);
-    const hasSelectedLesson = this.frequencyForm.get('lessonId')?.value;
-    return hasSelectedStudents && hasSelectedLesson;
+  protected isFormValid(): boolean {
+    return this.studentsFormArray.value.some((v: boolean) => v) && !!this.frequencyForm.get('lessonId')?.value;
   }
 
-  toggleSelectAll(): void {
-    const allSelected = this.studentsFormArray.value.every((selected: boolean) => selected);
-    this.studentsFormArray.controls.forEach(control => {
-      control.setValue(!allSelected);
-    });
+  protected toggleSelectAll(): void {
+    const allSelected = this.studentsFormArray.value.every((v: boolean) => v);
+    this.studentsFormArray.controls.forEach(c => c.setValue(!allSelected));
   }
 
-  isAllSelected(): boolean {
-    return this.studentsFormArray.value.length > 0 && 
-           this.studentsFormArray.value.every((selected: boolean) => selected);
+  protected isAllSelected(): boolean {
+    return this.studentsFormArray.value.length > 0 && this.studentsFormArray.value.every((v: boolean) => v);
   }
 
-  // Image upload and recognition methods
-  onFileSelected(event: Event): void {
+  protected isStudentRecognized(studentId: string): boolean {
+    return this.recognizedStudentIds().includes(studentId);
+  }
+
+  protected onFileSelected(event: Event): void {
     const target = event.target as HTMLInputElement;
-    if (target.files && target.files.length > 0) {
-      this.selectedFile = target.files[0];
-      
-      // Validate file type
-      if (!this.selectedFile.type.startsWith('image/')) {
-        this.notificationService.showError(
-          'Tipo de Arquivo Inválido!', 
-          'Por favor, selecione apenas arquivos de imagem.'
-        );
-        this.clearImage();
-        return;
-      }
-
-      // Validate file size (5MB limit)
-      if (this.selectedFile.size > 5 * 1024 * 1024) {
-        this.notificationService.showError(
-          'Arquivo Muito Grande!', 
-          'O arquivo deve ter no máximo 5MB.'
-        );
-        this.clearImage();
-        return;
-      }
-
-      // Create preview
-      this.createImagePreview();
-    }
-  }
-
-  private createImagePreview(): void {
-    if (this.selectedFile) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        this.previewUrl = e.target?.result as string;
-      };
-      reader.readAsDataURL(this.selectedFile);
-    }
-  }
-
-  clearImage(): void {
-    this.selectedFile = null;
-    this.previewUrl = null;
-    this.recognizedStudentIds = [];
-    
-    // Clear file input
-    const fileInput = document.getElementById('imageInput') as HTMLInputElement;
-    if (fileInput) {
-      fileInput.value = '';
-    }
-  }
-
-  async recognizeStudents(): Promise<void> {
-    if (!this.selectedFile || !this.frequencyForm.get('lessonId')?.value) {
-      this.notificationService.showWarning(
-        'Dados Incompletos!', 
-        'Por favor, selecione uma aula e uma imagem primeiro.'
-      );
+    if (!target.files?.length) return;
+    const file = target.files[0];
+    if (!file.type.startsWith('image/')) {
+      this.ns.showError('Tipo de Arquivo Inválido!', 'Por favor, selecione apenas arquivos de imagem.');
+      this.clearImage();
       return;
     }
+    if (file.size > 5 * 1024 * 1024) {
+      this.ns.showError('Arquivo Muito Grande!', 'O arquivo deve ter no máximo 5MB.');
+      this.clearImage();
+      return;
+    }
+    this.selectedFile.set(file);
+    const reader = new FileReader();
+    reader.onload = e => this.previewUrl.set(e.target?.result as string);
+    reader.readAsDataURL(file);
+  }
 
-    this.isRecognizing = true;
+  protected clearImage(): void {
+    this.selectedFile.set(null);
+    this.previewUrl.set(null);
+    this.recognizedStudentIds.set([]);
+    const input = document.getElementById('imageInput') as HTMLInputElement;
+    if (input) input.value = '';
+  }
+
+  protected async recognizeStudents(): Promise<void> {
+    if (!this.selectedFile() || !this.frequencyForm.get('lessonId')?.value) {
+      this.ns.showWarning('Dados Incompletos!', 'Por favor, selecione uma aula e uma imagem primeiro.');
+      return;
+    }
+    this.isRecognizing.set(true);
     try {
-      // Call the API2 recognition service
-      const recognitionResult = await this.personsService
-        .recognizeFacesApiV1RecognizePost(this.selectedFile, false)
+      const result = await this.personsService
+        .recognizeFacesApiV1RecognizePost(this.selectedFile()!, false)
         .toPromise() as RecognitionResponse;
 
-      // Map recognized faces to student IDs
-      const recognizedIds: string[] = [];
-      if (recognitionResult && recognitionResult.faces && this.api2Persons) {
-        for (const face of recognitionResult.faces) {
+      const ids: string[] = [];
+      if (result?.faces && this.api2Persons) {
+        for (const face of result.faces) {
           if (face.person_id) {
-            // Try to find a student with the same id as person_id
-            const student = this.students?.find(s => s.id === face.person_id);
-            if (student) {
-              recognizedIds.push(student.id!);
-            } else {
-              // Try to match by name if id is not found
+            const direct = this.students().find(s => s.id === face.person_id);
+            if (direct) { ids.push(direct.id!); }
+            else {
               const person = this.api2Persons.persons.find(p => p.id === face.person_id);
               if (person) {
-                const matchByName = this.students?.find(s => `${s.firstName} ${s.lastName}`.trim().toLowerCase() === person.name.trim().toLowerCase());
-                if (matchByName) {
-                  recognizedIds.push(matchByName.id!);
-                }
+                const byName = this.students().find(s =>
+                  `${s.firstName} ${s.lastName}`.trim().toLowerCase() === person.name.trim().toLowerCase()
+                );
+                if (byName) ids.push(byName.id!);
               }
             }
           }
         }
       }
-      this.handleRecognitionResult(recognizedIds);
-      this.isRecognizing = false;
-    } catch (error) {
-      console.error('Error recognizing students:', error);
-      this.notificationService.showError(
-        'Erro no Reconhecimento!', 
-        'Erro ao reconhecer alunos. Tente novamente.'
-      );
-      this.isRecognizing = false;
+      this.handleRecognitionResult(ids);
+    } catch {
+      this.ns.showError('Erro no Reconhecimento!', 'Erro ao reconhecer alunos. Tente novamente.');
+    } finally {
+      this.isRecognizing.set(false);
     }
-  }
-
-  private fileToBase64(file: File): Promise<string> {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => {
-        const result = reader.result as string;
-        // Remove the data:image/...;base64, prefix
-        const base64 = result.split(',')[1];
-        resolve(base64);
-      };
-      reader.onerror = reject;
-      reader.readAsDataURL(file);
-    });
   }
 
   private handleRecognitionResult(studentIds: string[]): void {
-    this.recognizedStudentIds = studentIds;
-    
-    // Auto-select recognized students
-    studentIds.forEach(studentId => {
-      const index = this.students?.findIndex(student => student.id === studentId) ?? -1 ;
-      if (index >= 0) {
-        this.studentsFormArray.at(index).setValue(true);
-      }
+    this.recognizedStudentIds.set(studentIds);
+    studentIds.forEach(id => {
+      const idx = this.students().findIndex(s => s.id === id);
+      if (idx >= 0) this.studentsFormArray.at(idx).setValue(true);
     });
-
     if (studentIds.length > 0) {
-      this.notificationService.showSuccess(
-        'Reconhecimento Concluído!', 
-        `${studentIds.length} aluno(s) reconhecido(s) e selecionado(s) automaticamente!`
-      );
+      this.ns.showSuccess('Reconhecimento Concluído!', `${studentIds.length} aluno(s) reconhecido(s) e selecionado(s) automaticamente!`);
     } else {
-      this.notificationService.showInfo(
-        'Nenhum Aluno Reconhecido', 
-        'Nenhum aluno foi reconhecido na imagem.'
-      );
+      this.ns.showInfo('Nenhum Aluno Reconhecido', 'Nenhum aluno foi reconhecido na imagem.');
     }
   }
 
-  isStudentRecognized(studentId: string): boolean {
-    return this.recognizedStudentIds.includes(studentId);
+  protected close(): void { this.closeEvent.emit(); }
+
+  protected onLessonSelected(opt: SearchOption | null): void {
+    this.selectedLesson.set(opt);
+    this.frequencyForm.patchValue({ lessonId: opt?.id ?? '' });
   }
 
-  close() {
-    this.closeEvent.emit();
+  protected onLessonSearch(term: string): void {
+    this.lessonSearchSubject.next(term);
   }
 
-  create() {
-    if (!this.isFormValid() || this.isCreating) {
-      if (!this.isFormValid()) {
-        this.notificationService.showError(
-          'Seleção Inválida!', 
-          'Por favor, selecione uma aula e pelo menos um aluno.'
-        );
-      }
+  private loadLessons(term = ''): void {
+    this.lessonService.apiLessonGet(term || undefined, 1, 100).subscribe({
+      next: result => {
+        this.lessons.set(result?.items ?? []);
+        this.lessonOptions.set((result?.items ?? []).map(l => ({ id: l.id ?? '', label: l.title ?? '' })));
+      },
+      error: () => this.ns.showError('Erro ao Carregar Aulas!', 'Não foi possível carregar a lista de aulas. Tente novamente.')
+    });
+  }
+
+  protected create(): void {
+    if (!this.isFormValid() || this.isCreating()) {
+      if (!this.isFormValid()) this.ns.showError('Seleção Inválida!', 'Por favor, selecione uma aula e pelo menos um aluno.');
       return;
     }
-    
-    this.isCreating = true;
-    const selectedStudents = this.getSelectedStudents();
-    const lessonId = this.frequencyForm.get('lessonId')?.value;
-    
-    // Create array of observables for each frequency creation
-    const frequencyRequests: Observable<any>[] = selectedStudents.map(student => {
-      const frequencyData: CreateFrequencyDTO = {
-        studentId: student.id!,
-        lessonId: lessonId
-      };
-      return this.frequencyService.apiFrequencyPost(frequencyData);
-    });
-
-    // Execute all requests in parallel
-    forkJoin(frequencyRequests).subscribe({
-      next: (results) => {
-        console.log(`Created ${results.length} frequencies successfully`);
-        this.notificationService.showSuccess(
-          'Frequências Registradas!', 
-          `${results.length} frequência(s) registrada(s) com sucesso.`
-        );
+    this.isCreating.set(true);
+    const lessonId = this.frequencyForm.get('lessonId')?.value!;
+    const requests: Observable<any>[] = this.getSelectedStudents().map(student =>
+      this.frequencyService.apiFrequencyPost({ studentId: student.id!, lessonId } as CreateFrequencyDTO)
+    );
+    forkJoin(requests).subscribe({
+      next: results => {
+        this.ns.showSuccess('Frequências Registradas!', `${results.length} frequência(s) registrada(s) com sucesso.`);
         this.frequencyCreated.emit();
         this.close();
       },
-      error: (error) => {
-        console.error('Error creating frequencies:', error);
-        this.notificationService.showError(
-          'Erro ao Registrar Frequências!', 
-          'Não foi possível registrar algumas frequências. Tente novamente.'
-        );
-        this.isCreating = false;
-      },
-      complete: () => {
-        this.isCreating = false;
-      }
+      error: (err) => { this.ns.showError('Erro ao Registrar Frequências!', extractErrorMessage(err, 'Não foi possível registrar algumas frequências. Tente novamente.')); this.isCreating.set(false); },
+      complete: () => this.isCreating.set(false)
     });
   }
 }

@@ -1,0 +1,201 @@
+// ── Layout ────────────────────────────────────────────────────────────────────
+.detail-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 1.5rem;
+
+  @media (max-width: 1199px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+// ── Section card ──────────────────────────────────────────────────────────────
+.section-card {
+  background: var(--brand-surface);
+  border: 1px solid var(--brand-border);
+  border-radius: 0.75rem;
+  padding: 1.25rem 1.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+
+.section-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--brand-text);
+  border-bottom: 1px solid var(--brand-border);
+  padding-bottom: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+// ── Header card ───────────────────────────────────────────────────────────────
+.header-card {
+  padding: 1.5rem;
+}
+
+.header-inner {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.header-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.student-name {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--brand-text);
+}
+
+// ── Avatar ────────────────────────────────────────────────────────────────────
+.avatar-wrap {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.avatar-edit-btn {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 2px solid var(--brand-surface);
+  background: var(--brand-primary);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  cursor: pointer;
+
+  i {
+    font-size: 0.85rem;
+  }
+
+  &:hover {
+    filter: brightness(1.1);
+  }
+}
+
+.avatar {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid var(--brand-border);
+  display: block;
+}
+
+.avatar-placeholder {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: var(--brand-bg);
+  border: 3px solid var(--brand-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  i {
+    font-size: 3.5rem;
+    color: var(--brand-muted);
+  }
+}
+
+// ── Info rows ─────────────────────────────────────────────────────────────────
+.info-row {
+  display: flex;
+  gap: 0.5rem;
+  align-items: baseline;
+  padding: 0.3rem 0;
+  font-size: 0.9rem;
+  border-bottom: 1px solid var(--brand-border);
+  color: var(--brand-text);
+  flex-wrap: wrap;
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  > span:last-child {
+    min-width: 0;
+    overflow-wrap: break-word;
+  }
+}
+
+.info-label {
+  min-width: 140px;
+  font-weight: 600;
+  color: var(--brand-muted);
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  flex-shrink: 0;
+}
+
+// ── Address block ─────────────────────────────────────────────────────────────
+.address-block,
+.responsible-block,
+.contract-block {
+  font-size: 0.9rem;
+  color: var(--brand-text);
+}
+
+// ── Fees pills ────────────────────────────────────────────────────────────────
+.fees-pills .badge {
+  font-size: 0.75rem;
+}
+
+// ── Graduation timeline ───────────────────────────────────────────────────────
+.graduation-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.graduation-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.belt-dot {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 2px solid rgba(0, 0, 0, 0.15);
+  flex-shrink: 0;
+  display: inline-block;
+}
+
+.graduation-info {
+  font-size: 0.9rem;
+  color: var(--brand-text);
+}
+
+// ── Back button ───────────────────────────────────────────────────────────────
+.back-btn {
+  color: var(--brand-muted);
+  border-color: var(--brand-border);
+
+  &:hover {
+    background: var(--brand-bg);
+    color: var(--brand-text);
+  }
+}
+
+// ── Global loading ────────────────────────────────────────────────────────────
+.global-loading {
+  min-height: 80px;
+}

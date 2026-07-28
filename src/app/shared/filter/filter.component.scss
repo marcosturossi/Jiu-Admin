@@ -1,3 +1,124 @@
-.modal{
-    display:block
+// ── Filter bar (search row) ───────────────────────────────────────────────
+
+.filter-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+
+  // ── Search input (Bootstrap input-group, themed globally incl. dark mode) ──
+
+  &__search {
+    width: 18rem;
+  }
+
+  // ── Advanced filters button ───────────────────────────────────────────
+
+  &__advanced {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.375rem 0.75rem;
+    border: 1px solid var(--brand-border);
+    border-radius: 6px;
+    background: var(--brand-surface);
+    font-size: 0.875rem;
+    color: var(--brand-muted);
+    cursor: pointer;
+    white-space: nowrap;
+    transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease;
+
+    &:hover {
+      border-color: var(--brand-sidebar-accent);
+      color: var(--brand-sidebar-accent);
+    }
+
+    &--active {
+      border-color: var(--brand-sidebar-accent);
+      color: var(--brand-sidebar-accent);
+      background: color-mix(in srgb, var(--brand-sidebar-accent) 10%, transparent);
+      font-weight: 500;
+    }
+  }
+
+  &__badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 1.25rem;
+    height: 1.25rem;
+    padding: 0 0.375rem;
+    border-radius: 1rem;
+    background: var(--brand-sidebar-accent);
+    color: #fff;
+    font-size: 0.75rem;
+    font-weight: 700;
+    line-height: 1;
+  }
 }
+
+// ── Active condition chips ────────────────────────────────────────────────
+
+.filter-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.25rem 0.5rem 0.25rem 0.75rem;
+  background: color-mix(in srgb, var(--brand-sidebar-accent) 8%, transparent);
+  border: 1px solid color-mix(in srgb, var(--brand-sidebar-accent) 25%, transparent);
+  border-radius: 2rem;
+  font-size: 0.75rem;
+  color: var(--brand-text);
+
+  &__text {
+    em {
+      font-style: normal;
+      color: var(--brand-muted);
+      margin: 0 0.2em;
+    }
+
+    strong {
+      font-weight: 600;
+      color: var(--brand-sidebar-accent);
+    }
+  }
+
+  &__remove {
+    background: none;
+    border: none;
+    padding: 0 0.1rem;
+    font-size: 0.75rem;
+    line-height: 1;
+    color: var(--brand-muted);
+    cursor: pointer;
+
+    &:hover {
+      color: var(--brand-danger);
+    }
+  }
+}
+
+// ── Modal condition builder ───────────────────────────────────────────────
+
+.condition-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr auto;
+  gap: 0.5rem;
+  align-items: center;
+  margin-bottom: 0.75rem;
+
+  &__field { grid-column: 1; }
+  &__op    { grid-column: 2; }
+  &__value { grid-column: 3; }
+  &__remove { grid-column: 4; }
+
+  @media (max-width: 480px) {
+    grid-template-columns: 1fr auto;
+
+    &__field  { grid-column: 1; }
+    &__op     { grid-column: 1; }
+    &__value  { grid-column: 1; }
+    &__remove { grid-column: 2; grid-row: 1; align-self: start; }
+  }
+}
+

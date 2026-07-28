@@ -1,0 +1,102 @@
+<section class="page-section">
+  <div class="page-toolbar">
+    <app-filter [placeholder]="'Buscar plano'" (filterChange)="onFilterChange($event)" />
+    <button type="button" class="btn btn-primary" (click)="openCreate()">
+      <i class="bi bi-plus-lg me-1"></i>Novo Plano
+    </button>
+  </div>
+
+  @if (isLoading()) {
+    <div class="d-flex justify-content-center py-5">
+      <div class="spinner-border text-secondary" role="status"><span class="visually-hidden">Carregando...</span></div>
+    </div>
+  } @else {
+    <div class="surface-card">
+      <div class="table-responsive">
+        <table class="table table-hover table-sm align-middle">
+          <thead class="table-light">
+            <tr>
+              <th>Nome</th>
+              <th>Descrição</th>
+              <th>Duração</th>
+              <th>Preço</th>
+              <th>Status</th>
+              <th class="text-center" style="width: 8rem">Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            @if ((items()?.items ?? []).length === 0) {
+              <tr>
+                <td colspan="6" class="empty-state">
+                  <i class="bi bi-receipt empty-icon"></i>
+                  <p class="empty-text">Nenhum registro encontrado.</p>
+                </td>
+              </tr>
+            }
+            @for (item of items()?.items ?? []; track item.id) {
+              <tr>
+                <td>{{ item.name }}</td>
+                <td>{{ item.description }}</td>
+                <td>{{ item.monthDuration }} meses</td>
+                <td>{{ $any(item.price) | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}</td>
+                <td>
+                  <span [class]="'badge ' + activeBadge(item.isActive).cssClass">
+                    {{ activeBadge(item.isActive).label }}
+                  </span>
+                </td>
+                <td class="text-center">
+                  <button type="button" class="btn btn-sm btn-outline-info" (click)="openEdit(item)"><i class="bi bi-pencil"></i></button>
+                  <button type="button" class="btn btn-sm btn-outline-danger" (click)="delete(item)"><i class="bi bi-trash"></i></button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  }
+
+  <app-pagination
+    [currentPage]="currentPage()"
+    [totalPages]="items()?.totalPages ?? 1"
+    [pageSize]="pageSize()"
+    [totalItems]="items()?.totalCount ?? 0"
+    (pageChange)="onPageChange($event)"
+    (pageSizeChange)="onPageSizeChange($event)" />
+</section>
+
+@if (openedCreate()) {
+  <div class="modal-backdrop-custom" (click)="openedCreate.set(false)"></div>
+  <div class="modal show d-block" tabindex="-1" role="dialog" aria-modal="true" (document:keydown.escape)="openedCreate.set(false)">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Novo Plano</h5>
+          <button type="button" class="btn-close" (click)="openedCreate.set(false)" aria-label="Fechar"></button>
+        </div>
+        <div class="modal-body">
+          <app-create-fee-plan (closeEvent)="openedCreate.set(false)" (feePlanCreated)="onCreated()" />
+        </div>
+      </div>
+    </div>
+  </div>
+}
+
+@if (openedUpdate()) {
+  <div class="modal-backdrop-custom" (click)="openedUpdate.set(false)"></div>
+  <div class="modal show d-block" tabindex="-1" role="dialog" aria-modal="true" (document:keydown.escape)="openedUpdate.set(false)">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Editar Plano</h5>
+          <button type="button" class="btn-close" (click)="openedUpdate.set(false)" aria-label="Fechar"></button>
+        </div>
+        <div class="modal-body">
+          @if (selected()) {
+            <app-update-fee-plan [feePlan]="selected()!" (closeEvent)="openedUpdate.set(false)" (feePlanUpdated)="onUpdated()" />
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+}

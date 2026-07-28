@@ -1,0 +1,14 @@
+.responsible-block {
+  border: 1px solid var(--brand-border);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  background: var(--brand-bg);
+}
+
+.responsible-block__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}

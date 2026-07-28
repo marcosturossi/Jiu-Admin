@@ -1,129 +1,109 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ChangeDetectionStrategy, Component, DestroyRef, computed, effect, inject, input, output, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
+import { Subject, debounceTime } from 'rxjs';
 import { GraduationService } from '../../../../generated_services/api/graduation.service';
 import { BeltService } from '../../../../generated_services/api/belt.service';
 import { StudentsService } from '../../../../generated_services/api/students.service';
-import { ShowGraduationDTO, UpdateGraduationDTO, ShowBeltDTO, ShowStudentDTO, PaginationBeltDTO, PaginationStudentDTO } from '../../../../generated_services';
+import { ShowGraduationDTO as ShowGraduationDTO, ShowBeltDTO as ShowBeltDTO, ShowStudentDTO as ShowStudentDTO, UpdateGraduationDTO as UpdateGraduationDTO } from '../../../../generated_services';
 import { NotificationService } from '../../../../services/notification.service';
+import { extractErrorMessage } from '../../../../utils/error.utils';
+import { todayDateString } from '../../../../utils/date.utils';
+import { SearchOption } from '../../../../shared/search-select/search-option';
+import { SearchSelectComponent } from '../../../../shared/search-select/search-select.component';
+import { FieldErrorComponent } from '../../../../shared/field-error/field-error.component';
 
 @Component({
   selector: 'app-update-graduation',
-  imports: [ReactiveFormsModule, CommonModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [ReactiveFormsModule, SearchSelectComponent, FieldErrorComponent],
   templateUrl: './update-graduation.component.html',
-  styleUrl: './update-graduation.component.scss'
+  styleUrl: './update-graduation.component.scss',
 })
-export class UpdateGraduationComponent implements OnInit {
-  @Output() closeEvent = new EventEmitter<void>();
-  @Output() graduationUpdated = new EventEmitter<void>();
-  @Input() graduation!: ShowGraduationDTO;
-  graduationForm!: FormGroup;
-  belts!: PaginationBeltDTO;
-  students!: PaginationStudentDTO;
+export class UpdateGraduationComponent {
+  readonly closeEvent = output<void>();
+  readonly graduationUpdated = output<void>();
+  readonly graduation = input.required<ShowGraduationDTO>();
 
-  constructor(
-    private graduationService: GraduationService,
-    private beltService: BeltService,
-    private studentsService: StudentsService,
-    private formBuilder: FormBuilder,
-    private notificationService: NotificationService
-  ) {
-    this.graduationForm = this.formBuilder.group({
-      studentId: ["", Validators.required],
-      beltId: ["", Validators.required],
-      graduationDate: [new Date().toISOString().split('T')[0], Validators.required],
-    })
-  }
+  private readonly graduationService = inject(GraduationService);
+  private readonly beltService = inject(BeltService);
+  private readonly studentsService = inject(StudentsService);
+  private readonly ns = inject(NotificationService);
+  private readonly fb = inject(FormBuilder);
+  private readonly destroyRef = inject(DestroyRef);
 
-  ngOnInit(): void {
-    this.loadBelts();
-    this.loadStudents();
-    this.populateForm();
-  }
+  protected readonly belts = signal<ShowBeltDTO[]>([]);
+  protected readonly students = signal<ShowStudentDTO[]>([]);
+  protected readonly selectedStudent = signal<SearchOption | null>(null);
+  private readonly studentSearchSubject = new Subject<string>();
 
-  loadBelts() {
+  protected readonly studentOptions = computed(() =>
+    this.students().map(s => ({ id: s.id!, label: `${s.firstName} ${s.lastName} (${s.email})` }))
+  );
+
+  protected readonly form = this.fb.group({
+    studentId: ['', Validators.required],
+    beltId: ['', Validators.required],
+    graduationDate: [todayDateString(), Validators.required],
+  });
+
+  protected readonly isSaving = signal(false);
+
+  constructor() {
+    this.studentSearchSubject.pipe(debounceTime(400), takeUntilDestroyed(this.destroyRef))
+      .subscribe(term => this.loadStudents(term));
     this.beltService.apiBeltGet().subscribe({
-      next: (belts) => {
-        this.belts = belts;
-        this.populateForm();
-      },
-      error: (error) => {
-        console.log('Error loading belts:', error);
-        this.notificationService.showError(
-          'Erro ao Carregar Faixas!', 
-          'Não foi possível carregar a lista de faixas. Tente novamente.'
-        );
-      }
+      next: r => this.belts.set(r?.items ?? []),
     });
-  }
-
-  loadStudents() {
-    this.studentsService.apiStudentsGet().subscribe({
-      next: (students) => {
-        this.students = students;
-        this.populateForm();
-      },
-      error: (error) => {
-        console.log('Error loading students:', error);
-        this.notificationService.showError(
-          'Erro ao Carregar Alunos!', 
-          'Não foi possível carregar a lista de alunos. Tente novamente.'
-        );
-      }
-    });
-  }
-
-  populateForm() {
-    if (this.graduation) {
-      this.graduationForm.patchValue({
-        studentId: this.graduation.studentId,
-        beltId: this.graduation.beltId,
-        graduationDate: this.graduation.graduationDate,
+    this.loadStudents();
+    effect(() => {
+      const g = this.graduation();
+      this.form.patchValue({
+        studentId: g.studentId,
+        beltId: g.beltId,
+        graduationDate: g.graduationDate,
       });
-    }
+      this.selectedStudent.set(g.studentId ? { id: g.studentId, label: g.studentName ?? g.studentId } : null);
+    });
   }
 
-  close() {
-    this.closeEvent.emit();
+  protected close(): void { this.closeEvent.emit(); }
+
+  protected onStudentSelected(opt: SearchOption | null): void {
+    this.selectedStudent.set(opt);
+    this.form.patchValue({ studentId: opt?.id ?? '' });
   }
 
-  update() {
-    if (this.graduationForm.invalid) {
-      this.notificationService.showError(
-        'Formulário Inválido', 
-        'Por favor, preencha todos os campos obrigatórios.'
-      );
+  protected onStudentSearch(term: string): void {
+    this.studentSearchSubject.next(term);
+  }
+
+  private loadStudents(term = ''): void {
+    this.studentsService.apiStudentsGet(term || undefined, undefined, undefined, undefined, undefined, undefined, 1, 100).subscribe({
+      next: r => this.students.set(r?.items ?? []),
+      error: () => this.ns.showError('Erro ao Carregar Alunos!', 'Não foi possível carregar a lista de alunos. Tente novamente.'),
+    });
+  }
+
+  protected save(): void {
+    if (this.form.invalid) {
+      this.ns.showError('Formulário Inválido', 'Por favor, preencha todos os campos obrigatórios.');
       return;
     }
-
-    if (this.graduationForm.valid && this.graduation.id) {
-      this.graduationService.apiGraduationIdPut(this.graduation.id, this.formToUpdateGraduation()).subscribe({
-        next: result => {
-          console.log(result);
-          this.notificationService.showSuccess(
-            'Graduação Atualizada!', 
-            'A graduação foi atualizada com sucesso.'
-          );
-          this.graduationUpdated.emit();
-          this.close();
-        },
-        error: error => {
-          console.log(error);
-          this.notificationService.showError(
-            'Erro ao Atualizar Graduação!', 
-            'Não foi possível atualizar a graduação. Tente novamente.'
-          );
-        }
-      });
-    }
+    this.isSaving.set(true);
+    this.graduationService.apiGraduationIdPut(this.graduation().id!, this.toDTO()).subscribe({
+      next: () => {
+        this.isSaving.set(false);
+        this.ns.showSuccess('Graduação Atualizada!', 'A graduação foi atualizada com sucesso.');
+        this.graduationUpdated.emit();
+        this.close();
+      },
+      error: (err) => { this.isSaving.set(false); this.ns.showError('Erro ao Atualizar Graduação!', extractErrorMessage(err, 'Não foi possível atualizar a graduação. Tente novamente.')); },
+    });
   }
 
-  formToUpdateGraduation(): UpdateGraduationDTO {
-    const formValue = this.graduationForm.value;
-    return {
-      studentId: formValue.studentId,
-      beltId: formValue.beltId,
-      graduationDate: formValue.graduationDate,
-    } as UpdateGraduationDTO
+  private toDTO(): UpdateGraduationDTO {
+    const v = this.form.value;
+    return { studentId: v.studentId, beltId: v.beltId, graduationDate: v.graduationDate } as UpdateGraduationDTO;
   }
 }

@@ -1,0 +1,101 @@
+// ── Cards grid ────────────────────────────────────────────────────────────────
+.students-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.student-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.1rem;
+  background: var(--brand-surface);
+  border: 1px solid var(--brand-border);
+  border-radius: 0.75rem;
+  cursor: pointer;
+  transition: box-shadow 0.15s ease, border-color 0.15s ease;
+
+  &:hover {
+    border-color: var(--brand-sidebar-accent);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+  }
+}
+
+// ── Avatar ────────────────────────────────────────────────────────────────────
+.student-card__avatar-wrap {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.student-card__avatar {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--brand-border);
+  display: block;
+}
+
+.student-card__avatar-placeholder {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: var(--brand-bg);
+  border: 2px solid var(--brand-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  i {
+    font-size: 1.5rem;
+    color: var(--brand-muted);
+  }
+}
+
+.status-dot {
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  border: 2px solid var(--brand-surface);
+
+  &--active   { background: var(--brand-success); }
+  &--inactive { background: var(--brand-danger); }
+}
+
+// ── Info ──────────────────────────────────────────────────────────────────────
+.student-card__info {
+  flex: 1;
+  min-width: 0;
+}
+
+.student-card__name {
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--brand-text);
+  margin: 0 0 0.2rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.student-card__meta {
+  font-size: 0.8rem;
+  color: var(--brand-muted);
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+// ── Actions ───────────────────────────────────────────────────────────────────
+.student-card__actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  flex-shrink: 0;
+}

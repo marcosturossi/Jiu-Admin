@@ -1,0 +1,46 @@
+<div class="dashboard-card">
+  <div class="card-header">
+    <i class="bi bi-exclamation-triangle-fill me-2"></i>Mensalidades Vencidas
+  </div>
+  <div class="card-body">
+    @if (loading()) {
+      <div class="d-flex justify-content-center py-4">
+        <div class="spinner-border text-secondary" role="status">
+          <span class="visually-hidden">Carregando...</span>
+        </div>
+      </div>
+    } @else if (error()) {
+      <div class="alert alert-danger mb-0">{{ error() }}</div>
+    } @else if (fees().length === 0) {
+      <div class="empty-state">
+        <i class="bi bi-check-circle-fill text-success fs-2"></i>
+        <p class="mt-2 mb-0">Nenhuma mensalidade vencida. 🎉</p>
+      </div>
+    } @else {
+      <div class="table-responsive">
+        <table class="table table-hover table-sm align-middle mb-0">
+          <thead>
+            <tr>
+              <th>Vencimento</th>
+              <th>Valor</th>
+              <th>Dias em atraso</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (fee of fees(); track fee.id) {
+              <tr>
+                <td>{{ formatDate(fee.dueDate) }}</td>
+                <td class="text-danger fw-semibold">{{ formatCurrency(getAmount(fee)) }}</td>
+                <td>
+                  <span class="badge" [class.bg-danger]="daysOverdue(fee.dueDate) > 30" [class.bg-warning]="daysOverdue(fee.dueDate) <= 30">
+                    {{ daysOverdue(fee.dueDate) }} dias
+                  </span>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </div>
+</div>

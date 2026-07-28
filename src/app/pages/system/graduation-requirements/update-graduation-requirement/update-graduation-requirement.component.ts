@@ -1,98 +1,72 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { GraduationRequirementsService, BeltService, ShowBeltDTO, PaginationBeltDTO } from '../../../../generated_services';
-import { ShowGraduationRequirementsDTO, UpdateGraduationRequirementsDTO } from '../../../../generated_services';
-import { CommonModule } from '@angular/common';
+import { ChangeDetectionStrategy, Component, effect, inject, input, output, signal } from '@angular/core';
+import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
+import { GraduationRequirementsService, BeltService, ShowBeltDTO as ShowBeltDTO, ShowGraduationRequirementDTO as ShowGraduationRequirementsDTO, UpdateGraduationRequirementDTO as UpdateGraduationRequirementsDTO } from '../../../../generated_services';
 import { NotificationService } from '../../../../services/notification.service';
+import { extractErrorMessage } from '../../../../utils/error.utils';
+import { FieldErrorComponent } from '../../../../shared/field-error/field-error.component';
 
 @Component({
   selector: 'app-update-graduation-requirement',
-  imports: [ReactiveFormsModule, CommonModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [ReactiveFormsModule, FieldErrorComponent],
   templateUrl: './update-graduation-requirement.component.html',
-  styleUrl: './update-graduation-requirement.component.scss'
+  styleUrl: './update-graduation-requirement.component.scss',
 })
-export class UpdateGraduationRequirementComponent implements OnInit {
-  @Output() closeEvent = new EventEmitter<void>();
-  @Output() graduationRequirementUpdated = new EventEmitter<void>();
-  @Input() graduationRequirement!: ShowGraduationRequirementsDTO;
-  graduationRequirementForm!: FormGroup;
-  belts!: PaginationBeltDTO;
+export class UpdateGraduationRequirementComponent {
+  readonly closeEvent = output<void>();
+  readonly graduationRequirementUpdated = output<void>();
+  readonly requirement = input.required<ShowGraduationRequirementsDTO>();
 
-  constructor(
-    private graduationRequirementsService: GraduationRequirementsService,
-    private beltService: BeltService,
-    private formBuilder: FormBuilder,
-    private notificationService: NotificationService
-  ) {
-    this.graduationRequirementForm = this.formBuilder.group({
-      beltId: ["", Validators.required],
-      description: ["", Validators.required],
-      minimumClasses: [0, [Validators.min(0)]],
-    })
-  }
+  private readonly graduationRequirementsService = inject(GraduationRequirementsService);
+  private readonly beltService = inject(BeltService);
+  private readonly ns = inject(NotificationService);
+  private readonly fb = inject(FormBuilder);
 
-  ngOnInit(): void {
-    this.beltService.apiBeltGet().subscribe(
-      {
-        next: (result) => {
-          this.belts = result;
-        },
-        error: (error) => {
-          console.log(error);
-          this.notificationService.showError(
-            'Erro ao Carregar Faixas!', 
-            'Não foi possível carregar a lista de faixas. Tente novamente.'
-          );
-        }
-      }
-    );
-    
-    this.graduationRequirementForm.patchValue({
-      beltId: this.graduationRequirement.beltId,
-      description: this.graduationRequirement.description,
-      minimumClasses: this.graduationRequirement.minimumClasses || 0,
+  protected readonly belts = signal<ShowBeltDTO[]>([]);
+  protected readonly isSaving = signal(false);
+
+  protected readonly form = this.fb.group({
+    beltId: ['', Validators.required],
+    description: ['', Validators.required],
+    minimumClasses: [0, [Validators.min(0)]],
+  });
+
+  constructor() {
+    this.beltService.apiBeltGet().subscribe({
+      next: r => this.belts.set(r?.items ?? []),
+      error: () => this.ns.showError('Erro ao Carregar Faixas!', 'Não foi possível carregar a lista de faixas. Tente novamente.'),
+    });
+    effect(() => {
+      const r = this.requirement();
+      this.form.patchValue({
+        beltId: r.beltId,
+        description: r.description,
+        minimumClasses: (r.minimumClasses as unknown as number) ?? 0,
+      });
     });
   }
 
-  close() {
-    this.closeEvent.emit();
-  }
+  protected close(): void { this.closeEvent.emit(); }
 
-  update() {
-    if (this.graduationRequirementForm.invalid) {
-      this.notificationService.showError(
-        'Formulário Inválido', 
-        'Por favor, preencha todos os campos obrigatórios.'
-      );
+  protected save(): void {
+    if (this.form.invalid) {
+      this.ns.showError('Formulário Inválido', 'Por favor, preencha todos os campos obrigatórios.');
       return;
     }
-
-    this.graduationRequirementsService.apiGraduationRequirementsIdPut(this.graduationRequirement.id!, this.formToUpdateGraduationRequirement()).subscribe(
-      {
-        next: result => {
-          this.notificationService.showSuccess(
-            'Requisito Atualizado!', 
-            'O requisito de graduação foi atualizado com sucesso.'
-          );
-          this.graduationRequirementUpdated.emit();
-          this.close();
-        },
-        error: error => {
-          console.log(error);
-          this.notificationService.showError(
-            'Erro ao Atualizar Requisito!', 
-            'Não foi possível atualizar o requisito de graduação. Tente novamente.'
-          );
-        }
-      })
+    this.isSaving.set(true);
+    this.graduationRequirementsService.apiGraduationRequirementsIdPut(this.requirement().id!, this.toDTO()).subscribe({
+      next: () => {
+        this.isSaving.set(false);
+        this.ns.showSuccess('Requisito Atualizado!', 'O requisito de graduação foi atualizado com sucesso.');
+        this.graduationRequirementUpdated.emit();
+        this.close();
+      },
+      error: (err) => { this.isSaving.set(false); this.ns.showError('Erro ao Atualizar Requisito!', extractErrorMessage(err, 'Não foi possível atualizar o requisito de graduação. Tente novamente.')); },
+    });
   }
 
-  formToUpdateGraduationRequirement(): UpdateGraduationRequirementsDTO {
-    const formValue = this.graduationRequirementForm.value;
-    return {
-      beltId: formValue.beltId,
-      description: formValue.description,
-      minimumClasses: formValue.minimumClasses || 0,
-    } as UpdateGraduationRequirementsDTO
+  private toDTO(): UpdateGraduationRequirementsDTO {
+    const v = this.form.value;
+    return { beltId: v.beltId, description: v.description, minimumClasses: v.minimumClasses ?? 0 } as UpdateGraduationRequirementsDTO;
   }
 }

@@ -1,35 +1,31 @@
-<div class="modal fade show" tabindex="-1" role="dialog" style="display:block">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Novo Requisito de Graduação</h5>
-        <button type="button" (click)="close()" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <form [formGroup]="graduationRequirementForm">
-          <div class="mb-3">
-            <label for="beltSelect" class="form-label">Selecione a Faixa *</label>
-            <select class="form-select" formControlName="beltId" id="beltSelect">
-              <option value="">Selecione uma faixa...</option>
-              @for (belt of belts.items; track belt.id) {
-                <option [value]="belt.id">{{belt.color}}</option>
-              }
-            </select>
-          </div>
-          <div class="mb-3">
-            <label for="description" class="form-label">Descrição do Requisito *</label>
-            <textarea id="description" class="form-control" placeholder="Digite a descrição do requisito" formControlName="description" rows="3"></textarea>
-          </div>
-          <div class="mb-3">
-            <label for="minimumClasses" class="form-label">Número Mínimo de Aulas</label>
-            <input id="minimumClasses" class="form-control" placeholder="Digite o número mínimo de aulas" type="number" formControlName="minimumClasses" />
-          </div>
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-primary" (click)="create()" [disabled]="!graduationRequirementForm.valid">Salvar</button>
-        <button type="button" (click)="close()" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
-      </div>
-    </div>
+<form [formGroup]="form">
+  <div class="mb-3">
+    <label for="beltId" class="form-label">Faixa <span class="text-danger">*</span></label>
+    <select id="beltId" formControlName="beltId" class="form-select">
+      <option value="" disabled>Selecione uma faixa</option>
+      @for (opt of belts(); track opt.id) {
+        <option [value]="opt.id">{{ opt.color }}</option>
+      }
+    </select>
+    <app-field-error [control]="form.get('beltId')" />
   </div>
-</div>
+  <div class="mb-3">
+    <label for="description" class="form-label">Descrição do Requisito <span class="text-danger">*</span></label>
+    <textarea id="description" formControlName="description"
+      placeholder="Digite a descrição do requisito" rows="3" class="form-control"></textarea>
+    <app-field-error [control]="form.get('description')" />
+  </div>
+  <div class="mb-3">
+    <label for="minimumClasses" class="form-label">Número Mínimo de Aulas</label>
+    <input type="number" id="minimumClasses" formControlName="minimumClasses"
+      placeholder="Digite o número mínimo de aulas" class="form-control" />
+  </div>
+  <div class="d-flex gap-2 justify-content-end mt-3">
+    <button class="btn btn-outline-secondary" type="button" (click)="close()">Cancelar</button>
+    <button class="btn btn-primary" type="button" [disabled]="isSaving() || form.invalid" (click)="save()">
+      @if (isSaving()) { <span class="spinner-border spinner-border-sm me-1" role="status"></span> }
+      <i class="bi bi-check-lg me-1"></i> Salvar
+    </button>
+  </div>
+</form>
+

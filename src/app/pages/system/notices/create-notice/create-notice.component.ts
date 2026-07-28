@@ -1,60 +1,53 @@
-import { Component, Output, EventEmitter } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, output, signal } from '@angular/core';
+import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { NoticesService } from '../../../../generated_services/api/notices.service';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { CreateNoticesDTO } from '../../../../generated_services/model/createNoticesDTO';
-import { CommonModule } from '@angular/common';
+import { CreateNoticeDto } from '../../../../generated_services/model/createNoticeDto';
 import { NotificationService } from '../../../../services/notification.service';
+import { extractErrorMessage } from '../../../../utils/error.utils';
+import { FieldErrorComponent } from '../../../../shared/field-error/field-error.component';
 
 @Component({
   selector: 'app-create-notice',
-  imports: [ReactiveFormsModule, CommonModule],
+  standalone: true,
+  imports: [ReactiveFormsModule, FieldErrorComponent],
   templateUrl: './create-notice.component.html',
-  styleUrl: './create-notice.component.scss'
+  styleUrl: './create-notice.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CreateNoticeComponent {
-  @Output() closeEvent = new EventEmitter<void>();
-  @Output() noticeCreated = new EventEmitter<void>();
-  noticeForm!: FormGroup;
+  readonly closeEvent = output<void>();
+  readonly noticeCreated = output<void>();
 
-  constructor(
-    private noticesService: NoticesService,
-    private formBuilder: FormBuilder,
-    private notificationService: NotificationService
-  ) {
-    this.noticeForm = this.formBuilder.group({
-      description: ["", Validators.required],
-      isActive: [true],
-    })
-  }
+  private readonly fb = inject(FormBuilder);
+  private readonly noticesService = inject(NoticesService);
+  private readonly notificationService = inject(NotificationService);
 
-  close() {
-    this.closeEvent.emit();
-  }
+  protected readonly form = this.fb.group({
+    description: ['', Validators.required],
+    isActive: [true],
+  });
 
-  create() {
-    if (this.noticeForm.invalid) {
+  protected readonly isSaving = signal(false);
+
+  protected close(): void { this.closeEvent.emit(); }
+
+  protected save(): void {
+    if (this.form.invalid) {
       this.notificationService.showError('Formulário Inválido', 'Por favor, preencha a descrição do aviso.');
       return;
     }
-
-    this.noticesService.apiNoticesPost(this.formToCreateNotice()).subscribe({
-      next: result => {
-        this.notificationService.showSuccess('Aviso Criado!', 'O aviso foi criado com sucesso.');
-        this.noticeCreated.emit();
-        this.close();
-      },
-      error: error => {
-        console.log(error);
-        this.notificationService.showError('Erro ao Criar Aviso!', 'Não foi possível criar o aviso. Tente novamente.');
-      }
+    this.isSaving.set(true);
+    this.noticesService.apiNoticesPost(this.toDTO()).subscribe({
+      next: () => { this.isSaving.set(false); this.notificationService.showSuccess('Aviso Criado!', 'O aviso foi criado com sucesso.'); this.noticeCreated.emit(); },
+      error: (err) => { this.isSaving.set(false); this.notificationService.showError('Erro ao Criar Aviso!', extractErrorMessage(err, 'Não foi possível criar o aviso. Tente novamente.')); }
     });
   }
 
-  formToCreateNotice(): CreateNoticesDTO {
-    const formValue = this.noticeForm.value;
+  private toDTO(): CreateNoticeDto {
+    const v = this.form.value;
     return {
-      description: formValue.description,
-      isActive: formValue.isActive,
-    } as CreateNoticesDTO
+      description: v.description!,
+      isActive: v.isActive ?? true,
+    } as CreateNoticeDto;
   }
 }

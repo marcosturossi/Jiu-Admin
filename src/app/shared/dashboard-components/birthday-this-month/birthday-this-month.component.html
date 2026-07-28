@@ -1,16 +1,22 @@
 <div class="dashboard-card">
-	<div class="card-header text-center">Aniversários este mês</div>
-	<div class="card-body">
-		<div *ngIf="loading" class="text-center py-3">Loading...</div>
-		<div *ngIf="error" class="text-danger text-center py-2">{{ error }}</div>
-
-		<ul *ngIf="!loading && !error && birthdays.length > 0" class="list-unstyled mb-0">
-			<li *ngFor="let b of birthdays" class="d-flex justify-content-between py-2 border-bottom">
-				<div class="fw-semibold">{{ b.studentName || '-' }}</div>
-				<div class="text-muted">{{ b.birthDate | date:'dd/MM' }}</div>
-			</li>
-		</ul>
-
-		<div *ngIf="!loading && !error && birthdays.length === 0" class="text-center text-muted py-3">No birthdays this month</div>
-	</div>
+  <div class="card-header text-center">Aniversários este mês</div>
+  <div class="card-body">
+    @if (loading()) {
+      <div class="text-center py-3 text-muted">Carregando...</div>
+    } @else if (error()) {
+      <div class="text-danger text-center py-2">{{ error() }}</div>
+    } @else if (birthdays().length > 0) {
+      <ul class="birthday-list">
+        @for (b of birthdays(); track b.studentName) {
+          <li class="birthday-item">
+            <span class="name">{{ b.studentName ?? '-' }}</span>
+            <span class="date">{{ b.birthDate | date:'dd/MM' }}</span>
+          </li>
+        }
+      </ul>
+    } @else {
+      <div class="text-center text-muted py-3">Sem aniversários este mês</div>
+    }
+  </div>
 </div>
+

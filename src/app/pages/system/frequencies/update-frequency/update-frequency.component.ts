@@ -1,92 +1,97 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { FrequencyService, StudentsService, ShowStudentDTO, PaginationStudentDTO } from '../../../../generated_services';
-import { ShowFrequencyDTO, UpdateFrequencyDTO } from '../../../../generated_services';
-import { CommonModule } from '@angular/common';
+import { ChangeDetectionStrategy, Component, DestroyRef, effect, inject, input, output, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Subject, debounceTime } from 'rxjs';
+import { FrequencyService, StudentsService, ShowStudentDTO as ShowStudentDTO } from '../../../../generated_services';
+import { ShowFrequencyDTO as ShowFrequencyDTO, UpdateFrequencyDTO as UpdateFrequencyDTO } from '../../../../generated_services';
 import { NotificationService } from '../../../../services/notification.service';
+import { extractErrorMessage } from '../../../../utils/error.utils';
+import { SearchOption } from '../../../../shared/search-select/search-option';
+import { SearchSelectComponent } from '../../../../shared/search-select/search-select.component';
+import { FieldErrorComponent } from '../../../../shared/field-error/field-error.component';
 
 @Component({
   selector: 'app-update-frequency',
-  imports: [ReactiveFormsModule, CommonModule],
+  imports: [ReactiveFormsModule, SearchSelectComponent, FieldErrorComponent],
   templateUrl: './update-frequency.component.html',
-  styleUrl: './update-frequency.component.scss'
+  styleUrl: './update-frequency.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class UpdateFrequencyComponent implements OnInit {
-  @Output() closeEvent = new EventEmitter<void>();
-  @Output() frequencyUpdated = new EventEmitter<void>();
-  @Input() frequency!: ShowFrequencyDTO;
-  frequencyForm!: FormGroup;
-  students!: PaginationStudentDTO;
+export class UpdateFrequencyComponent {
+  readonly closeEvent = output<void>();
+  readonly frequencyUpdated = output<void>();
+  readonly frequency = input.required<ShowFrequencyDTO>();
 
-  constructor(
-    private frequencyService: FrequencyService,
-    private studentsService: StudentsService,
-    private formBuilder: FormBuilder,
-    private notificationService: NotificationService
-  ) {
-    this.frequencyForm = this.formBuilder.group({
-      studentId: ["", Validators.required],
-    })
+  private readonly frequencyService = inject(FrequencyService);
+  private readonly studentsService = inject(StudentsService);
+  private readonly fb = inject(FormBuilder);
+  private readonly ns = inject(NotificationService);
+  private readonly destroyRef = inject(DestroyRef);
+
+  protected readonly studentOptions = signal<SearchOption[]>([]);
+  protected readonly selectedStudent = signal<SearchOption | null>(null);
+  private readonly studentSearchSubject = new Subject<string>();
+
+  protected readonly frequencyForm = this.fb.group({
+    studentId: ['', Validators.required]
+  });
+
+  protected readonly isSaving = signal(false);
+
+  constructor() {
+    this.studentSearchSubject.pipe(debounceTime(400), takeUntilDestroyed(this.destroyRef))
+      .subscribe(term => this.loadStudents(term));
+    effect(() => {
+      const freq = this.frequency();
+      if (freq) {
+        this.frequencyForm.patchValue({ studentId: freq.studentId });
+        this.selectedStudent.set(freq.studentId ? { id: freq.studentId, label: freq.studentName ?? freq.studentId } : null);
+      }
+    });
+
+    this.loadStudents();
   }
 
-  ngOnInit(): void {
-    this.studentsService.apiStudentsGet().subscribe(
-      {
-        next: (result) => {
-          this.students = result;
-        },
-        error: (error) => {
-          console.log(error);
-          this.notificationService.showError(
-            'Erro ao Carregar Alunos!', 
-            'Não foi possível carregar a lista de alunos. Tente novamente.'
-          );
-        }
-      }
-    );
-    
-    this.frequencyForm.patchValue({
-      studentId: this.frequency.studentId,
+  protected close(): void { this.closeEvent.emit(); }
+
+  protected onStudentSelected(opt: SearchOption | null): void {
+    this.selectedStudent.set(opt);
+    this.frequencyForm.patchValue({ studentId: opt?.id ?? '' });
+  }
+
+  protected onStudentSearch(term: string): void {
+    this.studentSearchSubject.next(term);
+  }
+
+  private loadStudents(term = ''): void {
+    this.studentsService.apiStudentsGet(term || undefined, undefined, undefined, undefined, undefined, undefined, 1, 100).subscribe({
+      next: r => {
+        const students: ShowStudentDTO[] = r?.items ?? [];
+        this.studentOptions.set(
+          students.map(s => ({ id: s.id ?? '', label: `${s.firstName} ${s.lastName}` }))
+        );
+      },
+      error: () => this.ns.showError('Erro ao Carregar Alunos!', 'Não foi possível carregar a lista de alunos. Tente novamente.')
     });
   }
 
-  close() {
-    this.closeEvent.emit();
-  }
-
-  update() {
+  protected update(): void {
     if (this.frequencyForm.invalid) {
-      this.notificationService.showError(
-        'Formulário Inválido', 
-        'Por favor, selecione um aluno.'
-      );
+      this.frequencyForm.markAllAsTouched();
+      this.ns.showError('Formulário Inválido', 'Por favor, selecione um aluno.');
       return;
     }
-
-    this.frequencyService.apiFrequencyIdPut(this.frequency.id!, this.formToUpdateFrequency()).subscribe(
-      {
-        next: result => {
-          this.notificationService.showSuccess(
-            'Frequência Atualizada!', 
-            'A frequência foi atualizada com sucesso.'
-          );
-          this.frequencyUpdated.emit();
-          this.close();
-        },
-        error: error => {
-          console.log(error);
-          this.notificationService.showError(
-            'Erro ao Atualizar Frequência!', 
-            'Não foi possível atualizar a frequência. Tente novamente.'
-          );
-        }
-      })
-  }
-
-  formToUpdateFrequency(): UpdateFrequencyDTO {
-    const formValue = this.frequencyForm.value;
-    return {
-      studentId: formValue.studentId,
-    } as UpdateFrequencyDTO
+    this.isSaving.set(true);
+    this.frequencyService.apiFrequencyIdPut(this.frequency().id!, {
+      studentId: this.frequencyForm.value.studentId
+    } as UpdateFrequencyDTO).subscribe({
+      next: () => {
+        this.isSaving.set(false);
+        this.ns.showSuccess('Frequência Atualizada!', 'A frequência foi atualizada com sucesso.');
+        this.frequencyUpdated.emit();
+        this.close();
+      },
+      error: (err) => { this.isSaving.set(false); this.ns.showError('Erro ao Atualizar Frequência!', extractErrorMessage(err, 'Não foi possível atualizar a frequência. Tente novamente.')); }
+    });
   }
 }

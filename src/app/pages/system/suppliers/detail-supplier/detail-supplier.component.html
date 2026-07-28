@@ -1,0 +1,183 @@
+<!-- Loading overlay -->
+@if (isLoadingSupplier()) {
+  <div class="d-flex justify-content-center align-items-center py-5">
+    <div class="spinner-border text-secondary" role="status">
+      <span class="visually-hidden">Carregando...</span>
+    </div>
+  </div>
+}
+
+<!-- Header Card -->
+@if (!isLoadingSupplier()) {
+  <div class="section-card header-card mb-4">
+    <div class="header-inner">
+      <!-- Icon -->
+      <div class="icon-wrap">
+        <div class="icon-placeholder">
+          <i class="bi" [class]="supplierIcon()"></i>
+        </div>
+      </div>
+
+      <!-- Identity -->
+      <div class="header-info">
+        <h2 class="supplier-title mb-1">{{ supplierName() }}</h2>
+        <div class="d-flex align-items-center gap-2 flex-wrap">
+          <span class="badge bg-secondary">{{ supplierTypeLabel() }}</span>
+          @if (!supplier()?.deletedAt) {
+            <span class="badge bg-success">Ativo</span>
+          } @else {
+            <span class="badge bg-danger">Excluído</span>
+          }
+          @if (supplier()?.createdAt) {
+            <span class="text-muted small">Cadastrado em {{ supplier()!.createdAt! | date:'dd/MM/yyyy' }}</span>
+          }
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="header-actions">
+        @if (supplier()) {
+          <button type="button" class="btn btn-primary btn-sm me-2" (click)="openUpdate()">
+            <i class="bi bi-pencil me-1"></i>Editar
+          </button>
+        }
+        <button type="button" class="btn btn-outline-secondary btn-sm" (click)="goBack()">
+          <i class="bi bi-arrow-left me-1"></i>Voltar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Grid -->
+  <div class="detail-grid">
+    <!-- LEFT COLUMN -->
+    <div class="left-col">
+
+      <!-- Informações -->
+      <div class="section-card mb-4">
+        <h5 class="section-title"><i class="bi bi-person-vcard me-2"></i>Informações</h5>
+        <div class="info-row">
+          <span class="info-label">Nome</span>
+          <span>{{ supplierName() }}</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Tipo</span>
+          <span>{{ supplierTypeLabel() }}</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">{{ supplierDocumentLabel() }}</span>
+          <span class="text-monospace small">{{ supplierDocument() }}</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">E-mail</span>
+          <span>{{ supplierEmail() }}</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Telefone</span>
+          <span>{{ supplierPhone() }}</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Cadastrado em</span>
+          <span>{{ supplier()?.createdAt ? (supplier()!.createdAt! | date:'dd/MM/yyyy') : '—' }}</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Status</span>
+          @if (!supplier()?.deletedAt) {
+            <span class="badge bg-success">Ativo</span>
+          } @else {
+            <span class="badge bg-danger">Excluído em {{ supplier()!.deletedAt! | date:'dd/MM/yyyy' }}</span>
+          }
+        </div>
+      </div>
+
+      <!-- Endereços -->
+      <div class="section-card mb-4">
+        <h5 class="section-title"><i class="bi bi-geo-alt me-2"></i>Endereços</h5>
+        @if ((supplier()?.addresses ?? []).length === 0) {
+          <p class="text-muted fst-italic mb-0">Nenhum endereço cadastrado.</p>
+        } @else {
+          @for (addr of supplier()?.addresses ?? []; track $index) {
+            <div class="address-block">
+              <span class="badge bg-info text-dark mb-2">{{ addressTypeLabel(addr.typeAddress) }}</span>
+              <p class="mb-1">{{ addr.street }}, {{ addr.number }}
+                @if (addr.complement) { — {{ addr.complement }} }
+              </p>
+              <p class="mb-1 text-muted small">{{ addr.neighborhood }} · {{ addr.city }}/{{ addr.state }}</p>
+              <p class="mb-0 text-muted small">CEP: {{ addr.zipCode }}</p>
+            </div>
+            @if (!$last) { <hr class="my-3"> }
+          }
+        }
+      </div>
+
+    </div>
+
+    <!-- RIGHT COLUMN -->
+    <div class="right-col">
+
+      <!-- Contas a Pagar -->
+      <div class="section-card mb-4">
+        <h5 class="section-title"><i class="bi bi-arrow-up-circle me-2"></i>Contas a Pagar</h5>
+
+        @if (isLoadingTransactions()) {
+          <div class="d-flex justify-content-center py-3">
+            <div class="spinner-border spinner-border-sm text-secondary" role="status"></div>
+          </div>
+        } @else if (transactions().length === 0) {
+          <p class="text-muted fst-italic mb-0">Nenhuma conta a pagar encontrada.</p>
+        } @else {
+          <div class="transaction-list">
+            @for (tx of transactions(); track tx.id) {
+              <div class="transaction-item">
+                <div class="transaction-item__top">
+                  <span class="transaction-item__desc">{{ tx.description ?? '—' }}</span>
+                  <span class="transaction-item__amount">
+                    {{ $any(tx.amount) | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}
+                  </span>
+                </div>
+                <div class="transaction-item__badges">
+                  <span class="badge {{ transactionStatusBadge(tx.status) }}">{{ transactionStatusLabel(tx.status) }}</span>
+                </div>
+                <div class="transaction-item__dates">
+                  @if (tx.transactionDate) {
+                    <span class="text-muted small">Data: {{ tx.transactionDate | date:'dd/MM/yyyy':'UTC' }}</span>
+                  }
+                  @if (tx.dueDate) {
+                    <span class="text-muted small">Vencimento: {{ tx.dueDate | date:'dd/MM/yyyy':'UTC' }}</span>
+                  }
+                  @if (tx.paidAt) {
+                    <span class="text-muted small">Pago em: {{ tx.paidAt | date:'dd/MM/yyyy' }}</span>
+                  }
+                </div>
+              </div>
+            }
+          </div>
+        }
+      </div>
+
+    </div>
+  </div>
+}
+
+<!-- Update Modal -->
+@if (openedUpdate()) {
+  <div class="modal-backdrop fade show" (click)="openedUpdate.set(false)"></div>
+  <div class="modal show d-block" tabindex="-1" role="dialog" aria-modal="true" (document:keydown.escape)="openedUpdate.set(false)">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Editar Fornecedor</h5>
+          <button type="button" class="btn-close" (click)="openedUpdate.set(false)" aria-label="Fechar"></button>
+        </div>
+        <div class="modal-body">
+          @if (supplier()) {
+            <app-update-supplier
+              [supplier]="supplier()!"
+              (closeEvent)="openedUpdate.set(false)"
+              (supplierUpdated)="onSupplierUpdated()" />
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+}

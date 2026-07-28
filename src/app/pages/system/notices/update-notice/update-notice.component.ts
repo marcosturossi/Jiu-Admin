@@ -1,79 +1,66 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ChangeDetectionStrategy, Component, effect, inject, input, output, signal } from '@angular/core';
+import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { NoticesService } from '../../../../generated_services/api/notices.service';
-import { ShowNoticesDTO, UpdateNoticesDTO } from '../../../../generated_services/model/models';
-import { CommonModule } from '@angular/common';
+import { ShowNoticeDto } from '../../../../generated_services/model/showNoticeDto';
+import { UpdateNoticeDto } from '../../../../generated_services/model/updateNoticeDto';
 import { NotificationService } from '../../../../services/notification.service';
+import { extractErrorMessage } from '../../../../utils/error.utils';
+import { FieldErrorComponent } from '../../../../shared/field-error/field-error.component';
 
 @Component({
   selector: 'app-update-notice',
-  imports: [ReactiveFormsModule, CommonModule],
+  standalone: true,
+  imports: [ReactiveFormsModule, FieldErrorComponent],
   templateUrl: './update-notice.component.html',
-  styleUrl: './update-notice.component.scss'
+  styleUrl: './update-notice.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class UpdateNoticeComponent implements OnInit {
-  @Output() closeEvent = new EventEmitter<void>();
-  @Output() noticeUpdated = new EventEmitter<void>();
-  @Input() notice!: ShowNoticesDTO;
-  noticeForm!: FormGroup;
+export class UpdateNoticeComponent {
+  readonly closeEvent = output<void>();
+  readonly noticeUpdated = output<void>();
+  readonly notice = input.required<ShowNoticeDto>();
 
-  constructor(
-    private noticesService: NoticesService,
-    private formBuilder: FormBuilder,
-    private notificationService: NotificationService
-  ) {
-    this.noticeForm = this.formBuilder.group({
-      description: ["", Validators.required],
-      isActive: [true],
-    })
-  }
+  private readonly fb = inject(FormBuilder);
+  private readonly noticesService = inject(NoticesService);
+  private readonly notificationService = inject(NotificationService);
 
-  ngOnInit(): void {
-    this.noticeForm.patchValue({
-      description: this.notice.description,
-      isActive: this.notice.isActive,
+  protected readonly form = this.fb.group({
+    description: ['', Validators.required],
+    isActive: [true],
+  });
+
+  protected readonly isSaving = signal(false);
+
+  constructor() {
+    effect(() => {
+      const n = this.notice();
+      this.form.patchValue({
+        description: n.description,
+        isActive: n.isActive ?? true,
+      });
     });
   }
 
-  close() {
-    this.closeEvent.emit();
-  }
+  protected close(): void { this.closeEvent.emit(); }
 
-  update() {
-    if (this.noticeForm.invalid) {
-      this.notificationService.showError(
-        'Formulário Inválido', 
-        'Por favor, preencha todos os campos obrigatórios.'
-      );
+  protected save(): void {
+    if (this.form.invalid) {
+      this.notificationService.showError('Formulário Inválido', 'Por favor, preencha todos os campos obrigatórios.');
       return;
     }
-
-    if (this.noticeForm.valid) {
-      this.noticesService.apiNoticesIdPut(this.notice.id!, this.formToUpdateNotice()).subscribe({
-        next: result => {
-          this.notificationService.showSuccess(
-            'Aviso Atualizado!', 
-            'O aviso foi atualizado com sucesso.'
-          );
-          this.noticeUpdated.emit();
-          this.close();
-        },
-        error: error => {
-          console.log(error);
-          this.notificationService.showError(
-            'Erro ao Atualizar Aviso!', 
-            'Não foi possível atualizar o aviso. Tente novamente.'
-          );
-        }
-      });
-    }
+    const n = this.notice();
+    this.isSaving.set(true);
+    this.noticesService.apiNoticesIdPut(n.id!, this.toDTO()).subscribe({
+      next: () => { this.isSaving.set(false); this.notificationService.showSuccess('Aviso Atualizado!', 'O aviso foi atualizado com sucesso.'); this.noticeUpdated.emit(); },
+      error: (err) => { this.isSaving.set(false); this.notificationService.showError('Erro ao Atualizar Aviso!', extractErrorMessage(err, 'Não foi possível atualizar o aviso. Tente novamente.')); }
+    });
   }
 
-  formToUpdateNotice(): UpdateNoticesDTO {
-    const formValue = this.noticeForm.value;
+  private toDTO(): UpdateNoticeDto {
+    const v = this.form.value;
     return {
-      description: formValue.description,
-      isActive: formValue.isActive,
-    } as UpdateNoticesDTO
+      description: v.description!,
+      isActive: v.isActive ?? true,
+    } as UpdateNoticeDto;
   }
 }

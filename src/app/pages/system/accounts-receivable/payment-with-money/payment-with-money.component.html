@@ -1,0 +1,20 @@
+<div>
+    <p><span class="fw-bold">Categoria</span>: {{item().transactionCategoryName || "-"}}</p>
+    <p><span class="fw-bold">Aluno</span>: {{item().personName || "-"}}</p>
+    <p><span class="fw-bold">Cobrança Ativa</span>: {{ item().externalChargeId != null ? "Sim" : "Não" }}</p>
+    <p><span class="fw-bold">Data de Vencimento</span>: {{item().dueDate || "-"}}</p>
+    <p><span class="fw-bold">Tipo</span>: {{getTypeLabel(item().type)}}</p>
+    <p><span class="fw-bold">Mensalidade</span>: {{item().contractId != null ? "Sim" : "Não"}}</p>
+    <p><span class="fw-bold">Status</span>: {{item().status || "-"}}</p>
+    <p><span class="fw-bold">Descrição</span>: {{item().description || "-"}}</p>
+    <p><span class="fw-bold">Valor</span>: {{item().amount || "-"}}</p>
+    <p><span class="fw-bold">Data da Transação</span>: {{item().transactionDate || "-"}}</p>
+    <p><span class="fw-bold">Notas</span>: {{item().notes || "-"}}</p>
+</div>
+<div class="d-flex justify-content-between mt-3">
+<button type="button" class="btn btn-danger" (click)="closeEvent.emit()">Fechar</button>
+<button type="button" class="btn btn-primary" (click)="save()" [disabled]="isSaving()">
+  @if (isSaving()) { <span class="spinner-border spinner-border-sm me-1" role="status"></span> }
+  Salvar
+</button>
+</div>

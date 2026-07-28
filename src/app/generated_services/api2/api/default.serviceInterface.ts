@@ -29,6 +29,12 @@ export interface DefaultServiceInterface {
     debugHeadersDebugHeadersGet(extraHttpRequestParams?: any): Observable<any>;
 
     /**
+     * Metrics
+     * Endpoint that serves Prometheus metrics.
+     */
+    metricsMetricsGet(extraHttpRequestParams?: any): Observable<any>;
+
+    /**
      * Read Root
      * 
      */

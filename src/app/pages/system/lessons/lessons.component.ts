@@ -1,118 +1,90 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { LessonService } from '../../../generated_services/api/lesson.service';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { DatePipe } from '@angular/common';
 import { ShowLessonDTO } from '../../../generated_services/model/showLessonDTO';
+import { LessonService } from '../../../generated_services';
 import { CreateLessonComponent } from './create-lesson/create-lesson.component';
 import { UpdateLessonComponent } from './update-lesson/update-lesson.component';
-import { DatePipe } from '@angular/common';
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
-import { PaginationLessonDTO } from '../../../generated_services';
+import { ConfirmService } from '../../../services/confirm.service';
+import { extractErrorMessage } from '../../../utils/error.utils';
+import { FilterComponent } from '../../../shared/filter/filter.component';
+import { FilterOutput } from '../../../shared/filter/filter.types';
 import { PaginationComponent } from '../../../shared/pagination/pagination.component';
+import { PageResult } from '../../../utils/page-result';
+import { activeBadge } from '../../../shared/status-badge';
 
 @Component({
   selector: 'app-lessons',
-  imports: [CommonModule, CreateLessonComponent, UpdateLessonComponent, DatePipe, PaginationComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    FilterComponent,
+    PaginationComponent,
+    CreateLessonComponent,
+    UpdateLessonComponent,
+    DatePipe,
+  ],
   templateUrl: './lessons.component.html',
-  styleUrl: './lessons.component.scss'
+  styleUrl: './lessons.component.scss',
 })
-export class LessonsComponent implements OnInit {
-  lessons: PaginationLessonDTO = { items: [], totalCount: 0, pageNumber: 1, pageSize: 10, totalPages: 0 };
-  isLoading: boolean = false;
-  openedCreateLesson: boolean = false;
-  selectedLesson!: ShowLessonDTO;
-  openedUpdateLesson: boolean = false;
-  currentPage: number = 1;
-  pageSize: number = 10;
+export class LessonsComponent {
+  private readonly lessonService = inject(LessonService);
+  private readonly subnavService = inject(SubnavService);
+  private readonly notificationService = inject(NotificationService);
+  private readonly confirmService = inject(ConfirmService);
 
-  constructor(
-    private lessonService: LessonService,
-    private subnavService: SubnavService,
-    private notificationService: NotificationService
-  ) { }
+  protected readonly isLoading = signal(false);
+  protected readonly items = signal<PageResult<ShowLessonDTO> | null>(null);
+  protected readonly openedCreate = signal(false);
+  protected readonly openedUpdate = signal(false);
+  protected readonly selected = signal<ShowLessonDTO | null>(null);
+  protected readonly activeBadgeClass = (isActive: boolean | undefined) => activeBadge(isActive).cssClass;
+  protected readonly currentPage = signal(1);
+  protected readonly pageSize = signal(10);
+  protected readonly filterText = signal<string | undefined>(undefined);
 
-  ngOnInit(): void {
-    this.subnavService.setTitle("Aulas");
-    this.loadLessons();
+  constructor() {
+    this.subnavService.setTitle('Aulas');
+    this.load();
   }
 
-  loadLessons(): void {
-    this.isLoading = true;
-    this.lessonService.apiLessonGet(this.currentPage, this.pageSize).subscribe(
-      {
-        next: (result) => {
-          this.lessons = result;
-          this.isLoading = false;
-        },
-        error: (error) => {
-          console.log(error);
-          this.isLoading = false;
-          this.notificationService.showError(
-            'Erro ao Carregar Aulas!', 
-            'Não foi possível carregar a lista de aulas. Tente novamente.'
-          );
-        }
-      }
-    )
+  protected load(): void {
+    this.isLoading.set(true);
+    this.lessonService.apiLessonGet(this.filterText(), this.currentPage(), this.pageSize()).subscribe({
+      next: result => {
+        this.items.set({
+          items: result?.items ?? [],
+          totalCount: (result?.totalCount as unknown as number) ?? 0,
+          totalPages: (result?.totalPages as unknown as number) ?? 1,
+        });
+        this.isLoading.set(false);
+      },
+      error: () => {
+        this.isLoading.set(false);
+        this.notificationService.showError('Erro ao Carregar Aulas!', 'Não foi possível carregar a lista de aulas. Tente novamente.');
+      },
+    });
   }
 
-  onPageChange(page: number): void {
-    this.currentPage = page;
-    this.loadLessons();
-  }
+  protected onPageChange(p: number): void { this.currentPage.set(p); this.load(); }
+  protected onPageSizeChange(s: number): void { this.pageSize.set(s); this.currentPage.set(1); this.load(); }
+  protected onFilterChange(output: FilterOutput): void { this.filterText.set(output.text || undefined); this.currentPage.set(1); this.load(); }
+  protected openCreate(): void { this.openedCreate.set(true); }
+  protected openEdit(item: ShowLessonDTO): void { this.selected.set(item); this.openedUpdate.set(true); }
+  protected onCreated(): void { this.openedCreate.set(false); this.load(); }
+  protected onUpdated(): void { this.openedUpdate.set(false); this.load(); }
 
-  onPageSizeChange(size: number): void {
-    this.pageSize = size;
-    this.currentPage = 1;
-    this.loadLessons();
-  }
-
-  openCreateLesson() {
-    this.openedCreateLesson = true
-  }
-
-  closeCreateLesson() {
-    this.openedCreateLesson = false
-  }
-
-  openUpdateLesson(lesson: ShowLessonDTO) {
-    this.selectedLesson = lesson
-    this.openedUpdateLesson = true
-  }
-
-  closeUpdateLesson() {
-    this.openedUpdateLesson = false
-  }
-
-  onLessonCreated() {
-    this.loadLessons();
-    this.closeCreateLesson();
-  }
-
-  onLessonUpdated() {
-    this.loadLessons();
-    this.closeUpdateLesson();
-  }
-
-  deleteLesson(lesson: ShowLessonDTO) {
-    // You can implement a proper confirmation dialog here if needed
-    if (confirm(`Tem certeza que deseja excluir a aula "${lesson.title}"?`)) {
-      this.lessonService.apiLessonIdDelete(lesson.id!).subscribe({
-        next: () => {
-          this.notificationService.showSuccess(
-            'Aula Excluída!', 
-            `A aula "${lesson.title}" foi excluída com sucesso.`
-          );
-          this.loadLessons();
-        },
-        error: (error) => {
-          console.log(error);
-          this.notificationService.showError(
-            'Erro ao Excluir Aula!', 
-            'Não foi possível excluir a aula. Tente novamente.'
-          );
-        }
-      });
-    }
+  protected async delete(item: ShowLessonDTO): Promise<void> {
+    const ok = await this.confirmService.confirm(`Tem certeza que deseja excluir a aula "${item.title}"?`);
+    if (!ok) return;
+    this.lessonService.apiLessonIdDelete(item.id!).subscribe({
+      next: () => {
+        this.notificationService.showSuccess('Aula Excluída!', `A aula "${item.title}" foi excluída com sucesso.`);
+        this.load();
+      },
+      error: (err) => {
+        this.notificationService.showError('Erro ao Excluir Aula!', extractErrorMessage(err, 'Não foi possível excluir a aula. Tente novamente.'));
+      },
+    });
   }
 }

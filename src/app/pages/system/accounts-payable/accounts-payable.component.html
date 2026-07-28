@@ -1,0 +1,111 @@
+<section class="page-section">
+  <div class="page-toolbar ">
+    <app-filter [placeholder]="'Buscar conta a pagar'" (filterChange)="onFilterChange($event)" />
+    <button type="button" class="btn btn-primary" (click)="openCreate()">
+      <i class="bi bi-plus-lg me-1"></i>Nova Conta a Pagar
+    </button>
+  </div>
+
+  @if (isLoading()) {
+    <div class="d-flex justify-content-center py-5">
+      <div class="spinner-border text-secondary" role="status"><span class="visually-hidden">Carregando...</span></div>
+    </div>
+  } @else {
+    <div class="surface-card">
+      <div class="table-responsive">
+        <table class="table table-hover table-sm align-middle">
+          <thead class="table-light">
+            <tr>
+              <th>Categoria</th>
+              <th>Descrição</th>
+              <th>Valor</th>
+              <th>Vencimento</th>
+              <th>Referência</th>
+              <th>Status</th>
+              <th class="text-center" style="width: 8rem">Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            @if ((items()?.items ?? []).length === 0) {
+              <tr>
+                <td colspan="7" class="empty-state">
+                  <i class="bi bi-arrow-up-circle empty-icon"></i>
+                  <p class="empty-text">Nenhuma conta a pagar encontrada.</p>
+                </td>
+              </tr>
+            }
+            @for (item of items()?.items ?? []; track item.id) {
+              <tr>
+                <td>{{ getCategoryName(item.transactionCategoryId) }}</td>
+                <td class="desc-cell">{{ item.description || '—' }}</td>
+                <td class="amount-expense">
+                  {{ getAmount(item) | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}
+                </td>
+                <td>{{ item.dueDate | date:'dd/MM/yyyy':'UTC' }}</td>
+                <td>{{ item.reference || '—' }}</td>
+                <td>
+                  <span [class]="'badge ' + getFeeStatusBadge(item.status).cssClass">{{ getFeeStatusBadge(item.status).label }}</span>
+                </td>
+                <td class="text-center">
+                  @if (item.status !== 'Paid') {
+                    <button type="button" class="btn btn-sm btn-outline-primary me-1" (click)="pay(item)"><i class="bi bi-currency-dollar"></i></button>
+                  }
+                  <button type="button" class="btn btn-sm btn-outline-danger me-1" (click)="delete(item)"><i class="bi bi-trash"></i></button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  }
+
+  <app-pagination
+    [currentPage]="currentPage()"
+    [totalPages]="items()?.totalPages ?? 1"
+    [pageSize]="pageSize()"
+    [totalItems]="items()?.totalCount ?? 0"
+    (pageChange)="onPageChange($event)"
+    (pageSizeChange)="onPageSizeChange($event)" />
+</section>
+
+@if (openedCreate()) {
+  <div class="modal-backdrop-custom" (click)="openedCreate.set(false)"></div>
+  <div class="modal show d-block" tabindex="-1" role="dialog" aria-modal="true" (document:keydown.escape)="openedCreate.set(false)">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Nova Conta a Pagar</h5>
+          <button type="button" class="btn-close" (click)="openedCreate.set(false)" aria-label="Fechar"></button>
+        </div>
+        <div class="modal-body">
+          <app-create-accounts-payable
+            [categories]="categories()"
+            (closeEvent)="openedCreate.set(false)"
+            (itemCreated)="onCreated()"
+            (categorySearch)="onCategorySearch($event)" />
+        </div>
+      </div>
+    </div>
+  </div>
+}
+
+@if (openedPay()) {
+  <div class="modal-backdrop-custom" (click)="openedPay.set(false)"></div>
+  <div class="modal show d-block" tabindex="-1" role="dialog" aria-modal="true" (document:keydown.escape)="openedPay.set(false)">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Registrar Pagamento</h5>
+          <button type="button" class="btn-close" (click)="openedPay.set(false)" aria-label="Fechar"></button>
+        </div>
+        <div class="modal-body">
+          <app-pay-accounts-payable
+            [item]="selectedItem()!"
+            (itemPaid)="onPaid()"
+            (closeEvent)="openedPay.set(false)" />
+        </div>
+      </div>
+    </div>
+  </div>
+}

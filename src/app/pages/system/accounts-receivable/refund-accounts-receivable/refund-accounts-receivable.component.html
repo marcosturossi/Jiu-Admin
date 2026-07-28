@@ -1,0 +1,12 @@
+<form class="form-control">
+    <input class="form-control" name="confirmationInput" [(ngModel)]="confirmationInput" type="text" placeholder="Para confirmar digite reembolso" />
+</form>
+
+<div class="d-flex justify-content-between">
+    <button class="btn btn-primary" [disabled]="confirmationInput() !== confirmationText" (click)="refund()">
+        Confirmar reembolso
+    </button>
+    <button class="btn btn-secondary" (click)="close()">
+        Cancelar
+    </button>
+</div>

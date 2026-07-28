@@ -1,0 +1,4 @@
+.dialog-form { display: flex; flex-direction: column; gap: 1.25rem; padding: 0.25rem 0; }
+.field { display: flex; flex-direction: column; gap: 0.4rem; label { font-size: 0.875rem; font-weight: 500; color: var(--brand-text); } }
+.dialog-actions { display: flex; justify-content: flex-end; gap: 0.5rem; padding-top: 0.5rem; border-top: 1px solid var(--brand-border); }
+.fee-plan-info { font-size: 0.85rem; color: var(--brand-text); background: color-mix(in srgb, var(--brand-sidebar-accent) 10%, transparent); border: 1px solid color-mix(in srgb, var(--brand-sidebar-accent) 30%, transparent); border-radius: 6px; padding: 0.5rem 0.75rem; }

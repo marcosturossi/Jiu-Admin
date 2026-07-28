@@ -1,120 +1,88 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { GraduationService } from '../../../generated_services/api/graduation.service';
-import { PaginationGraduationDTO, ShowGraduationDTO } from '../../../generated_services';
-import { UpdateGraduationComponent } from './update-graduation/update-graduation.component';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { DatePipe } from '@angular/common';
+import { GraduationService, ShowGraduationDTO as ShowGraduationDTO } from '../../../generated_services';
 import { CreateGraduationComponent } from './create-graduation/create-graduation.component';
+import { UpdateGraduationComponent } from './update-graduation/update-graduation.component';
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
+import { ConfirmService } from '../../../services/confirm.service';
+import { extractErrorMessage } from '../../../utils/error.utils';
+import { FilterComponent } from '../../../shared/filter/filter.component';
+import { FilterOutput } from '../../../shared/filter/filter.types';
 import { PaginationComponent } from '../../../shared/pagination/pagination.component';
+import { PageResult } from '../../../utils/page-result';
+import { forKidsBadgeClass } from '../../../shared/status-badge';
 
 @Component({
   selector: 'app-graduations',
-  imports: [CommonModule, UpdateGraduationComponent, CreateGraduationComponent, PaginationComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    FilterComponent,
+    PaginationComponent,
+    CreateGraduationComponent,
+    UpdateGraduationComponent,
+    DatePipe,
+  ],
   templateUrl: './graduations.component.html',
-  styleUrl: './graduations.component.scss'
+  styleUrl: './graduations.component.scss',
 })
-export class GraduationsComponent implements OnInit {
-  graduations: PaginationGraduationDTO = { items: [], totalCount: 0, pageNumber: 1, pageSize: 10, totalPages: 0 };
-  isLoading: boolean = false;
-  currentPage: number = 1;
-  pageSize: number = 10;
+export class GraduationsComponent {
+  private readonly graduationService = inject(GraduationService);
+  private readonly subnavService = inject(SubnavService);
+  private readonly notificationService = inject(NotificationService);
+  private readonly confirmService = inject(ConfirmService);
 
-  openedCreateGraduation: boolean = false
-  openedUpdateGraduation: boolean = false
-  selectedGraduation!: ShowGraduationDTO;
+  protected readonly isLoading = signal(false);
+  protected readonly items = signal<PageResult<ShowGraduationDTO> | null>(null);
+  protected readonly openedCreate = signal(false);
+  protected readonly openedUpdate = signal(false);
+  protected readonly selected = signal<ShowGraduationDTO | null>(null);
+  protected readonly forKidsBadgeClass = forKidsBadgeClass;
+  protected readonly currentPage = signal(1);
+  protected readonly pageSize = signal(10);
 
-  constructor(
-    private graduationService: GraduationService,
-    private subnavService: SubnavService,
-    private notificationService: NotificationService
-  ) {
-
+  constructor() {
+    this.subnavService.setTitle('Graduações');
+    this.load();
   }
 
-  ngOnInit(): void {
-    this.subnavService.setTitle("Graduações");
-    this.loadGraduations();
+  protected load(): void {
+    this.isLoading.set(true);
+    this.graduationService.apiGraduationGet(undefined, undefined, undefined, undefined, this.currentPage(), this.pageSize()).subscribe({
+      next: result => {
+        this.items.set({
+          items: result?.items ?? [],
+          totalCount: (result?.totalCount as unknown as number) ?? 0,
+          totalPages: (result?.totalPages as unknown as number) ?? 1,
+        });
+        this.isLoading.set(false);
+      },
+      error: () => {
+        this.isLoading.set(false);
+        this.notificationService.showError('Erro ao Carregar Graduações!', 'Não foi possível carregar a lista de graduações. Tente novamente.');
+      },
+    });
   }
 
-  loadGraduations(): void {
-    this.isLoading = true;
-    this.graduationService.apiGraduationGet(this.currentPage, this.pageSize).subscribe(
-      {
-        next: (result) => {
-          this.graduations = result;
-          this.isLoading = false;
-        },
-        error: (error) => {
-          console.log(error);
-          this.isLoading = false;
-          this.notificationService.showError(
-            'Erro ao Carregar Graduações!', 
-            'Não foi possível carregar a lista de graduações. Tente novamente.'
-          );
-        }
-      }
-    )
-  }
+  protected onPageChange(p: number): void { this.currentPage.set(p); this.load(); }
+  protected onPageSizeChange(s: number): void { this.pageSize.set(s); this.currentPage.set(1); this.load(); }
+  protected onFilterChange(_output: FilterOutput): void { this.currentPage.set(1); this.load(); }
+  protected openCreate(): void { this.openedCreate.set(true); }
+  protected openEdit(item: ShowGraduationDTO): void { this.selected.set(item); this.openedUpdate.set(true); }
+  protected onCreated(): void { this.openedCreate.set(false); this.load(); }
+  protected onUpdated(): void { this.openedUpdate.set(false); this.load(); }
 
-  onPageChange(page: number): void {
-    this.currentPage = page;
-    this.loadGraduations();
-  }
-
-  onPageSizeChange(size: number): void {
-    this.pageSize = size;
-    this.currentPage = 1;
-    this.loadGraduations();
-  }
-
-  openCreateGraduation() {
-    this.openedCreateGraduation = true
-  }
-
-  closeCreateGraduation() {
-    this.openedCreateGraduation = false
-    this.loadGraduations(); // Reload data
-  }
-
-  openUpdateGraduation(graduation: ShowGraduationDTO) {
-    this.selectedGraduation = graduation
-    this.openedUpdateGraduation = true
-  }
-
-  closeUpdateGraduation() {
-    this.openedUpdateGraduation = false
-    this.loadGraduations(); // Reload data
-  }
-
-  onGraduationCreated() {
-    this.loadGraduations();
-    this.closeCreateGraduation();
-  }
-
-  onGraduationUpdated() {
-    this.loadGraduations();
-    this.closeUpdateGraduation();
-  }
-
-  deleteGraduation(graduation: ShowGraduationDTO) {
-    if (confirm('Tem certeza que deseja excluir esta graduação?')) {
-      this.graduationService.apiGraduationIdDelete(graduation.id!).subscribe({
-        next: () => {
-          this.notificationService.showSuccess(
-            'Graduação Excluída!', 
-            'A graduação foi excluída com sucesso.'
-          );
-          this.loadGraduations();
-        },
-        error: (error) => {
-          console.log(error);
-          this.notificationService.showError(
-            'Erro ao Excluir Graduação!', 
-            'Não foi possível excluir a graduação. Tente novamente.'
-          );
-        }
-      });
-    }
+  protected async delete(item: ShowGraduationDTO): Promise<void> {
+    const ok = await this.confirmService.confirm('Tem certeza que deseja excluir esta graduação?');
+    if (!ok) return;
+    this.graduationService.apiGraduationIdDelete(item.id!).subscribe({
+      next: () => {
+        this.notificationService.showSuccess('Graduação Excluída!', 'A graduação foi excluída com sucesso.');
+        this.load();
+      },
+      error: (err) => {
+        this.notificationService.showError('Erro ao Excluir Graduação!', extractErrorMessage(err, 'Não foi possível excluir a graduação. Tente novamente.'));
+      },
+    });
   }
 }

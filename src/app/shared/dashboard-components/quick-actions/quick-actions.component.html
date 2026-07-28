@@ -1,0 +1,13 @@
+<div class="dashboard-card">
+  <div class="card-header text-center">Ações Rápidas</div>
+  <div class="card-body">
+    <div class="actions-grid">
+      @for (action of actions; track action.route) {
+        <a class="action-tile" [routerLink]="action.route">
+          <i [class]="action.icon"></i>
+          <span>{{ action.label }}</span>
+        </a>
+      }
+    </div>
+  </div>
+</div>

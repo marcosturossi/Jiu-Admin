@@ -1,20 +1,58 @@
-import { ApplicationConfig, provideZoneChangeDetection, inject, provideAppInitializer } from '@angular/core';
+import { ApplicationConfig, provideZoneChangeDetection, APP_INITIALIZER, LOCALE_ID } from '@angular/core';
 import { provideRouter } from '@angular/router';
-import { provideAnimations } from '@angular/platform-browser/animations';
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import { provideToastr } from 'ngx-toastr';
+import { includeBearerTokenInterceptor, INCLUDE_BEARER_TOKEN_INTERCEPTOR_CONFIG } from 'keycloak-angular';
 
 import { routes } from './app.routes';
-import {provideHttpClient, withInterceptors} from "@angular/common/http";
+import { keycloakProviders } from './auth/keycloak.providers';
+import { keycloakInitFactory } from './auth/keycloak-init.factory';
+import { BASE_PATH as BASE_PATH_API1 } from './generated_services/variables';
+import { BASE_PATH as BASE_PATH_API2 } from './generated_services/api2/variables';
+import { environment } from './enviroments/environment';
+import { ThemeService } from './services/theme.service';
 
-import {AuthInterceptor} from "./interceptor/auth.interceptor";
-
+const urlPattern = (base: string) =>
+  new RegExp('^' + base.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
-    provideAnimations(),
+    provideAnimationsAsync(),
     provideHttpClient(
-      withInterceptors([AuthInterceptor])
+      withInterceptors([includeBearerTokenInterceptor])
     ),
+    provideToastr({
+      timeOut: 4000,
+      positionClass: 'toast-bottom-right',
+      preventDuplicates: true,
+    }),
+    keycloakProviders,
+    { provide: LOCALE_ID, useValue: 'pt-BR' },
+    { provide: BASE_PATH_API1, useValue: environment.server },
+    { provide: BASE_PATH_API2, useValue: environment.face_api },
+    {
+      provide: INCLUDE_BEARER_TOKEN_INTERCEPTOR_CONFIG,
+      useValue: [
+        { urlPattern: urlPattern(environment.server) },
+        { urlPattern: urlPattern(environment.face_api) },
+      ],
+    },
+    {
+      provide: APP_INITIALIZER,
+      useFactory: keycloakInitFactory,
+      multi: true,
+    },
+    {
+      provide: APP_INITIALIZER,
+      useFactory: (themeService: ThemeService) => () => {
+        // Theme service initializes itself on instantiation
+        return Promise.resolve();
+      },
+      deps: [ThemeService],
+      multi: true,
+    },
   ]
 };

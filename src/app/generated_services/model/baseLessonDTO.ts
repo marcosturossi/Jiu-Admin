@@ -1,5 +1,5 @@
 /**
- * BjjClutch Backend API
+ * CarlsonGracie Backend API
  * API for managing students, belts, graduation requirements, notices, frequencies and user authentication with Keycloak
  *
  * Contact: marcosturossi@gmail.com.com
@@ -11,7 +11,7 @@
 
 
 export interface BaseLessonDTO { 
-    title?: string | null;
+    title: string;
     description?: string | null;
     scheduledDate?: string;
     duration?: string;
