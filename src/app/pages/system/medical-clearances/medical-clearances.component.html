@@ -53,6 +53,9 @@
                   <button type="button" class="btn btn-sm btn-outline-danger" (click)="deleteMedicalClearance(clearance)"><i class="bi bi-trash"></i></button>
                   @if (clearance.hasAttachment) {
                     <button type="button" class="btn btn-sm btn-outline-secondary" (click)="openAttachment(clearance)" title="Visualizar Arquivo"><i class="bi bi-eye"></i></button>
+                  } @else {
+                    <input #fileInput type="file" hidden (change)="onAttachFile(clearance, fileInput)" />
+                    <button type="button" class="btn btn-sm btn-outline-secondary" (click)="fileInput.click()" title="Anexar Arquivo"><i class="bi bi-paperclip"></i></button>
                   }
                 </td>
               </tr>

@@ -109,6 +109,22 @@ export class MedicalClearancesComponent {
     this.attachmentMimeType.set(undefined);
   }
 
+  protected onAttachFile(clearance: ShowMedicalClearanceDto, input: HTMLInputElement): void {
+    const file = input.files?.[0];
+    if (!file || !clearance.id) return;
+    this.medicalClearanceService.apiMedicalClearanceIdAttachmentPost(clearance.id, file).subscribe({
+      next: () => {
+        this.ns.showSuccess('Arquivo Anexado!', 'O arquivo foi anexado ao atestado médico.');
+        input.value = '';
+        this.load();
+      },
+      error: (err) => {
+        input.value = '';
+        this.ns.showError('Erro ao Anexar Arquivo!', extractErrorMessage(err, 'Não foi possível anexar o arquivo ao atestado médico.'));
+      }
+    });
+  }
+
   protected getStatusSeverity(clearance: ShowMedicalClearanceDto): 'warn' | 'success' | 'danger' | 'secondary' | 'info' {
     if (clearance.isExpired) return 'danger';
     if (clearance.isExpiringSoon) return 'warn';

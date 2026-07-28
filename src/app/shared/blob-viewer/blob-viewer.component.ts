@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnChanges, OnDestroy, SimpleChanges } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { CommonModule } from '@angular/common';
 
@@ -9,26 +9,39 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [CommonModule]
 })
-export class BlobViewerComponent {
+export class BlobViewerComponent implements OnChanges, OnDestroy {
   @Input() blob?: Blob | string;
   @Input() mimeType?: string;
 
+  protected safeBlobUrl: SafeResourceUrl | null = null;
+  private objectUrl: string | null = null;
+
   constructor(private sanitizer: DomSanitizer) {}
 
-  get blobUrl(): string | null {
-    if (!this.blob) return null;
-    if (typeof this.blob === 'string') return this.blob;
-    return URL.createObjectURL(this.blob);
+  ngOnChanges(changes: SimpleChanges): void {
+    if ('blob' in changes) {
+      this.revokeObjectUrl();
+
+      if (!this.blob) {
+        this.safeBlobUrl = null;
+      } else if (typeof this.blob === 'string') {
+        this.safeBlobUrl = this.sanitizer.bypassSecurityTrustResourceUrl(this.blob);
+      } else {
+        this.objectUrl = URL.createObjectURL(this.blob);
+        this.safeBlobUrl = this.sanitizer.bypassSecurityTrustResourceUrl(this.objectUrl);
+      }
+    }
   }
 
-  get safeBlobUrl(): SafeResourceUrl | null {
-    const url = this.blobUrl;
-    return url ? this.sanitizer.bypassSecurityTrustUrl(url) : null;
+  ngOnDestroy(): void {
+    this.revokeObjectUrl();
   }
 
-  get safeResourceBlobUrl(): SafeResourceUrl | null {
-    const url = this.blobUrl;
-    return url ? this.sanitizer.bypassSecurityTrustResourceUrl(url) : null;
+  private revokeObjectUrl(): void {
+    if (this.objectUrl) {
+      URL.revokeObjectURL(this.objectUrl);
+      this.objectUrl = null;
+    }
   }
 
   get isImage(): boolean {
