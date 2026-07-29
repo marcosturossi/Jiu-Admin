@@ -27,6 +27,7 @@ import { AcademiesComponent } from './academies/academies.component';
 import { StudentOnboardingComponent } from './student-onboarding/student-onboarding.component';
 import { FinanceDashboardComponent } from './finance-dashboard/finance-dashboard.component';
 import { SuppliersComponent } from './suppliers/suppliers.component';
+import { PaymentSettingsComponent } from './payment-settings/payment-settings.component';
 
 export const routes: Routes = [
   {
@@ -65,6 +66,7 @@ export const routes: Routes = [
       { path: 'suppliers/details/:id', loadComponent: () => import('./suppliers/detail-supplier/detail-supplier.component').then(m => m.DetailSupplierComponent) },
       // Configurações
       { path: 'academies', component: AcademiesComponent },
+      { path: 'payment-settings', component: PaymentSettingsComponent },
     ]
   }
 ];
