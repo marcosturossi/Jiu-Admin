@@ -60,11 +60,12 @@ export const NAV_SECTIONS: NavSection[] = [
       { route: '/system/face-recognition', label: 'Reconhecimento', icon: 'bi bi-person-badge' },
     ]
   },
-  // {
-  //   title: 'Configurações',
-  //   groupIcon: 'bi bi-gear',
-  //   items: [
-  //     { route: '/system/academies', label: 'Academias', icon: 'bi bi-building' },
-  //   ]
-  // },
+  {
+    title: 'Configurações',
+    groupIcon: 'bi bi-gear',
+    items: [
+      { route: '/system/academies', label: 'Academias', icon: 'bi bi-building' },
+      { route: '/system/payment-settings', label: 'Pagamentos', icon: 'bi bi-credit-card' },
+    ]
+  },
 ];

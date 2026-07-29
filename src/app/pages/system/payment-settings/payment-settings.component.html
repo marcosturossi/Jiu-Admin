@@ -1,0 +1,71 @@
+<section class="page-section">
+  @if (isLoading()) {
+    <div class="d-flex justify-content-center py-5">
+      <div class="spinner-border text-secondary" role="status"><span class="visually-hidden">Carregando...</span></div>
+    </div>
+  } @else {
+    <div class="surface-card settings-card">
+      <h5 class="settings-title">
+        <i class="bi bi-credit-card me-2"></i>Gateway de Pagamento
+      </h5>
+      <p class="settings-subtitle">Configure o provedor de pagamentos utilizado para cobranças e mensalidades.</p>
+
+      <form [formGroup]="form" (ngSubmit)="save()">
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label for="paymentGateway" class="form-label">Provedor de Pagamento <span class="text-danger">*</span></label>
+            <select id="paymentGateway" formControlName="paymentGateway" class="form-select">
+              @for (item of paymentGateways; track item.value) {
+                <option [value]="item.value">{{ item.label }}</option>
+              }
+            </select>
+            <app-field-error [control]="form.get('paymentGateway')" />
+          </div>
+        </div>
+
+        @if (isAsaasSelected()) {
+          <div class="row">
+            <div class="col-md-8 mb-3">
+              <label for="asaasApiKey" class="form-label">Chave de API (Asaas) <span class="text-danger">*</span></label>
+              <div class="input-group">
+                <input
+                  [type]="showApiKey() ? 'text' : 'password'"
+                  id="asaasApiKey"
+                  class="form-control"
+                  formControlName="asaasApiKey"
+                  placeholder="$aact_..."
+                  autocomplete="off"
+                />
+                <button type="button" class="btn btn-outline-secondary" (click)="toggleApiKeyVisibility()" title="Mostrar/Ocultar">
+                  <i class="bi" [class.bi-eye]="!showApiKey()" [class.bi-eye-slash]="showApiKey()"></i>
+                </button>
+              </div>
+              <app-field-error [control]="form.get('asaasApiKey')" />
+            </div>
+
+            <div class="col-md-4 mb-3">
+              <label for="asaasEnvironment" class="form-label">Ambiente <span class="text-danger">*</span></label>
+              <select id="asaasEnvironment" formControlName="asaasEnvironment" class="form-select">
+                @for (item of asaasEnvironments; track item.value) {
+                  <option [value]="item.value">{{ item.label }}</option>
+                }
+              </select>
+              <app-field-error [control]="form.get('asaasEnvironment')" />
+            </div>
+          </div>
+        }
+
+        <div class="d-flex justify-content-end mt-3">
+          <button type="submit" class="btn btn-primary" [disabled]="isSaving()">
+            @if (isSaving()) {
+              <span class="spinner-border spinner-border-sm me-1" role="status"></span>
+            } @else {
+              <i class="bi bi-check-lg me-1"></i>
+            }
+            Salvar
+          </button>
+        </div>
+      </form>
+    </div>
+  }
+</section>
