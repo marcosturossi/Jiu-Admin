@@ -107,13 +107,11 @@ export class FrequencyService implements FrequencyServiceInterface {
     }
 
     /**
-     * @param startDate 
-     * @param endDate 
      * @param studentId 
      * @param lessonId 
      * @param graduationId 
-     * @param startDate2 
-     * @param endDate2 
+     * @param startDate 
+     * @param endDate 
      * @param page 
      * @param pageSize 
      * @param orderBy 
@@ -121,20 +119,12 @@ export class FrequencyService implements FrequencyServiceInterface {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiFrequencyDateRangeGet(startDate?: string, endDate?: string, studentId?: string, lessonId?: string, graduationId?: string, startDate2?: string, endDate2?: string, page?: ApiFrequencyGetPageParameter, pageSize?: ApiFrequencyGetPageParameter, orderBy?: string, orderByDescending?: boolean, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<PaginatedResultOfShowFrequencyDTO>;
-    public apiFrequencyDateRangeGet(startDate?: string, endDate?: string, studentId?: string, lessonId?: string, graduationId?: string, startDate2?: string, endDate2?: string, page?: ApiFrequencyGetPageParameter, pageSize?: ApiFrequencyGetPageParameter, orderBy?: string, orderByDescending?: boolean, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<PaginatedResultOfShowFrequencyDTO>>;
-    public apiFrequencyDateRangeGet(startDate?: string, endDate?: string, studentId?: string, lessonId?: string, graduationId?: string, startDate2?: string, endDate2?: string, page?: ApiFrequencyGetPageParameter, pageSize?: ApiFrequencyGetPageParameter, orderBy?: string, orderByDescending?: boolean, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<PaginatedResultOfShowFrequencyDTO>>;
-    public apiFrequencyDateRangeGet(startDate?: string, endDate?: string, studentId?: string, lessonId?: string, graduationId?: string, startDate2?: string, endDate2?: string, page?: ApiFrequencyGetPageParameter, pageSize?: ApiFrequencyGetPageParameter, orderBy?: string, orderByDescending?: boolean, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public apiFrequencyDateRangeGet(studentId?: string, lessonId?: string, graduationId?: string, startDate?: string, endDate?: string, page?: ApiFrequencyGetPageParameter, pageSize?: ApiFrequencyGetPageParameter, orderBy?: string, orderByDescending?: boolean, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<PaginatedResultOfShowFrequencyDTO>;
+    public apiFrequencyDateRangeGet(studentId?: string, lessonId?: string, graduationId?: string, startDate?: string, endDate?: string, page?: ApiFrequencyGetPageParameter, pageSize?: ApiFrequencyGetPageParameter, orderBy?: string, orderByDescending?: boolean, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<PaginatedResultOfShowFrequencyDTO>>;
+    public apiFrequencyDateRangeGet(studentId?: string, lessonId?: string, graduationId?: string, startDate?: string, endDate?: string, page?: ApiFrequencyGetPageParameter, pageSize?: ApiFrequencyGetPageParameter, orderBy?: string, orderByDescending?: boolean, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<PaginatedResultOfShowFrequencyDTO>>;
+    public apiFrequencyDateRangeGet(studentId?: string, lessonId?: string, graduationId?: string, startDate?: string, endDate?: string, page?: ApiFrequencyGetPageParameter, pageSize?: ApiFrequencyGetPageParameter, orderBy?: string, orderByDescending?: boolean, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
 
         let localVarQueryParameters = new HttpParams({encoder: this.encoder});
-        if (startDate !== undefined && startDate !== null) {
-          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>startDate, 'startDate');
-        }
-        if (endDate !== undefined && endDate !== null) {
-          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>endDate, 'endDate');
-        }
         if (studentId !== undefined && studentId !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
             <any>studentId, 'StudentId');
@@ -147,13 +137,13 @@ export class FrequencyService implements FrequencyServiceInterface {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
             <any>graduationId, 'GraduationId');
         }
-        if (startDate2 !== undefined && startDate2 !== null) {
+        if (startDate !== undefined && startDate !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>startDate2, 'StartDate');
+            <any>startDate, 'StartDate');
         }
-        if (endDate2 !== undefined && endDate2 !== null) {
+        if (endDate !== undefined && endDate !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>endDate2, 'EndDate');
+            <any>endDate, 'EndDate');
         }
         if (page !== undefined && page !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,

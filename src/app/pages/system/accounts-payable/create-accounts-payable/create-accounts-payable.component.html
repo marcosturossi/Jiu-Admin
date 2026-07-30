@@ -1,5 +1,18 @@
 <form [formGroup]="form" (ngSubmit)="save()">
   <div class="mb-3">
+    <label for="supplierSelect">Fornecedor <span class="text-danger">*</span></label>
+    <app-search-select
+      inputId="supplierSelect"
+      [options]="supplierOptions()"
+      [selected]="selectedSupplier()"
+      placeholder="Selecione o fornecedor"
+      label="Fornecedor"
+      (selectionChange)="onSupplierSelected($event)"
+      (searchChange)="onSupplierSearch($event)" />
+    <app-field-error [control]="form.get('personId')" />
+  </div>
+
+  <div class="mb-3">
     <label for="category">Categoria</label>
     <app-search-select
       inputId="category"

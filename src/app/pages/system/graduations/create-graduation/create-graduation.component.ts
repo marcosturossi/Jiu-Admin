@@ -51,7 +51,7 @@ export class CreateGraduationComponent {
   constructor() {
     this.studentSearchSubject.pipe(debounceTime(400), takeUntilDestroyed(this.destroyRef))
       .subscribe(term => this.loadStudents(term));
-    this.beltService.apiBeltGet().subscribe({
+    this.beltService.apiBeltGet(undefined, undefined, undefined, undefined, 1, 100).subscribe({
       next: r => this.belts.set(r?.items ?? []),
       error: () => this.ns.showError('Erro ao Carregar Faixas', 'Não foi possível carregar a lista de faixas.'),
     });

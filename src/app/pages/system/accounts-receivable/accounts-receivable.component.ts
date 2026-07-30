@@ -171,7 +171,11 @@ export class AccountsReceivableComponent {
   }
 
   protected isRefundable(item: ShowAccountsReceivableDTO): boolean {
-    return item.type === TransactionType.Income && item.status === 'Paid';
+    // The refund endpoint only reverses gateway-processed charges (backend:
+    // "FinancialTransaction ... is not refundable" for anything else) —
+    // manual cash payments (payment-with-money) never get an externalChargeId,
+    // so the button must stay hidden for those or every click would 400.
+    return item.type === TransactionType.Income && item.status === 'Paid' && item.externalChargeId != null;
   }
 
   protected isPositiveType(type?: number | string): boolean {
@@ -210,7 +214,12 @@ export class AccountsReceivableComponent {
   protected async delete(item: ShowAccountsReceivableDTO): Promise<void> {
     const ok = await this.confirmService.confirm('Tem certeza que deseja excluir esta conta a receber?');
     if (!ok) return;
-    this.accountsReceivableService.apiAccountsReceivableChargeIdDelete(item.id!).subscribe({
+    // Contract-generated installments (charges) and standalone entries live under
+    // different delete endpoints — `contractId` is only set for the former.
+    const delete$ = item.contractId
+      ? this.accountsReceivableService.apiAccountsReceivableChargeIdDelete(item.id!)
+      : this.accountsReceivableService.apiAccountsReceivableIdDelete(item.id!);
+    delete$.subscribe({
       next: () => { this.ns.showSuccess('Excluída!', 'Excluída com sucesso.'); this.load(); },
       error: (err) => { this.ns.showError('Erro ao Excluir!', extractErrorMessage(err, 'Não foi possível excluir.')); },
     });

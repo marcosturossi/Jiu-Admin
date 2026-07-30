@@ -6,6 +6,7 @@ const TEST_API_KEY = `$aact_e2e_test_${TS}`;
 interface TenantSettings {
   paymentGateway: string;
   asaasApiKey: string;
+  webhookSecret: string;
   asaasEnvironment: string;
 }
 
@@ -18,11 +19,12 @@ async function waitForFormReady(page: Page): Promise<void> {
 async function readSettings(page: Page): Promise<TenantSettings> {
   const paymentGateway = await page.locator('#paymentGateway').inputValue();
   if (paymentGateway !== 'Asaas') {
-    return { paymentGateway, asaasApiKey: '', asaasEnvironment: 'Sandbox' };
+    return { paymentGateway, asaasApiKey: '', webhookSecret: '', asaasEnvironment: 'Sandbox' };
   }
   return {
     paymentGateway,
     asaasApiKey: await page.locator('#asaasApiKey').inputValue(),
+    webhookSecret: await page.locator('#webhookSecret').inputValue(),
     asaasEnvironment: await page.locator('#asaasEnvironment').inputValue(),
   };
 }
@@ -31,6 +33,7 @@ async function applySettings(page: Page, settings: TenantSettings): Promise<void
   await page.locator('#paymentGateway').selectOption(settings.paymentGateway);
   if (settings.paymentGateway === 'Asaas') {
     await page.locator('#asaasApiKey').fill(settings.asaasApiKey);
+    await page.locator('#webhookSecret').fill(settings.webhookSecret);
     await page.locator('#asaasEnvironment').selectOption(settings.asaasEnvironment);
   }
 }
@@ -144,7 +147,7 @@ test.describe('Configurações de Pagamento', () => {
 
   test('exibe erro e reabilita o botão quando salvar falha', async ({ page }) => {
     await page.route('**/api/settings', (route) => {
-      if (route.request().method() === 'PUT') {
+      if (route.request().method() === 'PATCH') {
         return route.fulfill({
           status: 500,
           contentType: 'application/json',
@@ -187,7 +190,7 @@ test.describe('Configurações de Pagamento', () => {
 
   test('mantém a chave de API vazia quando a API retorna null após salvar', async ({ page }) => {
     await page.route('**/api/settings', (route) => {
-      if (route.request().method() === 'PUT') {
+      if (route.request().method() === 'PATCH') {
         return route.fulfill({
           status: 200,
           contentType: 'application/json',
@@ -206,13 +209,31 @@ test.describe('Configurações de Pagamento', () => {
     await page.locator('#paymentGateway').selectOption('Asaas');
     const input = page.locator('#asaasApiKey');
     await expect(input).toHaveAttribute('type', 'password');
-    await page.getByTitle('Mostrar/Ocultar').click();
+    await page.getByTitle('Mostrar/Ocultar', { exact: true }).click();
     await expect(input).toHaveAttribute('type', 'text');
+  });
+
+  test('alterna a visibilidade do segredo do webhook, independente da chave de API', async ({ page }) => {
+    await page.locator('#paymentGateway').selectOption('Asaas');
+    const secretInput = page.locator('#webhookSecret');
+    const apiKeyInput = page.locator('#asaasApiKey');
+    await expect(secretInput).toHaveAttribute('type', 'password');
+    await page.getByTitle('Mostrar/Ocultar Segredo').click();
+    await expect(secretInput).toHaveAttribute('type', 'text');
+    await expect(apiKeyInput).toHaveAttribute('type', 'password'); // unaffected by the other toggle
+  });
+
+  test('não exige segredo do webhook (campo opcional) e salva sem ele', async ({ page }) => {
+    await page.locator('#paymentGateway').selectOption('Asaas');
+    await page.locator('#asaasApiKey').fill(TEST_API_KEY);
+    await page.locator('#webhookSecret').fill('');
+    await expect(page.getByRole('button', { name: /Salvar/i })).toBeEnabled();
   });
 
   test('salva um novo provedor Asaas e persiste após recarregar a página', async ({ page }) => {
     await page.locator('#paymentGateway').selectOption('Asaas');
     await page.locator('#asaasApiKey').fill(TEST_API_KEY);
+    await page.locator('#webhookSecret').fill('whsec_e2e_test');
     await page.locator('#asaasEnvironment').selectOption('Production');
     await save(page);
     await expect(page.locator('.toast-success')).toBeVisible({ timeout: 10_000 });
@@ -220,6 +241,9 @@ test.describe('Configurações de Pagamento', () => {
     await page.reload();
     await waitForFormReady(page);
     await expect(page.locator('#paymentGateway')).toHaveValue('Asaas');
+    // The backend masks secrets on GET (only the last few characters survive) —
+    // assert the masked shape rather than the plaintext we originally sent.
+    await expect(page.locator('#webhookSecret')).toHaveValue(/\*+test$/);
     await expect(page.locator('#asaasEnvironment')).toHaveValue('Production');
   });
 

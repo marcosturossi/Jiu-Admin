@@ -1,10 +1,38 @@
 import { test, expect } from './coverage-fixture';
-import { waitForTableReady, openCreateModal, saveAndWaitModalClose, acceptConfirmDialog } from './helpers';
+import {
+  waitForTableReady,
+  openCreateModal,
+  saveAndWaitModalClose,
+  selectFromSearchSelect,
+  acceptConfirmDialog,
+  createTestSupplier,
+  deleteTestSupplier,
+  type TestSupplier,
+} from './helpers';
 
 const TS = Date.now();
 const TEST_DESC = `E2E-Pagar-${TS}`;
 
 test.describe('Contas a Pagar', () => {
+  // A supplier (Person) is now required by the backend to create an entry —
+  // shared across tests here since it's just a lookup value, not something
+  // any individual test owns or mutates.
+  let supplier: TestSupplier;
+
+  test.beforeAll(async ({ browser }) => {
+    const context = await browser.newContext({ storageState: 'e2e/.auth/state.json' });
+    const page = await context.newPage();
+    supplier = await createTestSupplier(page);
+    await context.close();
+  });
+
+  test.afterAll(async ({ browser }) => {
+    const context = await browser.newContext({ storageState: 'e2e/.auth/state.json' });
+    const page = await context.newPage();
+    await deleteTestSupplier(page, supplier.lastName);
+    await context.close();
+  });
+
   test.beforeEach(async ({ page }) => {
     await page.goto('/system/accounts-payable');
     await waitForTableReady(page);
@@ -16,8 +44,8 @@ test.describe('Contas a Pagar', () => {
   });
 
   test('cria e exclui conta a pagar', async ({ page }) => {
-    // CREATE — standalone, no supplier/contract prerequisite
     await openCreateModal(page, /Nova Conta a Pagar/i);
+    await selectFromSearchSelect(page, 'Fornecedor', supplier.lastName);
     await page.fill('#description', TEST_DESC);
     await page.fill('#amount', '49.90');
     await page.fill('#transactionDate', '2030-06-15');
@@ -34,13 +62,16 @@ test.describe('Contas a Pagar', () => {
     await expect(row).not.toBeVisible({ timeout: 10_000 });
   });
 
-  test('exige valor, data e vencimento antes de habilitar salvar', async ({ page }) => {
+  test('exige fornecedor, valor, data e vencimento antes de habilitar salvar', async ({ page }) => {
     await openCreateModal(page, /Nova Conta a Pagar/i);
     const saveButton = page.getByRole('button', { name: /Salvar/i });
-    // transactionDate/dueDate default to today, so only amount is missing initially.
+    // transactionDate/dueDate default to today, so only fornecedor + amount are missing initially.
     await expect(saveButton).toBeDisabled();
 
     await page.fill('#amount', '50');
+    await expect(saveButton).toBeDisabled(); // still missing fornecedor
+
+    await selectFromSearchSelect(page, 'Fornecedor', supplier.lastName);
     await expect(saveButton).toBeEnabled();
 
     await page.fill('#transactionDate', '');
@@ -49,6 +80,7 @@ test.describe('Contas a Pagar', () => {
 
   test('exige valor mínimo de R$ 0,01', async ({ page }) => {
     await openCreateModal(page, /Nova Conta a Pagar/i);
+    await selectFromSearchSelect(page, 'Fornecedor', supplier.lastName);
     await page.fill('#amount', '0');
     await expect(page.getByRole('button', { name: /Salvar/i })).toBeDisabled();
     await page.fill('#amount', '0.01');
@@ -57,6 +89,7 @@ test.describe('Contas a Pagar', () => {
 
   test('registra pagamento com sucesso, prefilling o valor, e exclui em seguida', async ({ page }) => {
     await openCreateModal(page, /Nova Conta a Pagar/i);
+    await selectFromSearchSelect(page, 'Fornecedor', supplier.lastName);
     await page.fill('#description', TEST_DESC);
     await page.fill('#amount', '75.50');
     await page.fill('#transactionDate', '2030-06-15');
@@ -83,6 +116,7 @@ test.describe('Contas a Pagar', () => {
 
   test('exibe erro e não marca como pago quando o pagamento falha', async ({ page }) => {
     await openCreateModal(page, /Nova Conta a Pagar/i);
+    await selectFromSearchSelect(page, 'Fornecedor', supplier.lastName);
     await page.fill('#description', TEST_DESC);
     await page.fill('#amount', '30.00');
     await page.fill('#transactionDate', '2030-06-15');
@@ -121,6 +155,7 @@ test.describe('Contas a Pagar', () => {
       return route.continue();
     });
     await openCreateModal(page, /Nova Conta a Pagar/i);
+    await selectFromSearchSelect(page, 'Fornecedor', supplier.lastName);
     await page.fill('#amount', '10');
     const saveButton = page.getByRole('button', { name: /Salvar/i });
     await saveButton.click();
@@ -143,6 +178,7 @@ test.describe('Contas a Pagar', () => {
 
   test('exibe erro quando falha ao excluir', async ({ page }) => {
     await openCreateModal(page, /Nova Conta a Pagar/i);
+    await selectFromSearchSelect(page, 'Fornecedor', supplier.lastName);
     await page.fill('#description', TEST_DESC);
     await page.fill('#amount', '15.00');
     await page.fill('#transactionDate', '2030-06-15');

@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, DestroyRef, inject, output, signal } from '@angular/core';
 import { FrequencyService, StudentsService, ShowStudentDTO as ShowStudentDTO, ShowLessonDTO as ShowLessonDTO, LessonService } from '../../../../generated_services';
-import { FormBuilder, FormArray, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CreateFrequencyDTO } from '../../../../generated_services/model/createFrequencyDTO';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Subject, debounceTime, forkJoin, Observable } from 'rxjs';
@@ -41,26 +41,25 @@ export class CreateFrequencyComponent {
   protected readonly selectedFile = signal<File | null>(null);
   protected readonly previewUrl = signal<string | null>(null);
   protected readonly recognizedStudentIds = signal<string[]>([]);
+  // ID-based (not FormArray-index-based) so a re-search for a student outside the
+  // first page doesn't wipe out selections already made from the previous page —
+  // the roster now regularly exceeds the 100-row default fetch.
+  protected readonly selectedStudentIds = signal<Set<string>>(new Set());
 
   private api2Persons: PersonListResponse | null = null;
   private readonly lessonSearchSubject = new Subject<string>();
+  private readonly studentSearchSubject = new Subject<string>();
 
   protected readonly frequencyForm = this.fb.group({
     lessonId: ['', Validators.required],
-    students: this.fb.array([])
   });
 
   constructor() {
     this.lessonSearchSubject.pipe(debounceTime(400), takeUntilDestroyed(this.destroyRef))
       .subscribe(term => this.loadLessons(term));
-    this.studentsService.apiStudentsGet(undefined, undefined, undefined, undefined, undefined, undefined, 1, 100).subscribe({
-      next: result => {
-        const students = result?.items ?? [];
-        this.students.set(students);
-        this.initializeStudentFormArray(students);
-      },
-      error: () => this.ns.showError('Erro ao Carregar Alunos!', 'Não foi possível carregar a lista de alunos. Tente novamente.')
-    });
+    this.studentSearchSubject.pipe(debounceTime(400), takeUntilDestroyed(this.destroyRef))
+      .subscribe(term => this.loadStudents(term));
+    this.loadStudents();
     this.loadLessons();
 
     this.personsService.listPersonsApiV1PersonsGet().subscribe({
@@ -69,34 +68,50 @@ export class CreateFrequencyComponent {
     });
   }
 
-  get studentsFormArray(): FormArray {
-    return this.frequencyForm.get('students') as FormArray;
+  private loadStudents(term = ''): void {
+    this.studentsService.apiStudentsGet(term || undefined, undefined, undefined, undefined, undefined, undefined, 1, 100).subscribe({
+      next: result => this.students.set(result?.items ?? []),
+      error: () => this.ns.showError('Erro ao Carregar Alunos!', 'Não foi possível carregar a lista de alunos. Tente novamente.')
+    });
   }
 
-  private initializeStudentFormArray(students: ShowStudentDTO[]): void {
-    const arr = this.fb.array(students.map(() => new FormControl(false)));
-    this.frequencyForm.setControl('students', arr as any); // eslint-disable-line @typescript-eslint/no-explicit-any
+  protected onStudentSearch(term: string): void {
+    this.studentSearchSubject.next(term);
+  }
+
+  protected toggleStudent(studentId: string): void {
+    this.selectedStudentIds.update(ids => {
+      const next = new Set(ids);
+      if (next.has(studentId)) next.delete(studentId); else next.add(studentId);
+      return next;
+    });
+  }
+
+  protected isStudentSelected(studentId: string): boolean {
+    return this.selectedStudentIds().has(studentId);
   }
 
   protected getSelectedStudents(): ShowStudentDTO[] {
-    return this.students().filter((_, i) => this.studentsFormArray.at(i).value === true);
+    const ids = this.selectedStudentIds();
+    return this.students().filter(s => ids.has(s.id!));
   }
 
   protected getSelectedStudentsCount(): number {
-    return this.studentsFormArray.value.filter((v: boolean) => v).length;
+    return this.selectedStudentIds().size;
   }
 
   protected isFormValid(): boolean {
-    return this.studentsFormArray.value.some((v: boolean) => v) && !!this.frequencyForm.get('lessonId')?.value;
+    return this.selectedStudentIds().size > 0 && !!this.frequencyForm.get('lessonId')?.value;
   }
 
   protected toggleSelectAll(): void {
-    const allSelected = this.studentsFormArray.value.every((v: boolean) => v);
-    this.studentsFormArray.controls.forEach(c => c.setValue(!allSelected));
+    const allSelected = this.isAllSelected();
+    this.selectedStudentIds.set(allSelected ? new Set() : new Set(this.students().map(s => s.id!)));
   }
 
   protected isAllSelected(): boolean {
-    return this.studentsFormArray.value.length > 0 && this.studentsFormArray.value.every((v: boolean) => v);
+    const students = this.students();
+    return students.length > 0 && students.every(s => this.selectedStudentIds().has(s.id!));
   }
 
   protected isStudentRecognized(studentId: string): boolean {
@@ -170,9 +185,10 @@ export class CreateFrequencyComponent {
 
   private handleRecognitionResult(studentIds: string[]): void {
     this.recognizedStudentIds.set(studentIds);
-    studentIds.forEach(id => {
-      const idx = this.students().findIndex(s => s.id === id);
-      if (idx >= 0) this.studentsFormArray.at(idx).setValue(true);
+    this.selectedStudentIds.update(ids => {
+      const next = new Set(ids);
+      studentIds.forEach(id => next.add(id));
+      return next;
     });
     if (studentIds.length > 0) {
       this.ns.showSuccess('Reconhecimento Concluído!', `${studentIds.length} aluno(s) reconhecido(s) e selecionado(s) automaticamente!`);

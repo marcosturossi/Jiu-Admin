@@ -32,19 +32,17 @@ export interface FrequencyServiceInterface {
     /**
      * 
      * 
-     * @param startDate 
-     * @param endDate 
      * @param studentId 
      * @param lessonId 
      * @param graduationId 
-     * @param startDate2 
-     * @param endDate2 
+     * @param startDate 
+     * @param endDate 
      * @param page 
      * @param pageSize 
      * @param orderBy 
      * @param orderByDescending 
      */
-    apiFrequencyDateRangeGet(startDate?: string, endDate?: string, studentId?: string, lessonId?: string, graduationId?: string, startDate2?: string, endDate2?: string, page?: ApiFrequencyGetPageParameter, pageSize?: ApiFrequencyGetPageParameter, orderBy?: string, orderByDescending?: boolean, extraHttpRequestParams?: any): Observable<PaginatedResultOfShowFrequencyDTO>;
+    apiFrequencyDateRangeGet(studentId?: string, lessonId?: string, graduationId?: string, startDate?: string, endDate?: string, page?: ApiFrequencyGetPageParameter, pageSize?: ApiFrequencyGetPageParameter, orderBy?: string, orderByDescending?: boolean, extraHttpRequestParams?: any): Observable<PaginatedResultOfShowFrequencyDTO>;
 
     /**
      * 

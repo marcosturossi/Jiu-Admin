@@ -52,6 +52,24 @@
               </select>
               <app-field-error [control]="form.get('asaasEnvironment')" />
             </div>
+
+            <div class="col-md-8 mb-3">
+              <label for="webhookSecret" class="form-label">Segredo do Webhook (Asaas)</label>
+              <div class="input-group">
+                <input
+                  [type]="showWebhookSecret() ? 'text' : 'password'"
+                  id="webhookSecret"
+                  class="form-control"
+                  formControlName="webhookSecret"
+                  placeholder="Opcional"
+                  autocomplete="off"
+                />
+                <button type="button" class="btn btn-outline-secondary" (click)="toggleWebhookSecretVisibility()" title="Mostrar/Ocultar Segredo">
+                  <i class="bi" [class.bi-eye]="!showWebhookSecret()" [class.bi-eye-slash]="showWebhookSecret()"></i>
+                </button>
+              </div>
+              <app-field-error [control]="form.get('webhookSecret')" />
+            </div>
           </div>
         }
 

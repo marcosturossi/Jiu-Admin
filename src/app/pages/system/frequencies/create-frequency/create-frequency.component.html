@@ -74,11 +74,24 @@
       </div>
     </div>
 
-    <div class="students-list" formArrayName="students">
-      @for (student of students(); track student.id; let i = $index) {
+    <input
+      type="text"
+      class="form-control mb-2"
+      placeholder="Buscar aluno por nome..."
+      (input)="onStudentSearch($any($event.target).value)"
+    />
+
+    <div class="students-list">
+      @for (student of students(); track student.id) {
         <div class="student-item" [class.recognized]="isStudentRecognized(student.id!)">
-          <input type="checkbox" [formControlName]="i" [id]="'student-' + i" class="student-checkbox" />
-          <label [for]="'student-' + i" class="student-label">
+          <input
+            type="checkbox"
+            [id]="'student-' + student.id"
+            class="student-checkbox"
+            [checked]="isStudentSelected(student.id!)"
+            (change)="toggleStudent(student.id!)"
+          />
+          <label [for]="'student-' + student.id" class="student-label">
             {{ student.firstName }} {{ student.lastName }}
             @if (isStudentRecognized(student.id!)) {
               <i class="bi bi-check-circle text-success" title="Reconhecido automaticamente"></i>

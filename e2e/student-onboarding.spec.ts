@@ -66,4 +66,43 @@ test.describe('Cadastro de Alunos (Onboarding)', () => {
     await deleteTestFeePlan(page, feePlan.name);
     await deleteTestBelt(page, belt.color);
   });
+
+  test('exibe erro e permite tentar novamente quando falha o cadastro final', async ({ page }) => {
+    await page.route('**/api/Students', (route) => {
+      if (route.request().method() === 'POST') {
+        return route.fulfill({ status: 500, contentType: 'application/json', body: JSON.stringify({ title: 'Erro Simulado', detail: 'Falha simulada ao cadastrar aluno.' }) });
+      }
+      return route.continue();
+    });
+
+    await page.goto('/system/student-onboarding');
+    await expect(page.locator('app-subnav')).toBeVisible({ timeout: 10_000 });
+
+    const errTs = Date.now();
+    await page.fill('#name', `E2EErro ${errTs}`);
+    await page.fill('#email', `e2e_onboard_err_${errTs}@teste.com`);
+    await page.fill('#phone', '11999998888');
+    await page.fill('#cpf', generateValidCpf());
+    await page.fill('#dateOfBirth', '1995-04-20');
+    await page.getByRole('button', { name: /Próximo/i }).click();
+    await expect(page.getByText('Passo 2 de 4')).toBeVisible();
+
+    // Any existing belt/plan works here — this test only cares that the final POST fails cleanly.
+    await page.locator('#beltId').selectOption({ index: 1 });
+    await page.getByRole('button', { name: /Próximo/i }).click();
+    await expect(page.getByText('Passo 3 de 4')).toBeVisible();
+
+    await page.locator('#feePlanId').selectOption({ index: 1 });
+    await page.getByRole('button', { name: /Próximo/i }).click();
+    await expect(page.getByText('Passo 4 de 4')).toBeVisible();
+
+    await page.getByText('Confirmo que os dados estão corretos').click();
+    const finishButton = page.getByRole('button', { name: /Finalizar Cadastro/i });
+    await finishButton.click();
+
+    await expect(page.locator('.alert-danger', { hasText: 'Falha simulada ao cadastrar aluno.' })).toBeVisible({ timeout: 10_000 });
+    // Still on the wizard (no navigation to a student detail page), and able to retry.
+    await expect(page).toHaveURL(/\/system\/student-onboarding$/);
+    await expect(finishButton).toBeEnabled();
+  });
 });
