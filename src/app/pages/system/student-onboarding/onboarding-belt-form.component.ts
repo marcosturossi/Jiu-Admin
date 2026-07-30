@@ -1,13 +1,14 @@
-import { Component, ChangeDetectionStrategy, input, output } from '@angular/core';
+import { Component, ChangeDetectionStrategy, input, output, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { StudentBeltInfo } from './student-onboarding.component';
 import { ShowBeltDTO } from '../../../generated_services/model/showBeltDTO';
+import { CreateBeltComponent } from '../belts/create-belt/create-belt.component';
 
 @Component({
   selector: 'app-onboarding-belt-form',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, CreateBeltComponent],
   template: `
     <form class="onboarding-form">
       <h3>Seleção de Faixa</h3>
@@ -19,18 +20,23 @@ import { ShowBeltDTO } from '../../../generated_services/model/showBeltDTO';
       <div class="form-section">
         <div class="form-group">
           <label for="beltId" class="form-label">Faixa <span class="text-danger">*</span></label>
-          <select
-            id="beltId"
-            class="form-select"
-            [(ngModel)]="data().beltId"
-            [ngModelOptions]="{standalone: true}"
-            (ngModelChange)="onDataChange('beltId', $event)"
-          >
-            <option value="">Selecione uma faixa...</option>
-            @for (belt of belts(); track belt.id) {
-              <option [value]="belt.id">{{ belt.color }}</option>
-            }
-          </select>
+          <div class="d-flex gap-2">
+            <select
+              id="beltId"
+              class="form-select flex-grow-1"
+              [(ngModel)]="data().beltId"
+              [ngModelOptions]="{standalone: true}"
+              (ngModelChange)="onDataChange('beltId', $event)"
+            >
+              <option value="">Selecione uma faixa...</option>
+              @for (belt of belts(); track belt.id) {
+                <option [value]="belt.id">{{ belt.color }}</option>
+              }
+            </select>
+            <button type="button" class="btn btn-outline-secondary" title="Nova faixa" (click)="openedCreateBelt.set(true)">
+              <i class="bi bi-plus-lg"></i>
+            </button>
+          </div>
           <small class="form-text-muted">A faixa inicial do aluno</small>
         </div>
 
@@ -55,6 +61,25 @@ import { ShowBeltDTO } from '../../../generated_services/model/showBeltDTO';
         </div>
       </div>
     </form>
+
+    @if (openedCreateBelt()) {
+      <div class="modal-backdrop-custom" (click)="openedCreateBelt.set(false)"></div>
+      <div class="modal show d-block" tabindex="-1" role="dialog" aria-modal="true">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Nova Faixa</h5>
+              <button type="button" class="btn-close" (click)="openedCreateBelt.set(false)" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body">
+              <app-create-belt
+                (closeEvent)="openedCreateBelt.set(false)"
+                (beltCreated)="onBeltCreated($event)" />
+            </div>
+          </div>
+        </div>
+      </div>
+    }
   `,
   styles: [`
     .onboarding-form {
@@ -141,8 +166,18 @@ export class OnboardingBeltFormComponent {
   readonly data = input.required<StudentBeltInfo>();
   readonly belts = input<ShowBeltDTO[]>([]);
   readonly dataChange = output<Partial<StudentBeltInfo>>();
+  /** Bubbled up so the wizard (owner of `belts`) can keep its copy in sync too. */
+  readonly beltCreated = output<ShowBeltDTO>();
+
+  protected readonly openedCreateBelt = signal(false);
 
   protected onDataChange(field: string, value: any): void {
     this.dataChange.emit({ [field]: value });
+  }
+
+  protected onBeltCreated(belt: ShowBeltDTO): void {
+    this.openedCreateBelt.set(false);
+    this.onDataChange('beltId', belt.id ?? '');
+    this.beltCreated.emit(belt);
   }
 }

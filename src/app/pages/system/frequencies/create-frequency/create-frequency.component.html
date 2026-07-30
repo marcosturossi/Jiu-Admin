@@ -1,14 +1,21 @@
 <form [formGroup]="frequencyForm">
   <div class="mb-3">
     <label for="lessonSelect" class="form-label">Selecione a Aula <span class="text-danger">*</span></label>
-    <app-search-select
-      inputId="lessonSelect"
-      [options]="lessonOptions()"
-      [selected]="selectedLesson()"
-      placeholder="Selecione uma aula..."
-      label="Aula"
-      (selectionChange)="onLessonSelected($event)"
-      (searchChange)="onLessonSearch($event)" />
+    <div class="d-flex gap-2">
+      <div class="flex-grow-1">
+        <app-search-select
+          inputId="lessonSelect"
+          [options]="lessonOptions()"
+          [selected]="selectedLesson()"
+          placeholder="Selecione uma aula..."
+          label="Aula"
+          (selectionChange)="onLessonSelected($event)"
+          (searchChange)="onLessonSearch($event)" />
+      </div>
+      <button type="button" class="btn btn-outline-secondary" title="Nova aula" (click)="openedCreateLesson.set(true)">
+        <i class="bi bi-plus-lg"></i>
+      </button>
+    </div>
     <app-field-error [control]="frequencyForm.get('lessonId')" />
   </div>
 
@@ -121,3 +128,22 @@
     </button>
   </div>
 </form>
+
+@if (openedCreateLesson()) {
+  <div class="modal-backdrop-custom" (click)="openedCreateLesson.set(false)"></div>
+  <div class="modal show d-block" tabindex="-1" role="dialog" aria-modal="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Nova Aula</h5>
+          <button type="button" class="btn-close" (click)="openedCreateLesson.set(false)" aria-label="Fechar"></button>
+        </div>
+        <div class="modal-body">
+          <app-create-lesson
+            (closeEvent)="openedCreateLesson.set(false)"
+            (lessonCreated)="onLessonCreated($event)" />
+        </div>
+      </div>
+    </div>
+  </div>
+}

@@ -67,6 +67,44 @@ test.describe('Contratos', () => {
     // by it and the backend rejects deleting them (FK constraint on the contract).
   });
 
+  test('cria plano de pagamento pelo botão "+" ao criar contrato, sem sair do formulário', async ({ page }) => {
+    const student = await createTestStudent(page);
+    const planName = `Plano-E2E-Contrato-${Date.now()}`;
+
+    await page.goto('/system/contracts');
+    await waitForTableReady(page);
+    await openCreateModal(page, /Novo Contrato/i);
+    await selectFromSearchSelect(page, 'Aluno', student.lastName);
+
+    await page.locator('button[title="Novo plano"]').click();
+    const nestedModal = page.locator('.modal.show').last();
+    await expect(nestedModal).toBeVisible();
+    await nestedModal.locator('#name').fill(planName);
+    await nestedModal.locator('#monthDuration').fill('6');
+    await nestedModal.locator('#price').fill('100.00');
+    await nestedModal.getByRole('button', { name: /Salvar/i }).click();
+
+    // Nested modal closes, outer create-contract modal stays open, new plan selected.
+    await expect(page.locator('.modal.show')).toHaveCount(1, { timeout: 10_000 });
+    await expect(page.locator('.search-select-trigger', { hasText: planName })).toBeVisible();
+
+    await page.locator('input[type="date"]').fill('2030-01-01');
+    await saveAndWaitModalClose(page);
+    await waitForTableReady(page);
+
+    const row = page.locator('tr', { hasText: student.lastName });
+    await expect(row).toBeVisible();
+    await expect(row).toContainText(planName);
+
+    // NOTE: contract cancellation (not real deletion) and the FK constraint on
+    // student/fee-plan mean cleanup here mirrors the other CRUD test above —
+    // intentionally left in place rather than deleted.
+    await row.locator('button.btn-outline-danger').click();
+    await acceptConfirmDialog(page);
+    await waitForTableReady(page);
+    await expect(row).toContainText('Cancelado');
+  });
+
   test('exige aluno, plano e data de início antes de criar', async ({ page }) => {
     await openCreateModal(page, /Novo Contrato/i);
     await page.getByRole('button', { name: /Criar Contrato/i }).click();

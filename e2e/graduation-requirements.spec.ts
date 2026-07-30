@@ -75,6 +75,36 @@ test.describe('Requisitos de Graduação', () => {
     await deleteTestBelt(page, belt.color);
   });
 
+  test('cria faixa pelo botão "+" ao criar requisito, sem sair do formulário', async ({ page }) => {
+    const beltColor = `E2E-Faixa-Req-${Date.now()}`;
+
+    await openCreateModal(page, /Novo Requisito/i);
+    await page.locator('button[title="Nova faixa"]').click();
+    const nestedModal = page.locator('.modal.show').last();
+    await expect(nestedModal).toBeVisible();
+    await nestedModal.locator('#color').fill(beltColor);
+    await nestedModal.locator('#orderIndex').fill('99');
+    await nestedModal.getByRole('button', { name: /Salvar/i }).click();
+
+    await expect(page.locator('.modal.show')).toHaveCount(1, { timeout: 10_000 });
+    const selectedLabel = await page.locator('#beltId option:checked').textContent();
+    expect(selectedLabel?.trim()).toBe(beltColor);
+
+    await page.fill('#description', TEST_DESC);
+    await saveAndWaitModalClose(page);
+    await waitForTableReady(page);
+    await expect(page.locator('table').getByText(TEST_DESC)).toBeVisible();
+
+    const row = page.locator('tr', { hasText: TEST_DESC });
+    await expect(row).toContainText(beltColor);
+    await row.locator('button.btn-outline-danger').click();
+    await acceptConfirmDialog(page);
+    await waitForTableReady(page);
+
+    // CLEANUP
+    await deleteTestBelt(page, beltColor);
+  });
+
   test('exige faixa e descrição antes de habilitar salvar; aceita mínimo de aulas zero', async ({ page }) => {
     await openCreateModal(page, /Novo Requisito/i);
     const saveButton = page.getByRole('button', { name: /Salvar/i });
