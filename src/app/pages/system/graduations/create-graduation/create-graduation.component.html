@@ -13,12 +13,17 @@
   </div>
   <div class="mb-3">
     <label for="beltId" class="form-label">Faixa <span class="text-danger">*</span></label>
-    <select class="form-select" id="beltId" formControlName="beltId">
-      <option value="" disabled selected>Selecione uma faixa</option>
-      @for (opt of belts(); track opt.id) {
-        <option [value]="opt.id">{{ opt.color }}</option>
-      }
-    </select>
+    <div class="d-flex gap-2">
+      <select class="form-select flex-grow-1" id="beltId" formControlName="beltId">
+        <option value="" disabled selected>Selecione uma faixa</option>
+        @for (opt of belts(); track opt.id) {
+          <option [value]="opt.id">{{ opt.color }}</option>
+        }
+      </select>
+      <button type="button" class="btn btn-outline-secondary" title="Nova faixa" (click)="openedCreateBelt.set(true)">
+        <i class="bi bi-plus-lg"></i>
+      </button>
+    </div>
     <app-field-error [control]="form.get('beltId')" />
   </div>
   <div class="mb-3">
@@ -34,3 +39,22 @@
     </button>
   </div>
 </form>
+
+@if (openedCreateBelt()) {
+  <div class="modal-backdrop-custom" (click)="openedCreateBelt.set(false)"></div>
+  <div class="modal show d-block" tabindex="-1" role="dialog" aria-modal="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Nova Faixa</h5>
+          <button type="button" class="btn-close" (click)="openedCreateBelt.set(false)" aria-label="Fechar"></button>
+        </div>
+        <div class="modal-body">
+          <app-create-belt
+            (closeEvent)="openedCreateBelt.set(false)"
+            (beltCreated)="onBeltCreated($event)" />
+        </div>
+      </div>
+    </div>
+  </div>
+}

@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject, output, signal } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
-import { TransactionCategoryService, CreateTransactionCategoryDTO as CreateTransactionCategoryDTO } from '../../../../generated_services';
+import { TransactionCategoryService, CreateTransactionCategoryDTO as CreateTransactionCategoryDTO, ShowTransactionCategoryDTO } from '../../../../generated_services';
 import { NotificationService } from '../../../../services/notification.service';
 import { extractErrorMessage } from '../../../../utils/error.utils';
 import { FieldErrorComponent } from '../../../../shared/field-error/field-error.component';
@@ -15,7 +15,7 @@ import { FieldErrorComponent } from '../../../../shared/field-error/field-error.
 })
 export class CreateTransactionCategoryComponent {
   readonly closeEvent = output<void>();
-  readonly categoryCreated = output<void>();
+  readonly categoryCreated = output<ShowTransactionCategoryDTO>();
 
   private readonly fb = inject(FormBuilder);
   private readonly service = inject(TransactionCategoryService);
@@ -37,7 +37,7 @@ export class CreateTransactionCategoryComponent {
     const dto: CreateTransactionCategoryDTO = { name: this.form.value.name! };
     this.isSaving.set(true);
     this.service.apiTransactionCategoryPost(dto).subscribe({
-      next: () => { this.isSaving.set(false); this.ns.showSuccess('Criado!', 'Categoria criada com sucesso.'); this.categoryCreated.emit(); },
+      next: (category) => { this.isSaving.set(false); this.ns.showSuccess('Criado!', 'Categoria criada com sucesso.'); this.categoryCreated.emit(category); },
       error: (err) => { this.isSaving.set(false); this.ns.showError('Erro ao Criar!', extractErrorMessage(err, 'Não foi possível criar a categoria.')); }
     });
   }

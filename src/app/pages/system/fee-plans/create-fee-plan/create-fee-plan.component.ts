@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject, output, signal } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
-import { FeePlanService, CreateFeePlanDTO as CreateFeePlanDTO } from '../../../../generated_services';
+import { FeePlanService, CreateFeePlanDTO as CreateFeePlanDTO, ShowFeePlanDTO } from '../../../../generated_services';
 import { NotificationService } from '../../../../services/notification.service';
 import { extractErrorMessage } from '../../../../utils/error.utils';
 import { FieldErrorComponent } from '../../../../shared/field-error/field-error.component';
@@ -15,7 +15,7 @@ import { FieldErrorComponent } from '../../../../shared/field-error/field-error.
 })
 export class CreateFeePlanComponent {
   readonly closeEvent = output<void>();
-  readonly feePlanCreated = output<void>();
+  readonly feePlanCreated = output<ShowFeePlanDTO>();
 
   private readonly fb = inject(FormBuilder);
   private readonly service = inject(FeePlanService);
@@ -46,7 +46,7 @@ export class CreateFeePlanComponent {
     };
     this.isSaving.set(true);
     this.service.apiFeePlanPost(dto).subscribe({
-      next: () => { this.isSaving.set(false); this.ns.showSuccess('Criado!', 'Plano criado com sucesso.'); this.feePlanCreated.emit(); },
+      next: (plan) => { this.isSaving.set(false); this.ns.showSuccess('Criado!', 'Plano criado com sucesso.'); this.feePlanCreated.emit(plan); },
       error: (err) => { this.isSaving.set(false); this.ns.showError('Erro ao Criar!', extractErrorMessage(err, 'Não foi possível criar o plano.')); }
     });
   }

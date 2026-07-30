@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, inject, output, signal } from '@ang
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { BeltService } from '../../../../generated_services';
 import { CreateBeltDTO } from '../../../../generated_services/model/createBeltDTO';
+import { ShowBeltDTO } from '../../../../generated_services/model/showBeltDTO';
 import { NotificationService } from '../../../../services/notification.service';
 import { extractErrorMessage } from '../../../../utils/error.utils';
 import { FieldErrorComponent } from '../../../../shared/field-error/field-error.component';
@@ -15,7 +16,7 @@ import { FieldErrorComponent } from '../../../../shared/field-error/field-error.
 })
 export class CreateBeltComponent {
   readonly closeEvent = output<void>();
-  readonly beltCreated = output<void>();
+  readonly beltCreated = output<ShowBeltDTO>();
 
   private readonly fb = inject(FormBuilder);
   private readonly beltService = inject(BeltService);
@@ -38,7 +39,7 @@ export class CreateBeltComponent {
     }
     this.isSaving.set(true);
     this.beltService.apiBeltPost(this.toDTO()).subscribe({
-      next: () => { this.isSaving.set(false); this.notificationService.showSuccess('Faixa Criada!', 'A nova faixa foi criada com sucesso.'); this.beltCreated.emit(); },
+      next: (belt) => { this.isSaving.set(false); this.notificationService.showSuccess('Faixa Criada!', 'A nova faixa foi criada com sucesso.'); this.beltCreated.emit(belt); },
       error: (err) => { this.isSaving.set(false); this.notificationService.showError('Erro ao Criar Faixa!', extractErrorMessage(err, 'Não foi possível criar a faixa. Tente novamente.')); }
     });
   }

@@ -14,14 +14,21 @@
 
   <div class="mb-3">
     <label for="category">Categoria</label>
-    <app-search-select
-      inputId="category"
-      [options]="categoryOptions()"
-      [selected]="selectedCategory()"
-      placeholder="Sem categoria"
-      label="Categoria"
-      (selectionChange)="onCategorySelected($event)"
-      (searchChange)="onCategorySearch($event)" />
+    <div class="d-flex gap-2">
+      <div class="flex-grow-1">
+        <app-search-select
+          inputId="category"
+          [options]="categoryOptions()"
+          [selected]="selectedCategory()"
+          placeholder="Sem categoria"
+          label="Categoria"
+          (selectionChange)="onCategorySelected($event)"
+          (searchChange)="onCategorySearch($event)" />
+      </div>
+      <button type="button" class="btn btn-outline-secondary" title="Nova categoria" (click)="openedCreateCategory.set(true)">
+        <i class="bi bi-plus-lg"></i>
+      </button>
+    </div>
   </div>
 
   <div class="mb-3">
@@ -60,3 +67,22 @@
     </button>
   </div>
 </form>
+
+@if (openedCreateCategory()) {
+  <div class="modal-backdrop-custom" (click)="openedCreateCategory.set(false)"></div>
+  <div class="modal show d-block" tabindex="-1" role="dialog" aria-modal="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Nova Categoria</h5>
+          <button type="button" class="btn-close" (click)="openedCreateCategory.set(false)" aria-label="Fechar"></button>
+        </div>
+        <div class="modal-body">
+          <app-create-transaction-category
+            (closeEvent)="openedCreateCategory.set(false)"
+            (categoryCreated)="onCategoryCreated($event)" />
+        </div>
+      </div>
+    </div>
+  </div>
+}

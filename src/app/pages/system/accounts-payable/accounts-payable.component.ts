@@ -111,6 +111,9 @@ export class AccountsPayableComponent {
   protected onCategorySearch(term: string): void { this.loadCategories(term); }
   protected openCreate(): void { this.openedCreate.set(true); }
   protected onCreated(): void { this.openedCreate.set(false); this.load(); }
+  protected onCategoryCreated(category: ShowTransactionCategoryDTO): void {
+    this.categories.update(list => [category, ...list]);
+  }
 
   private loadCategories(term = ''): void {
     this.categoryService.apiTransactionCategoryGet(term || undefined, undefined, 1, 100).subscribe({

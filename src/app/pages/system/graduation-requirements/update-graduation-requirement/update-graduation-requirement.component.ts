@@ -4,11 +4,12 @@ import { GraduationRequirementsService, BeltService, ShowBeltDTO as ShowBeltDTO,
 import { NotificationService } from '../../../../services/notification.service';
 import { extractErrorMessage } from '../../../../utils/error.utils';
 import { FieldErrorComponent } from '../../../../shared/field-error/field-error.component';
+import { CreateBeltComponent } from '../../belts/create-belt/create-belt.component';
 
 @Component({
   selector: 'app-update-graduation-requirement',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ReactiveFormsModule, FieldErrorComponent],
+  imports: [ReactiveFormsModule, FieldErrorComponent, CreateBeltComponent],
   templateUrl: './update-graduation-requirement.component.html',
   styleUrl: './update-graduation-requirement.component.scss',
 })
@@ -16,6 +17,8 @@ export class UpdateGraduationRequirementComponent {
   readonly closeEvent = output<void>();
   readonly graduationRequirementUpdated = output<void>();
   readonly requirement = input.required<ShowGraduationRequirementsDTO>();
+
+  protected readonly openedCreateBelt = signal(false);
 
   private readonly graduationRequirementsService = inject(GraduationRequirementsService);
   private readonly beltService = inject(BeltService);
@@ -63,6 +66,12 @@ export class UpdateGraduationRequirementComponent {
       },
       error: (err) => { this.isSaving.set(false); this.ns.showError('Erro ao Atualizar Requisito!', extractErrorMessage(err, 'Não foi possível atualizar o requisito de graduação. Tente novamente.')); },
     });
+  }
+
+  protected onBeltCreated(belt: ShowBeltDTO): void {
+    this.openedCreateBelt.set(false);
+    this.belts.update(belts => [belt, ...belts]);
+    this.form.patchValue({ beltId: belt.id ?? '' });
   }
 
   private toDTO(): UpdateGraduationRequirementsDTO {

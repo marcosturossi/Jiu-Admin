@@ -11,11 +11,12 @@ import { todayDateString } from '../../../../utils/date.utils';
 import { SearchOption } from '../../../../shared/search-select/search-option';
 import { SearchSelectComponent } from '../../../../shared/search-select/search-select.component';
 import { FieldErrorComponent } from '../../../../shared/field-error/field-error.component';
+import { CreateTransactionCategoryComponent } from '../../transaction-categories/create-transaction-category/create-transaction-category.component';
 
 @Component({
   selector: 'app-create-accounts-payable',
   standalone: true,
-  imports: [ReactiveFormsModule, SearchSelectComponent, FieldErrorComponent],
+  imports: [ReactiveFormsModule, SearchSelectComponent, FieldErrorComponent, CreateTransactionCategoryComponent],
   templateUrl: './create-accounts-payable.component.html',
   styleUrl: './create-accounts-payable.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -31,6 +32,10 @@ export class CreateAccountsPayableComponent {
   readonly closeEvent = output<void>();
   readonly itemCreated = output<void>();
   readonly categorySearch = output<string>();
+  /** Bubbled up so the list page (owner of `categories`) can keep its copy in sync too. */
+  readonly categoryCreated = output<ShowTransactionCategoryDTO>();
+
+  protected readonly openedCreateCategory = signal(false);
 
   protected readonly isSaving = signal(false);
 
@@ -124,5 +129,12 @@ export class CreateAccountsPayableComponent {
 
   protected onCategorySearch(term: string): void {
     this.categorySearch.emit(term);
+  }
+
+  protected onCategoryCreated(category: ShowTransactionCategoryDTO): void {
+    this.openedCreateCategory.set(false);
+    this.selectedCategory.set({ id: category.id!, label: category.name! });
+    this.form.patchValue({ transactionCategoryId: category.id ?? null });
+    this.categoryCreated.emit(category);
   }
 }
