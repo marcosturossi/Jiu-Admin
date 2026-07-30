@@ -3,7 +3,7 @@ import { test, expect } from './coverage-fixture';
 const sections = [
   { path: '/system/home',                    label: 'Home' },
   { path: '/system/student-onboarding',      label: 'Onboarding de Alunos' },
-  { path: '/system/students',                label: 'Estudantes' },
+  { path: '/system/students',                label: 'Alunos' },
   { path: '/system/lessons',                 label: 'Aulas' },
   { path: '/system/graduations',             label: 'Graduações' },
   { path: '/system/frequencies',             label: 'Frequências' },

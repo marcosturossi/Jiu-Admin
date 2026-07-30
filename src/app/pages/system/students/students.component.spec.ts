@@ -68,7 +68,7 @@ describe('StudentsComponent', () => {
 
   it('should create', () => { expect(component).toBeTruthy(); });
 
-  it('should set page title on init', () => { expect(subnavService.setTitle).toHaveBeenCalledWith('Estudantes'); });
+  it('should set page title on init', () => { expect(subnavService.setTitle).toHaveBeenCalledWith('Alunos'); });
 
   it('should load students on init', () => {
     expect((studentsService.apiStudentsGet as any)).toHaveBeenCalled();
