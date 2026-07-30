@@ -11,6 +11,19 @@
   </div>
 
   <div class="mb-3">
+    <label for="studentSelect">Aluno <span class="text-danger">*</span></label>
+    <app-search-select
+      inputId="studentSelect"
+      [options]="studentOptions()"
+      [selected]="selectedStudent()"
+      placeholder="Selecione o aluno"
+      label="Aluno"
+      (selectionChange)="onStudentSelected($event)"
+      (searchChange)="onStudentSearch($event)" />
+    <app-field-error [control]="form.get('personId')" />
+  </div>
+
+  <div class="mb-3">
     <label for="category">Categoria</label>
     <app-search-select
       inputId="category"

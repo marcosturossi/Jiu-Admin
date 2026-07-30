@@ -30,6 +30,11 @@ export class CreatePersonsComponent {
   protected readonly students = signal<ShowStudentDTO[]>([]);
   protected readonly studentOptions = signal<SearchOption[]>([]);
   protected readonly selectedStudent = signal<SearchOption | null>(null);
+  // Captured synchronously at selection time — app-search-select always resets its
+  // own search term right after a pick, which reloads `students` with the default
+  // (unfiltered, first page) list and can silently drop whichever student was just
+  // searched for and selected, breaking the name lookup `create()` used to do lazily.
+  protected readonly selectedStudentName = signal<string>('');
   protected readonly isCreating = signal(false);
   protected readonly selectedFiles = signal<File[]>([]);
   protected readonly previewUrls = signal<string[]>([]);
@@ -89,8 +94,7 @@ export class CreatePersonsComponent {
     if (!studentId || !images.length) {
       this.ns.showError('Campos Obrigatórios', 'Preencha todos os campos obrigatórios.'); return;
     }
-    const student = this.students().find(s => s.id === studentId);
-    const name = student ? `${student.firstName || ''} ${student.lastName || ''}`.trim() : '';
+    const name = this.selectedStudentName();
     this.isCreating.set(true);
     this.personsService.registerMultiplePhotosApiV1RegisterMultiplePost(name, images, studentId).subscribe({
       next: result => {
@@ -108,6 +112,8 @@ export class CreatePersonsComponent {
   protected onStudentSelected(opt: SearchOption | null): void {
     this.selectedStudent.set(opt);
     this.personForm.patchValue({ studentId: opt?.id ?? '' });
+    const student = opt ? this.students().find(s => s.id === opt.id) : undefined;
+    this.selectedStudentName.set(student ? `${student.firstName || ''} ${student.lastName || ''}`.trim() : '');
   }
 
   protected onStudentSearch(term: string): void {

@@ -1,6 +1,7 @@
 import { Component, inject, input, output, signal } from '@angular/core';
 import { AccountsReceivableService, ShowAccountsReceivableDTO } from '../../../../generated_services';
 import { NotificationService } from '../../../../services/notification.service';
+import { extractErrorMessage } from '../../../../utils/error.utils';
 import { FormsModule } from '@angular/forms';
 
 @Component({
@@ -27,7 +28,7 @@ export class RefundAccountsReceivableComponent {
         this.itemUpdated.emit();
       },
       error: (err) => {
-        this.ns.showError('Erro', 'Erro ao realizar reembolso: ' + err.message);
+        this.ns.showError('Erro', extractErrorMessage(err, 'Erro ao realizar reembolso.'));
       }
     });
   }

@@ -1,7 +1,10 @@
-import { ChangeDetectionStrategy, Component, computed, inject, input, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, DestroyRef, inject, input, output, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
+import { Subject, debounceTime } from 'rxjs';
 import { AccountsPayableService } from '../../../../generated_services/api/accountsPayable.service';
-import { ShowTransactionCategoryDTO } from '../../../../generated_services';
+import { SupplierService } from '../../../../generated_services/api/supplier.service';
+import { ShowTransactionCategoryDTO, ShowSupplierDTO } from '../../../../generated_services';
 import { NotificationService } from '../../../../services/notification.service';
 import { extractErrorMessage } from '../../../../utils/error.utils';
 import { todayDateString } from '../../../../utils/date.utils';
@@ -19,8 +22,10 @@ import { FieldErrorComponent } from '../../../../shared/field-error/field-error.
 })
 export class CreateAccountsPayableComponent {
   private readonly accountsPayableService = inject(AccountsPayableService);
+  private readonly supplierService = inject(SupplierService);
   private readonly ns = inject(NotificationService);
   private readonly fb = inject(FormBuilder);
+  private readonly destroyRef = inject(DestroyRef);
 
   readonly categories = input.required<ShowTransactionCategoryDTO[]>();
   readonly closeEvent = output<void>();
@@ -35,8 +40,13 @@ export class CreateAccountsPayableComponent {
 
   protected readonly selectedCategory = signal<SearchOption | null>(null);
 
+  protected readonly supplierOptions = signal<SearchOption[]>([]);
+  protected readonly selectedSupplier = signal<SearchOption | null>(null);
+  private readonly supplierSearchSubject = new Subject<string>();
+
   protected readonly form = this.fb.group({
     transactionCategoryId: [null as string | null],
+    personId: [null as string | null, Validators.required],
     description: [''],
     amount: [null as number | null, [Validators.required, Validators.min(0.01)]],
     transactionDate: [todayDateString(), Validators.required],
@@ -44,12 +54,49 @@ export class CreateAccountsPayableComponent {
     reference: [''],
   });
 
+  constructor() {
+    this.supplierSearchSubject.pipe(debounceTime(400), takeUntilDestroyed(this.destroyRef))
+      .subscribe(term => this.loadSuppliers(term));
+    this.loadSuppliers();
+  }
+
+  protected onSupplierSelected(opt: SearchOption | null): void {
+    this.selectedSupplier.set(opt);
+    this.form.patchValue({ personId: opt?.id ?? null });
+  }
+
+  protected onSupplierSearch(term: string): void {
+    this.supplierSearchSubject.next(term);
+  }
+
+  private loadSuppliers(term = ''): void {
+    this.supplierService.apiSupplierGet(term || undefined, undefined, undefined, undefined, 1 as any, 100 as any).subscribe({
+      next: result => {
+        const suppliers: ShowSupplierDTO[] = result?.items ?? [];
+        this.supplierOptions.set(
+          suppliers
+            .map(s => {
+              // Despite the DTO field being named `personId`, the backend resolves it
+              // against the Supplier record itself, not the nested Person id.
+              const id = s.id;
+              const label = s.individualPerson
+                ? `${s.individualPerson.firstName ?? ''} ${s.individualPerson.lastName ?? ''}`.trim()
+                : (s.companyPerson?.name ?? '');
+              return id ? { id, label: label || id } : null;
+            })
+            .filter((o): o is SearchOption => o !== null),
+        );
+      },
+    });
+  }
+
   protected save(): void {
     if (this.form.invalid) return;
     this.isSaving.set(true);
     const v = this.form.value;
     this.accountsPayableService.apiAccountsPayablePost({
       transactionCategoryId: v.transactionCategoryId ?? undefined,
+      personId: v.personId ?? undefined,
       description: v.description || undefined,
       amount: v.amount as any,
       transactionDate: v.transactionDate ?? undefined,

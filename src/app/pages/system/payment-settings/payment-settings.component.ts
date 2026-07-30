@@ -26,6 +26,7 @@ export class PaymentSettingsComponent implements OnInit {
   protected readonly isLoading = signal(false);
   protected readonly isSaving = signal(false);
   protected readonly showApiKey = signal(false);
+  protected readonly showWebhookSecret = signal(false);
 
   protected readonly paymentGateways = [
     { label: 'Nenhum', value: PaymentGatewayProvider.None },
@@ -40,6 +41,7 @@ export class PaymentSettingsComponent implements OnInit {
   protected readonly form = this.fb.group({
     paymentGateway: [PaymentGatewayProvider.None as string, Validators.required],
     asaasApiKey: [''],
+    webhookSecret: [''],
     asaasEnvironment: [AsaasEnvironment.Sandbox as string, Validators.required],
   });
 
@@ -67,8 +69,13 @@ export class PaymentSettingsComponent implements OnInit {
         this.form.patchValue({
           paymentGateway: settings.paymentGateway ?? PaymentGatewayProvider.None,
           asaasApiKey: settings.asaasApiKey ?? '',
+          webhookSecret: settings.webhookSecret ?? '',
           asaasEnvironment: settings.asaasEnvironment ?? AsaasEnvironment.Sandbox,
         });
+        // Only fields the user actually edits after this point should be sent on save —
+        // the API treats an untouched field as "leave as-is", since asaasApiKey/webhookSecret
+        // come back masked and must never be echoed back as if they were real values.
+        this.form.markAsPristine();
         this.isLoading.set(false);
       },
       error: (err) => {
@@ -82,6 +89,10 @@ export class PaymentSettingsComponent implements OnInit {
     this.showApiKey.update(v => !v);
   }
 
+  protected toggleWebhookSecretVisibility(): void {
+    this.showWebhookSecret.update(v => !v);
+  }
+
   protected isAsaasSelected(): boolean {
     return this.form.value.paymentGateway === PaymentGatewayProvider.Asaas;
   }
@@ -93,10 +104,11 @@ export class PaymentSettingsComponent implements OnInit {
       return;
     }
     this.isSaving.set(true);
-    this.tenantSettingsService.apiSettingsPut(this.toDTO()).subscribe({
+    this.tenantSettingsService.apiSettingsPatch(this.toDTO()).subscribe({
       next: (settings) => {
         this.isSaving.set(false);
-        this.form.patchValue({ asaasApiKey: settings.asaasApiKey ?? '' });
+        this.form.patchValue({ asaasApiKey: settings.asaasApiKey ?? '', webhookSecret: settings.webhookSecret ?? '' });
+        this.form.markAsPristine();
         this.notificationService.showSuccess('Configurações Salvas!', 'As configurações de pagamento foram atualizadas com sucesso.');
       },
       error: (err) => {
@@ -106,12 +118,19 @@ export class PaymentSettingsComponent implements OnInit {
     });
   }
 
+  /** Untouched fields are sent as `null`, which the API treats as "leave unchanged" — required so
+   *  the masked placeholders shown for asaasApiKey/webhookSecret are never echoed back as real values. */
   private toDTO(): UpsertTenantSettingsDto {
     const v = this.form.value;
+    const paymentGatewayControl = this.form.get('paymentGateway');
+    const asaasApiKeyControl = this.form.get('asaasApiKey');
+    const webhookSecretControl = this.form.get('webhookSecret');
+    const asaasEnvironmentControl = this.form.get('asaasEnvironment');
     return {
-      paymentGateway: v.paymentGateway as PaymentGatewayProvider,
-      asaasApiKey: v.asaasApiKey || null,
-      asaasEnvironment: v.asaasEnvironment as AsaasEnvironment,
+      paymentGateway: paymentGatewayControl?.dirty ? (v.paymentGateway as PaymentGatewayProvider) : null,
+      asaasApiKey: asaasApiKeyControl?.dirty ? (v.asaasApiKey || null) : null,
+      webhookSecret: webhookSecretControl?.dirty ? (v.webhookSecret || null) : null,
+      asaasEnvironment: asaasEnvironmentControl?.dirty ? (v.asaasEnvironment as AsaasEnvironment) : null,
     };
   }
 }

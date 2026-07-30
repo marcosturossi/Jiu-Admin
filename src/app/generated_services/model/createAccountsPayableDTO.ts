@@ -16,7 +16,7 @@ import { ChargeStatusConfirmedValue } from './chargeStatusConfirmedValue';
 export interface CreateAccountsPayableDTO { 
     transactionCategoryId?: string | null;
     status?: FeeStatus;
-    personId?: string;
+    personId?: string | null;
     paidAt?: string | null;
     paidAmount?: ChargeStatusConfirmedValue | null;
     dueDate?: string;

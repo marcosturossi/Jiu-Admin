@@ -52,7 +52,7 @@ export class UpdateGraduationComponent {
   constructor() {
     this.studentSearchSubject.pipe(debounceTime(400), takeUntilDestroyed(this.destroyRef))
       .subscribe(term => this.loadStudents(term));
-    this.beltService.apiBeltGet().subscribe({
+    this.beltService.apiBeltGet(undefined, undefined, undefined, undefined, 1, 100).subscribe({
       next: r => this.belts.set(r?.items ?? []),
     });
     this.loadStudents();

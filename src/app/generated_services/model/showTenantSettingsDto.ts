@@ -15,6 +15,7 @@ import { PaymentGatewayProvider } from './paymentGatewayProvider';
 export interface ShowTenantSettingsDto { 
     paymentGateway: PaymentGatewayProvider;
     asaasApiKey: string | null;
+    webhookSecret: string | null;
     asaasEnvironment: AsaasEnvironment;
 }
 export namespace ShowTenantSettingsDto {

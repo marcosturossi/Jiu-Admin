@@ -202,3 +202,47 @@ export async function deleteTestFeePlan(page: Page, name: string): Promise<void>
     await expect(row).not.toBeVisible({ timeout: 10_000 });
   }
 }
+
+export interface TestSupplier {
+  firstName: string;
+  lastName: string;
+  fullName: string;
+}
+
+/** Creates an individual-person supplier with unique data and returns it. Leaves the browser on the suppliers list. */
+export async function createTestSupplier(page: Page): Promise<TestSupplier> {
+  const ts = `${Date.now()}${Math.floor(Math.random() * 1000)}`;
+  const firstName = 'E2E';
+  const lastName = `Fornecedor${ts}`;
+
+  await page.goto('/system/suppliers');
+  await expect(page.locator('app-subnav')).toBeVisible({ timeout: 10_000 });
+  await expect(page.locator('.spinner-border')).not.toBeVisible({ timeout: 10_000 });
+  await page.getByRole('button', { name: /Novo Fornecedor/i }).click();
+  await expect(page.locator('.modal.show')).toBeVisible();
+
+  await page.locator('select[formControlName="personType"]').selectOption('individual');
+  await page.locator('input[formControlName="firstName"]').fill(firstName);
+  await page.locator('input[formControlName="lastName"]').fill(lastName);
+  await page.locator('input[formControlName="cpf"]').fill(generateValidCpf());
+  await page.locator('input[formControlName="email"]').fill(`e2e_fornecedor_${ts}@teste.com`);
+
+  await page.getByRole('button', { name: /Salvar/i }).click();
+  await expect(page.locator('.modal.show')).not.toBeVisible({ timeout: 10_000 });
+
+  return { firstName, lastName, fullName: `${firstName} ${lastName}` };
+}
+
+/** Deletes a supplier created by createTestSupplier, identified by its unique last name. No-op if not found. */
+export async function deleteTestSupplier(page: Page, lastName: string): Promise<void> {
+  await page.goto('/system/suppliers');
+  await expect(page.locator('app-subnav')).toBeVisible({ timeout: 10_000 });
+  await expect(page.locator('.spinner-border')).not.toBeVisible({ timeout: 10_000 });
+
+  const card = page.locator('.supplier-card', { hasText: lastName });
+  if (await card.isVisible({ timeout: 5_000 }).catch(() => false)) {
+    await card.locator('button[title="Excluir"]').click();
+    await acceptConfirmDialog(page);
+    await expect(card).not.toBeVisible({ timeout: 10_000 });
+  }
+}

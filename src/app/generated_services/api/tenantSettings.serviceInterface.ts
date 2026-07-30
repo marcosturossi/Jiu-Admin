@@ -35,6 +35,6 @@ export interface TenantSettingsServiceInterface {
      * 
      * @param upsertTenantSettingsDto 
      */
-    apiSettingsPut(upsertTenantSettingsDto: UpsertTenantSettingsDto, extraHttpRequestParams?: any): Observable<ShowTenantSettingsDto>;
+    apiSettingsPatch(upsertTenantSettingsDto: UpsertTenantSettingsDto, extraHttpRequestParams?: any): Observable<ShowTenantSettingsDto>;
 
 }

@@ -50,13 +50,28 @@ export class NotificationComponent {
       this.filterText() || undefined,
     ).subscribe({
       next: data => {
-        const arr = data ?? [];
-        const hasMore = arr.length === this.pageSize();
-        this.items.set({
-          items: arr,
-          totalCount: (this.currentPage() - 1) * this.pageSize() + arr.length + (hasMore ? 1 : 0),
-          totalPages: hasMore ? this.currentPage() + 1 : this.currentPage(),
-        });
+        // The generated client types this as a bare array (Observable<Array<ShowNotificationDto>>),
+        // but the live backend actually returns an OData-shaped { value, count } envelope —
+        // confirmed via network capture. Handle both so a future contract fix (bare array again)
+        // doesn't silently break this the other way.
+        const response = data as unknown as ShowNotificationDTO[] | { value?: ShowNotificationDTO[] | null; count?: number | null };
+        const arr = Array.isArray(response) ? response : (response?.value ?? []);
+        const totalCount = Array.isArray(response) ? undefined : response?.count;
+
+        if (totalCount != null) {
+          this.items.set({
+            items: arr,
+            totalCount,
+            totalPages: Math.max(1, Math.ceil(totalCount / this.pageSize())),
+          });
+        } else {
+          const hasMore = arr.length === this.pageSize();
+          this.items.set({
+            items: arr,
+            totalCount: (this.currentPage() - 1) * this.pageSize() + arr.length + (hasMore ? 1 : 0),
+            totalPages: hasMore ? this.currentPage() + 1 : this.currentPage(),
+          });
+        }
         this.isLoading.set(false);
       },
       error: () => {

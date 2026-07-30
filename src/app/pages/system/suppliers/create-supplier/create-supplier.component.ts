@@ -55,7 +55,7 @@ export class CreateSupplierComponent {
 
   protected addIndividualPerson(): void {
     this.form.addControl('individualPerson', this.fb.group({
-      email: [''],
+      email: ['', [Validators.required, Validators.email]],
       phoneNumber: [''],
       firstName: ['', Validators.required],
       lastName: ['', Validators.required],
@@ -65,7 +65,7 @@ export class CreateSupplierComponent {
 
   protected addCompanyPerson(): void {
     this.form.addControl('companyPerson', this.fb.group({
-      email: [''],
+      email: ['', [Validators.required, Validators.email]],
       phoneNumber: [''],
       name: ['', Validators.required],
       foundedIn: ['', Validators.required],

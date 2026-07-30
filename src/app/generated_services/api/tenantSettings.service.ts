@@ -160,12 +160,12 @@ export class TenantSettingsService implements TenantSettingsServiceInterface {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiSettingsPut(upsertTenantSettingsDto: UpsertTenantSettingsDto, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<ShowTenantSettingsDto>;
-    public apiSettingsPut(upsertTenantSettingsDto: UpsertTenantSettingsDto, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<ShowTenantSettingsDto>>;
-    public apiSettingsPut(upsertTenantSettingsDto: UpsertTenantSettingsDto, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<ShowTenantSettingsDto>>;
-    public apiSettingsPut(upsertTenantSettingsDto: UpsertTenantSettingsDto, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public apiSettingsPatch(upsertTenantSettingsDto: UpsertTenantSettingsDto, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<ShowTenantSettingsDto>;
+    public apiSettingsPatch(upsertTenantSettingsDto: UpsertTenantSettingsDto, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<ShowTenantSettingsDto>>;
+    public apiSettingsPatch(upsertTenantSettingsDto: UpsertTenantSettingsDto, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<ShowTenantSettingsDto>>;
+    public apiSettingsPatch(upsertTenantSettingsDto: UpsertTenantSettingsDto, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         if (upsertTenantSettingsDto === null || upsertTenantSettingsDto === undefined) {
-            throw new Error('Required parameter upsertTenantSettingsDto was null or undefined when calling apiSettingsPut.');
+            throw new Error('Required parameter upsertTenantSettingsDto was null or undefined when calling apiSettingsPatch.');
         }
 
         let localVarHeaders = this.defaultHeaders;
@@ -216,7 +216,7 @@ export class TenantSettingsService implements TenantSettingsServiceInterface {
         }
 
         let localVarPath = `/api/settings`;
-        return this.httpClient.request<ShowTenantSettingsDto>('put', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<ShowTenantSettingsDto>('patch', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 body: upsertTenantSettingsDto,

@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from './coverage-fixture';
 
 const sections = [
   { path: '/system/home',                    label: 'Home' },
@@ -21,6 +21,7 @@ const sections = [
   { path: '/system/face-recognition',        label: 'Reconhecimento Facial' },
   { path: '/system/academies',               label: 'Academias' },
   { path: '/system/suppliers',               label: 'Fornecedores' },
+  { path: '/system/payment-settings',        label: 'Configurações de Pagamento' },
 ];
 
 test.describe('Smoke: navegação entre seções', () => {

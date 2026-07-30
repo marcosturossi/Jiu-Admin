@@ -32,7 +32,7 @@ export class UpdateGraduationRequirementComponent {
   });
 
   constructor() {
-    this.beltService.apiBeltGet().subscribe({
+    this.beltService.apiBeltGet(undefined, undefined, undefined, undefined, 1, 100).subscribe({
       next: r => this.belts.set(r?.items ?? []),
       error: () => this.ns.showError('Erro ao Carregar Faixas!', 'Não foi possível carregar a lista de faixas. Tente novamente.'),
     });

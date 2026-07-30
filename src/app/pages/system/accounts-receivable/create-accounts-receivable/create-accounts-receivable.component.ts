@@ -1,7 +1,10 @@
-import { ChangeDetectionStrategy, Component, computed, inject, input, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, DestroyRef, inject, input, output, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
+import { Subject, debounceTime } from 'rxjs';
 import { AccountsReceivableService } from '../../../../generated_services/api/accountsReceivable.service';
-import { ShowTransactionCategoryDTO } from '../../../../generated_services';
+import { StudentsService } from '../../../../generated_services/api/students.service';
+import { ShowTransactionCategoryDTO, ShowStudentDTO } from '../../../../generated_services';
 import { TransactionType } from '../../../../generated_services/model/transactionType';
 import { NotificationService } from '../../../../services/notification.service';
 import { extractErrorMessage } from '../../../../utils/error.utils';
@@ -20,8 +23,10 @@ import { FieldErrorComponent } from '../../../../shared/field-error/field-error.
 })
 export class CreateAccountsReceivableComponent {
   private readonly accountsReceivableService = inject(AccountsReceivableService);
+  private readonly studentsService = inject(StudentsService);
   private readonly ns = inject(NotificationService);
   private readonly fb = inject(FormBuilder);
+  private readonly destroyRef = inject(DestroyRef);
 
   readonly categories = input.required<ShowTransactionCategoryDTO[]>();
   readonly closeEvent = output<void>();
@@ -36,6 +41,10 @@ export class CreateAccountsReceivableComponent {
 
   protected readonly selectedCategory = signal<SearchOption | null>(null);
 
+  protected readonly studentOptions = signal<SearchOption[]>([]);
+  protected readonly selectedStudent = signal<SearchOption | null>(null);
+  private readonly studentSearchSubject = new Subject<string>();
+
   protected readonly typeOptions = [
     { label: 'Receita', value: TransactionType.Income },
     { label: 'Reembolso', value: TransactionType.Refund },
@@ -45,12 +54,42 @@ export class CreateAccountsReceivableComponent {
   protected readonly form = this.fb.group({
     type: [TransactionType.Income as TransactionType, Validators.required],
     transactionCategoryId: [null as string | null],
+    personId: ['', Validators.required],
     description: [''],
     amount: [null as number | null, [Validators.required, Validators.min(0.01)]],
     transactionDate: [todayDateString(), Validators.required],
     dueDate: [todayDateString(), Validators.required],
     reference: [''],
   });
+
+  constructor() {
+    this.studentSearchSubject.pipe(debounceTime(400), takeUntilDestroyed(this.destroyRef))
+      .subscribe(term => this.loadStudents(term));
+    this.loadStudents();
+  }
+
+  protected onStudentSelected(opt: SearchOption | null): void {
+    this.selectedStudent.set(opt);
+    this.form.patchValue({ personId: opt?.id ?? '' });
+  }
+
+  protected onStudentSearch(term: string): void {
+    this.studentSearchSubject.next(term);
+  }
+
+  private loadStudents(term = ''): void {
+    this.studentsService.apiStudentsGet(term || undefined, undefined, undefined, undefined, undefined, undefined, 1, 100).subscribe({
+      next: result => {
+        const students: ShowStudentDTO[] = result?.items ?? [];
+        this.studentOptions.set(
+          students.map(s => ({
+            id: s.id!,
+            label: `${s.firstName ?? ''} ${s.lastName ?? ''}`.trim() || s.userName || s.id!,
+          })),
+        );
+      },
+    });
+  }
 
   protected save(): void {
     if (this.form.invalid) return;
@@ -59,6 +98,7 @@ export class CreateAccountsReceivableComponent {
     this.accountsReceivableService.apiAccountsReceivablePost({
       type: v.type as any,
       transactionCategoryId: v.transactionCategoryId ?? undefined,
+      personId: v.personId ?? undefined,
       description: v.description || undefined,
       amount: v.amount as any,
       transactionDate: v.transactionDate ?? undefined,

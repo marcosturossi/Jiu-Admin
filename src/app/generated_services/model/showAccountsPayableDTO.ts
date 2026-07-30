@@ -20,7 +20,7 @@ export interface ShowAccountsPayableDTO {
     supplierName?: string | null;
     transactionCategoryId?: string | null;
     status?: FeeStatus;
-    personId?: string;
+    personId?: string | null;
     paidAt?: string | null;
     paidAmount?: ChargeStatusConfirmedValue | null;
     dueDate?: string;

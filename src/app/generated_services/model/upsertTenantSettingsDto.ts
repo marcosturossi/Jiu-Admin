@@ -13,9 +13,10 @@ import { PaymentGatewayProvider } from './paymentGatewayProvider';
 
 
 export interface UpsertTenantSettingsDto { 
-    paymentGateway: PaymentGatewayProvider;
+    paymentGateway: PaymentGatewayProvider | null;
     asaasApiKey: string | null;
-    asaasEnvironment: AsaasEnvironment;
+    webhookSecret: string | null;
+    asaasEnvironment: AsaasEnvironment | null;
 }
 export namespace UpsertTenantSettingsDto {
 }
