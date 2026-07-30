@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from './coverage-fixture';
 import { waitForTableReady, openCreateModal, selectFromSearchSelect, createTestStudent, deleteTestStudent, acceptConfirmDialog } from './helpers';
 import path from 'path';
 

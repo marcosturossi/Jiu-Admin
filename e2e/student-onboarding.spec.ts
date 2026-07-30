@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from './coverage-fixture';
 import { generateValidCpf, deleteTestStudent, createTestBelt, deleteTestBelt, createTestFeePlan, deleteTestFeePlan } from './helpers';
 
 const TS = Date.now();
