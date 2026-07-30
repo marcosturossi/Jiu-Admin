@@ -64,7 +64,6 @@ export const NAV_SECTIONS: NavSection[] = [
     title: 'Configurações',
     groupIcon: 'bi bi-gear',
     items: [
-      { route: '/system/academies', label: 'Academias', icon: 'bi bi-building' },
       { route: '/system/payment-settings', label: 'Pagamentos', icon: 'bi bi-credit-card' },
     ]
   },
