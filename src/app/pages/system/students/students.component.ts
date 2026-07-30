@@ -1,5 +1,4 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
-import { DatePipe } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { StudentsService } from '../../../generated_services/api/students.service';
 import { ShowStudentDTO } from '../../../generated_services/model/showStudentDTO';
@@ -60,7 +59,7 @@ export class StudentsComponent {
   ];
 
   constructor() {
-    this.subnavService.setTitle('Estudantes');
+    this.subnavService.setTitle('Alunos');
     this.load();
   }
 

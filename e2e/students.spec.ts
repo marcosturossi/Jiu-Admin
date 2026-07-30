@@ -23,19 +23,19 @@ async function waitForGridReady(page: Page) {
   await expect(page.locator('.spinner-border')).not.toBeVisible({ timeout: 10_000 });
 }
 
-test.describe('Estudantes — CRUD', () => {
+test.describe('Alunos — CRUD', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/system/students');
     await expect(page.locator('app-subnav')).toBeVisible({ timeout: 10_000 });
     await waitForGridReady(page);
   });
 
-  test('exibe a lista de estudantes', async ({ page }) => {
+  test('exibe a lista de alunos', async ({ page }) => {
     await expect(page.locator('.students-grid, .text-center.py-5')).toBeVisible();
     await expect(page.getByRole('button', { name: /Novo Aluno/i })).toBeVisible();
   });
 
-  test('cria, edita e exclui um estudante', async ({ page }) => {
+  test('cria, edita e exclui um aluno', async ({ page }) => {
     // ── CREATE ────────────────────────────────────────────────────────
     await page.getByRole('button', { name: /Novo Aluno/i }).click();
     await expect(page.locator('.modal.show')).toBeVisible();
