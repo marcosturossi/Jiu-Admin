@@ -231,8 +231,16 @@ export class StudentOnboardingComponent implements OnInit {
     this.beltInfo.update(info => ({ ...info, ...data }));
   }
 
+  protected onBeltCreated(belt: ShowBeltDTO): void {
+    this.belts.update(belts => [belt, ...belts]);
+  }
+
   protected updateContractInfo(data: Partial<StudentContractInfo>): void {
     this.contractInfo.update(info => ({ ...info, ...data }));
+  }
+
+  protected onFeePlanCreated(plan: ShowFeePlanDTO): void {
+    this.feePlans.update(plans => [plan, ...plans]);
   }
 
   protected updateMedicalInfo(data: Partial<StudentMedicalInfo>): void {

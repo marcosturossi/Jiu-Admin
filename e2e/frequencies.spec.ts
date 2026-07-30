@@ -108,6 +108,76 @@ test.describe('Frequências', () => {
     await deleteTestStudent(page, student.firstName);
   });
 
+  test('cria aula pelo botão "+" ao criar frequência, sem sair do formulário', async ({ page }) => {
+    const student = await createTestStudent(page);
+    const belt = await createTestBelt(page);
+    const lessonTitle = `Aula-E2E-QuickCreate-${Date.now()}`;
+
+    // Frequency creation requires the student to have a graduation on record.
+    await page.goto('/system/graduations');
+    await waitForTableReady(page);
+    await openCreateModal(page, /Nova Graduação/i);
+    await selectFromSearchSelect(page, 'Aluno', student.lastName);
+    await page.selectOption('#beltId', { label: belt.color });
+    await page.fill('#graduationDate', '2025-01-01');
+    await saveAndWaitModalClose(page);
+    await waitForTableReady(page);
+
+    await page.goto('/system/frequencies');
+    await waitForTableReady(page);
+    await openCreateModal(page, /Nova Frequência/i);
+    await page.locator('button[title="Nova aula"]').click();
+    const nestedModal = page.locator('.modal.show').last();
+    await expect(nestedModal).toBeVisible();
+    await nestedModal.locator('#generate-title').uncheck();
+    await nestedModal.locator('#title').fill(lessonTitle);
+    await nestedModal.locator('#scheduledDate').fill('2030-12-01T10:00');
+    await nestedModal.locator('#duration').fill('01:30');
+    await nestedModal.getByRole('button', { name: /Salvar/i }).click();
+
+    // Nested modal closes, outer create-frequency modal stays open, new lesson selected.
+    await expect(page.locator('.modal.show')).toHaveCount(1, { timeout: 10_000 });
+    await expect(page.locator('.search-select-trigger', { hasText: lessonTitle })).toBeVisible();
+
+    await expect(page.locator('.student-item').first()).toBeVisible({ timeout: 10_000 });
+    await page.getByPlaceholder('Buscar aluno por nome...').fill(student.lastName);
+    const studentItem = page.locator('.student-item').filter({ hasText: student.lastName });
+    await expect(studentItem).toBeVisible({ timeout: 8_000 });
+    await studentItem.locator('.student-checkbox').check();
+
+    await page.getByRole('button', { name: /Criar \d+ frequências?/i }).click();
+    await expect(page.locator('.modal.show').first()).not.toBeVisible({ timeout: 20_000 });
+    await waitForTableReady(page);
+
+    const freqRow = page.locator('table tbody tr', { hasText: student.lastName });
+    await expect(freqRow).toBeVisible();
+    await expect(freqRow).toContainText(lessonTitle);
+
+    await freqRow.locator('button.btn-outline-danger').click();
+    await acceptConfirmDialog(page);
+    await waitForTableReady(page);
+
+    // CLEANUP
+    await page.goto('/system/lessons');
+    await waitForTableReady(page);
+    const lessonRow = page.locator('tr', { hasText: lessonTitle });
+    await lessonRow.locator('button.btn-outline-danger').click();
+    await acceptConfirmDialog(page);
+    await waitForTableReady(page);
+
+    await page.goto('/system/graduations');
+    await waitForTableReady(page);
+    await page.selectOption('select', '100').catch(() => {});
+    await waitForTableReady(page);
+    const gradRow = page.locator('tr', { hasText: student.lastName });
+    await gradRow.locator('button.btn-outline-danger').click();
+    await acceptConfirmDialog(page);
+    await waitForTableReady(page);
+
+    await deleteTestBelt(page, belt.color);
+    await deleteTestStudent(page, student.firstName);
+  });
+
   test('busca de alunos filtra a lista e permite selecionar todos os filtrados', async ({ page }) => {
     const student = await createTestStudent(page);
 

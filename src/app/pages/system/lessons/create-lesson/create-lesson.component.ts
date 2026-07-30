@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, inject, output, signal } from '@ang
 import { ReactiveFormsModule, FormsModule, FormBuilder, Validators } from '@angular/forms';
 import { LessonService } from '../../../../generated_services/api/lesson.service';
 import { CreateLessonDTO } from '../../../../generated_services/model/createLessonDTO';
+import { ShowLessonDTO } from '../../../../generated_services/model/showLessonDTO';
 import { NotificationService } from '../../../../services/notification.service';
 import { extractErrorMessage } from '../../../../utils/error.utils';
 import { FieldErrorComponent } from '../../../../shared/field-error/field-error.component';
@@ -15,7 +16,7 @@ import { FieldErrorComponent } from '../../../../shared/field-error/field-error.
 })
 export class CreateLessonComponent {
   readonly closeEvent = output<void>();
-  readonly lessonCreated = output<void>();
+  readonly lessonCreated = output<ShowLessonDTO>();
 
   private readonly lessonService = inject(LessonService);
   private readonly ns = inject(NotificationService);
@@ -76,11 +77,11 @@ export class CreateLessonComponent {
     this.createAutoTitle();
     this.isSaving.set(true);
     this.lessonService.apiLessonPost(this.toDTO()).subscribe({
-      next: () => {
+      next: (lesson) => {
         this.isSaving.set(false);
         const title = this.form.getRawValue().title;
         this.ns.showSuccess('Aula Criada!', `A aula "${title}" foi criada com sucesso.`);
-        this.lessonCreated.emit();
+        this.lessonCreated.emit(lesson);
         this.close();
       },
       error: (err) => {

@@ -5,17 +5,20 @@ import { CreateGraduationRequirementDTO } from '../../../../generated_services/m
 import { NotificationService } from '../../../../services/notification.service';
 import { extractErrorMessage } from '../../../../utils/error.utils';
 import { FieldErrorComponent } from '../../../../shared/field-error/field-error.component';
+import { CreateBeltComponent } from '../../belts/create-belt/create-belt.component';
 
 @Component({
   selector: 'app-create-graduation-requirement',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ReactiveFormsModule, FieldErrorComponent],
+  imports: [ReactiveFormsModule, FieldErrorComponent, CreateBeltComponent],
   templateUrl: './create-graduation-requirement.component.html',
   styleUrl: './create-graduation-requirement.component.scss',
 })
 export class CreateGraduationRequirementComponent {
   readonly closeEvent = output<void>();
   readonly graduationRequirementCreated = output<void>();
+
+  protected readonly openedCreateBelt = signal(false);
 
   private readonly graduationRequirementsService = inject(GraduationRequirementsService);
   private readonly beltService = inject(BeltService);
@@ -55,6 +58,12 @@ export class CreateGraduationRequirementComponent {
       },
       error: (err) => { this.isSaving.set(false); this.ns.showError('Erro ao Criar Requisito!', extractErrorMessage(err, 'Não foi possível criar o requisito de graduação. Tente novamente.')); },
     });
+  }
+
+  protected onBeltCreated(belt: ShowBeltDTO): void {
+    this.openedCreateBelt.set(false);
+    this.belts.update(belts => [belt, ...belts]);
+    this.form.patchValue({ beltId: belt.id ?? '' });
   }
 
   private toDTO(): CreateGraduationRequirementDTO {

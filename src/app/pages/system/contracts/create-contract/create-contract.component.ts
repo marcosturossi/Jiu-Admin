@@ -11,11 +11,12 @@ import { extractErrorMessage } from '../../../../utils/error.utils';
 import { SearchOption } from '../../../../shared/search-select/search-option';
 import { SearchSelectComponent } from '../../../../shared/search-select/search-select.component';
 import { FieldErrorComponent } from '../../../../shared/field-error/field-error.component';
+import { CreateFeePlanComponent } from '../../fee-plans/create-fee-plan/create-fee-plan.component';
 
 @Component({
   selector: 'app-create-contract',
   standalone: true,
-  imports: [ReactiveFormsModule, SearchSelectComponent, FieldErrorComponent],
+  imports: [ReactiveFormsModule, SearchSelectComponent, FieldErrorComponent, CreateFeePlanComponent],
   templateUrl: './create-contract.component.html',
   styleUrl: './create-contract.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -30,6 +31,8 @@ export class CreateContractComponent {
 
   readonly closeEvent = output<void>();
   readonly contractCreated = output<void>();
+
+  protected readonly openedCreateFeePlan = signal(false);
 
   protected readonly isSaving = signal(false);
 
@@ -122,6 +125,19 @@ export class CreateContractComponent {
         );
       },
     });
+  }
+
+  protected onFeePlanCreated(plan: ShowFeePlanDTO): void {
+    this.openedCreateFeePlan.set(false);
+    this.allFeePlans.update(plans => [plan, ...plans]);
+    const option: SearchOption = {
+      id: plan.id!,
+      label: `${plan.name ?? ''} — R$ ${(plan.price as unknown as number)?.toFixed(2) ?? '0,00'}`,
+    };
+    this.feePlanOptions.update(options => [option, ...options]);
+    this.selectedFeePlan.set(option);
+    this.selectedFeePlanData.set(plan);
+    this.form.patchValue({ feePlanId: plan.id ?? '' });
   }
 
   private loadFeePlans(term = ''): void {

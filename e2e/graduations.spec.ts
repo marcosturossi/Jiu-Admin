@@ -90,6 +90,48 @@ test.describe('Graduações', () => {
     await deleteTestStudent(page, student.firstName);
   });
 
+  test('cria faixa pelo botão "+" ao criar graduação, sem sair do formulário', async ({ page }) => {
+    const student = await createTestStudent(page);
+    const beltColor = `E2E-Faixa-Grad-${Date.now()}`;
+
+    await page.goto('/system/graduations');
+    await waitForTableReady(page);
+    await openCreateModal(page, /Nova Graduação/i);
+    await selectFromSearchSelect(page, 'Aluno', student.lastName);
+
+    await page.locator('button[title="Nova faixa"]').click();
+    const nestedModal = page.locator('.modal.show').last();
+    await expect(nestedModal).toBeVisible();
+    await nestedModal.locator('#color').fill(beltColor);
+    await nestedModal.locator('#orderIndex').fill('99');
+    await nestedModal.getByRole('button', { name: /Salvar/i }).click();
+
+    // Nested modal closes, outer create-graduation modal stays open, new belt selected.
+    await expect(page.locator('.modal.show')).toHaveCount(1, { timeout: 10_000 });
+    await expect(page.locator('#beltId')).toHaveValue(/.+/);
+    const selectedLabel = await page.locator('#beltId option:checked').textContent();
+    expect(selectedLabel?.trim()).toBe(beltColor);
+
+    await page.fill('#graduationDate', '2029-06-01');
+    await saveAndWaitModalClose(page);
+    await waitForTableReady(page);
+    await page.selectOption('select', '100').catch(() => {});
+    await waitForTableReady(page);
+
+    const row = page.locator('tr', { hasText: student.lastName });
+    await expect(row).toBeVisible();
+    await expect(row).toContainText(beltColor);
+
+    await row.locator('button.btn-outline-danger').click();
+    await acceptConfirmDialog(page);
+    await waitForTableReady(page);
+    await expect(row).not.toBeVisible({ timeout: 10_000 });
+
+    // CLEANUP
+    await deleteTestBelt(page, beltColor);
+    await deleteTestStudent(page, student.firstName);
+  });
+
   test('exige aluno, faixa e data antes de habilitar salvar', async ({ page }) => {
     await openCreateModal(page, /Nova Graduação/i);
     const saveButton = page.getByRole('button', { name: /Salvar/i });

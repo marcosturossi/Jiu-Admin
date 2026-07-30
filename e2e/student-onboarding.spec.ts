@@ -67,6 +67,74 @@ test.describe('Cadastro de Alunos (Onboarding)', () => {
     await deleteTestBelt(page, belt.color);
   });
 
+  test('cria faixa e plano pelos botões "+" durante o assistente, sem sair da página', async ({ page }) => {
+    const beltColor = `E2E-Faixa-Onboard-${Date.now()}`;
+    const planName = `Plano-E2E-Onboard-${Date.now()}`;
+    const ts = Date.now();
+    const firstName = `E2EOnboardQC${ts}`;
+    const name = `${firstName} SobrenomeQC${ts}`;
+    const email = `e2e_onboard_qc_${ts}@teste.com`;
+
+    await page.goto('/system/student-onboarding');
+    await expect(page.locator('app-subnav')).toBeVisible({ timeout: 10_000 });
+
+    // STEP 1
+    await page.fill('#name', name);
+    await page.fill('#email', email);
+    await page.fill('#phone', '11999998888');
+    await page.fill('#cpf', generateValidCpf());
+    await page.fill('#dateOfBirth', '1995-04-20');
+    await page.getByRole('button', { name: /Próximo/i }).click();
+    await expect(page.getByText('Passo 2 de 4')).toBeVisible();
+
+    // STEP 2 — quick-create belt inline
+    await page.locator('button[title="Nova faixa"]').click();
+    const beltModal = page.locator('.modal.show').last();
+    await expect(beltModal).toBeVisible();
+    await beltModal.locator('#color').fill(beltColor);
+    await beltModal.locator('#orderIndex').fill('99');
+    await beltModal.getByRole('button', { name: /Salvar/i }).click();
+    await expect(page.locator('.modal.show')).toHaveCount(0, { timeout: 10_000 });
+    const beltSelectedLabel = await page.locator('#beltId option:checked').textContent();
+    expect(beltSelectedLabel?.trim()).toBe(beltColor);
+
+    await page.getByRole('button', { name: /Próximo/i }).click();
+    await expect(page.getByText('Passo 3 de 4')).toBeVisible();
+
+    // STEP 3 — quick-create fee plan inline
+    await page.locator('button[title="Novo plano"]').click();
+    const planModal = page.locator('.modal.show').last();
+    await expect(planModal).toBeVisible();
+    await planModal.locator('#name').fill(planName);
+    await planModal.locator('#monthDuration').fill('6');
+    await planModal.locator('#price').fill('80.00');
+    await planModal.getByRole('button', { name: /Salvar/i }).click();
+    await expect(page.locator('.modal.show')).toHaveCount(0, { timeout: 10_000 });
+    const planSelectedLabel = await page.locator('#feePlanId option:checked').textContent();
+    expect(planSelectedLabel).toContain(planName);
+
+    await page.getByRole('button', { name: /Próximo/i }).click();
+    await expect(page.getByText('Passo 4 de 4')).toBeVisible();
+
+    // STEP 4 — confirmation summary reflects the freshly-created belt/plan
+    await expect(page.getByText(beltColor)).toBeVisible();
+    await expect(page.getByText(planName)).toBeVisible();
+
+    const finishButton = page.getByRole('button', { name: /Finalizar Cadastro/i });
+    await page.getByText('Confirmo que os dados estão corretos').click();
+    await finishButton.click();
+
+    // Scoped by text — the belt/plan quick-create toasts from earlier steps
+    // ("Faixa Criada!", "Plano Criado!") can still be on screen at this point.
+    await expect(page.locator('.toast-success .toast-title', { hasText: 'Aluno Cadastrado' })).toBeVisible({ timeout: 10_000 });
+    await expect(page).toHaveURL(/\/system\/students\/details\//, { timeout: 10_000 });
+
+    // CLEANUP
+    await deleteTestStudent(page, firstName);
+    await deleteTestFeePlan(page, planName);
+    await deleteTestBelt(page, beltColor);
+  });
+
   test('exibe erro e permite tentar novamente quando falha o cadastro final', async ({ page }) => {
     await page.route('**/api/Students', (route) => {
       if (route.request().method() === 'POST') {

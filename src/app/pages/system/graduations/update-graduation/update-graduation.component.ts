@@ -12,11 +12,12 @@ import { todayDateString } from '../../../../utils/date.utils';
 import { SearchOption } from '../../../../shared/search-select/search-option';
 import { SearchSelectComponent } from '../../../../shared/search-select/search-select.component';
 import { FieldErrorComponent } from '../../../../shared/field-error/field-error.component';
+import { CreateBeltComponent } from '../../belts/create-belt/create-belt.component';
 
 @Component({
   selector: 'app-update-graduation',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ReactiveFormsModule, SearchSelectComponent, FieldErrorComponent],
+  imports: [ReactiveFormsModule, SearchSelectComponent, FieldErrorComponent, CreateBeltComponent],
   templateUrl: './update-graduation.component.html',
   styleUrl: './update-graduation.component.scss',
 })
@@ -24,6 +25,8 @@ export class UpdateGraduationComponent {
   readonly closeEvent = output<void>();
   readonly graduationUpdated = output<void>();
   readonly graduation = input.required<ShowGraduationDTO>();
+
+  protected readonly openedCreateBelt = signal(false);
 
   private readonly graduationService = inject(GraduationService);
   private readonly beltService = inject(BeltService);
@@ -100,6 +103,12 @@ export class UpdateGraduationComponent {
       },
       error: (err) => { this.isSaving.set(false); this.ns.showError('Erro ao Atualizar Graduação!', extractErrorMessage(err, 'Não foi possível atualizar a graduação. Tente novamente.')); },
     });
+  }
+
+  protected onBeltCreated(belt: ShowBeltDTO): void {
+    this.openedCreateBelt.set(false);
+    this.belts.update(belts => [belt, ...belts]);
+    this.form.patchValue({ beltId: belt.id ?? '' });
   }
 
   private toDTO(): UpdateGraduationDTO {

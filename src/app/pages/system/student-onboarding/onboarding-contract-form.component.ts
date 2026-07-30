@@ -1,13 +1,14 @@
-import { Component, ChangeDetectionStrategy, input, output } from '@angular/core';
+import { Component, ChangeDetectionStrategy, input, output, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { StudentContractInfo } from './student-onboarding.component';
 import { ShowFeePlanDTO } from '../../../generated_services/model/showFeePlanDTO';
+import { CreateFeePlanComponent } from '../fee-plans/create-fee-plan/create-fee-plan.component';
 
 @Component({
   selector: 'app-onboarding-contract-form',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, CreateFeePlanComponent],
   template: `
     <form class="onboarding-form">
       <h3>Contrato e Plano de Mensalidade</h3>
@@ -19,18 +20,23 @@ import { ShowFeePlanDTO } from '../../../generated_services/model/showFeePlanDTO
       <div class="form-section">
         <div class="form-group">
           <label for="feePlanId" class="form-label">Plano de Mensalidade <span class="text-danger">*</span></label>
-          <select
-            id="feePlanId"
-            class="form-select"
-            [(ngModel)]="data().feePlanId"
-            [ngModelOptions]="{standalone: true}"
-            (ngModelChange)="onDataChange('feePlanId', $event)"
-          >
-            <option value="">Selecione um plano...</option>
-            @for (plan of feePlans(); track plan.id) {
-              <option [value]="plan.id">{{ plan.name }} — R$ {{ $any(plan.price)?.toFixed(2) }}/mês ({{ plan.monthDuration }} {{ plan.monthDuration === 1 ? 'mês' : 'meses' }})</option>
-            }
-          </select>
+          <div class="d-flex gap-2">
+            <select
+              id="feePlanId"
+              class="form-select flex-grow-1"
+              [(ngModel)]="data().feePlanId"
+              [ngModelOptions]="{standalone: true}"
+              (ngModelChange)="onDataChange('feePlanId', $event)"
+            >
+              <option value="">Selecione um plano...</option>
+              @for (plan of feePlans(); track plan.id) {
+                <option [value]="plan.id">{{ plan.name }} — R$ {{ $any(plan.price)?.toFixed(2) }}/mês ({{ plan.monthDuration }} {{ plan.monthDuration === 1 ? 'mês' : 'meses' }})</option>
+              }
+            </select>
+            <button type="button" class="btn btn-outline-secondary" title="Novo plano" (click)="openedCreateFeePlan.set(true)">
+              <i class="bi bi-plus-lg"></i>
+            </button>
+          </div>
           <small class="form-text-muted">O plano de aulas do aluno</small>
         </div>
 
@@ -55,6 +61,25 @@ import { ShowFeePlanDTO } from '../../../generated_services/model/showFeePlanDTO
         </div>
       </div>
     </form>
+
+    @if (openedCreateFeePlan()) {
+      <div class="modal-backdrop-custom" (click)="openedCreateFeePlan.set(false)"></div>
+      <div class="modal show d-block" tabindex="-1" role="dialog" aria-modal="true">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Novo Plano</h5>
+              <button type="button" class="btn-close" (click)="openedCreateFeePlan.set(false)" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body">
+              <app-create-fee-plan
+                (closeEvent)="openedCreateFeePlan.set(false)"
+                (feePlanCreated)="onFeePlanCreated($event)" />
+            </div>
+          </div>
+        </div>
+      </div>
+    }
   `,
   styles: [`
     .onboarding-form {
@@ -141,8 +166,18 @@ export class OnboardingContractFormComponent {
   readonly data = input.required<StudentContractInfo>();
   readonly feePlans = input<ShowFeePlanDTO[]>([]);
   readonly dataChange = output<Partial<StudentContractInfo>>();
+  /** Bubbled up so the wizard (owner of `feePlans`) can keep its copy in sync too. */
+  readonly feePlanCreated = output<ShowFeePlanDTO>();
+
+  protected readonly openedCreateFeePlan = signal(false);
 
   protected onDataChange(field: string, value: any): void {
     this.dataChange.emit({ [field]: value });
+  }
+
+  protected onFeePlanCreated(plan: ShowFeePlanDTO): void {
+    this.openedCreateFeePlan.set(false);
+    this.onDataChange('feePlanId', plan.id ?? '');
+    this.feePlanCreated.emit(plan);
   }
 }

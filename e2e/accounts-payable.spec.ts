@@ -176,6 +176,45 @@ test.describe('Contas a Pagar', () => {
     await expect(page.locator('.toast-error')).toBeVisible({ timeout: 10_000 });
   });
 
+  test('cria categoria pelo botão "+" ao criar conta a pagar, sem sair do formulário', async ({ page }) => {
+    const categoryName = `Categoria-E2E-Pagar-${Date.now()}`;
+
+    await openCreateModal(page, /Nova Conta a Pagar/i);
+    await selectFromSearchSelect(page, 'Fornecedor', supplier.lastName);
+
+    await page.locator('button[title="Nova categoria"]').click();
+    const nestedModal = page.locator('.modal.show').last();
+    await expect(nestedModal).toBeVisible();
+    await nestedModal.locator('#name').fill(categoryName);
+    await nestedModal.getByRole('button', { name: /Salvar/i }).click();
+
+    // Nested modal closes, outer create-payable modal stays open, new category selected.
+    await expect(page.locator('.modal.show')).toHaveCount(1, { timeout: 10_000 });
+    await expect(page.locator('.search-select-trigger', { hasText: categoryName })).toBeVisible();
+
+    await page.fill('#description', TEST_DESC);
+    await page.fill('#amount', '20.00');
+    await page.fill('#transactionDate', '2030-06-15');
+    await saveAndWaitModalClose(page);
+    await waitForTableReady(page);
+
+    const row = page.locator('tr', { hasText: TEST_DESC });
+    await expect(row).toBeVisible();
+    await expect(row).toContainText(categoryName);
+
+    await row.locator('button.btn-outline-danger').click();
+    await acceptConfirmDialog(page);
+    await waitForTableReady(page);
+
+    // CLEANUP — category
+    await page.goto('/system/transaction-categories');
+    await waitForTableReady(page);
+    const categoryRow = page.locator('tr', { hasText: categoryName });
+    await categoryRow.locator('button.btn-outline-danger').click();
+    await acceptConfirmDialog(page);
+    await waitForTableReady(page);
+  });
+
   test('exibe erro quando falha ao excluir', async ({ page }) => {
     await openCreateModal(page, /Nova Conta a Pagar/i);
     await selectFromSearchSelect(page, 'Fornecedor', supplier.lastName);

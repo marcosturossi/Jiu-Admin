@@ -83,7 +83,8 @@
             [categories]="categories()"
             (closeEvent)="openedCreate.set(false)"
             (itemCreated)="onCreated()"
-            (categorySearch)="onCategorySearch($event)" />
+            (categorySearch)="onCategorySearch($event)"
+            (categoryCreated)="onCategoryCreated($event)" />
         </div>
       </div>
     </div>

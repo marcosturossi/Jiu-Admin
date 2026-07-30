@@ -12,17 +12,20 @@ import { todayDateString } from '../../../../utils/date.utils';
 import { SearchOption } from '../../../../shared/search-select/search-option';
 import { SearchSelectComponent } from '../../../../shared/search-select/search-select.component';
 import { FieldErrorComponent } from '../../../../shared/field-error/field-error.component';
+import { CreateBeltComponent } from '../../belts/create-belt/create-belt.component';
 
 @Component({
   selector: 'app-create-graduation',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ReactiveFormsModule, SearchSelectComponent, FieldErrorComponent],
+  imports: [ReactiveFormsModule, SearchSelectComponent, FieldErrorComponent, CreateBeltComponent],
   templateUrl: './create-graduation.component.html',
   styleUrl: './create-graduation.component.scss',
 })
 export class CreateGraduationComponent {
   readonly closeEvent = output<void>();
   readonly graduationCreated = output<void>();
+
+  protected readonly openedCreateBelt = signal(false);
 
   private readonly graduationService = inject(GraduationService);
   private readonly beltService = inject(BeltService);
@@ -93,6 +96,12 @@ export class CreateGraduationComponent {
       },
       error: (err) => { this.isSaving.set(false); this.ns.showError('Erro ao Criar Graduação!', extractErrorMessage(err, 'Não foi possível criar a graduação. Tente novamente.')); },
     });
+  }
+
+  protected onBeltCreated(belt: ShowBeltDTO): void {
+    this.openedCreateBelt.set(false);
+    this.belts.update(belts => [belt, ...belts]);
+    this.form.patchValue({ beltId: belt.id ?? '' });
   }
 
   private toDTO(): CreateGraduationDTO {

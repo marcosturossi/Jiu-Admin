@@ -12,10 +12,11 @@ import { extractErrorMessage } from '../../../../utils/error.utils';
 import { SearchOption } from '../../../../shared/search-select/search-option';
 import { SearchSelectComponent } from '../../../../shared/search-select/search-select.component';
 import { FieldErrorComponent } from '../../../../shared/field-error/field-error.component';
+import { CreateLessonComponent } from '../../lessons/create-lesson/create-lesson.component';
 
 @Component({
   selector: 'app-create-frequency',
-  imports: [ReactiveFormsModule, SearchSelectComponent, FieldErrorComponent],
+  imports: [ReactiveFormsModule, SearchSelectComponent, FieldErrorComponent, CreateLessonComponent],
   templateUrl: './create-frequency.component.html',
   styleUrl: './create-frequency.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -36,6 +37,7 @@ export class CreateFrequencyComponent {
   protected readonly lessons = signal<ShowLessonDTO[]>([]);
   protected readonly lessonOptions = signal<SearchOption[]>([]);
   protected readonly selectedLesson = signal<SearchOption | null>(null);
+  protected readonly openedCreateLesson = signal(false);
   protected readonly isCreating = signal(false);
   protected readonly isRecognizing = signal(false);
   protected readonly selectedFile = signal<File | null>(null);
@@ -216,6 +218,15 @@ export class CreateFrequencyComponent {
       },
       error: () => this.ns.showError('Erro ao Carregar Aulas!', 'Não foi possível carregar a lista de aulas. Tente novamente.')
     });
+  }
+
+  protected onLessonCreated(lesson: ShowLessonDTO): void {
+    this.openedCreateLesson.set(false);
+    this.lessons.update(lessons => [lesson, ...lessons]);
+    const option: SearchOption = { id: lesson.id ?? '', label: lesson.title ?? '' };
+    this.lessonOptions.update(options => [option, ...options]);
+    this.selectedLesson.set(option);
+    this.frequencyForm.patchValue({ lessonId: lesson.id ?? '' });
   }
 
   protected create(): void {

@@ -12,11 +12,12 @@ import { todayDateString } from '../../../../utils/date.utils';
 import { SearchOption } from '../../../../shared/search-select/search-option';
 import { SearchSelectComponent } from '../../../../shared/search-select/search-select.component';
 import { FieldErrorComponent } from '../../../../shared/field-error/field-error.component';
+import { CreateTransactionCategoryComponent } from '../../transaction-categories/create-transaction-category/create-transaction-category.component';
 
 @Component({
   selector: 'app-create-accounts-receivable',
   standalone: true,
-  imports: [ReactiveFormsModule, SearchSelectComponent, FieldErrorComponent],
+  imports: [ReactiveFormsModule, SearchSelectComponent, FieldErrorComponent, CreateTransactionCategoryComponent],
   templateUrl: './create-accounts-receivable.component.html',
   styleUrl: './create-accounts-receivable.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -32,6 +33,9 @@ export class CreateAccountsReceivableComponent {
   readonly closeEvent = output<void>();
   readonly itemCreated = output<void>();
   readonly categorySearch = output<string>();
+  readonly categoryCreated = output<ShowTransactionCategoryDTO>();
+
+  protected readonly openedCreateCategory = signal(false);
 
   protected readonly isSaving = signal(false);
 
@@ -126,5 +130,12 @@ export class CreateAccountsReceivableComponent {
 
   protected onCategorySearch(term: string): void {
     this.categorySearch.emit(term);
+  }
+
+  protected onCategoryCreated(category: ShowTransactionCategoryDTO): void {
+    this.openedCreateCategory.set(false);
+    this.selectedCategory.set({ id: category.id!, label: category.name! });
+    this.form.patchValue({ transactionCategoryId: category.id ?? null });
+    this.categoryCreated.emit(category);
   }
 }
