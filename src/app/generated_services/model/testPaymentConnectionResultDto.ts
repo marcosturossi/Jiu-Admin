@@ -10,10 +10,8 @@
  */
 
 
-export type PaymentGatewayProvider = 'None' | 'Asaas';
-
-export const PaymentGatewayProvider = {
-    None: 'None' as PaymentGatewayProvider,
-    Asaas: 'Asaas' as PaymentGatewayProvider
-};
+export interface TestPaymentConnectionResultDto { 
+    success: boolean;
+    error: string | null;
+}
 

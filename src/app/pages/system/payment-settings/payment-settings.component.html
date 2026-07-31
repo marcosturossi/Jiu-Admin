@@ -13,7 +13,7 @@
       <form [formGroup]="form" (ngSubmit)="save()">
         <div class="row">
           <div class="col-md-6 mb-3">
-            <label for="paymentGateway" class="form-label">Provedor de Pagamento <span class="text-danger">*</span></label>
+            <label for="paymentGateway" class="form-label">Provedor de Pagamento</label>
             <select id="paymentGateway" formControlName="paymentGateway" class="form-select">
               @for (item of paymentGateways; track item.value) {
                 <option [value]="item.value">{{ item.label }}</option>
@@ -40,6 +40,13 @@
                   <i class="bi" [class.bi-eye]="!showApiKey()" [class.bi-eye-slash]="showApiKey()"></i>
                 </button>
               </div>
+              @if (hasCredentialsConfigured()) {
+                <div class="form-text text-success">
+                  <i class="bi bi-check-circle-fill me-1"></i>Já configurada. Por segurança, o valor não é exibido — informe-a novamente para alterar qualquer configuração do Asaas (incluindo o ambiente).
+                </div>
+              } @else {
+                <div class="form-text">Nenhuma chave configurada ainda.</div>
+              }
               <app-field-error [control]="form.get('asaasApiKey')" />
             </div>
 
@@ -71,9 +78,29 @@
               <app-field-error [control]="form.get('webhookSecret')" />
             </div>
           </div>
+
+          @if (testResult(); as result) {
+            <div class="alert" [class.alert-success]="result.success" [class.alert-danger]="!result.success" role="alert">
+              @if (result.success) {
+                <i class="bi bi-check-circle-fill me-1"></i>Conexão bem-sucedida! As credenciais funcionam com a API do Asaas.
+              } @else {
+                <i class="bi bi-x-circle-fill me-1"></i>Falha na conexão: {{ result.error }}
+              }
+            </div>
+          }
         }
 
-        <div class="d-flex justify-content-end mt-3">
+        <div class="d-flex justify-content-end gap-2 mt-3">
+          @if (isAsaasSelected()) {
+            <button type="button" class="btn btn-outline-secondary" [disabled]="isTesting()" (click)="testConnection()">
+              @if (isTesting()) {
+                <span class="spinner-border spinner-border-sm me-1" role="status"></span>
+              } @else {
+                <i class="bi bi-plug me-1"></i>
+              }
+              Testar Conexão
+            </button>
+          }
           <button type="submit" class="btn btn-primary" [disabled]="isSaving()">
             @if (isSaving()) {
               <span class="spinner-border spinner-border-sm me-1" role="status"></span>

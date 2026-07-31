@@ -8,17 +8,11 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { AsaasEnvironment } from './asaasEnvironment';
-import { PaymentGatewayProvider } from './paymentGatewayProvider';
 
 
 export interface ShowTenantSettingsDto { 
-    paymentGateway: PaymentGatewayProvider;
-    asaasApiKey: string | null;
+    paymentGateway: string | null;
+    hasCredentialsConfigured: boolean;
     webhookSecret: string | null;
-    asaasEnvironment: AsaasEnvironment;
 }
-export namespace ShowTenantSettingsDto {
-}
-
 
