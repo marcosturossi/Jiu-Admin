@@ -169,6 +169,8 @@ model/showTransactionCategoryDTO.ts
 model/stringSegment.ts
 model/stripesEnum.ts
 model/studentsBirthDay.ts
+model/testPaymentConnectionDto.ts
+model/testPaymentConnectionResultDto.ts
 model/topStudentDTO.ts
 model/transactionType.ts
 model/updateAcademyDto.ts

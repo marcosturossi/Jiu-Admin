@@ -15,7 +15,7 @@ describe('PaymentSettingsComponent', () => {
   let ns: jasmine.SpyObj<NotificationService>;
 
   beforeEach(async () => {
-    const tenantSettingsSpy = jasmine.createSpyObj('TenantSettingsService', ['apiSettingsGet', 'apiSettingsPatch']);
+    const tenantSettingsSpy = jasmine.createSpyObj('TenantSettingsService', ['apiSettingsGet', 'apiSettingsPatch', 'apiSettingsTestConnectionPost']);
     const nsSpy = jasmine.createSpyObj('NotificationService', ['showSuccess', 'showError']);
     const subnavSpy = jasmine.createSpyObj('SubnavService', ['setTitle']);
     tenantSettingsSpy.apiSettingsGet.and.returnValue(of(MOCK_SETTINGS_NONE));
@@ -106,6 +106,78 @@ describe('PaymentSettingsComponent', () => {
 
     const sentDto = tenantSettingsService.apiSettingsPatch.calls.mostRecent().args[0];
     expect(sentDto.credentials).toBeNull();
+  });
+
+  it('should do nothing when testing the connection while "Nenhum" is selected', () => {
+    (component as any).form.get('paymentGateway')?.setValue('');
+    (component as any).testConnection();
+    expect(tenantSettingsService.apiSettingsTestConnectionPost).not.toHaveBeenCalled();
+  });
+
+  it('should block testing and show an error when no API key is typed and none is saved', () => {
+    (component as any).form.get('paymentGateway')?.setValue('asaas');
+    (component as any).testConnection();
+    expect(ns.showError).toHaveBeenCalled();
+    expect(tenantSettingsService.apiSettingsTestConnectionPost).not.toHaveBeenCalled();
+  });
+
+  it('should test ad-hoc credentials when an API key is typed', () => {
+    tenantSettingsService.apiSettingsTestConnectionPost.and.returnValue(of({ success: true, error: null } as any));
+    (component as any).form.get('paymentGateway')?.setValue('asaas');
+    (component as any).form.get('asaasApiKey')?.setValue('$aact_123');
+    (component as any).form.get('asaasEnvironment')?.setValue('Production');
+
+    (component as any).testConnection();
+
+    expect(tenantSettingsService.apiSettingsTestConnectionPost).toHaveBeenCalledWith({
+      paymentGateway: 'asaas',
+      credentials: { apiKey: '$aact_123', environment: 'Production' },
+    });
+    expect((component as any).testResult()).toEqual({ success: true, error: null });
+  });
+
+  it('should fall back to testing the already-saved credentials when the API key field is left blank', () => {
+    tenantSettingsService.apiSettingsGet.and.returnValue(of(MOCK_SETTINGS_ASAAS));
+    const f2 = TestBed.createComponent(PaymentSettingsComponent);
+    f2.detectChanges();
+    tenantSettingsService.apiSettingsTestConnectionPost.and.returnValue(of({ success: true, error: null } as any));
+
+    (f2.componentInstance as any).testConnection();
+
+    expect(tenantSettingsService.apiSettingsTestConnectionPost).toHaveBeenCalledWith({
+      paymentGateway: null,
+      credentials: null,
+    } as any);
+  });
+
+  it('should surface a failed connection result without treating it as an HTTP error', () => {
+    tenantSettingsService.apiSettingsTestConnectionPost.and.returnValue(
+      of({ success: false, error: 'Asaas API error 401: invalid api key' } as any)
+    );
+    (component as any).form.get('paymentGateway')?.setValue('asaas');
+    (component as any).form.get('asaasApiKey')?.setValue('wrong-key');
+
+    (component as any).testConnection();
+
+    expect((component as any).testResult()).toEqual({ success: false, error: 'Asaas API error 401: invalid api key' });
+    expect((component as any).isTesting()).toBeFalse();
+  });
+
+  it('should surface an HTTP-level test-connection failure as a failed result', () => {
+    tenantSettingsService.apiSettingsTestConnectionPost.and.returnValue(throwError(() => new Error('network down')));
+    (component as any).form.get('paymentGateway')?.setValue('asaas');
+    (component as any).form.get('asaasApiKey')?.setValue('$aact_123');
+
+    (component as any).testConnection();
+
+    expect((component as any).testResult()?.success).toBeFalse();
+    expect((component as any).isTesting()).toBeFalse();
+  });
+
+  it('should clear a stale test result once the form is edited again', () => {
+    (component as any).testResult.set({ success: true, error: null });
+    (component as any).form.get('webhookSecret')?.setValue('new-value');
+    expect((component as any).testResult()).toBeNull();
   });
 
   it('should set loading to false on load error', () => {

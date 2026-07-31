@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@ang
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { TenantSettingsService } from '../../../generated_services/api/tenantSettings.service';
 import { UpsertTenantSettingsDto } from '../../../generated_services/model/upsertTenantSettingsDto';
+import { TestPaymentConnectionDto } from '../../../generated_services/model/testPaymentConnectionDto';
 import { NotificationService } from '../../../services/notification.service';
 import { SubnavService } from '../../../services/subnav.service';
 import { extractErrorMessage } from '../../../utils/error.utils';
@@ -27,8 +28,10 @@ export class PaymentSettingsComponent implements OnInit {
 
   protected readonly isLoading = signal(false);
   protected readonly isSaving = signal(false);
+  protected readonly isTesting = signal(false);
   protected readonly showApiKey = signal(false);
   protected readonly showWebhookSecret = signal(false);
+  protected readonly testResult = signal<{ success: boolean; error: string | null } | null>(null);
 
   /** The backend never returns the real API key (write-only, stored as an opaque encrypted
    *  blob) — this just tells the admin a credential is already on file. */
@@ -57,6 +60,8 @@ export class PaymentSettingsComponent implements OnInit {
     this.subnavService.setTitle('Configurações de Pagamento');
     this.updateAsaasKeyValidator(this.form.value.paymentGateway ?? NONE_PROVIDER_VALUE);
     this.form.get('paymentGateway')?.valueChanges.subscribe(value => this.updateAsaasKeyValidator(value));
+    // A stale "conexão bem-sucedida" banner would be misleading once the admin changes anything.
+    this.form.valueChanges.subscribe(() => this.testResult.set(null));
     this.load();
   }
 
@@ -104,12 +109,51 @@ export class PaymentSettingsComponent implements OnInit {
     return this.form.value.paymentGateway === ASAAS_PROVIDER_KEY;
   }
 
+  /**
+   * Calls POST /api/settings/test-connection, a dry-run that hits the real gateway API without
+   * charging anything or persisting credentials — so an admin can check a setup works before (or
+   * instead of) saving it.
+   *
+   * If an API key was just typed in, it's tested as-is (ad-hoc, unsaved). If the key field is
+   * blank, the backend falls back to testing whatever is already saved — that only makes sense
+   * when something is actually on file, so this requires `hasCredentialsConfigured()` first.
+   */
+  protected testConnection(): void {
+    if (!this.isAsaasSelected()) return;
+
+    const apiKey = (this.form.value.asaasApiKey ?? '').trim();
+    if (!apiKey && !this.hasCredentialsConfigured()) {
+      this.form.get('asaasApiKey')?.markAsTouched();
+      this.notificationService.showError('Nada para testar', 'Informe a chave de API ou salve uma configuração antes de testar.');
+      return;
+    }
+
+    this.testResult.set(null);
+    this.isTesting.set(true);
+    const dto: TestPaymentConnectionDto = apiKey
+      ? { paymentGateway: ASAAS_PROVIDER_KEY, credentials: { apiKey, environment: this.form.value.asaasEnvironment ?? 'Sandbox' } }
+      // Both null tells the backend to test the already-saved credentials instead of ad-hoc ones.
+      : { paymentGateway: null, credentials: null as unknown as { [key: string]: string } };
+
+    this.tenantSettingsService.apiSettingsTestConnectionPost(dto).subscribe({
+      next: (result) => {
+        this.isTesting.set(false);
+        this.testResult.set({ success: result.success, error: result.error ?? null });
+      },
+      error: (err) => {
+        this.isTesting.set(false);
+        this.testResult.set({ success: false, error: extractErrorMessage(err, 'Não foi possível testar a conexão.') });
+      },
+    });
+  }
+
   protected save(): void {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       this.notificationService.showError('Formulário Inválido', 'Por favor, preencha todos os campos obrigatórios.');
       return;
     }
+    this.testResult.set(null);
     this.isSaving.set(true);
     this.tenantSettingsService.apiSettingsPatch(this.toDTO()).subscribe({
       next: (settings) => {

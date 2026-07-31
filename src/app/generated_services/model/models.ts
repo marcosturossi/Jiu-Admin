@@ -102,6 +102,8 @@ export * from './showTransactionCategoryDTO';
 export * from './stringSegment';
 export * from './stripesEnum';
 export * from './studentsBirthDay';
+export * from './testPaymentConnectionDto';
+export * from './testPaymentConnectionResultDto';
 export * from './topStudentDTO';
 export * from './transactionType';
 export * from './updateAcademyDto';

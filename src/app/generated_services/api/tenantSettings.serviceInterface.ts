@@ -14,6 +14,8 @@ import { Observable }                                        from 'rxjs';
 
 import { ProblemDetails } from '../model/models';
 import { ShowTenantSettingsDto } from '../model/models';
+import { TestPaymentConnectionDto } from '../model/models';
+import { TestPaymentConnectionResultDto } from '../model/models';
 import { UpsertTenantSettingsDto } from '../model/models';
 
 
@@ -37,5 +39,12 @@ export interface TenantSettingsServiceInterface {
      * @param upsertTenantSettingsDto 
      */
     apiSettingsPatch(upsertTenantSettingsDto: UpsertTenantSettingsDto, extraHttpRequestParams?: any): Observable<ShowTenantSettingsDto>;
+
+    /**
+     * 
+     * 
+     * @param testPaymentConnectionDto 
+     */
+    apiSettingsTestConnectionPost(testPaymentConnectionDto?: TestPaymentConnectionDto, extraHttpRequestParams?: any): Observable<TestPaymentConnectionResultDto>;
 
 }
