@@ -14,7 +14,7 @@ import { AccountsPayableService } from '../../../generated_services/api/accounts
 import { ThemeService } from '../../../services/theme.service';
 
 /** Backend hard-caps PageSize at 100 (AccountsReceivable/PayableFilterDTO.Validate()), and an
- *  academy easily has more than 100 fee records across a 6-month window (one per student per
+ *  academy easily has more than 100 fee records across a 7-month window (one per student per
  *  month) — so a single page silently drops data. Walks every page and concatenates the items. */
 function fetchAllPages<T>(
   fetchPage: (page: number) => Observable<{ items?: T[] | null; hasNextPage?: boolean | null }>,
@@ -52,6 +52,8 @@ export class CashflowChartComponent implements AfterViewInit, OnDestroy {
   private toPayByMonth: number[] = [];
   private monthLabels: string[] = [];
   private resizeObserver?: ResizeObserver;
+
+  protected readonly rangeLabel = 'Fluxo de Caixa — 3 meses passados, mês atual e 3 meses futuros (por vencimento)';
 
   constructor() {
     effect(() => {
@@ -105,40 +107,49 @@ export class CashflowChartComponent implements AfterViewInit, OnDestroy {
     }
   }
 
-  /** Compares a `createdAt` DateTime string (real ISO instant, e.g. "2026-07-14T12:55:48.603Z")
-   *  against a {year, month} bucket. Unlike DateOnly fields ("YYYY-MM-DD"), a DateTime should be
-   *  read in local time per this app's convention — there's an actual time-of-day to convert. */
-  private isInMonthLocal(dateStr: string | null | undefined, bucket: { year: number; month: number }): boolean {
+  /** Compares a `dueDate` DateOnly string ("YYYY-MM-DD", e.g. contract installment due dates)
+   *  against a {year, month} bucket. DateOnly strings have no time-of-day/timezone component,
+   *  so they're split as plain numbers rather than parsed through `new Date(...)`, which would
+   *  read the string as UTC midnight and can shift the date a day back in negative-UTC-offset
+   *  timezones (same convention as overdue-fees.component.ts). */
+  private isInMonthDateOnly(dateStr: string | null | undefined, bucket: { year: number; month: number }): boolean {
     if (!dateStr) return false;
-    const d = new Date(dateStr);
-    return d.getFullYear() === bucket.year && d.getMonth() === bucket.month;
+    const [y, m] = dateStr.split('-').map(Number);
+    return y === bucket.year && m - 1 === bucket.month;
+  }
+
+  private toDateOnlyString(d: Date): string {
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
   }
 
   private fetchData(): void {
     const now = new Date();
     const months: { label: string; year: number; month: number }[] = [];
-    for (let i = 5; i >= 0; i--) {
-      const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+    for (let i = -3; i <= 3; i++) {
+      const d = new Date(now.getFullYear(), now.getMonth() + i, 1);
       months.push({ label: PT_MONTHS[d.getMonth()], year: d.getFullYear(), month: d.getMonth() });
     }
 
-    // Bucketed by `createdAt` (when the charge was invoiced/generated), not `dueDate` or
-    // `transactionDate`: TransactionDate is left unset ("0001-01-01") for contract-generated
-    // fees, and DueDate is often in a *future* month (fees are invoiced ahead of when they're
-    // due) so a trailing-6-months window built on it misses most receivables. `createdAt` is
-    // always a real, populated timestamp. The backend's transactionDateFrom/To filter actually
-    // narrows by DueDate (Backend.Modules.Finances GetAccountsReceivable/PayableSpecification),
-    // which doesn't line up with createdAt-based bucketing — so we don't apply it here and
-    // instead page through everything, newest-created first, and filter by month client-side.
+    // Range covers 3 months back through 3 months forward, inclusive of the current month.
+    const rangeFrom = this.toDateOnlyString(new Date(now.getFullYear(), now.getMonth() - 3, 1));
+    const rangeTo = this.toDateOnlyString(new Date(now.getFullYear(), now.getMonth() + 4, 0));
+
+    // Bucketed by `dueDate` (when each installment is actually due), not `createdAt` (when the
+    // charge/contract was generated). A 12-month contract creates 12 fee rows in one instant but
+    // with 12 different due dates spread across the year — bucketing by createdAt collapsed all
+    // of them into the contract's signing month. The backend's transactionDateFrom/To filter
+    // narrows by DueDate server-side (Backend.Modules.Finances GetAccountsReceivable/PayableSpecification),
+    // which now lines up with this component's bucketing, so we scope the fetch to the visible
+    // range instead of paging through the tenant's entire history.
     forkJoin({
       receivableItems: fetchAllPages((page) =>
         this.accountsReceivableService.apiAccountsReceivableGet(
-          undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, page as any, 100 as any, undefined, true,
+          undefined, undefined, undefined, undefined, rangeFrom, rangeTo, undefined, undefined, page as any, 100 as any, undefined, true,
         )
       ),
       payableItems: fetchAllPages((page) =>
         this.accountsPayableService.apiAccountsPayableGet(
-          undefined, undefined, undefined, undefined, undefined, undefined, undefined, page as any, 100 as any, undefined, true,
+          undefined, undefined, undefined, rangeFrom, rangeTo, undefined, undefined, page as any, 100 as any, undefined, true,
         )
       ),
     }).subscribe({
@@ -150,7 +161,7 @@ export class CashflowChartComponent implements AfterViewInit, OnDestroy {
         // either way, so they're excluded from both segments.
         const sumWhere = (items: any[], m: { year: number; month: number }, statuses: string[]) =>
           items
-            .filter((t: any) => this.isInMonthLocal(t.createdAt, m) && statuses.includes(t.status))
+            .filter((t: any) => this.isInMonthDateOnly(t.dueDate, m) && statuses.includes(t.status))
             .reduce((sum: number, t: any) => sum + (t.amount ?? 0), 0);
 
         this.receivedByMonth = months.map((m) => sumWhere(receivableItems, m, ['Paid']));
