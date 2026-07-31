@@ -10,7 +10,10 @@
       <div class="kpi-card income">
         <div class="kpi-icon"><i class="bi bi-arrow-up-circle-fill"></i></div>
         <div class="kpi-content">
-          <div class="kpi-label">Total a Receber</div>
+          <div class="kpi-label">
+            Total a Receber
+            <i class="bi bi-info-circle kpi-hint" title="Soma de todas as mensalidades pendentes de recebimento (incluindo as já vencidas), de qualquer data — não é limitado ao mês atual nem aos últimos 30 dias."></i>
+          </div>
           <div class="kpi-value">{{ formatCurrency(totalIncome()) }}</div>
         </div>
       </div>
@@ -18,7 +21,10 @@
       <div class="kpi-card expense">
         <div class="kpi-icon"><i class="bi bi-arrow-down-circle-fill"></i></div>
         <div class="kpi-content">
-          <div class="kpi-label">Total a Pagar</div>
+          <div class="kpi-label">
+            Total a Pagar
+            <i class="bi bi-info-circle kpi-hint" title="Soma de todas as contas pendentes de pagamento (incluindo as já vencidas), de qualquer data — não é limitado ao mês atual nem aos últimos 30 dias."></i>
+          </div>
           <div class="kpi-value">{{ formatCurrency(totalExpenses()) }}</div>
         </div>
       </div>
@@ -26,7 +32,10 @@
       <div class="kpi-card" [class.balance-pos]="balance() >= 0" [class.balance-neg]="balance() < 0">
         <div class="kpi-icon"><i class="bi bi-wallet2"></i></div>
         <div class="kpi-content">
-          <div class="kpi-label">Saldo</div>
+          <div class="kpi-label">
+            Saldo
+            <i class="bi bi-info-circle kpi-hint" title="Total a Receber menos Total a Pagar: saldo projetado a partir do que ainda está em aberto, não o caixa já recebido."></i>
+          </div>
           <div class="kpi-value">{{ formatCurrency(balance()) }}</div>
         </div>
       </div>
@@ -34,7 +43,10 @@
       <div class="kpi-card overdue">
         <div class="kpi-icon"><i class="bi bi-exclamation-triangle-fill"></i></div>
         <div class="kpi-content">
-          <div class="kpi-label">Mensalidades Vencidas</div>
+          <div class="kpi-label">
+            Mensalidades Vencidas
+            <i class="bi bi-info-circle kpi-hint" title="Quantidade e valor de mensalidades com vencimento já passado e ainda não pagas, contadas até hoje. Não é um recorte de 30 dias nem de um mês específico — é tudo que está vencido agora."></i>
+          </div>
           <div class="kpi-value">{{ overdueFeeCount() }}</div>
           <div class="kpi-sub">{{ formatCurrency(pendingFeeTotal()) }}</div>
         </div>

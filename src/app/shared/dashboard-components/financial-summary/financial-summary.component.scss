@@ -59,6 +59,13 @@
   white-space: nowrap;
 }
 
+.kpi-hint {
+  font-size: 0.8rem;
+  text-transform: none;
+  cursor: help;
+  opacity: 0.7;
+}
+
 .kpi-value {
   font-size: 1.25rem;
   font-weight: 700;

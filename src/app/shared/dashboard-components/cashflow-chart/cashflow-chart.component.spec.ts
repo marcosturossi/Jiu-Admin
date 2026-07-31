@@ -58,4 +58,27 @@ describe('CashflowChartComponent', () => {
     const chartEl = fixture.nativeElement.querySelector('.chart-container');
     expect(chartEl).toBeTruthy();
   });
+
+  it('should bucket installments by dueDate rather than createdAt, spreading a multi-month contract across its own months', () => {
+    const createdAt = new Date().toISOString();
+    const now = new Date();
+    const items = [0, 1, 2].map((i) => {
+      const due = new Date(now.getFullYear(), now.getMonth() + i, 10);
+      return {
+        createdAt,
+        dueDate: `${due.getFullYear()}-${String(due.getMonth() + 1).padStart(2, '0')}-${String(due.getDate()).padStart(2, '0')}`,
+        status: 'Pending',
+        amount: 100,
+      };
+    });
+    receivableSvc.apiAccountsReceivableGet.and.returnValue(of({ items, totalCount: items.length, hasNextPage: false } as any));
+
+    const f2 = TestBed.createComponent(CashflowChartComponent);
+    f2.detectChanges();
+    const c2 = f2.componentInstance as any;
+
+    const nonZeroBuckets = (c2.toReceiveByMonth as number[]).filter((v) => v > 0);
+    expect(nonZeroBuckets.length).toBe(3);
+    expect(nonZeroBuckets.every((v) => v === 100)).toBeTrue();
+  });
 });
