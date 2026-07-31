@@ -12,7 +12,7 @@
         <div class="kpi-content">
           <div class="kpi-label">
             Total a Receber
-            <i class="bi bi-info-circle kpi-hint" title="Soma de todas as mensalidades pendentes de recebimento (incluindo as já vencidas), de qualquer data — não é limitado ao mês atual nem aos últimos 30 dias."></i>
+            <i class="bi bi-info-circle kpi-hint" title="Tudo que ainda falta receber, sem limite de data."></i>
           </div>
           <div class="kpi-value">{{ formatCurrency(totalIncome()) }}</div>
         </div>
@@ -23,7 +23,7 @@
         <div class="kpi-content">
           <div class="kpi-label">
             Total a Pagar
-            <i class="bi bi-info-circle kpi-hint" title="Soma de todas as contas pendentes de pagamento (incluindo as já vencidas), de qualquer data — não é limitado ao mês atual nem aos últimos 30 dias."></i>
+            <i class="bi bi-info-circle kpi-hint" title="Tudo que ainda falta pagar, sem limite de data."></i>
           </div>
           <div class="kpi-value">{{ formatCurrency(totalExpenses()) }}</div>
         </div>
@@ -34,7 +34,7 @@
         <div class="kpi-content">
           <div class="kpi-label">
             Saldo
-            <i class="bi bi-info-circle kpi-hint" title="Total a Receber menos Total a Pagar: saldo projetado a partir do que ainda está em aberto, não o caixa já recebido."></i>
+            <i class="bi bi-info-circle kpi-hint" title="Total a Receber menos Total a Pagar (valores em aberto)."></i>
           </div>
           <div class="kpi-value">{{ formatCurrency(balance()) }}</div>
         </div>
@@ -45,7 +45,7 @@
         <div class="kpi-content">
           <div class="kpi-label">
             Mensalidades Vencidas
-            <i class="bi bi-info-circle kpi-hint" title="Quantidade e valor de mensalidades com vencimento já passado e ainda não pagas, contadas até hoje. Não é um recorte de 30 dias nem de um mês específico — é tudo que está vencido agora."></i>
+            <i class="bi bi-info-circle kpi-hint" title="Vencidas até hoje, sem limite de tempo (não é só últimos 30 dias)."></i>
           </div>
           <div class="kpi-value">{{ overdueFeeCount() }}</div>
           <div class="kpi-sub">{{ formatCurrency(pendingFeeTotal()) }}</div>
