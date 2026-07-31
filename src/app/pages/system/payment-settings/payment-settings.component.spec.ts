@@ -1,0 +1,118 @@
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { of, throwError } from 'rxjs';
+import { PaymentSettingsComponent } from './payment-settings.component';
+import { TenantSettingsService } from '../../../generated_services/api/tenantSettings.service';
+import { NotificationService } from '../../../services/notification.service';
+import { SubnavService } from '../../../services/subnav.service';
+
+const MOCK_SETTINGS_NONE = { paymentGateway: null, hasCredentialsConfigured: false, webhookSecret: null } as any;
+const MOCK_SETTINGS_ASAAS = { paymentGateway: 'asaas', hasCredentialsConfigured: true, webhookSecret: '****abcd' } as any;
+
+describe('PaymentSettingsComponent', () => {
+  let component: PaymentSettingsComponent;
+  let fixture: ComponentFixture<PaymentSettingsComponent>;
+  let tenantSettingsService: jasmine.SpyObj<TenantSettingsService>;
+  let ns: jasmine.SpyObj<NotificationService>;
+
+  beforeEach(async () => {
+    const tenantSettingsSpy = jasmine.createSpyObj('TenantSettingsService', ['apiSettingsGet', 'apiSettingsPatch']);
+    const nsSpy = jasmine.createSpyObj('NotificationService', ['showSuccess', 'showError']);
+    const subnavSpy = jasmine.createSpyObj('SubnavService', ['setTitle']);
+    tenantSettingsSpy.apiSettingsGet.and.returnValue(of(MOCK_SETTINGS_NONE));
+
+    await TestBed.configureTestingModule({
+      imports: [PaymentSettingsComponent],
+      providers: [
+        { provide: TenantSettingsService, useValue: tenantSettingsSpy },
+        { provide: NotificationService, useValue: nsSpy },
+        { provide: SubnavService, useValue: subnavSpy },
+      ],
+    }).compileComponents();
+
+    fixture = TestBed.createComponent(PaymentSettingsComponent);
+    component = fixture.componentInstance;
+    tenantSettingsService = TestBed.inject(TenantSettingsService) as jasmine.SpyObj<TenantSettingsService>;
+    ns = TestBed.inject(NotificationService) as jasmine.SpyObj<NotificationService>;
+    fixture.detectChanges();
+  });
+
+  it('should create', () => expect(component).toBeTruthy());
+
+  it('should default to "Nenhum" and not require an API key when no gateway is configured', () => {
+    expect((component as any).form.value.paymentGateway).toBe('');
+    expect((component as any).hasCredentialsConfigured()).toBeFalse();
+    expect((component as any).form.get('asaasApiKey')?.valid).toBeTrue();
+  });
+
+  it('should require an API key once Asaas is selected', () => {
+    (component as any).form.get('paymentGateway')?.setValue('asaas');
+    const apiKeyControl = (component as any).form.get('asaasApiKey');
+    apiKeyControl.markAsTouched();
+    expect(apiKeyControl.valid).toBeFalse();
+    apiKeyControl.setValue('$aact_123');
+    expect(apiKeyControl.valid).toBeTrue();
+  });
+
+  it('should block save and show an error when the form is invalid', () => {
+    (component as any).form.get('paymentGateway')?.setValue('asaas');
+    (component as any).save();
+    expect(ns.showError).toHaveBeenCalled();
+    expect(tenantSettingsService.apiSettingsPatch).not.toHaveBeenCalled();
+  });
+
+  it('should send credentials as apiKey/environment (not the old enum fields) when saving with Asaas selected', () => {
+    tenantSettingsService.apiSettingsPatch.and.returnValue(of(MOCK_SETTINGS_ASAAS));
+    const form = (component as any).form;
+    // .setValue() is a programmatic (model -> view) change and does not mark controls dirty on
+    // its own — mirror what a real user interaction does so the dirty-gated fields are exercised.
+    form.get('paymentGateway').setValue('asaas');
+    form.get('paymentGateway').markAsDirty();
+    form.get('asaasApiKey').setValue('$aact_123');
+    form.get('asaasEnvironment').setValue('Production');
+    form.get('asaasEnvironment').markAsDirty();
+
+    (component as any).save();
+
+    expect(tenantSettingsService.apiSettingsPatch).toHaveBeenCalledWith(
+      jasmine.objectContaining({
+        paymentGateway: 'asaas',
+        credentials: { apiKey: '$aact_123', environment: 'Production' },
+      })
+    );
+  });
+
+  it('should leave paymentGateway/webhookSecret untouched (sent as null) when their controls were never edited', () => {
+    tenantSettingsService.apiSettingsGet.and.returnValue(of(MOCK_SETTINGS_ASAAS));
+    const f2 = TestBed.createComponent(PaymentSettingsComponent);
+    f2.detectChanges();
+    tenantSettingsService.apiSettingsPatch.and.returnValue(of(MOCK_SETTINGS_ASAAS));
+
+    // Simulates re-entering the still-required API key (the only field a user MUST touch while
+    // Asaas stays selected) without ever touching the paymentGateway/webhookSecret controls.
+    (f2.componentInstance as any).form.get('asaasApiKey')?.setValue('$aact_123');
+    (f2.componentInstance as any).save();
+
+    const sentDto = tenantSettingsService.apiSettingsPatch.calls.mostRecent().args[0];
+    expect(sentDto.paymentGateway).toBeNull();
+    expect(sentDto.webhookSecret).toBeNull();
+    expect(sentDto.credentials).toEqual({ apiKey: '$aact_123', environment: 'Sandbox' });
+  });
+
+  it('should send credentials as null when "Nenhum" is selected', () => {
+    tenantSettingsService.apiSettingsPatch.and.returnValue(of(MOCK_SETTINGS_NONE));
+    (component as any).form.get('paymentGateway')?.setValue('');
+
+    (component as any).save();
+
+    const sentDto = tenantSettingsService.apiSettingsPatch.calls.mostRecent().args[0];
+    expect(sentDto.credentials).toBeNull();
+  });
+
+  it('should set loading to false on load error', () => {
+    tenantSettingsService.apiSettingsGet.and.returnValue(throwError(() => new Error('fail')));
+    const f2 = TestBed.createComponent(PaymentSettingsComponent);
+    f2.detectChanges();
+    expect((f2.componentInstance as any).isLoading()).toBeFalse();
+    expect(ns.showError).toHaveBeenCalled();
+  });
+});

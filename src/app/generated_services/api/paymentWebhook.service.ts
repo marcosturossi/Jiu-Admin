@@ -19,24 +19,20 @@ import { Observable }                                        from 'rxjs';
 
 // @ts-ignore
 import { ProblemDetails } from '../model/problemDetails';
-// @ts-ignore
-import { ShowTenantSettingsDto } from '../model/showTenantSettingsDto';
-// @ts-ignore
-import { UpsertTenantSettingsDto } from '../model/upsertTenantSettingsDto';
 
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
 import { Configuration }                                     from '../configuration';
 import {
-    TenantSettingsServiceInterface
-} from './tenantSettings.serviceInterface';
+    PaymentWebhookServiceInterface
+} from './paymentWebhook.serviceInterface';
 
 
 
 @Injectable({
   providedIn: 'root'
 })
-export class TenantSettingsService implements TenantSettingsServiceInterface {
+export class PaymentWebhookService implements PaymentWebhookServiceInterface {
 
     protected basePath = 'http://localhost:8080';
     public defaultHeaders = new HttpHeaders();
@@ -99,13 +95,17 @@ export class TenantSettingsService implements TenantSettingsServiceInterface {
     }
 
     /**
+     * @param provider 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiSettingsGet(observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<ShowTenantSettingsDto>;
-    public apiSettingsGet(observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<ShowTenantSettingsDto>>;
-    public apiSettingsGet(observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<ShowTenantSettingsDto>>;
-    public apiSettingsGet(observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public apiPublicWebhooksProviderPost(provider: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any>;
+    public apiPublicWebhooksProviderPost(provider: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<any>>;
+    public apiPublicWebhooksProviderPost(provider: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<any>>;
+    public apiPublicWebhooksProviderPost(provider: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+        if (provider === null || provider === undefined) {
+            throw new Error('Required parameter provider was null or undefined when calling apiPublicWebhooksProviderPost.');
+        }
 
         let localVarHeaders = this.defaultHeaders;
 
@@ -143,85 +143,10 @@ export class TenantSettingsService implements TenantSettingsServiceInterface {
             }
         }
 
-        let localVarPath = `/api/settings`;
-        return this.httpClient.request<ShowTenantSettingsDto>('get', `${this.configuration.basePath}${localVarPath}`,
+        let localVarPath = `/api/public/webhooks/${this.configuration.encodeParam({name: "provider", value: provider, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`;
+        return this.httpClient.request<any>('post', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
-                responseType: <any>responseType_,
-                withCredentials: this.configuration.withCredentials,
-                headers: localVarHeaders,
-                observe: observe,
-                transferCache: localVarTransferCache,
-                reportProgress: reportProgress
-            }
-        );
-    }
-
-    /**
-     * @param upsertTenantSettingsDto 
-     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
-     * @param reportProgress flag to report request and response progress.
-     */
-    public apiSettingsPatch(upsertTenantSettingsDto: UpsertTenantSettingsDto, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<ShowTenantSettingsDto>;
-    public apiSettingsPatch(upsertTenantSettingsDto: UpsertTenantSettingsDto, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<ShowTenantSettingsDto>>;
-    public apiSettingsPatch(upsertTenantSettingsDto: UpsertTenantSettingsDto, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<ShowTenantSettingsDto>>;
-    public apiSettingsPatch(upsertTenantSettingsDto: UpsertTenantSettingsDto, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
-        if (upsertTenantSettingsDto === null || upsertTenantSettingsDto === undefined) {
-            throw new Error('Required parameter upsertTenantSettingsDto was null or undefined when calling apiSettingsPatch.');
-        }
-
-        let localVarHeaders = this.defaultHeaders;
-
-        let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
-        if (localVarHttpHeaderAcceptSelected === undefined) {
-            // to determine the Accept header
-            const httpHeaderAccepts: string[] = [
-                'application/json'
-            ];
-            localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
-        }
-        if (localVarHttpHeaderAcceptSelected !== undefined) {
-            localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
-        }
-
-        let localVarHttpContext: HttpContext | undefined = options && options.context;
-        if (localVarHttpContext === undefined) {
-            localVarHttpContext = new HttpContext();
-        }
-
-        let localVarTransferCache: boolean | undefined = options && options.transferCache;
-        if (localVarTransferCache === undefined) {
-            localVarTransferCache = true;
-        }
-
-
-        // to determine the Content-Type header
-        const consumes: string[] = [
-            'application/json',
-            'text/json',
-            'application/*+json'
-        ];
-        const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
-        if (httpContentTypeSelected !== undefined) {
-            localVarHeaders = localVarHeaders.set('Content-Type', httpContentTypeSelected);
-        }
-
-        let responseType_: 'text' | 'json' | 'blob' = 'json';
-        if (localVarHttpHeaderAcceptSelected) {
-            if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
-                responseType_ = 'text';
-            } else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
-                responseType_ = 'json';
-            } else {
-                responseType_ = 'blob';
-            }
-        }
-
-        let localVarPath = `/api/settings`;
-        return this.httpClient.request<ShowTenantSettingsDto>('patch', `${this.configuration.basePath}${localVarPath}`,
-            {
-                context: localVarHttpContext,
-                body: upsertTenantSettingsDto,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,

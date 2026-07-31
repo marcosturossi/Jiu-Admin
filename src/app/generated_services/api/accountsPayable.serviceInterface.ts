@@ -45,8 +45,9 @@ export interface AccountsPayableServiceInterface {
      * @param orderBy 
      * @param orderByDescending 
      * @param status 
+     * @param overdueOnly 
      */
-    apiAccountsPayableGet(transactionCategoryId?: string, amountMin?: ApiAccountsPayableGetAmountMinParameter, amountMax?: ApiAccountsPayableGetAmountMinParameter, transactionDateFrom?: string, transactionDateTo?: string, description?: string, paidAt?: string, page?: ApiFrequencyGetPageParameter, pageSize?: ApiFrequencyGetPageParameter, orderBy?: string, orderByDescending?: boolean, status?: string, extraHttpRequestParams?: any): Observable<PaginatedResultOfShowAccountsPayableDTO>;
+    apiAccountsPayableGet(transactionCategoryId?: string, amountMin?: ApiAccountsPayableGetAmountMinParameter, amountMax?: ApiAccountsPayableGetAmountMinParameter, transactionDateFrom?: string, transactionDateTo?: string, description?: string, paidAt?: string, page?: ApiFrequencyGetPageParameter, pageSize?: ApiFrequencyGetPageParameter, orderBy?: string, orderByDescending?: boolean, status?: string, overdueOnly?: boolean, extraHttpRequestParams?: any): Observable<PaginatedResultOfShowAccountsPayableDTO>;
 
     /**
      * 
@@ -85,8 +86,9 @@ export interface AccountsPayableServiceInterface {
      * @param orderBy 
      * @param orderByDescending 
      * @param status 
+     * @param overdueOnly 
      */
-    apiAccountsPayableOverdueGet(transactionCategoryId?: string, amountMin?: ApiAccountsPayableGetAmountMinParameter, amountMax?: ApiAccountsPayableGetAmountMinParameter, transactionDateFrom?: string, transactionDateTo?: string, description?: string, paidAt?: string, page?: ApiFrequencyGetPageParameter, pageSize?: ApiFrequencyGetPageParameter, orderBy?: string, orderByDescending?: boolean, status?: string, extraHttpRequestParams?: any): Observable<PaginatedResultOfShowAccountsPayableDTO>;
+    apiAccountsPayableOverdueGet(transactionCategoryId?: string, amountMin?: ApiAccountsPayableGetAmountMinParameter, amountMax?: ApiAccountsPayableGetAmountMinParameter, transactionDateFrom?: string, transactionDateTo?: string, description?: string, paidAt?: string, page?: ApiFrequencyGetPageParameter, pageSize?: ApiFrequencyGetPageParameter, orderBy?: string, orderByDescending?: boolean, status?: string, overdueOnly?: boolean, extraHttpRequestParams?: any): Observable<PaginatedResultOfShowAccountsPayableDTO>;
 
     /**
      * 

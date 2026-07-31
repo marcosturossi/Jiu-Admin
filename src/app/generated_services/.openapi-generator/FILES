@@ -18,8 +18,6 @@ api/adminNotification.serviceInterface.ts
 api/adminStudent.service.ts
 api/adminStudent.serviceInterface.ts
 api/api.ts
-api/asaasWebhook.service.ts
-api/asaasWebhook.serviceInterface.ts
 api/belt.service.ts
 api/belt.serviceInterface.ts
 api/companyPersons.service.ts
@@ -50,6 +48,8 @@ api/notices.service.ts
 api/notices.serviceInterface.ts
 api/notification.service.ts
 api/notification.serviceInterface.ts
+api/paymentWebhook.service.ts
+api/paymentWebhook.serviceInterface.ts
 api/public.service.ts
 api/public.serviceInterface.ts
 api/students.service.ts
@@ -72,7 +72,6 @@ model/apiAccountsPayableGetAmountMinParameter.ts
 model/apiAdminContractsSendRenewalWarningsPostDaysAheadParameter.ts
 model/apiFrequencyGetPageParameter.ts
 model/apiMedicalClearanceIdAttachmentUrlGetExpiryHoursParameter.ts
-model/asaasEnvironment.ts
 model/barChartDataDTO.ts
 model/birthdayGreetingsResultDTO.ts
 model/chargeResult.ts
@@ -133,7 +132,6 @@ model/paginatedResultOfShowSupplierDTO.ts
 model/paginatedResultOfShowTransactionCategoryDTO.ts
 model/payAccountsPayableDTO.ts
 model/payAccountsReceivableDTO.ts
-model/paymentGatewayProvider.ts
 model/problemDetails.ts
 model/problemDetailsStatus.ts
 model/publicAcademyDto.ts

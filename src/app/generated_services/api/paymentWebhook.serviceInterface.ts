@@ -13,29 +13,21 @@ import { HttpHeaders }                                       from '@angular/comm
 import { Observable }                                        from 'rxjs';
 
 import { ProblemDetails } from '../model/models';
-import { ShowTenantSettingsDto } from '../model/models';
-import { UpsertTenantSettingsDto } from '../model/models';
 
 
 import { Configuration }                                     from '../configuration';
 
 
 
-export interface TenantSettingsServiceInterface {
+export interface PaymentWebhookServiceInterface {
     defaultHeaders: HttpHeaders;
     configuration: Configuration;
 
     /**
      * 
      * 
+     * @param provider 
      */
-    apiSettingsGet(extraHttpRequestParams?: any): Observable<ShowTenantSettingsDto>;
-
-    /**
-     * 
-     * 
-     * @param upsertTenantSettingsDto 
-     */
-    apiSettingsPatch(upsertTenantSettingsDto: UpsertTenantSettingsDto, extraHttpRequestParams?: any): Observable<ShowTenantSettingsDto>;
+    apiPublicWebhooksProviderPost(provider: string, extraHttpRequestParams?: any): Observable<{}>;
 
 }

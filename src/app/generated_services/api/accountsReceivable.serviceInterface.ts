@@ -66,8 +66,9 @@ export interface AccountsReceivableServiceInterface {
      * @param studentId 
      * @param contractId2 
      * @param status 
+     * @param overdueOnly 
      */
-    apiAccountsReceivableContractContractIdGet(contractId: string, type?: string, transactionCategoryId?: string, amountMin?: ApiAccountsPayableGetAmountMinParameter, amountMax?: ApiAccountsPayableGetAmountMinParameter, transactionDateFrom?: string, transactionDateTo?: string, description?: string, paidAt?: string, page?: ApiFrequencyGetPageParameter, pageSize?: ApiFrequencyGetPageParameter, orderBy?: string, orderByDescending?: boolean, studentId?: string, contractId2?: string, status?: string, extraHttpRequestParams?: any): Observable<PaginatedResultOfShowAccountsReceivableDTO>;
+    apiAccountsReceivableContractContractIdGet(contractId: string, type?: string, transactionCategoryId?: string, amountMin?: ApiAccountsPayableGetAmountMinParameter, amountMax?: ApiAccountsPayableGetAmountMinParameter, transactionDateFrom?: string, transactionDateTo?: string, description?: string, paidAt?: string, page?: ApiFrequencyGetPageParameter, pageSize?: ApiFrequencyGetPageParameter, orderBy?: string, orderByDescending?: boolean, studentId?: string, contractId2?: string, status?: string, overdueOnly?: boolean, extraHttpRequestParams?: any): Observable<PaginatedResultOfShowAccountsReceivableDTO>;
 
     /**
      * 
@@ -87,8 +88,9 @@ export interface AccountsReceivableServiceInterface {
      * @param studentId 
      * @param contractId 
      * @param status 
+     * @param overdueOnly 
      */
-    apiAccountsReceivableGet(type?: string, transactionCategoryId?: string, amountMin?: ApiAccountsPayableGetAmountMinParameter, amountMax?: ApiAccountsPayableGetAmountMinParameter, transactionDateFrom?: string, transactionDateTo?: string, description?: string, paidAt?: string, page?: ApiFrequencyGetPageParameter, pageSize?: ApiFrequencyGetPageParameter, orderBy?: string, orderByDescending?: boolean, studentId?: string, contractId?: string, status?: string, extraHttpRequestParams?: any): Observable<PaginatedResultOfShowAccountsReceivableDTO>;
+    apiAccountsReceivableGet(type?: string, transactionCategoryId?: string, amountMin?: ApiAccountsPayableGetAmountMinParameter, amountMax?: ApiAccountsPayableGetAmountMinParameter, transactionDateFrom?: string, transactionDateTo?: string, description?: string, paidAt?: string, page?: ApiFrequencyGetPageParameter, pageSize?: ApiFrequencyGetPageParameter, orderBy?: string, orderByDescending?: boolean, studentId?: string, contractId?: string, status?: string, overdueOnly?: boolean, extraHttpRequestParams?: any): Observable<PaginatedResultOfShowAccountsReceivableDTO>;
 
     /**
      * 
@@ -158,8 +160,9 @@ export interface AccountsReceivableServiceInterface {
      * @param studentId 
      * @param contractId 
      * @param status 
+     * @param overdueOnly 
      */
-    apiAccountsReceivableOverdueGet(type?: string, transactionCategoryId?: string, amountMin?: ApiAccountsPayableGetAmountMinParameter, amountMax?: ApiAccountsPayableGetAmountMinParameter, transactionDateFrom?: string, transactionDateTo?: string, description?: string, paidAt?: string, page?: ApiFrequencyGetPageParameter, pageSize?: ApiFrequencyGetPageParameter, orderBy?: string, orderByDescending?: boolean, studentId?: string, contractId?: string, status?: string, extraHttpRequestParams?: any): Observable<PaginatedResultOfShowAccountsReceivableDTO>;
+    apiAccountsReceivableOverdueGet(type?: string, transactionCategoryId?: string, amountMin?: ApiAccountsPayableGetAmountMinParameter, amountMax?: ApiAccountsPayableGetAmountMinParameter, transactionDateFrom?: string, transactionDateTo?: string, description?: string, paidAt?: string, page?: ApiFrequencyGetPageParameter, pageSize?: ApiFrequencyGetPageParameter, orderBy?: string, orderByDescending?: boolean, studentId?: string, contractId?: string, status?: string, overdueOnly?: boolean, extraHttpRequestParams?: any): Observable<PaginatedResultOfShowAccountsReceivableDTO>;
 
     /**
      * 
@@ -187,8 +190,9 @@ export interface AccountsReceivableServiceInterface {
      * @param studentId2 
      * @param contractId 
      * @param status 
+     * @param overdueOnly 
      */
-    apiAccountsReceivableStudentStudentIdGet(studentId: string, type?: string, transactionCategoryId?: string, amountMin?: ApiAccountsPayableGetAmountMinParameter, amountMax?: ApiAccountsPayableGetAmountMinParameter, transactionDateFrom?: string, transactionDateTo?: string, description?: string, paidAt?: string, page?: ApiFrequencyGetPageParameter, pageSize?: ApiFrequencyGetPageParameter, orderBy?: string, orderByDescending?: boolean, studentId2?: string, contractId?: string, status?: string, extraHttpRequestParams?: any): Observable<PaginatedResultOfShowAccountsReceivableDTO>;
+    apiAccountsReceivableStudentStudentIdGet(studentId: string, type?: string, transactionCategoryId?: string, amountMin?: ApiAccountsPayableGetAmountMinParameter, amountMax?: ApiAccountsPayableGetAmountMinParameter, transactionDateFrom?: string, transactionDateTo?: string, description?: string, paidAt?: string, page?: ApiFrequencyGetPageParameter, pageSize?: ApiFrequencyGetPageParameter, orderBy?: string, orderByDescending?: boolean, studentId2?: string, contractId?: string, status?: string, overdueOnly?: boolean, extraHttpRequestParams?: any): Observable<PaginatedResultOfShowAccountsReceivableDTO>;
 
     /**
      * 

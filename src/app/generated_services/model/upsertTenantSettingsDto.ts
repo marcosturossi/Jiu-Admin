@@ -8,17 +8,9 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { AsaasEnvironment } from './asaasEnvironment';
-import { PaymentGatewayProvider } from './paymentGatewayProvider';
-
-
-export interface UpsertTenantSettingsDto { 
-    paymentGateway: PaymentGatewayProvider | null;
-    asaasApiKey: string | null;
+export interface UpsertTenantSettingsDto {
+    paymentGateway: string | null;
+    credentials: { [key: string]: string; };
     webhookSecret: string | null;
-    asaasEnvironment: AsaasEnvironment | null;
 }
-export namespace UpsertTenantSettingsDto {
-}
-
 
