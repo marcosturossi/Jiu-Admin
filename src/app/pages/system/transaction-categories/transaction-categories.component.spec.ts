@@ -4,6 +4,7 @@ import { TransactionCategoriesComponent } from './transaction-categories.compone
 import { TransactionCategoryService, ShowTransactionCategoryDTO as ShowTransactionCategoryDTO } from '../../../generated_services';
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
+import { ConfirmService } from '../../../services/confirm.service';
 
 const MOCK_CATEGORY: ShowTransactionCategoryDTO = { id: 'cat1', name: 'Mensalidades', isActive: true };
 
@@ -20,11 +21,14 @@ describe('TransactionCategoriesComponent', () => {
   let categoryService: jasmine.SpyObj<TransactionCategoryService>;
   let ns: jasmine.SpyObj<NotificationService>;
   let subnavService: jasmine.SpyObj<SubnavService>;
+  let confirmService: jasmine.SpyObj<ConfirmService>;
 
   beforeEach(async () => {
     const categorySpy = jasmine.createSpyObj('TransactionCategoryService', ['apiTransactionCategoryGet', 'apiTransactionCategoryIdDelete']);
     const nsSpy = jasmine.createSpyObj('NotificationService', ['showSuccess', 'showError']);
     const subnavSpy = jasmine.createSpyObj('SubnavService', ['setTitle']);
+    const confirmSpy = jasmine.createSpyObj('ConfirmService', ['confirm']);
+    confirmSpy.confirm.and.returnValue(Promise.resolve(true));
     categorySpy.apiTransactionCategoryGet.and.callFake((...args: any[]) => of(buildResponse(Number(args[2] ?? 1), Number(args[3] ?? 10))));
 
     await TestBed.configureTestingModule({
@@ -33,6 +37,7 @@ describe('TransactionCategoriesComponent', () => {
         { provide: TransactionCategoryService, useValue: categorySpy },
         { provide: NotificationService, useValue: nsSpy },
         { provide: SubnavService, useValue: subnavSpy },
+        { provide: ConfirmService, useValue: confirmSpy },
       ],
     }).compileComponents();
 
@@ -41,6 +46,7 @@ describe('TransactionCategoriesComponent', () => {
     categoryService = TestBed.inject(TransactionCategoryService) as jasmine.SpyObj<TransactionCategoryService>;
     ns = TestBed.inject(NotificationService) as jasmine.SpyObj<NotificationService>;
     subnavService = TestBed.inject(SubnavService) as jasmine.SpyObj<SubnavService>;
+    confirmService = TestBed.inject(ConfirmService) as jasmine.SpyObj<ConfirmService>;
     fixture.detectChanges();
   });
 
@@ -65,27 +71,27 @@ describe('TransactionCategoriesComponent', () => {
 
   describe('delete', () => {
     beforeEach(() => {
-      spyOn(window, 'confirm').and.returnValue(true);
+      confirmService.confirm.and.returnValue(Promise.resolve(true));
       categoryService.apiTransactionCategoryIdDelete.and.returnValue(of(null as any));
       categoryService.apiTransactionCategoryGet.calls.reset();
     });
 
-    it('should delete category and reload on confirmation', () => {
-      (component as any).delete(MOCK_CATEGORY);
+    it('should delete category and reload on confirmation', async () => {
+      await (component as any).delete(MOCK_CATEGORY);
       expect(categoryService.apiTransactionCategoryIdDelete).toHaveBeenCalledWith(MOCK_CATEGORY.id!);
       expect(ns.showSuccess).toHaveBeenCalled();
       expect(categoryService.apiTransactionCategoryGet).toHaveBeenCalled();
     });
 
-    it('should not delete when confirmation is cancelled', () => {
-      (window.confirm as jasmine.Spy).and.returnValue(false);
-      (component as any).delete(MOCK_CATEGORY);
+    it('should not delete when confirmation is cancelled', async () => {
+      confirmService.confirm.and.returnValue(Promise.resolve(false));
+      await (component as any).delete(MOCK_CATEGORY);
       expect(categoryService.apiTransactionCategoryIdDelete).not.toHaveBeenCalled();
     });
 
-    it('should show error notification on delete failure', () => {
+    it('should show error notification on delete failure', async () => {
       categoryService.apiTransactionCategoryIdDelete.and.returnValue(throwError(() => new Error()));
-      (component as any).delete(MOCK_CATEGORY);
+      await (component as any).delete(MOCK_CATEGORY);
       expect(ns.showError).toHaveBeenCalled();
     });
   });

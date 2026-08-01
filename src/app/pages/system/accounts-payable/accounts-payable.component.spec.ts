@@ -11,6 +11,7 @@ import { AccountsPayableService } from '../../../generated_services/api/accounts
 import { TransactionCategoryService } from '../../../generated_services/api/transactionCategory.service';
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
+import { ConfirmService } from '../../../services/confirm.service';
 import { ShowAccountsPayableDTO, ShowTransactionCategoryDTO } from '../../../generated_services';
 
 const MOCK_ITEM: ShowAccountsPayableDTO = { id: 'p1', description: 'Aluguel', amount: 500 as any, transactionCategoryId: 'cat1' };
@@ -29,12 +30,15 @@ describe('AccountsPayableComponent', () => {
   let fixture: ComponentFixture<AccountsPayableComponent>;
   let accountsPayableService: jasmine.SpyObj<AccountsPayableService>;
   let ns: jasmine.SpyObj<NotificationService>;
+  let confirmService: jasmine.SpyObj<ConfirmService>;
 
   beforeEach(async () => {
     const apSpy = jasmine.createSpyObj('AccountsPayableService', ['apiAccountsPayableGet', 'apiAccountsPayableIdDelete']);
     const categorySpy = jasmine.createSpyObj('TransactionCategoryService', ['apiTransactionCategoryGet']);
     const nsSpy = jasmine.createSpyObj('NotificationService', ['showSuccess', 'showError']);
     const subnavSpy = jasmine.createSpyObj('SubnavService', ['setTitle']);
+    const confirmSpy = jasmine.createSpyObj('ConfirmService', ['confirm']);
+    confirmSpy.confirm.and.returnValue(Promise.resolve(true));
     // page is at arg index 7 (0-based), pageSize at 8
     apSpy.apiAccountsPayableGet.and.callFake((...args: any[]) => of(buildResponse(Number(args[7] ?? 1), Number(args[8] ?? 10))));
     categorySpy.apiTransactionCategoryGet.and.returnValue(of(MOCK_CATEGORY_RESPONSE));
@@ -48,6 +52,7 @@ describe('AccountsPayableComponent', () => {
         { provide: TransactionCategoryService, useValue: categorySpy },
         { provide: NotificationService, useValue: nsSpy },
         { provide: SubnavService, useValue: subnavSpy },
+        { provide: ConfirmService, useValue: confirmSpy },
       ],
     }).compileComponents();
 
@@ -55,6 +60,7 @@ describe('AccountsPayableComponent', () => {
     component = fixture.componentInstance;
     accountsPayableService = TestBed.inject(AccountsPayableService) as jasmine.SpyObj<AccountsPayableService>;
     ns = TestBed.inject(NotificationService) as jasmine.SpyObj<NotificationService>;
+    confirmService = TestBed.inject(ConfirmService) as jasmine.SpyObj<ConfirmService>;
     fixture.detectChanges();
   });
 
@@ -82,27 +88,27 @@ describe('AccountsPayableComponent', () => {
 
   describe('delete', () => {
     beforeEach(() => {
-      spyOn(window, 'confirm').and.returnValue(true);
+      confirmService.confirm.and.returnValue(Promise.resolve(true));
       accountsPayableService.apiAccountsPayableIdDelete.and.returnValue(of(null as any));
       accountsPayableService.apiAccountsPayableGet.calls.reset();
     });
 
-    it('should delete item and reload on confirmation', () => {
-      (component as any).delete(MOCK_ITEM);
+    it('should delete item and reload on confirmation', async () => {
+      await (component as any).delete(MOCK_ITEM);
       expect(accountsPayableService.apiAccountsPayableIdDelete).toHaveBeenCalledWith(MOCK_ITEM.id!);
       expect(ns.showSuccess).toHaveBeenCalled();
       expect(accountsPayableService.apiAccountsPayableGet).toHaveBeenCalled();
     });
 
-    it('should not delete when confirmation is cancelled', () => {
-      (window.confirm as jasmine.Spy).and.returnValue(false);
-      (component as any).delete(MOCK_ITEM);
+    it('should not delete when confirmation is cancelled', async () => {
+      confirmService.confirm.and.returnValue(Promise.resolve(false));
+      await (component as any).delete(MOCK_ITEM);
       expect(accountsPayableService.apiAccountsPayableIdDelete).not.toHaveBeenCalled();
     });
 
-    it('should show error notification on delete failure', () => {
+    it('should show error notification on delete failure', async () => {
       accountsPayableService.apiAccountsPayableIdDelete.and.returnValue(throwError(() => new Error()));
-      (component as any).delete(MOCK_ITEM);
+      await (component as any).delete(MOCK_ITEM);
       expect(ns.showError).toHaveBeenCalled();
     });
   });

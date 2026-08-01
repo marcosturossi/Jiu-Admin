@@ -9,14 +9,6 @@ api/accountsReceivable.service.ts
 api/accountsReceivable.serviceInterface.ts
 api/address.service.ts
 api/address.serviceInterface.ts
-api/adminAccountsReceivable.service.ts
-api/adminAccountsReceivable.serviceInterface.ts
-api/adminContract.service.ts
-api/adminContract.serviceInterface.ts
-api/adminNotification.service.ts
-api/adminNotification.serviceInterface.ts
-api/adminStudent.service.ts
-api/adminStudent.serviceInterface.ts
 api/api.ts
 api/belt.service.ts
 api/belt.serviceInterface.ts
@@ -42,6 +34,8 @@ api/individualPersons.service.ts
 api/individualPersons.serviceInterface.ts
 api/lesson.service.ts
 api/lesson.serviceInterface.ts
+api/lessonSchedule.service.ts
+api/lessonSchedule.serviceInterface.ts
 api/medicalClearance.service.ts
 api/medicalClearance.serviceInterface.ts
 api/notices.service.ts
@@ -52,6 +46,12 @@ api/paymentWebhook.service.ts
 api/paymentWebhook.serviceInterface.ts
 api/public.service.ts
 api/public.serviceInterface.ts
+api/publicContract.service.ts
+api/publicContract.serviceInterface.ts
+api/publicStudent.service.ts
+api/publicStudent.serviceInterface.ts
+api/scheduledJob.service.ts
+api/scheduledJob.serviceInterface.ts
 api/students.service.ts
 api/students.serviceInterface.ts
 api/supplier.service.ts
@@ -69,11 +69,10 @@ model/accountsReceivableSummaryDTO.ts
 model/addressFromApiDTO.ts
 model/addressType.ts
 model/apiAccountsPayableGetAmountMinParameter.ts
-model/apiAdminContractsSendRenewalWarningsPostDaysAheadParameter.ts
+model/apiDashboardAttendanceGetDaysParameter.ts
 model/apiFrequencyGetPageParameter.ts
 model/apiMedicalClearanceIdAttachmentUrlGetExpiryHoursParameter.ts
 model/barChartDataDTO.ts
-model/birthdayGreetingsResultDTO.ts
 model/chargeResult.ts
 model/chargeStatus.ts
 model/chargeStatusConfirmedValue.ts
@@ -93,6 +92,7 @@ model/createGraduationDTO.ts
 model/createGraduationRequirementDTO.ts
 model/createIndividualPersonDTO.ts
 model/createLessonDTO.ts
+model/createLessonScheduleDTO.ts
 model/createMedicalClearanceDto.ts
 model/createNoticeDto.ts
 model/createNotificationDto.ts
@@ -101,11 +101,11 @@ model/createStudentDTO.ts
 model/createSupplierDTO.ts
 model/createTransactionCategoryDTO.ts
 model/dashboardSummaryDTO.ts
+model/dayOfWeek.ts
 model/entityTagHeaderValue.ts
 model/feeStatus.ts
 model/fileResult.ts
 model/financialBalanceDTO.ts
-model/generateFinancialTransactionsResultDTO.ts
 model/markAsReadDto.ts
 model/medicalClearanceAttachmentResponseDto.ts
 model/medicalClearanceAttachmentResponseDtoSize.ts
@@ -125,6 +125,7 @@ model/paginatedResultOfShowGraduationDTO.ts
 model/paginatedResultOfShowGraduationRequirementDTO.ts
 model/paginatedResultOfShowIndividualPersonDTO.ts
 model/paginatedResultOfShowLessonDTO.ts
+model/paginatedResultOfShowLessonScheduleDTO.ts
 model/paginatedResultOfShowMedicalClearanceDto.ts
 model/paginatedResultOfShowNoticeDto.ts
 model/paginatedResultOfShowStudentDTO.ts
@@ -136,7 +137,7 @@ model/problemDetails.ts
 model/problemDetailsStatus.ts
 model/publicAcademyDto.ts
 model/relationshipType.ts
-model/renewalWarningsResultDTO.ts
+model/sendContractForConfirmationResultDTO.ts
 model/series.ts
 model/seriesDataInner.ts
 model/showAcademyDto.ts
@@ -146,6 +147,7 @@ model/showAddressDTO.ts
 model/showBeltDTO.ts
 model/showCompanyPersonDTO.ts
 model/showContractDTO.ts
+model/showContractVersionDTO.ts
 model/showFeePlanDTO.ts
 model/showFrequencyDTO.ts
 model/showFrequencyUntilNextGraduationDTO.ts
@@ -153,6 +155,7 @@ model/showGraduationDTO.ts
 model/showGraduationRequirementDTO.ts
 model/showIndividualPersonDTO.ts
 model/showLessonDTO.ts
+model/showLessonScheduleDTO.ts
 model/showMedicalClearanceDto.ts
 model/showMedicalClearanceDtoAttachmentSize.ts
 model/showNoticeDto.ts
@@ -162,6 +165,7 @@ model/showPaymentInformationDTO.ts
 model/showPersonDTO.ts
 model/showPersonRelationshipDTO.ts
 model/showRealmInfoDto.ts
+model/showScheduledJobDto.ts
 model/showStudentDTO.ts
 model/showSupplierDTO.ts
 model/showTenantSettingsDto.ts
@@ -171,6 +175,7 @@ model/stripesEnum.ts
 model/studentsBirthDay.ts
 model/testPaymentConnectionDto.ts
 model/testPaymentConnectionResultDto.ts
+model/toggleScheduledJobDto.ts
 model/topStudentDTO.ts
 model/transactionType.ts
 model/updateAcademyDto.ts
@@ -184,6 +189,7 @@ model/updateGraduationDTO.ts
 model/updateGraduationRequirementDTO.ts
 model/updateIndividualPersonDTO.ts
 model/updateLessonDTO.ts
+model/updateLessonScheduleDTO.ts
 model/updateMedicalClearanceDto.ts
 model/updateNoticeDto.ts
 model/updateNotificationDto.ts

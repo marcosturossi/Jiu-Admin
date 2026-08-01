@@ -211,6 +211,49 @@ test.describe('Contratos', () => {
     await deleteTestStudent(page, student.firstName);
   });
 
+  test('envia contrato para confirmação e exibe histórico de versões', async ({ page }) => {
+    const student = await createTestStudent(page);
+    const feePlan = await createTestFeePlan(page);
+
+    await page.goto('/system/contracts');
+    await waitForTableReady(page);
+    await openCreateModal(page, /Novo Contrato/i);
+    await selectFromSearchSelect(page, 'Aluno', student.lastName);
+    await selectFromSearchSelect(page, 'Plano de Pagamento', feePlan.name);
+    await page.locator('input[type="date"]').fill('2030-01-01');
+    await saveAndWaitModalClose(page);
+    await waitForTableReady(page);
+
+    const row = page.locator('tr', { hasText: student.lastName });
+    await expect(row).toBeVisible();
+    await expect(row).toContainText('Não confirmado');
+
+    // SEND FOR CONFIRMATION
+    await row.locator('button[title="Enviar para confirmação"]').click();
+    await expect(page.locator('.toast-success')).toBeVisible({ timeout: 10_000 });
+    // Sending doesn't confirm the contract by itself — badge stays "Não confirmado"
+    // until the client actually clicks the public confirmation link.
+    await expect(row).toContainText('Não confirmado');
+
+    // VERSION HISTORY
+    await row.locator('button[title="Histórico de versões"]').click();
+    const modal = page.locator('.modal.show').first();
+    await expect(modal).toBeVisible();
+    await expect(modal.locator('table tbody tr')).toHaveCount(1);
+    await expect(modal).toContainText('Aguardando confirmação');
+    await modal.locator('.modal-body button', { hasText: 'Fechar' }).click();
+    await expect(modal).not.toBeVisible();
+
+    // Sending again creates a second version — history grows, doesn't replace.
+    await row.locator('button[title="Enviar para confirmação"]').click();
+    await expect(page.locator('.toast-success').first()).toBeVisible({ timeout: 10_000 });
+    await row.locator('button[title="Histórico de versões"]').click();
+    await expect(page.locator('.modal.show table tbody tr')).toHaveCount(2);
+    await page.locator('.modal.show .modal-body button', { hasText: 'Fechar' }).click();
+
+    // NOTE: student/fee-plan intentionally not cleaned up — same FK constraint as the CRUD test above.
+  });
+
   test('exibe erro quando falha ao carregar a lista', async ({ page }) => {
     await page.route('**/api/Contract**', (route) => {
       if (route.request().method() === 'GET') {

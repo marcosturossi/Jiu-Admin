@@ -18,7 +18,7 @@ import { CustomHttpParameterCodec }                          from '../encoder';
 import { Observable }                                        from 'rxjs';
 
 // @ts-ignore
-import { ApiAdminContractsSendRenewalWarningsPostDaysAheadParameter } from '../model/apiAdminContractsSendRenewalWarningsPostDaysAheadParameter';
+import { ApiDashboardAttendanceGetDaysParameter } from '../model/apiDashboardAttendanceGetDaysParameter';
 // @ts-ignore
 import { ApiMedicalClearanceIdAttachmentUrlGetExpiryHoursParameter } from '../model/apiMedicalClearanceIdAttachmentUrlGetExpiryHoursParameter';
 // @ts-ignore
@@ -111,10 +111,10 @@ export class DashboardService implements DashboardServiceInterface {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiDashboardAttendanceGet(days?: ApiAdminContractsSendRenewalWarningsPostDaysAheadParameter, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<BarChartDataDTO>;
-    public apiDashboardAttendanceGet(days?: ApiAdminContractsSendRenewalWarningsPostDaysAheadParameter, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<BarChartDataDTO>>;
-    public apiDashboardAttendanceGet(days?: ApiAdminContractsSendRenewalWarningsPostDaysAheadParameter, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<BarChartDataDTO>>;
-    public apiDashboardAttendanceGet(days?: ApiAdminContractsSendRenewalWarningsPostDaysAheadParameter, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public apiDashboardAttendanceGet(days?: ApiDashboardAttendanceGetDaysParameter, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<BarChartDataDTO>;
+    public apiDashboardAttendanceGet(days?: ApiDashboardAttendanceGetDaysParameter, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<BarChartDataDTO>>;
+    public apiDashboardAttendanceGet(days?: ApiDashboardAttendanceGetDaysParameter, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<BarChartDataDTO>>;
+    public apiDashboardAttendanceGet(days?: ApiDashboardAttendanceGetDaysParameter, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
 
         let localVarQueryParameters = new HttpParams({encoder: this.encoder});
         if (days !== undefined && days !== null) {
@@ -178,10 +178,10 @@ export class DashboardService implements DashboardServiceInterface {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiDashboardBirthdaysGet(days?: ApiAdminContractsSendRenewalWarningsPostDaysAheadParameter, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Array<StudentsBirthDay>>;
-    public apiDashboardBirthdaysGet(days?: ApiAdminContractsSendRenewalWarningsPostDaysAheadParameter, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<StudentsBirthDay>>>;
-    public apiDashboardBirthdaysGet(days?: ApiAdminContractsSendRenewalWarningsPostDaysAheadParameter, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<StudentsBirthDay>>>;
-    public apiDashboardBirthdaysGet(days?: ApiAdminContractsSendRenewalWarningsPostDaysAheadParameter, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public apiDashboardBirthdaysGet(days?: ApiDashboardAttendanceGetDaysParameter, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Array<StudentsBirthDay>>;
+    public apiDashboardBirthdaysGet(days?: ApiDashboardAttendanceGetDaysParameter, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<StudentsBirthDay>>>;
+    public apiDashboardBirthdaysGet(days?: ApiDashboardAttendanceGetDaysParameter, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<StudentsBirthDay>>>;
+    public apiDashboardBirthdaysGet(days?: ApiDashboardAttendanceGetDaysParameter, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
 
         let localVarQueryParameters = new HttpParams({encoder: this.encoder});
         if (days !== undefined && days !== null) {
@@ -245,10 +245,10 @@ export class DashboardService implements DashboardServiceInterface {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiDashboardFrequencyBeltsDistributionGet(days?: ApiAdminContractsSendRenewalWarningsPostDaysAheadParameter, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<BarChartDataDTO>;
-    public apiDashboardFrequencyBeltsDistributionGet(days?: ApiAdminContractsSendRenewalWarningsPostDaysAheadParameter, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<BarChartDataDTO>>;
-    public apiDashboardFrequencyBeltsDistributionGet(days?: ApiAdminContractsSendRenewalWarningsPostDaysAheadParameter, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<BarChartDataDTO>>;
-    public apiDashboardFrequencyBeltsDistributionGet(days?: ApiAdminContractsSendRenewalWarningsPostDaysAheadParameter, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public apiDashboardFrequencyBeltsDistributionGet(days?: ApiDashboardAttendanceGetDaysParameter, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<BarChartDataDTO>;
+    public apiDashboardFrequencyBeltsDistributionGet(days?: ApiDashboardAttendanceGetDaysParameter, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<BarChartDataDTO>>;
+    public apiDashboardFrequencyBeltsDistributionGet(days?: ApiDashboardAttendanceGetDaysParameter, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<BarChartDataDTO>>;
+    public apiDashboardFrequencyBeltsDistributionGet(days?: ApiDashboardAttendanceGetDaysParameter, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
 
         let localVarQueryParameters = new HttpParams({encoder: this.encoder});
         if (days !== undefined && days !== null) {
@@ -438,10 +438,10 @@ export class DashboardService implements DashboardServiceInterface {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiDashboardTopStudentsGet(days?: ApiAdminContractsSendRenewalWarningsPostDaysAheadParameter, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Array<TopStudentDTO>>;
-    public apiDashboardTopStudentsGet(days?: ApiAdminContractsSendRenewalWarningsPostDaysAheadParameter, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<TopStudentDTO>>>;
-    public apiDashboardTopStudentsGet(days?: ApiAdminContractsSendRenewalWarningsPostDaysAheadParameter, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<TopStudentDTO>>>;
-    public apiDashboardTopStudentsGet(days?: ApiAdminContractsSendRenewalWarningsPostDaysAheadParameter, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public apiDashboardTopStudentsGet(days?: ApiDashboardAttendanceGetDaysParameter, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Array<TopStudentDTO>>;
+    public apiDashboardTopStudentsGet(days?: ApiDashboardAttendanceGetDaysParameter, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<TopStudentDTO>>>;
+    public apiDashboardTopStudentsGet(days?: ApiDashboardAttendanceGetDaysParameter, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<TopStudentDTO>>>;
+    public apiDashboardTopStudentsGet(days?: ApiDashboardAttendanceGetDaysParameter, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
 
         let localVarQueryParameters = new HttpParams({encoder: this.encoder});
         if (days !== undefined && days !== null) {

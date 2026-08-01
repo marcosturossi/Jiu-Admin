@@ -5,6 +5,7 @@ import { UpdatePersonsComponent } from './update-persons.component';
 import { PersonsService } from '../../../../generated_services/api2/api/persons.service';
 import { PersonDetailResponse } from '../../../../generated_services/api2/model/personDetailResponse';
 import { NotificationService } from '../../../../services/notification.service';
+import { ConfirmService } from '../../../../services/confirm.service';
 
 const MOCK_PERSON: PersonDetailResponse = { id: 'p1', name: 'Carlos Silva', created_at: '2024-01-01', updated_at: '2024-01-01', is_active: true, images: [] };
 
@@ -14,15 +15,19 @@ describe('UpdatePersonsComponent', () => {
   let componentRef: ComponentRef<UpdatePersonsComponent>;
   let personsService: jasmine.SpyObj<PersonsService>;
   let ns: jasmine.SpyObj<NotificationService>;
+  let confirmService: jasmine.SpyObj<ConfirmService>;
 
   beforeEach(async () => {
     const personsSpy = jasmine.createSpyObj('PersonsService', ['addPersonImagesApiV1PersonsPersonIdImagesPost', 'removePersonImageApiV1PersonsPersonIdImagesImageIdDelete']);
     const nsSpy = jasmine.createSpyObj('NotificationService', ['showSuccess', 'showError']);
+    const confirmSpy = jasmine.createSpyObj('ConfirmService', ['confirm']);
+    confirmSpy.confirm.and.returnValue(Promise.resolve(true));
     await TestBed.configureTestingModule({
       imports: [UpdatePersonsComponent],
       providers: [
         { provide: PersonsService, useValue: personsSpy },
         { provide: NotificationService, useValue: nsSpy },
+        { provide: ConfirmService, useValue: confirmSpy },
       ],
     }).compileComponents();
     fixture = TestBed.createComponent(UpdatePersonsComponent);
@@ -30,6 +35,7 @@ describe('UpdatePersonsComponent', () => {
     component = fixture.componentInstance;
     personsService = TestBed.inject(PersonsService) as jasmine.SpyObj<PersonsService>;
     ns = TestBed.inject(NotificationService) as jasmine.SpyObj<NotificationService>;
+    confirmService = TestBed.inject(ConfirmService) as jasmine.SpyObj<ConfirmService>;
     componentRef.setInput('person', MOCK_PERSON);
     fixture.detectChanges();
   });
@@ -64,12 +70,12 @@ describe('UpdatePersonsComponent', () => {
     expect(personsService.addPersonImagesApiV1PersonsPersonIdImagesPost).toHaveBeenCalledWith('p1', jasmine.any(Array));
   });
 
-  it('should remove image on removeImage confirmation', () => {
-    spyOn(window, 'confirm').and.returnValue(true);
+  it('should remove image on removeImage confirmation', async () => {
+    confirmService.confirm.and.returnValue(Promise.resolve(true));
     const mockImg = { id: 1, base64: 'data:image/png;base64,abc' };
     (component as any).existingImages.set([mockImg]);
     personsService.removePersonImageApiV1PersonsPersonIdImagesImageIdDelete.and.returnValue(of({} as any));
-    (component as any).removeImage(mockImg);
+    await (component as any).removeImage(mockImg);
     expect(personsService.removePersonImageApiV1PersonsPersonIdImagesImageIdDelete).toHaveBeenCalledWith('p1', 1);
     expect(ns.showSuccess).toHaveBeenCalled();
   });

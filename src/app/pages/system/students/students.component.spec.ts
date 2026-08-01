@@ -7,6 +7,7 @@ import { StudentsComponent } from './students.component';
 import { StudentsService } from '../../../generated_services/api/students.service';
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
+import { ConfirmService } from '../../../services/confirm.service';
 import { ShowStudentDTO } from '../../../generated_services/model/showStudentDTO';
 
 const MOCK_STUDENTS: ShowStudentDTO[] = Array.from({ length: 25 }, (_, i) => ({
@@ -31,6 +32,7 @@ describe('StudentsComponent', () => {
   let studentsService: jasmine.SpyObj<StudentsService>;
   let ns: jasmine.SpyObj<NotificationService>;
   let subnavService: jasmine.SpyObj<SubnavService>;
+  let confirmService: jasmine.SpyObj<ConfirmService>;
 
   let httpMock: HttpTestingController;
 
@@ -39,6 +41,8 @@ describe('StudentsComponent', () => {
     (studentsSpy as any).configuration = { basePath: 'http://localhost:8080' };
     const nsSpy = jasmine.createSpyObj('NotificationService', ['showSuccess', 'showError']);
     const subnavSpy = jasmine.createSpyObj('SubnavService', ['setTitle']);
+    const confirmSpy = jasmine.createSpyObj('ConfirmService', ['confirm']);
+    confirmSpy.confirm.and.returnValue(Promise.resolve(true));
     studentsSpy.apiStudentsGet.and.callFake((...args: any[]) => of(buildResponse(Number(args[6] ?? 1), Number(args[7] ?? 10))));
 
     await TestBed.configureTestingModule({
@@ -50,6 +54,7 @@ describe('StudentsComponent', () => {
         { provide: StudentsService, useValue: studentsSpy },
         { provide: NotificationService, useValue: nsSpy },
         { provide: SubnavService, useValue: subnavSpy },
+        { provide: ConfirmService, useValue: confirmSpy },
       ],
     }).compileComponents();
 
@@ -58,6 +63,7 @@ describe('StudentsComponent', () => {
     studentsService = TestBed.inject(StudentsService) as jasmine.SpyObj<StudentsService>;
     ns = TestBed.inject(NotificationService) as jasmine.SpyObj<NotificationService>;
     subnavService = TestBed.inject(SubnavService) as jasmine.SpyObj<SubnavService>;
+    confirmService = TestBed.inject(ConfirmService) as jasmine.SpyObj<ConfirmService>;
     httpMock = TestBed.inject(HttpTestingController);
     fixture.detectChanges();
   });
@@ -157,27 +163,27 @@ describe('StudentsComponent', () => {
 
   describe('delete', () => {
     beforeEach(() => {
-      spyOn(window, 'confirm').and.returnValue(true);
+      confirmService.confirm.and.returnValue(Promise.resolve(true));
       studentsService.apiStudentsIdDelete.and.returnValue(of(null as any));
       studentsService.apiStudentsGet.calls.reset();
     });
 
-    it('should delete student and reload on confirmation', () => {
-      (component as any).delete(MOCK_STUDENT);
+    it('should delete student and reload on confirmation', async () => {
+      await (component as any).delete(MOCK_STUDENT);
       expect(studentsService.apiStudentsIdDelete).toHaveBeenCalledWith(MOCK_STUDENT.id!);
       expect(ns.showSuccess).toHaveBeenCalled();
       expect(studentsService.apiStudentsGet).toHaveBeenCalled();
     });
 
-    it('should not delete when confirmation is cancelled', () => {
-      (window.confirm as jasmine.Spy).and.returnValue(false);
-      (component as any).delete(MOCK_STUDENT);
+    it('should not delete when confirmation is cancelled', async () => {
+      confirmService.confirm.and.returnValue(Promise.resolve(false));
+      await (component as any).delete(MOCK_STUDENT);
       expect(studentsService.apiStudentsIdDelete).not.toHaveBeenCalled();
     });
 
-    it('should show error notification on delete failure', () => {
+    it('should show error notification on delete failure', async () => {
       studentsService.apiStudentsIdDelete.and.returnValue(throwError(() => new Error()));
-      (component as any).delete(MOCK_STUDENT);
+      await (component as any).delete(MOCK_STUDENT);
       expect(ns.showError).toHaveBeenCalled();
     });
   });

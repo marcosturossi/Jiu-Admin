@@ -4,6 +4,7 @@ import { GraduationsComponent } from './graduations.component';
 import { GraduationService } from '../../../generated_services/api/graduation.service';
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
+import { ConfirmService } from '../../../services/confirm.service';
 import { ShowGraduationDTO as ShowGraduationDTO } from '../../../generated_services';
 
 const MOCK_GRADUATION: ShowGraduationDTO = { id: 'g1', studentId: 'student-1', beltId: 'belt-1', graduationDate: '2024-01-01' };
@@ -21,11 +22,14 @@ describe('GraduationsComponent', () => {
   let graduationService: jasmine.SpyObj<GraduationService>;
   let ns: jasmine.SpyObj<NotificationService>;
   let subnavService: jasmine.SpyObj<SubnavService>;
+  let confirmService: jasmine.SpyObj<ConfirmService>;
 
   beforeEach(async () => {
     const graduationSpy = jasmine.createSpyObj('GraduationService', ['apiGraduationGet', 'apiGraduationIdDelete']);
     const nsSpy = jasmine.createSpyObj('NotificationService', ['showSuccess', 'showError']);
     const subnavSpy = jasmine.createSpyObj('SubnavService', ['setTitle']);
+    const confirmSpy = jasmine.createSpyObj('ConfirmService', ['confirm']);
+    confirmSpy.confirm.and.returnValue(Promise.resolve(true));
     graduationSpy.apiGraduationGet.and.callFake((...args: any[]) => of(buildResponse(Number(args[4] ?? 1), Number(args[5] ?? 10))));
 
     await TestBed.configureTestingModule({
@@ -34,6 +38,7 @@ describe('GraduationsComponent', () => {
         { provide: GraduationService, useValue: graduationSpy },
         { provide: NotificationService, useValue: nsSpy },
         { provide: SubnavService, useValue: subnavSpy },
+        { provide: ConfirmService, useValue: confirmSpy },
       ],
     }).compileComponents();
 
@@ -42,6 +47,7 @@ describe('GraduationsComponent', () => {
     graduationService = TestBed.inject(GraduationService) as jasmine.SpyObj<GraduationService>;
     ns = TestBed.inject(NotificationService) as jasmine.SpyObj<NotificationService>;
     subnavService = TestBed.inject(SubnavService) as jasmine.SpyObj<SubnavService>;
+    confirmService = TestBed.inject(ConfirmService) as jasmine.SpyObj<ConfirmService>;
     fixture.detectChanges();
   });
 
@@ -66,27 +72,27 @@ describe('GraduationsComponent', () => {
 
   describe('delete', () => {
     beforeEach(() => {
-      spyOn(window, 'confirm').and.returnValue(true);
+      confirmService.confirm.and.returnValue(Promise.resolve(true));
       graduationService.apiGraduationIdDelete.and.returnValue(of(null as any));
       graduationService.apiGraduationGet.calls.reset();
     });
 
-    it('should delete graduation and reload on confirmation', () => {
-      (component as any).delete(MOCK_GRADUATION);
+    it('should delete graduation and reload on confirmation', async () => {
+      await (component as any).delete(MOCK_GRADUATION);
       expect(graduationService.apiGraduationIdDelete).toHaveBeenCalledWith(MOCK_GRADUATION.id!);
       expect(ns.showSuccess).toHaveBeenCalled();
       expect(graduationService.apiGraduationGet).toHaveBeenCalled();
     });
 
-    it('should not delete when confirmation is cancelled', () => {
-      (window.confirm as jasmine.Spy).and.returnValue(false);
-      (component as any).delete(MOCK_GRADUATION);
+    it('should not delete when confirmation is cancelled', async () => {
+      confirmService.confirm.and.returnValue(Promise.resolve(false));
+      await (component as any).delete(MOCK_GRADUATION);
       expect(graduationService.apiGraduationIdDelete).not.toHaveBeenCalled();
     });
 
-    it('should show error notification on delete failure', () => {
+    it('should show error notification on delete failure', async () => {
       graduationService.apiGraduationIdDelete.and.returnValue(throwError(() => new Error()));
-      (component as any).delete(MOCK_GRADUATION);
+      await (component as any).delete(MOCK_GRADUATION);
       expect(ns.showError).toHaveBeenCalled();
     });
   });

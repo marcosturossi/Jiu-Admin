@@ -1,9 +1,11 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { of, throwError } from 'rxjs';
+import { provideRouter } from '@angular/router';
 import { MedicalClearancesComponent } from './medical-clearances.component';
 import { MedicalClearanceService } from '../../../generated_services/api/medicalClearance.service';
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
+import { ConfirmService } from '../../../services/confirm.service';
 import { ShowMedicalClearanceDto } from '../../../generated_services/model/showMedicalClearanceDto';
 
 const MOCK_CLEARANCE: ShowMedicalClearanceDto = { id: 'mc1', studentId: 'student-1', expiresAt: '2025-01-01', isExpired: false, isExpiringSoon: false };
@@ -21,6 +23,7 @@ describe('MedicalClearancesComponent', () => {
   let medicalClearanceService: jasmine.SpyObj<MedicalClearanceService>;
   let ns: jasmine.SpyObj<NotificationService>;
   let subnavService: jasmine.SpyObj<SubnavService>;
+  let confirmService: jasmine.SpyObj<ConfirmService>;
 
   beforeEach(async () => {
     const clearanceSpy = jasmine.createSpyObj('MedicalClearanceService', [
@@ -30,14 +33,18 @@ describe('MedicalClearancesComponent', () => {
     ]);
     const nsSpy = jasmine.createSpyObj('NotificationService', ['showSuccess', 'showError']);
     const subnavSpy = jasmine.createSpyObj('SubnavService', ['setTitle']);
+    const confirmSpy = jasmine.createSpyObj('ConfirmService', ['confirm']);
+    confirmSpy.confirm.and.returnValue(Promise.resolve(true));
     clearanceSpy.apiMedicalClearanceGet.and.callFake((...args: any[]) => of(buildResponse(Number(args[8] ?? 1), Number(args[9] ?? 10))));
 
     await TestBed.configureTestingModule({
       imports: [MedicalClearancesComponent],
       providers: [
+        provideRouter([]),
         { provide: MedicalClearanceService, useValue: clearanceSpy },
         { provide: NotificationService, useValue: nsSpy },
         { provide: SubnavService, useValue: subnavSpy },
+        { provide: ConfirmService, useValue: confirmSpy },
       ],
     }).compileComponents();
 
@@ -46,6 +53,7 @@ describe('MedicalClearancesComponent', () => {
     medicalClearanceService = TestBed.inject(MedicalClearanceService) as jasmine.SpyObj<MedicalClearanceService>;
     ns = TestBed.inject(NotificationService) as jasmine.SpyObj<NotificationService>;
     subnavService = TestBed.inject(SubnavService) as jasmine.SpyObj<SubnavService>;
+    confirmService = TestBed.inject(ConfirmService) as jasmine.SpyObj<ConfirmService>;
     fixture.detectChanges();
   });
 
@@ -96,27 +104,27 @@ describe('MedicalClearancesComponent', () => {
 
   describe('deleteMedicalClearance', () => {
     beforeEach(() => {
-      spyOn(window, 'confirm').and.returnValue(true);
+      confirmService.confirm.and.returnValue(Promise.resolve(true));
       medicalClearanceService.apiMedicalClearanceIdDelete.and.returnValue(of(null as any));
       medicalClearanceService.apiMedicalClearanceGet.calls.reset();
     });
 
-    it('should delete clearance and reload on confirmation', () => {
-      (component as any).deleteMedicalClearance(MOCK_CLEARANCE);
+    it('should delete clearance and reload on confirmation', async () => {
+      await (component as any).deleteMedicalClearance(MOCK_CLEARANCE);
       expect(medicalClearanceService.apiMedicalClearanceIdDelete).toHaveBeenCalledWith(MOCK_CLEARANCE.id!);
       expect(ns.showSuccess).toHaveBeenCalled();
       expect(medicalClearanceService.apiMedicalClearanceGet).toHaveBeenCalled();
     });
 
-    it('should not delete when confirmation is cancelled', () => {
-      (window.confirm as jasmine.Spy).and.returnValue(false);
-      (component as any).deleteMedicalClearance(MOCK_CLEARANCE);
+    it('should not delete when confirmation is cancelled', async () => {
+      confirmService.confirm.and.returnValue(Promise.resolve(false));
+      await (component as any).deleteMedicalClearance(MOCK_CLEARANCE);
       expect(medicalClearanceService.apiMedicalClearanceIdDelete).not.toHaveBeenCalled();
     });
 
-    it('should show error notification on delete failure', () => {
+    it('should show error notification on delete failure', async () => {
       medicalClearanceService.apiMedicalClearanceIdDelete.and.returnValue(throwError(() => new Error()));
-      (component as any).deleteMedicalClearance(MOCK_CLEARANCE);
+      await (component as any).deleteMedicalClearance(MOCK_CLEARANCE);
       expect(ns.showError).toHaveBeenCalled();
     });
   });

@@ -42,8 +42,8 @@ describe('CreateFrequencyComponent', () => {
     expect((component as any).lessons().length).toBe(1);
   });
 
-  it('should initialize student form array matching students count', () => {
-    expect((component as any).studentsFormArray.length).toBe(1);
+  it('should have no students selected initially', () => {
+    expect((component as any).selectedStudentIds().size).toBe(0);
   });
 
   it('should be invalid when no lessonId is selected', () => {
@@ -66,8 +66,8 @@ describe('CreateFrequencyComponent', () => {
 
   it('should toggle select all students', () => {
     (component as any).toggleSelectAll();
-    expect((component as any).studentsFormArray.at(0).value).toBeTrue();
+    expect((component as any).selectedStudentIds().has('stu1')).toBeTrue();
     (component as any).toggleSelectAll();
-    expect((component as any).studentsFormArray.at(0).value).toBeFalse();
+    expect((component as any).selectedStudentIds().has('stu1')).toBeFalse();
   });
 });

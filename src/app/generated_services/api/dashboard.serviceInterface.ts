@@ -12,7 +12,7 @@ import { HttpHeaders }                                       from '@angular/comm
 
 import { Observable }                                        from 'rxjs';
 
-import { ApiAdminContractsSendRenewalWarningsPostDaysAheadParameter } from '../model/models';
+import { ApiDashboardAttendanceGetDaysParameter } from '../model/models';
 import { ApiMedicalClearanceIdAttachmentUrlGetExpiryHoursParameter } from '../model/models';
 import { BarChartDataDTO } from '../model/models';
 import { DashboardSummaryDTO } from '../model/models';
@@ -34,21 +34,21 @@ export interface DashboardServiceInterface {
      * 
      * @param days 
      */
-    apiDashboardAttendanceGet(days?: ApiAdminContractsSendRenewalWarningsPostDaysAheadParameter, extraHttpRequestParams?: any): Observable<BarChartDataDTO>;
+    apiDashboardAttendanceGet(days?: ApiDashboardAttendanceGetDaysParameter, extraHttpRequestParams?: any): Observable<BarChartDataDTO>;
 
     /**
      * 
      * 
      * @param days 
      */
-    apiDashboardBirthdaysGet(days?: ApiAdminContractsSendRenewalWarningsPostDaysAheadParameter, extraHttpRequestParams?: any): Observable<Array<StudentsBirthDay>>;
+    apiDashboardBirthdaysGet(days?: ApiDashboardAttendanceGetDaysParameter, extraHttpRequestParams?: any): Observable<Array<StudentsBirthDay>>;
 
     /**
      * 
      * 
      * @param days 
      */
-    apiDashboardFrequencyBeltsDistributionGet(days?: ApiAdminContractsSendRenewalWarningsPostDaysAheadParameter, extraHttpRequestParams?: any): Observable<BarChartDataDTO>;
+    apiDashboardFrequencyBeltsDistributionGet(days?: ApiDashboardAttendanceGetDaysParameter, extraHttpRequestParams?: any): Observable<BarChartDataDTO>;
 
     /**
      * 
@@ -68,6 +68,6 @@ export interface DashboardServiceInterface {
      * 
      * @param days 
      */
-    apiDashboardTopStudentsGet(days?: ApiAdminContractsSendRenewalWarningsPostDaysAheadParameter, extraHttpRequestParams?: any): Observable<Array<TopStudentDTO>>;
+    apiDashboardTopStudentsGet(days?: ApiDashboardAttendanceGetDaysParameter, extraHttpRequestParams?: any): Observable<Array<TopStudentDTO>>;
 
 }

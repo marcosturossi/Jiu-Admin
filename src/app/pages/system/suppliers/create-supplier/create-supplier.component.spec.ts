@@ -42,7 +42,11 @@ describe('CreateSupplierComponent', () => {
 
   it('should call apiSupplierPost on valid form and show success', () => {
     supplierSpy.apiSupplierPost.and.returnValue(of({} as any));
-    (component as any).form.patchValue({ name: 'Fornecedor X', email: 'fx@test.com' });
+    (component as any).form.patchValue({ personType: 'company' });
+    (component as any).onPersonTypeChange('company');
+    (component as any).form.get('companyPerson')?.patchValue({
+      name: 'Fornecedor X', email: 'fx@test.com', foundedIn: '2020-01-01', cnpj: '12345678901234',
+    });
     (component as any).save();
     expect(supplierSpy.apiSupplierPost).toHaveBeenCalled();
     expect(notifySpy.showSuccess).toHaveBeenCalled();
@@ -50,7 +54,11 @@ describe('CreateSupplierComponent', () => {
 
   it('should show error on apiSupplierPost failure', () => {
     supplierSpy.apiSupplierPost.and.returnValue(throwError(() => new Error()));
-    (component as any).form.patchValue({ name: 'Fornecedor X', email: 'fx@test.com' });
+    (component as any).form.patchValue({ personType: 'company' });
+    (component as any).onPersonTypeChange('company');
+    (component as any).form.get('companyPerson')?.patchValue({
+      name: 'Fornecedor X', email: 'fx@test.com', foundedIn: '2020-01-01', cnpj: '12345678901234',
+    });
     (component as any).save();
     expect(notifySpy.showError).toHaveBeenCalled();
   });

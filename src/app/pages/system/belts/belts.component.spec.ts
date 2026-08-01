@@ -4,6 +4,7 @@ import { BeltsComponent } from './belts.component';
 import { BeltService } from '../../../generated_services/api/belt.service';
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
+import { ConfirmService } from '../../../services/confirm.service';
 import { ShowBeltDTO } from '../../../generated_services/model/showBeltDTO';
 
 const MOCK_BELT: ShowBeltDTO = { id: 'b1', color: 'Branca', orderIndex: 1, isForKids: false };
@@ -21,11 +22,14 @@ describe('BeltsComponent', () => {
   let beltService: jasmine.SpyObj<BeltService>;
   let ns: jasmine.SpyObj<NotificationService>;
   let subnavService: jasmine.SpyObj<SubnavService>;
+  let confirmService: jasmine.SpyObj<ConfirmService>;
 
   beforeEach(async () => {
     const beltSpy = jasmine.createSpyObj('BeltService', ['apiBeltGet', 'apiBeltIdDelete']);
     const nsSpy = jasmine.createSpyObj('NotificationService', ['showSuccess', 'showError']);
     const subnavSpy = jasmine.createSpyObj('SubnavService', ['setTitle']);
+    const confirmSpy = jasmine.createSpyObj('ConfirmService', ['confirm']);
+    confirmSpy.confirm.and.returnValue(Promise.resolve(true));
     beltSpy.apiBeltGet.and.callFake((...args: any[]) => of(buildResponse(Number(args[4] ?? 1), Number(args[5] ?? 10))));
 
     await TestBed.configureTestingModule({
@@ -34,6 +38,7 @@ describe('BeltsComponent', () => {
         { provide: BeltService, useValue: beltSpy },
         { provide: NotificationService, useValue: nsSpy },
         { provide: SubnavService, useValue: subnavSpy },
+        { provide: ConfirmService, useValue: confirmSpy },
       ],
     }).compileComponents();
 
@@ -42,6 +47,7 @@ describe('BeltsComponent', () => {
     beltService = TestBed.inject(BeltService) as jasmine.SpyObj<BeltService>;
     ns = TestBed.inject(NotificationService) as jasmine.SpyObj<NotificationService>;
     subnavService = TestBed.inject(SubnavService) as jasmine.SpyObj<SubnavService>;
+    confirmService = TestBed.inject(ConfirmService) as jasmine.SpyObj<ConfirmService>;
     fixture.detectChanges();
   });
 
@@ -66,27 +72,27 @@ describe('BeltsComponent', () => {
 
   describe('delete', () => {
     beforeEach(() => {
-      spyOn(window, 'confirm').and.returnValue(true);
+      confirmService.confirm.and.returnValue(Promise.resolve(true));
       beltService.apiBeltIdDelete.and.returnValue(of(null as any));
       beltService.apiBeltGet.calls.reset();
     });
 
-    it('should delete belt and reload on confirmation', () => {
-      (component as any).delete(MOCK_BELT);
+    it('should delete belt and reload on confirmation', async () => {
+      await (component as any).delete(MOCK_BELT);
       expect(beltService.apiBeltIdDelete).toHaveBeenCalledWith(MOCK_BELT.id!);
       expect(ns.showSuccess).toHaveBeenCalled();
       expect(beltService.apiBeltGet).toHaveBeenCalled();
     });
 
-    it('should not delete when confirmation is cancelled', () => {
-      (window.confirm as jasmine.Spy).and.returnValue(false);
-      (component as any).delete(MOCK_BELT);
+    it('should not delete when confirmation is cancelled', async () => {
+      confirmService.confirm.and.returnValue(Promise.resolve(false));
+      await (component as any).delete(MOCK_BELT);
       expect(beltService.apiBeltIdDelete).not.toHaveBeenCalled();
     });
 
-    it('should show error notification on delete failure', () => {
+    it('should show error notification on delete failure', async () => {
       beltService.apiBeltIdDelete.and.returnValue(throwError(() => new Error()));
-      (component as any).delete(MOCK_BELT);
+      await (component as any).delete(MOCK_BELT);
       expect(ns.showError).toHaveBeenCalled();
     });
   });

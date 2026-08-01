@@ -4,6 +4,7 @@ import { GraduationRequirementsComponent } from './graduation-requirements.compo
 import { GraduationRequirementsService, ShowGraduationRequirementDTO as ShowGraduationRequirementsDTO } from '../../../generated_services';
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
+import { ConfirmService } from '../../../services/confirm.service';
 
 const MOCK_REQUIREMENT: ShowGraduationRequirementsDTO = { id: 'r1', beltId: 'belt-1', description: 'Mínimo 100 aulas', minimumClasses: 100 };
 const MOCK_ITEMS = Array.from({ length: 25 }, (_, i) => ({ ...MOCK_REQUIREMENT, id: `r${i + 1}` }));
@@ -19,11 +20,14 @@ describe('GraduationRequirementsComponent', () => {
   let requirementsService: jasmine.SpyObj<GraduationRequirementsService>;
   let ns: jasmine.SpyObj<NotificationService>;
   let subnavService: jasmine.SpyObj<SubnavService>;
+  let confirmService: jasmine.SpyObj<ConfirmService>;
 
   beforeEach(async () => {
     const reqSpy = jasmine.createSpyObj('GraduationRequirementsService', ['apiGraduationRequirementsGet', 'apiGraduationRequirementsIdDelete']);
     const nsSpy = jasmine.createSpyObj('NotificationService', ['showSuccess', 'showError']);
     const subnavSpy = jasmine.createSpyObj('SubnavService', ['setTitle']);
+    const confirmSpy = jasmine.createSpyObj('ConfirmService', ['confirm']);
+    confirmSpy.confirm.and.returnValue(Promise.resolve(true));
     reqSpy.apiGraduationRequirementsGet.and.callFake((...args: any[]) => of(buildResponse(Number(args[4] ?? 1), Number(args[5] ?? 10))));
 
     await TestBed.configureTestingModule({
@@ -32,6 +36,7 @@ describe('GraduationRequirementsComponent', () => {
         { provide: GraduationRequirementsService, useValue: reqSpy },
         { provide: NotificationService, useValue: nsSpy },
         { provide: SubnavService, useValue: subnavSpy },
+        { provide: ConfirmService, useValue: confirmSpy },
       ],
     }).compileComponents();
 
@@ -40,6 +45,7 @@ describe('GraduationRequirementsComponent', () => {
     requirementsService = TestBed.inject(GraduationRequirementsService) as jasmine.SpyObj<GraduationRequirementsService>;
     ns = TestBed.inject(NotificationService) as jasmine.SpyObj<NotificationService>;
     subnavService = TestBed.inject(SubnavService) as jasmine.SpyObj<SubnavService>;
+    confirmService = TestBed.inject(ConfirmService) as jasmine.SpyObj<ConfirmService>;
     fixture.detectChanges();
   });
 
@@ -92,27 +98,27 @@ describe('GraduationRequirementsComponent', () => {
 
   describe('delete', () => {
     beforeEach(() => {
-      spyOn(window, 'confirm').and.returnValue(true);
+      confirmService.confirm.and.returnValue(Promise.resolve(true));
       requirementsService.apiGraduationRequirementsIdDelete.and.returnValue(of(null as any));
       requirementsService.apiGraduationRequirementsGet.calls.reset();
     });
 
-    it('should delete requirement and reload on confirmation', () => {
-      (component as any).delete(MOCK_REQUIREMENT);
+    it('should delete requirement and reload on confirmation', async () => {
+      await (component as any).delete(MOCK_REQUIREMENT);
       expect(requirementsService.apiGraduationRequirementsIdDelete).toHaveBeenCalledWith(MOCK_REQUIREMENT.id!);
       expect(ns.showSuccess).toHaveBeenCalled();
       expect(requirementsService.apiGraduationRequirementsGet).toHaveBeenCalled();
     });
 
-    it('should not delete when confirmation is cancelled', () => {
-      (window.confirm as jasmine.Spy).and.returnValue(false);
-      (component as any).delete(MOCK_REQUIREMENT);
+    it('should not delete when confirmation is cancelled', async () => {
+      confirmService.confirm.and.returnValue(Promise.resolve(false));
+      await (component as any).delete(MOCK_REQUIREMENT);
       expect(requirementsService.apiGraduationRequirementsIdDelete).not.toHaveBeenCalled();
     });
 
-    it('should show error notification on delete failure', () => {
+    it('should show error notification on delete failure', async () => {
       requirementsService.apiGraduationRequirementsIdDelete.and.returnValue(throwError(() => new Error()));
-      (component as any).delete(MOCK_REQUIREMENT);
+      await (component as any).delete(MOCK_REQUIREMENT);
       expect(ns.showError).toHaveBeenCalled();
     });
   });

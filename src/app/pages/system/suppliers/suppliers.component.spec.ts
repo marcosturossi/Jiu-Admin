@@ -7,6 +7,7 @@ import { SuppliersComponent } from './suppliers.component';
 import { SupplierService } from '../../../generated_services/api/supplier.service';
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
+import { ConfirmService } from '../../../services/confirm.service';
 
 const MOCK_SUPPLIERS = Array.from({ length: 5 }, (_, i) => ({
   id: `sup${i + 1}`,
@@ -27,11 +28,14 @@ describe('SuppliersComponent', () => {
   let supplierService: jasmine.SpyObj<SupplierService>;
   let notifySpy: jasmine.SpyObj<NotificationService>;
   let subnavSpy: jasmine.SpyObj<SubnavService>;
+  let confirmService: jasmine.SpyObj<ConfirmService>;
 
   beforeEach(async () => {
     const supplierSpy = jasmine.createSpyObj('SupplierService', ['apiSupplierGet', 'apiSupplierIdDelete']);
     const nsSpy = jasmine.createSpyObj('NotificationService', ['showSuccess', 'showError']);
     const subSpy = jasmine.createSpyObj('SubnavService', ['setTitle']);
+    const confirmSpy = jasmine.createSpyObj('ConfirmService', ['confirm']);
+    confirmSpy.confirm.and.returnValue(Promise.resolve(true));
 
     supplierSpy.apiSupplierGet.and.returnValue(of(buildResponse()) as any);
 
@@ -43,6 +47,7 @@ describe('SuppliersComponent', () => {
         { provide: SupplierService, useValue: supplierSpy },
         { provide: NotificationService, useValue: nsSpy },
         { provide: SubnavService, useValue: subSpy },
+        { provide: ConfirmService, useValue: confirmSpy },
       ],
     }).compileComponents();
 
@@ -51,6 +56,7 @@ describe('SuppliersComponent', () => {
     supplierService = TestBed.inject(SupplierService) as jasmine.SpyObj<SupplierService>;
     notifySpy = TestBed.inject(NotificationService) as jasmine.SpyObj<NotificationService>;
     subnavSpy = TestBed.inject(SubnavService) as jasmine.SpyObj<SubnavService>;
+    confirmService = TestBed.inject(ConfirmService) as jasmine.SpyObj<ConfirmService>;
     fixture.detectChanges();
   });
 
@@ -105,27 +111,27 @@ describe('SuppliersComponent', () => {
 
   describe('delete', () => {
     beforeEach(() => {
-      spyOn(window, 'confirm').and.returnValue(true);
+      confirmService.confirm.and.returnValue(Promise.resolve(true));
       supplierService.apiSupplierIdDelete.and.returnValue(of(null as any));
       supplierService.apiSupplierGet.calls.reset();
     });
 
-    it('should delete supplier and reload on confirmation', () => {
-      (component as any).delete(MOCK_SUPPLIERS[0]);
+    it('should delete supplier and reload on confirmation', async () => {
+      await (component as any).delete(MOCK_SUPPLIERS[0]);
       expect(supplierService.apiSupplierIdDelete).toHaveBeenCalledWith('sup1');
       expect(notifySpy.showSuccess).toHaveBeenCalled();
       expect(supplierService.apiSupplierGet).toHaveBeenCalled();
     });
 
-    it('should not delete when confirmation is cancelled', () => {
-      (window.confirm as jasmine.Spy).and.returnValue(false);
-      (component as any).delete(MOCK_SUPPLIERS[0]);
+    it('should not delete when confirmation is cancelled', async () => {
+      confirmService.confirm.and.returnValue(Promise.resolve(false));
+      await (component as any).delete(MOCK_SUPPLIERS[0]);
       expect(supplierService.apiSupplierIdDelete).not.toHaveBeenCalled();
     });
 
-    it('should show error notification on delete failure', () => {
+    it('should show error notification on delete failure', async () => {
       supplierService.apiSupplierIdDelete.and.returnValue(throwError(() => new Error()));
-      (component as any).delete(MOCK_SUPPLIERS[0]);
+      await (component as any).delete(MOCK_SUPPLIERS[0]);
       expect(notifySpy.showError).toHaveBeenCalled();
     });
   });

@@ -65,6 +65,7 @@ export const NAV_SECTIONS: NavSection[] = [
     groupIcon: 'bi bi-gear',
     items: [
       { route: '/system/payment-settings', label: 'Pagamentos', icon: 'bi bi-credit-card' },
+      { route: '/system/scheduled-jobs', label: 'Jobs Agendados', icon: 'bi bi-clock-history' },
     ]
   },
 ];

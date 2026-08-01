@@ -164,6 +164,37 @@ test.describe('Alunos — CRUD', () => {
     await expect(saveButton).toBeEnabled();
   });
 
+  test('exibe badge de confirmação pendente e permite reenviar', async ({ page }) => {
+    const ts = Date.now();
+    const firstName = `E2EVerify${ts}`;
+    const lastName = `Aux${ts}`;
+    await page.getByRole('button', { name: /Novo Aluno/i }).click();
+    await expect(page.locator('.modal.show')).toBeVisible();
+    await page.getByLabel('Usuário *').fill(`e2e_verify_${ts}`);
+    await page.getByLabel('E-mail *').fill(`e2e_verify_${ts}@teste.com`);
+    await page.locator('#firstName').fill(firstName);
+    await page.locator('#lastName').fill(lastName);
+    await page.locator('#cpf').fill(generateValidCpf());
+    await page.locator('#birthDay').fill('1990-05-15');
+    await page.locator('#phoneNumber').fill('11999998888');
+    await page.getByRole('button', { name: /Salvar/i }).click();
+    await expect(page.locator('.modal.show')).not.toBeVisible({ timeout: 10_000 });
+    await waitForGridReady(page);
+
+    await page.getByPlaceholder('Buscar por nome do aluno').fill(firstName);
+    await page.waitForTimeout(500);
+    await waitForGridReady(page);
+    const card = page.locator('.student-card', { hasText: lastName });
+    await expect(card).toBeVisible({ timeout: 8_000 });
+
+    // A brand-new student has no Keycloak account yet — pending confirmation.
+    await expect(card.getByText('Aguardando confirmação')).toBeVisible();
+    await expect(card.locator('button[title="Reenviar confirmação"]')).toBeVisible();
+
+    await card.locator('button[title="Reenviar confirmação"]').click();
+    await expect(page.locator('.toast-success')).toBeVisible({ timeout: 10_000 });
+  });
+
   test('exibe erro quando falha ao excluir', async ({ page }) => {
     const ts = Date.now();
     const firstName = `E2EDelErr${ts}`;

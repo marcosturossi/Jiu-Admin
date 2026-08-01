@@ -17,7 +17,9 @@ import { ContractStatus } from '../model/models';
 import { CreateContractDTO } from '../model/models';
 import { PaginatedResultOfShowContractDTO } from '../model/models';
 import { ProblemDetails } from '../model/models';
+import { SendContractForConfirmationResultDTO } from '../model/models';
 import { ShowContractDTO } from '../model/models';
+import { ShowContractVersionDTO } from '../model/models';
 import { UpdateContractStatusRequest } from '../model/models';
 import { ValidationProblemDetails } from '../model/models';
 
@@ -65,9 +67,23 @@ export interface ContractServiceInterface {
      * 
      * 
      * @param id 
+     */
+    apiContractIdSendForConfirmationPost(id: string, extraHttpRequestParams?: any): Observable<SendContractForConfirmationResultDTO>;
+
+    /**
+     * 
+     * 
+     * @param id 
      * @param updateContractStatusRequest 
      */
     apiContractIdStatusPatch(id: string, updateContractStatusRequest: UpdateContractStatusRequest, extraHttpRequestParams?: any): Observable<ShowContractDTO>;
+
+    /**
+     * 
+     * 
+     * @param id 
+     */
+    apiContractIdVersionsGet(id: string, extraHttpRequestParams?: any): Observable<Array<ShowContractVersionDTO>>;
 
     /**
      * 

@@ -28,6 +28,7 @@ import { StudentOnboardingComponent } from './student-onboarding/student-onboard
 import { FinanceDashboardComponent } from './finance-dashboard/finance-dashboard.component';
 import { SuppliersComponent } from './suppliers/suppliers.component';
 import { PaymentSettingsComponent } from './payment-settings/payment-settings.component';
+import { ScheduledJobsComponent } from './scheduled-jobs/scheduled-jobs.component';
 
 export const routes: Routes = [
   {
@@ -67,6 +68,7 @@ export const routes: Routes = [
       // Configurações
       { path: 'academies', component: AcademiesComponent },
       { path: 'payment-settings', component: PaymentSettingsComponent },
+      { path: 'scheduled-jobs', component: ScheduledJobsComponent },
     ]
   }
 ];

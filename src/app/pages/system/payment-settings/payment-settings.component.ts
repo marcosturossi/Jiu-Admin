@@ -54,6 +54,7 @@ export class PaymentSettingsComponent implements OnInit {
     asaasApiKey: [''],
     webhookSecret: [''],
     asaasEnvironment: ['Sandbox' as string, Validators.required],
+    contractTermsTemplate: [''],
   });
 
   ngOnInit(): void {
@@ -83,6 +84,7 @@ export class PaymentSettingsComponent implements OnInit {
         this.form.patchValue({
           paymentGateway: settings.paymentGateway ?? NONE_PROVIDER_VALUE,
           webhookSecret: settings.webhookSecret ?? '',
+          contractTermsTemplate: settings.contractTermsTemplate ?? '',
         });
         // Only fields the user actually edits after this point should be sent on save — the API
         // treats an untouched field as "leave as-is", since webhookSecret comes back masked and
@@ -159,7 +161,7 @@ export class PaymentSettingsComponent implements OnInit {
       next: (settings) => {
         this.isSaving.set(false);
         this.hasCredentialsConfigured.set(settings.hasCredentialsConfigured ?? false);
-        this.form.patchValue({ asaasApiKey: '', webhookSecret: settings.webhookSecret ?? '' });
+        this.form.patchValue({ asaasApiKey: '', webhookSecret: settings.webhookSecret ?? '', contractTermsTemplate: settings.contractTermsTemplate ?? '' });
         this.form.markAsPristine();
         this.notificationService.showSuccess('Configurações Salvas!', 'As configurações de pagamento foram atualizadas com sucesso.');
       },
@@ -182,6 +184,7 @@ export class PaymentSettingsComponent implements OnInit {
     const v = this.form.value;
     const paymentGatewayControl = this.form.get('paymentGateway');
     const webhookSecretControl = this.form.get('webhookSecret');
+    const contractTermsTemplateControl = this.form.get('contractTermsTemplate');
 
     const credentials = this.isAsaasSelected()
       ? { apiKey: (v.asaasApiKey ?? '').trim(), environment: v.asaasEnvironment ?? 'Sandbox' }
@@ -193,6 +196,7 @@ export class PaymentSettingsComponent implements OnInit {
       paymentGateway: paymentGatewayControl?.dirty ? (v.paymentGateway || null) : null,
       credentials,
       webhookSecret: webhookSecretControl?.dirty ? (v.webhookSecret || null) : null,
+      contractTermsTemplate: contractTermsTemplateControl?.dirty ? (v.contractTermsTemplate || null) : null,
     };
   }
 }

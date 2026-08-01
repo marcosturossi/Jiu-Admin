@@ -13,8 +13,9 @@ import { FilterField, FilterOutput } from '../../../shared/filter/filter.types';
 import { PaginationComponent } from '../../../shared/pagination/pagination.component';
 import { CreateContractComponent } from './create-contract/create-contract.component';
 import { UpdateContractComponent } from './update-contract/update-contract.component';
+import { ContractVersionsComponent } from './contract-versions/contract-versions.component';
 import { PageResult } from '../../../utils/page-result';
-import { contractStatusBadge } from '../../../shared/status-badge';
+import { contractStatusBadge, BadgeInfo } from '../../../shared/status-badge';
 
 @Component({
   selector: 'app-contracts',
@@ -27,6 +28,7 @@ import { contractStatusBadge } from '../../../shared/status-badge';
     PaginationComponent,
     CreateContractComponent,
     UpdateContractComponent,
+    ContractVersionsComponent,
   ],
   templateUrl: './contracts.component.html',
   styleUrl: './contracts.component.scss',
@@ -43,7 +45,9 @@ export class ContractsComponent {
   protected readonly items = signal<PageResult<ShowContractDTO> | null>(null);
   protected readonly openedCreate = signal(false);
   protected readonly openedUpdate = signal(false);
+  protected readonly openedVersions = signal(false);
   protected readonly selected = signal<ShowContractDTO | null>(null);
+  protected readonly sendingId = signal<string | null>(null);
   protected readonly currentPage = signal(1);
   protected readonly pageSize = signal(10);
   protected readonly filterStatus = signal<ContractStatus | undefined>(undefined);
@@ -97,6 +101,12 @@ export class ContractsComponent {
     return id ? (this.studentMap().get(id) ?? id) : '—';
   }
 
+  protected getConfirmationBadge(contract: ShowContractDTO): BadgeInfo {
+    return contract.acceptedVersionId
+      ? { cssClass: 'bg-success', label: 'Confirmado' }
+      : { cssClass: 'bg-secondary', label: 'Não confirmado' };
+  }
+
   protected onPageChange(page: number): void { this.currentPage.set(page); this.load(); }
   protected onPageSizeChange(size: number): void { this.pageSize.set(size); this.currentPage.set(1); this.load(); }
   protected onFilterChange(output: FilterOutput): void {
@@ -106,8 +116,23 @@ export class ContractsComponent {
   }
   protected openCreate(): void { this.openedCreate.set(true); }
   protected openEdit(item: ShowContractDTO): void { this.selected.set(item); this.openedUpdate.set(true); }
+  protected openVersions(item: ShowContractDTO): void { this.selected.set(item); this.openedVersions.set(true); }
   protected onCreated(): void { this.openedCreate.set(false); this.load(); }
   protected onUpdated(): void { this.openedUpdate.set(false); this.load(); }
+
+  protected sendForConfirmation(item: ShowContractDTO): void {
+    this.sendingId.set(item.id!);
+    this.contractService.apiContractIdSendForConfirmationPost(item.id!).subscribe({
+      next: () => {
+        this.sendingId.set(null);
+        this.ns.showSuccess('Enviado!', 'O contrato foi enviado para confirmação do aluno por e-mail.');
+      },
+      error: (err) => {
+        this.sendingId.set(null);
+        this.ns.showError('Erro ao Enviar!', extractErrorMessage(err, 'Não foi possível enviar o contrato para confirmação.'));
+      },
+    });
+  }
 
   protected async delete(item: ShowContractDTO): Promise<void> {
     const ok = await this.confirmService.confirm('Tem certeza que deseja excluir este contrato?');

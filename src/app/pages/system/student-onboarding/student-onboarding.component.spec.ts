@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { StudentOnboardingComponent } from './student-onboarding.component';
 import { SubnavService } from '../../../services/subnav.service';
 import { StudentsService } from '../../../generated_services/api/students.service';
+import { NotificationService } from '../../../services/notification.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { provideHttpClient } from '@angular/common/http';
@@ -11,16 +12,19 @@ describe('StudentOnboardingComponent', () => {
   let fixture: ComponentFixture<StudentOnboardingComponent>;
   let subnavService: jasmine.SpyObj<SubnavService>;
   let studentsService: jasmine.SpyObj<StudentsService>;
+  let notificationService: jasmine.SpyObj<NotificationService>;
 
   beforeEach(async () => {
     subnavService = jasmine.createSpyObj('SubnavService', ['setTitle']);
     studentsService = jasmine.createSpyObj('StudentsService', ['apiStudentsPost']);
+    notificationService = jasmine.createSpyObj('NotificationService', ['showSuccess', 'showError', 'showWarning', 'showInfo']);
 
     await TestBed.configureTestingModule({
       imports: [StudentOnboardingComponent, CommonModule, FormsModule],
       providers: [
         { provide: SubnavService, useValue: subnavService },
         { provide: StudentsService, useValue: studentsService },
+        { provide: NotificationService, useValue: notificationService },
         provideHttpClient(),
       ],
     }).compileComponents();

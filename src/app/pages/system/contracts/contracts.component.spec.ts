@@ -3,6 +3,7 @@ import { of, throwError } from 'rxjs';
 import { registerLocaleData } from '@angular/common';
 import localePt from '@angular/common/locales/pt';
 import { LOCALE_ID } from '@angular/core';
+import { provideRouter } from '@angular/router';
 import { ContractsComponent } from './contracts.component';
 
 registerLocaleData(localePt, 'pt-BR');
@@ -10,6 +11,7 @@ import { ContractService } from '../../../generated_services/api/contract.servic
 import { StudentsService } from '../../../generated_services/api/students.service';
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
+import { ConfirmService } from '../../../services/confirm.service';
 import { ShowContractDTO as ShowContractDTO, ContractStatus as ContractStatus } from '../../../generated_services';
 import { ShowStudentDTO } from '../../../generated_services/model/showStudentDTO';
 
@@ -31,23 +33,28 @@ describe('ContractsComponent', () => {
   let studentsService: jasmine.SpyObj<StudentsService>;
   let ns: jasmine.SpyObj<NotificationService>;
   let subnavService: jasmine.SpyObj<SubnavService>;
+  let confirmService: jasmine.SpyObj<ConfirmService>;
 
   beforeEach(async () => {
     const contractSpy = jasmine.createSpyObj('ContractService', ['apiContractGet', 'apiContractIdDelete']);
     const studentsSpy = jasmine.createSpyObj('StudentsService', ['apiStudentsGet']);
     const nsSpy = jasmine.createSpyObj('NotificationService', ['showSuccess', 'showError']);
     const subnavSpy = jasmine.createSpyObj('SubnavService', ['setTitle']);
+    const confirmSpy = jasmine.createSpyObj('ConfirmService', ['confirm']);
+    confirmSpy.confirm.and.returnValue(Promise.resolve(true));
     contractSpy.apiContractGet.and.callFake((...args: any[]) => of(buildResponse(Number(args[7] ?? 1), Number(args[8] ?? 10))));
     studentsSpy.apiStudentsGet.and.returnValue(of(MOCK_STUDENTS_RESPONSE));
 
     await TestBed.configureTestingModule({
       imports: [ContractsComponent],
       providers: [
+        provideRouter([]),
         { provide: LOCALE_ID, useValue: 'pt-BR' },
         { provide: ContractService, useValue: contractSpy },
         { provide: StudentsService, useValue: studentsSpy },
         { provide: NotificationService, useValue: nsSpy },
         { provide: SubnavService, useValue: subnavSpy },
+        { provide: ConfirmService, useValue: confirmSpy },
       ],
     }).compileComponents();
 
@@ -57,6 +64,7 @@ describe('ContractsComponent', () => {
     studentsService = TestBed.inject(StudentsService) as jasmine.SpyObj<StudentsService>;
     ns = TestBed.inject(NotificationService) as jasmine.SpyObj<NotificationService>;
     subnavService = TestBed.inject(SubnavService) as jasmine.SpyObj<SubnavService>;
+    confirmService = TestBed.inject(ConfirmService) as jasmine.SpyObj<ConfirmService>;
     fixture.detectChanges();
   });
 
@@ -79,15 +87,15 @@ describe('ContractsComponent', () => {
     expect((component as any).items().items[0].id).toBe(MOCK_ITEMS[0].id);
   });
 
-  describe('getStatusLabel', () => {
+  describe('getStatusBadge', () => {
     it('should return correct labels for each status', () => {
-      expect((component as any).getStatusLabel(ContractStatus.Active)).toBe('Ativo');
-      expect((component as any).getStatusLabel(ContractStatus.Inactive)).toBe('Inativo');
-      expect((component as any).getStatusLabel(ContractStatus.Suspended)).toBe('Suspenso');
-      expect((component as any).getStatusLabel(ContractStatus.Terminated)).toBe('Encerrado');
-      expect((component as any).getStatusLabel(ContractStatus.Cancelled)).toBe('Cancelado');
-      expect((component as any).getStatusLabel(ContractStatus.Expired)).toBe('Expirado');
-      expect((component as any).getStatusLabel(undefined)).toBe('—');
+      expect((component as any).getStatusBadge(ContractStatus.Active).label).toBe('Ativo');
+      expect((component as any).getStatusBadge(ContractStatus.Inactive).label).toBe('Inativo');
+      expect((component as any).getStatusBadge(ContractStatus.Suspended).label).toBe('Suspenso');
+      expect((component as any).getStatusBadge(ContractStatus.Terminated).label).toBe('Encerrado');
+      expect((component as any).getStatusBadge(ContractStatus.Cancelled).label).toBe('Cancelado');
+      expect((component as any).getStatusBadge(ContractStatus.Expired).label).toBe('Expirado');
+      expect((component as any).getStatusBadge(undefined).label).toBe('—');
     });
   });
 
@@ -103,27 +111,27 @@ describe('ContractsComponent', () => {
 
   describe('delete', () => {
     beforeEach(() => {
-      spyOn(window, 'confirm').and.returnValue(true);
+      confirmService.confirm.and.returnValue(Promise.resolve(true));
       contractService.apiContractIdDelete.and.returnValue(of(null as any));
       contractService.apiContractGet.calls.reset();
     });
 
-    it('should delete contract and reload on confirmation', () => {
-      (component as any).delete(MOCK_CONTRACT);
+    it('should delete contract and reload on confirmation', async () => {
+      await (component as any).delete(MOCK_CONTRACT);
       expect(contractService.apiContractIdDelete).toHaveBeenCalledWith(MOCK_CONTRACT.id!);
       expect(ns.showSuccess).toHaveBeenCalled();
       expect(contractService.apiContractGet).toHaveBeenCalled();
     });
 
-    it('should not delete when confirmation is cancelled', () => {
-      (window.confirm as jasmine.Spy).and.returnValue(false);
-      (component as any).delete(MOCK_CONTRACT);
+    it('should not delete when confirmation is cancelled', async () => {
+      confirmService.confirm.and.returnValue(Promise.resolve(false));
+      await (component as any).delete(MOCK_CONTRACT);
       expect(contractService.apiContractIdDelete).not.toHaveBeenCalled();
     });
 
-    it('should show error notification on delete failure', () => {
+    it('should show error notification on delete failure', async () => {
       contractService.apiContractIdDelete.and.returnValue(throwError(() => new Error()));
-      (component as any).delete(MOCK_CONTRACT);
+      await (component as any).delete(MOCK_CONTRACT);
       expect(ns.showError).toHaveBeenCalled();
     });
   });

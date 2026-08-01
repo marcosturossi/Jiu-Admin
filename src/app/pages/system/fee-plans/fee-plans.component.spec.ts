@@ -9,6 +9,7 @@ registerLocaleData(localePt, 'pt-BR');
 import { FeePlanService, ShowFeePlanDTO as ShowFeePlanDTO } from '../../../generated_services';
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
+import { ConfirmService } from '../../../services/confirm.service';
 
 const MOCK_FEE_PLAN: ShowFeePlanDTO = { id: 'fp1', name: 'Plano Mensal', price: 150, monthDuration: 1, isActive: true };
 
@@ -25,11 +26,14 @@ describe('FeePlansComponent', () => {
   let feePlanService: jasmine.SpyObj<FeePlanService>;
   let ns: jasmine.SpyObj<NotificationService>;
   let subnavService: jasmine.SpyObj<SubnavService>;
+  let confirmService: jasmine.SpyObj<ConfirmService>;
 
   beforeEach(async () => {
     const feePlanSpy = jasmine.createSpyObj('FeePlanService', ['apiFeePlanGet', 'apiFeePlanIdDelete']);
     const nsSpy = jasmine.createSpyObj('NotificationService', ['showSuccess', 'showError']);
     const subnavSpy = jasmine.createSpyObj('SubnavService', ['setTitle']);
+    const confirmSpy = jasmine.createSpyObj('ConfirmService', ['confirm']);
+    confirmSpy.confirm.and.returnValue(Promise.resolve(true));
     feePlanSpy.apiFeePlanGet.and.callFake((...args: any[]) => of(buildResponse(Number(args[5] ?? 1), Number(args[6] ?? 10))));
 
     await TestBed.configureTestingModule({
@@ -39,6 +43,7 @@ describe('FeePlansComponent', () => {
         { provide: FeePlanService, useValue: feePlanSpy },
         { provide: NotificationService, useValue: nsSpy },
         { provide: SubnavService, useValue: subnavSpy },
+        { provide: ConfirmService, useValue: confirmSpy },
       ],
     }).compileComponents();
 
@@ -47,6 +52,7 @@ describe('FeePlansComponent', () => {
     feePlanService = TestBed.inject(FeePlanService) as jasmine.SpyObj<FeePlanService>;
     ns = TestBed.inject(NotificationService) as jasmine.SpyObj<NotificationService>;
     subnavService = TestBed.inject(SubnavService) as jasmine.SpyObj<SubnavService>;
+    confirmService = TestBed.inject(ConfirmService) as jasmine.SpyObj<ConfirmService>;
     fixture.detectChanges();
   });
 
@@ -71,27 +77,27 @@ describe('FeePlansComponent', () => {
 
   describe('delete', () => {
     beforeEach(() => {
-      spyOn(window, 'confirm').and.returnValue(true);
+      confirmService.confirm.and.returnValue(Promise.resolve(true));
       feePlanService.apiFeePlanIdDelete.and.returnValue(of(null as any));
       feePlanService.apiFeePlanGet.calls.reset();
     });
 
-    it('should delete fee plan and reload on confirmation', () => {
-      (component as any).delete(MOCK_FEE_PLAN);
+    it('should delete fee plan and reload on confirmation', async () => {
+      await (component as any).delete(MOCK_FEE_PLAN);
       expect(feePlanService.apiFeePlanIdDelete).toHaveBeenCalledWith(MOCK_FEE_PLAN.id!);
       expect(ns.showSuccess).toHaveBeenCalled();
       expect(feePlanService.apiFeePlanGet).toHaveBeenCalled();
     });
 
-    it('should not delete when confirmation is cancelled', () => {
-      (window.confirm as jasmine.Spy).and.returnValue(false);
-      (component as any).delete(MOCK_FEE_PLAN);
+    it('should not delete when confirmation is cancelled', async () => {
+      confirmService.confirm.and.returnValue(Promise.resolve(false));
+      await (component as any).delete(MOCK_FEE_PLAN);
       expect(feePlanService.apiFeePlanIdDelete).not.toHaveBeenCalled();
     });
 
-    it('should show error notification on delete failure', () => {
+    it('should show error notification on delete failure', async () => {
       feePlanService.apiFeePlanIdDelete.and.returnValue(throwError(() => new Error()));
-      (component as any).delete(MOCK_FEE_PLAN);
+      await (component as any).delete(MOCK_FEE_PLAN);
       expect(ns.showError).toHaveBeenCalled();
     });
   });

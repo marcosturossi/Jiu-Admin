@@ -4,6 +4,7 @@ import { NotificationComponent } from './notification.component';
 import { NotificationService as ApiNotificationService } from '../../../generated_services/api/notification.service';
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
+import { ConfirmService } from '../../../services/confirm.service';
 import { ShowNotificationDto as ShowNotificationDTO } from '../../../generated_services/model/showNotificationDto';
 import { NotificationType } from '../../../generated_services/model/notificationType';
 
@@ -17,11 +18,14 @@ describe('NotificationComponent', () => {
   let apiNotificationService: jasmine.SpyObj<ApiNotificationService>;
   let ns: jasmine.SpyObj<NotificationService>;
   let subnavService: jasmine.SpyObj<SubnavService>;
+  let confirmService: jasmine.SpyObj<ConfirmService>;
 
   beforeEach(async () => {
     const apiNotifSpy = jasmine.createSpyObj('ApiNotificationService', ['apiNotificationGet', 'apiNotificationIdDelete']);
     const nsSpy = jasmine.createSpyObj('NotificationService', ['showSuccess', 'showError']);
     const subnavSpy = jasmine.createSpyObj('SubnavService', ['setTitle']);
+    const confirmSpy = jasmine.createSpyObj('ConfirmService', ['confirm']);
+    confirmSpy.confirm.and.returnValue(Promise.resolve(true));
     apiNotifSpy.apiNotificationGet.and.callFake((...args: any[]) => of(buildResponse(Number(args[0] ?? 1), Number(args[1] ?? 10))));
 
     await TestBed.configureTestingModule({
@@ -30,6 +34,7 @@ describe('NotificationComponent', () => {
         { provide: ApiNotificationService, useValue: apiNotifSpy },
         { provide: NotificationService, useValue: nsSpy },
         { provide: SubnavService, useValue: subnavSpy },
+        { provide: ConfirmService, useValue: confirmSpy },
       ],
     }).compileComponents();
 
@@ -38,6 +43,7 @@ describe('NotificationComponent', () => {
     apiNotificationService = TestBed.inject(ApiNotificationService) as jasmine.SpyObj<ApiNotificationService>;
     ns = TestBed.inject(NotificationService) as jasmine.SpyObj<NotificationService>;
     subnavService = TestBed.inject(SubnavService) as jasmine.SpyObj<SubnavService>;
+    confirmService = TestBed.inject(ConfirmService) as jasmine.SpyObj<ConfirmService>;
     fixture.detectChanges();
   });
 
@@ -109,27 +115,27 @@ describe('NotificationComponent', () => {
 
   describe('delete', () => {
     beforeEach(() => {
-      spyOn(window, 'confirm').and.returnValue(true);
+      confirmService.confirm.and.returnValue(Promise.resolve(true));
       apiNotificationService.apiNotificationIdDelete.and.returnValue(of(null as any));
       apiNotificationService.apiNotificationGet.calls.reset();
     });
 
-    it('should delete notification and reload on confirmation', () => {
-      (component as any).deleteNotification(MOCK_NOTIFICATION);
+    it('should delete notification and reload on confirmation', async () => {
+      await (component as any).deleteNotification(MOCK_NOTIFICATION);
       expect(apiNotificationService.apiNotificationIdDelete).toHaveBeenCalledWith(MOCK_NOTIFICATION.id!);
       expect(ns.showSuccess).toHaveBeenCalled();
       expect(apiNotificationService.apiNotificationGet).toHaveBeenCalled();
     });
 
-    it('should not delete when confirmation is cancelled', () => {
-      (window.confirm as jasmine.Spy).and.returnValue(false);
-      (component as any).deleteNotification(MOCK_NOTIFICATION);
+    it('should not delete when confirmation is cancelled', async () => {
+      confirmService.confirm.and.returnValue(Promise.resolve(false));
+      await (component as any).deleteNotification(MOCK_NOTIFICATION);
       expect(apiNotificationService.apiNotificationIdDelete).not.toHaveBeenCalled();
     });
 
-    it('should show error notification on delete failure', () => {
+    it('should show error notification on delete failure', async () => {
       apiNotificationService.apiNotificationIdDelete.and.returnValue(throwError(() => new Error()));
-      (component as any).deleteNotification(MOCK_NOTIFICATION);
+      await (component as any).deleteNotification(MOCK_NOTIFICATION);
       expect(ns.showError).toHaveBeenCalled();
     });
   });

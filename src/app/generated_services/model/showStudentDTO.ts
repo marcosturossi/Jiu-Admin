@@ -17,6 +17,7 @@ export interface ShowStudentDTO {
     photoUrl?: string | null;
     createdAt?: string;
     lastLoginAt?: string | null;
+    emailVerifiedAt?: string | null;
     addresses?: Array<ShowAddressDTO>;
     relationships?: Array<ShowPersonRelationshipDTO>;
     fullName?: string | null;
