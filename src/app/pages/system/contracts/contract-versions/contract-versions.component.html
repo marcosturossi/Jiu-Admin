@@ -1,0 +1,45 @@
+@if (isLoading()) {
+  <div class="d-flex justify-content-center py-4">
+    <div class="spinner-border text-secondary" role="status"><span class="visually-hidden">Carregando...</span></div>
+  </div>
+} @else if (versions().length === 0) {
+  <div class="empty-state">
+    <i class="bi bi-clock-history empty-icon"></i>
+    <p class="empty-text">Nenhuma versão foi enviada para confirmação ainda.</p>
+  </div>
+} @else {
+  <div class="table-responsive">
+    <table class="table table-sm align-middle">
+      <thead class="table-light">
+        <tr>
+          <th>Enviado em</th>
+          <th>Confirmado em</th>
+          <th>IP</th>
+          <th class="text-center">Situação</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (version of versions(); track version.id) {
+          <tr>
+            <td>{{ version.sentAt | date:'dd/MM/yyyy HH:mm' }}</td>
+            <td>{{ version.acceptedAt ? (version.acceptedAt | date:'dd/MM/yyyy HH:mm') : '—' }}</td>
+            <td>{{ version.acceptedIp ?? '—' }}</td>
+            <td class="text-center">
+              @if (version.isCurrentlyAccepted) {
+                <span class="badge bg-success">Confirmado (atual)</span>
+              } @else if (version.acceptedAt) {
+                <span class="badge bg-secondary">Confirmado (substituído)</span>
+              } @else {
+                <span class="badge bg-warning text-dark">Aguardando confirmação</span>
+              }
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+}
+
+<div class="d-flex justify-content-end mt-3">
+  <button type="button" class="btn btn-outline-secondary" (click)="close()">Fechar</button>
+</div>

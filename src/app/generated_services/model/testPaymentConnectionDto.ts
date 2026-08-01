@@ -8,7 +8,7 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-export interface TestPaymentConnectionDto {
+export interface TestPaymentConnectionDto { 
     paymentGateway: string | null;
     credentials: { [key: string]: string; };
 }

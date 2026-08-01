@@ -46,6 +46,8 @@ api/paymentWebhook.service.ts
 api/paymentWebhook.serviceInterface.ts
 api/public.service.ts
 api/public.serviceInterface.ts
+api/publicContract.service.ts
+api/publicContract.serviceInterface.ts
 api/scheduledJob.service.ts
 api/scheduledJob.serviceInterface.ts
 api/students.service.ts
@@ -133,6 +135,7 @@ model/problemDetails.ts
 model/problemDetailsStatus.ts
 model/publicAcademyDto.ts
 model/relationshipType.ts
+model/sendContractForConfirmationResultDTO.ts
 model/series.ts
 model/seriesDataInner.ts
 model/showAcademyDto.ts
@@ -142,6 +145,7 @@ model/showAddressDTO.ts
 model/showBeltDTO.ts
 model/showCompanyPersonDTO.ts
 model/showContractDTO.ts
+model/showContractVersionDTO.ts
 model/showFeePlanDTO.ts
 model/showFrequencyDTO.ts
 model/showFrequencyUntilNextGraduationDTO.ts

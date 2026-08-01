@@ -8,10 +8,14 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-export interface UpsertTenantSettingsDto { 
-    paymentGateway: string | null;
-    credentials: { [key: string]: string; };
-    webhookSecret: string | null;
-    contractTermsTemplate?: string | null;
+
+
+export interface ShowContractVersionDTO { 
+    id: string;
+    contractId: string;
+    sentAt: string;
+    acceptedAt: string | null;
+    acceptedIp: string | null;
+    isCurrentlyAccepted: boolean;
 }
 
