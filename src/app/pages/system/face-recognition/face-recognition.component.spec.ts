@@ -4,6 +4,7 @@ import { FaceRecognitionComponent } from './face-recognition.component';
 import { PersonsService } from '../../../generated_services/api2/api/persons.service';
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
+import { ConfirmService } from '../../../services/confirm.service';
 import { PersonDetailResponse } from '../../../generated_services/api2/model/personDetailResponse';
 import { PersonListResponse } from '../../../generated_services/api2/model/personListResponse';
 
@@ -16,11 +17,14 @@ describe('FaceRecognitionComponent', () => {
   let personsService: jasmine.SpyObj<PersonsService>;
   let ns: jasmine.SpyObj<NotificationService>;
   let subnavService: jasmine.SpyObj<SubnavService>;
+  let confirmService: jasmine.SpyObj<ConfirmService>;
 
   beforeEach(async () => {
     const personsSpy = jasmine.createSpyObj('PersonsService', ['listPersonsApiV1PersonsGet', 'deletePersonApiV1PersonsPersonIdDelete']);
     const nsSpy = jasmine.createSpyObj('NotificationService', ['showSuccess', 'showError']);
     const subnavSpy = jasmine.createSpyObj('SubnavService', ['setTitle']);
+    const confirmSpy = jasmine.createSpyObj('ConfirmService', ['confirm']);
+    confirmSpy.confirm.and.returnValue(Promise.resolve(true));
     personsSpy.listPersonsApiV1PersonsGet.and.returnValue(of(MOCK_LIST));
 
     await TestBed.configureTestingModule({
@@ -29,6 +33,7 @@ describe('FaceRecognitionComponent', () => {
         { provide: PersonsService, useValue: personsSpy },
         { provide: NotificationService, useValue: nsSpy },
         { provide: SubnavService, useValue: subnavSpy },
+        { provide: ConfirmService, useValue: confirmSpy },
       ],
     }).compileComponents();
 
@@ -37,6 +42,7 @@ describe('FaceRecognitionComponent', () => {
     personsService = TestBed.inject(PersonsService) as jasmine.SpyObj<PersonsService>;
     ns = TestBed.inject(NotificationService) as jasmine.SpyObj<NotificationService>;
     subnavService = TestBed.inject(SubnavService) as jasmine.SpyObj<SubnavService>;
+    confirmService = TestBed.inject(ConfirmService) as jasmine.SpyObj<ConfirmService>;
     fixture.detectChanges();
   });
 
@@ -108,27 +114,27 @@ describe('FaceRecognitionComponent', () => {
 
   describe('deletePerson', () => {
     beforeEach(() => {
-      spyOn(window, 'confirm').and.returnValue(true);
+      confirmService.confirm.and.returnValue(Promise.resolve(true));
       personsService.deletePersonApiV1PersonsPersonIdDelete.and.returnValue(of(null as any));
       personsService.listPersonsApiV1PersonsGet.calls.reset();
     });
 
-    it('should delete person and reload on confirmation', () => {
-      (component as any).deletePerson(MOCK_PERSON);
+    it('should delete person and reload on confirmation', async () => {
+      await (component as any).deletePerson(MOCK_PERSON);
       expect(personsService.deletePersonApiV1PersonsPersonIdDelete).toHaveBeenCalledWith(MOCK_PERSON.id);
       expect(ns.showSuccess).toHaveBeenCalled();
       expect(personsService.listPersonsApiV1PersonsGet).toHaveBeenCalled();
     });
 
-    it('should not delete when confirmation is cancelled', () => {
-      (window.confirm as jasmine.Spy).and.returnValue(false);
-      (component as any).deletePerson(MOCK_PERSON);
+    it('should not delete when confirmation is cancelled', async () => {
+      confirmService.confirm.and.returnValue(Promise.resolve(false));
+      await (component as any).deletePerson(MOCK_PERSON);
       expect(personsService.deletePersonApiV1PersonsPersonIdDelete).not.toHaveBeenCalled();
     });
 
-    it('should show error notification on delete failure', () => {
+    it('should show error notification on delete failure', async () => {
       personsService.deletePersonApiV1PersonsPersonIdDelete.and.returnValue(throwError(() => new Error()));
-      (component as any).deletePerson(MOCK_PERSON);
+      await (component as any).deletePerson(MOCK_PERSON);
       expect(ns.showError).toHaveBeenCalled();
     });
   });

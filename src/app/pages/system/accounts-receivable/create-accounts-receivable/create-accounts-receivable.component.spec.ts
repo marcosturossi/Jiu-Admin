@@ -43,7 +43,7 @@ describe('CreateAccountsReceivableComponent', () => {
   it('sends Income for Receita', () => {
     arSpy.apiAccountsReceivablePost.and.returnValue(of({} as any));
     const form = (component as any).form;
-    form.patchValue({ type: TransactionType.Income, amount: 50, transactionDate: '2024-06-15' });
+    form.patchValue({ type: TransactionType.Income, personId: 'stu1', amount: 50, transactionDate: '2024-06-15' });
     (component as any).save();
     const args = arSpy.apiAccountsReceivablePost.calls.mostRecent().args[0]!;
     expect(args.type as any).toBe(TransactionType.Income);
@@ -58,7 +58,7 @@ describe('CreateAccountsReceivableComponent', () => {
   it('emits itemCreated on success', () => {
     arSpy.apiAccountsReceivablePost.and.returnValue(of({} as any));
     const form = (component as any).form;
-    form.patchValue({ amount: 100, transactionDate: '2024-06-15' });
+    form.patchValue({ personId: 'stu1', amount: 100, transactionDate: '2024-06-15' });
     let emitted = false;
     component.itemCreated.subscribe(() => (emitted = true));
     (component as any).save();
@@ -68,7 +68,7 @@ describe('CreateAccountsReceivableComponent', () => {
   it('shows error notification on failure', () => {
     arSpy.apiAccountsReceivablePost.and.returnValue(throwError(() => new Error()));
     const form = (component as any).form;
-    form.patchValue({ amount: 100, transactionDate: '2024-06-15' });
+    form.patchValue({ personId: 'stu1', amount: 100, transactionDate: '2024-06-15' });
     (component as any).save();
     expect(notifySpy.showError).toHaveBeenCalled();
   });

@@ -48,7 +48,7 @@ describe('CreateAccountsPayableComponent', () => {
   it('emits itemCreated on success', () => {
     apSpy.apiAccountsPayablePost.and.returnValue(of({} as any));
     const form = (component as any).form;
-    form.patchValue({ amount: 100, transactionDate: '2024-06-15' });
+    form.patchValue({ personId: 'sup1', amount: 100, transactionDate: '2024-06-15' });
     let emitted = false;
     component.itemCreated.subscribe(() => (emitted = true));
     (component as any).save();
@@ -58,7 +58,7 @@ describe('CreateAccountsPayableComponent', () => {
   it('shows error notification on failure', () => {
     apSpy.apiAccountsPayablePost.and.returnValue(throwError(() => new Error()));
     const form = (component as any).form;
-    form.patchValue({ amount: 100, transactionDate: '2024-06-15' });
+    form.patchValue({ personId: 'sup1', amount: 100, transactionDate: '2024-06-15' });
     (component as any).save();
     expect(notifySpy.showError).toHaveBeenCalled();
   });

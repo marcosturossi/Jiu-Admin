@@ -1,9 +1,11 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { of, throwError } from 'rxjs';
+import { provideRouter } from '@angular/router';
 import { FrequenciesComponent } from './frequencies.component';
 import { FrequencyService, ShowFrequencyDTO as ShowFrequencyDTO } from '../../../generated_services';
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
+import { ConfirmService } from '../../../services/confirm.service';
 
 const MOCK_FREQUENCY: ShowFrequencyDTO = { id: 'f1', studentId: 'student-1', lessonId: 'lesson-1', lessonScheduledDate: '2024-03-01' };
 
@@ -20,19 +22,24 @@ describe('FrequenciesComponent', () => {
   let frequencyService: jasmine.SpyObj<FrequencyService>;
   let ns: jasmine.SpyObj<NotificationService>;
   let subnavService: jasmine.SpyObj<SubnavService>;
+  let confirmService: jasmine.SpyObj<ConfirmService>;
 
   beforeEach(async () => {
     const frequencySpy = jasmine.createSpyObj('FrequencyService', ['apiFrequencyGet', 'apiFrequencyIdDelete']);
     const nsSpy = jasmine.createSpyObj('NotificationService', ['showSuccess', 'showError']);
     const subnavSpy = jasmine.createSpyObj('SubnavService', ['setTitle']);
+    const confirmSpy = jasmine.createSpyObj('ConfirmService', ['confirm']);
+    confirmSpy.confirm.and.returnValue(Promise.resolve(true));
     frequencySpy.apiFrequencyGet.and.callFake((...args: any[]) => of(buildResponse(Number(args[5] ?? 1), Number(args[6] ?? 10))));
 
     await TestBed.configureTestingModule({
       imports: [FrequenciesComponent],
       providers: [
+        provideRouter([]),
         { provide: FrequencyService, useValue: frequencySpy },
         { provide: NotificationService, useValue: nsSpy },
         { provide: SubnavService, useValue: subnavSpy },
+        { provide: ConfirmService, useValue: confirmSpy },
       ],
     }).compileComponents();
 
@@ -41,6 +48,7 @@ describe('FrequenciesComponent', () => {
     frequencyService = TestBed.inject(FrequencyService) as jasmine.SpyObj<FrequencyService>;
     ns = TestBed.inject(NotificationService) as jasmine.SpyObj<NotificationService>;
     subnavService = TestBed.inject(SubnavService) as jasmine.SpyObj<SubnavService>;
+    confirmService = TestBed.inject(ConfirmService) as jasmine.SpyObj<ConfirmService>;
     fixture.detectChanges();
   });
 
@@ -65,27 +73,27 @@ describe('FrequenciesComponent', () => {
 
   describe('deleteFrequency', () => {
     beforeEach(() => {
-      spyOn(window, 'confirm').and.returnValue(true);
+      confirmService.confirm.and.returnValue(Promise.resolve(true));
       frequencyService.apiFrequencyIdDelete.and.returnValue(of(null as any));
       frequencyService.apiFrequencyGet.calls.reset();
     });
 
-    it('should delete frequency and reload on confirmation', () => {
-      (component as any).deleteFrequency(MOCK_FREQUENCY);
+    it('should delete frequency and reload on confirmation', async () => {
+      await (component as any).deleteFrequency(MOCK_FREQUENCY);
       expect(frequencyService.apiFrequencyIdDelete).toHaveBeenCalledWith(MOCK_FREQUENCY.id!);
       expect(ns.showSuccess).toHaveBeenCalled();
       expect(frequencyService.apiFrequencyGet).toHaveBeenCalled();
     });
 
-    it('should not delete when confirmation is cancelled', () => {
-      (window.confirm as jasmine.Spy).and.returnValue(false);
-      (component as any).deleteFrequency(MOCK_FREQUENCY);
+    it('should not delete when confirmation is cancelled', async () => {
+      confirmService.confirm.and.returnValue(Promise.resolve(false));
+      await (component as any).deleteFrequency(MOCK_FREQUENCY);
       expect(frequencyService.apiFrequencyIdDelete).not.toHaveBeenCalled();
     });
 
-    it('should show error notification on delete failure', () => {
+    it('should show error notification on delete failure', async () => {
       frequencyService.apiFrequencyIdDelete.and.returnValue(throwError(() => new Error()));
-      (component as any).deleteFrequency(MOCK_FREQUENCY);
+      await (component as any).deleteFrequency(MOCK_FREQUENCY);
       expect(ns.showError).toHaveBeenCalled();
     });
   });

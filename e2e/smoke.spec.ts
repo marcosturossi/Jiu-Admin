@@ -22,6 +22,7 @@ const sections = [
   { path: '/system/academies',               label: 'Academias' },
   { path: '/system/suppliers',               label: 'Fornecedores' },
   { path: '/system/payment-settings',        label: 'Configurações de Pagamento' },
+  { path: '/system/scheduled-jobs',          label: 'Jobs Agendados' },
 ];
 
 test.describe('Smoke: navegação entre seções', () => {

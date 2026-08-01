@@ -17,9 +17,11 @@ describe('FinanceDashboardComponent', () => {
     subnavSpy = jasmine.createSpyObj('SubnavService', ['setTitle']);
     const overviewSvc = jasmine.createSpyObj('FinancialOverviewService', ['apiFinancialOverviewBalanceGet']);
     overviewSvc.apiFinancialOverviewBalanceGet.and.returnValue(of({ totalReceivable: 0, totalPayable: 0, balance: 0 } as any));
-    const receivableSvc = jasmine.createSpyObj('AccountsReceivableService', ['apiAccountsReceivableGet', 'apiAccountsReceivableSummaryGet']);
+    const receivableSvc = jasmine.createSpyObj('AccountsReceivableService', ['apiAccountsReceivableGet', 'apiAccountsReceivableSummaryGet', 'apiAccountsReceivableOverdueGet']);
     receivableSvc.apiAccountsReceivableGet.and.returnValue(of({ items: [] } as any));
     receivableSvc.apiAccountsReceivableSummaryGet.and.returnValue(of({ overdueFeeCount: 0, pendingFeesTotal: 0 } as any));
+    // Rendered as a real child (app-overdue-fees), not stubbed, so it needs its own dependency satisfied too.
+    receivableSvc.apiAccountsReceivableOverdueGet.and.returnValue(of({ items: [] } as any));
     const payableSvc = jasmine.createSpyObj('AccountsPayableService', ['apiAccountsPayableGet']);
     payableSvc.apiAccountsPayableGet.and.returnValue(of({ items: [] } as any));
     const themeServiceStub: Partial<ThemeService> = {

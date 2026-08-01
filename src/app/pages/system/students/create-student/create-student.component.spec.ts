@@ -34,7 +34,10 @@ describe('CreateStudentComponent', () => {
   });
 
   it('should be valid when required fields are filled', () => {
-    (component as any).form.patchValue({ userName: 'joao', email: 'joao@test.com' });
+    (component as any).form.patchValue({
+      userName: 'joao', email: 'joao@test.com', phoneNumber: '11999999999',
+      firstName: 'João', lastName: 'Silva', birthDay: '2000-01-01', cpf: '12345678901',
+    });
     expect((component as any).form.valid).toBeTrue();
   });
 
@@ -58,7 +61,10 @@ describe('CreateStudentComponent', () => {
 
   it('should call apiStudentsPost on valid save', () => {
     studentsService.apiStudentsPost.and.returnValue(of({} as any));
-    (component as any).form.patchValue({ userName: 'joao', email: 'joao@test.com' });
+    (component as any).form.patchValue({
+      userName: 'joao', email: 'joao@test.com', phoneNumber: '11999999999',
+      firstName: 'João', lastName: 'Silva', birthDay: '2000-01-01', cpf: '12345678901',
+    });
     (component as any).save();
     expect(studentsService.apiStudentsPost).toHaveBeenCalled();
   });
@@ -67,7 +73,10 @@ describe('CreateStudentComponent', () => {
     studentsService.apiStudentsPost.and.returnValue(of({} as any));
     let emitted = false;
     component.studentCreated.subscribe(() => (emitted = true));
-    (component as any).form.patchValue({ userName: 'joao', email: 'joao@test.com' });
+    (component as any).form.patchValue({
+      userName: 'joao', email: 'joao@test.com', phoneNumber: '11999999999',
+      firstName: 'João', lastName: 'Silva', birthDay: '2000-01-01', cpf: '12345678901',
+    });
     (component as any).save();
     expect(emitted).toBeTrue();
     expect(ns.showSuccess).toHaveBeenCalled();
@@ -75,7 +84,10 @@ describe('CreateStudentComponent', () => {
 
   it('should show error notification on service failure', () => {
     studentsService.apiStudentsPost.and.returnValue(throwError(() => new Error()));
-    (component as any).form.patchValue({ userName: 'joao', email: 'joao@test.com' });
+    (component as any).form.patchValue({
+      userName: 'joao', email: 'joao@test.com', phoneNumber: '11999999999',
+      firstName: 'João', lastName: 'Silva', birthDay: '2000-01-01', cpf: '12345678901',
+    });
     (component as any).save();
     expect(ns.showError).toHaveBeenCalledWith('Erro!', jasmine.any(String));
   });

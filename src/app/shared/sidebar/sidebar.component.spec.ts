@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { SidebarComponent } from './sidebar.component';
 import { Router } from '@angular/router';
 import { EMPTY } from 'rxjs';
+import { NAV_SECTIONS } from '../nav-config';
 
 describe('SidebarComponent', () => {
   let component: SidebarComponent;
@@ -83,7 +84,9 @@ describe('SidebarComponent', () => {
     it('shows all individual item links (not group buttons)', () => {
       setup('/system/students');
       const links = fixture.nativeElement.querySelectorAll('.sidebar-section-collapsed .sidebar-link');
-      const totalItems = 19; // 5 sections: Principal(1) + Acadêmico(8) + Financeiro(6) + Comunicação(2) + Saúde e Segurança(2)
+      // Derived from NAV_SECTIONS rather than a hardcoded count so this doesn't silently drift
+      // out of sync every time a nav item is added or removed.
+      const totalItems = NAV_SECTIONS.reduce((sum, section) => sum + section.items.length, 0);
       expect(links.length).toBe(totalItems);
     });
 
@@ -132,7 +135,7 @@ describe('SidebarComponent', () => {
 
     it('shows one group header per section', () => {
       const headers = fixture.nativeElement.querySelectorAll('.sidebar-group-header');
-      expect(headers.length).toBe(5); // 5 active sections (Configurações is commented out)
+      expect(headers.length).toBe(NAV_SECTIONS.length);
     });
 
     it('does not show collapsed group buttons in expanded mode', () => {

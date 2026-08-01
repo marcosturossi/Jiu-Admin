@@ -11,6 +11,7 @@ import { AccountsReceivableService } from '../../../generated_services/api/accou
 import { TransactionCategoryService } from '../../../generated_services/api/transactionCategory.service';
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
+import { ConfirmService } from '../../../services/confirm.service';
 import { ShowAccountsReceivableDTO, ShowTransactionCategoryDTO } from '../../../generated_services';
 import { TransactionType } from '../../../generated_services/model/transactionType';
 
@@ -31,12 +32,15 @@ describe('AccountsReceivableComponent', () => {
   let accountsReceivableService: jasmine.SpyObj<AccountsReceivableService>;
   let categoryService: jasmine.SpyObj<TransactionCategoryService>;
   let ns: jasmine.SpyObj<NotificationService>;
+  let confirmService: jasmine.SpyObj<ConfirmService>;
 
   beforeEach(async () => {
-    const arSpy = jasmine.createSpyObj('AccountsReceivableService', ['apiAccountsReceivableGet', 'apiAccountsReceivableChargeIdDelete']);
+    const arSpy = jasmine.createSpyObj('AccountsReceivableService', ['apiAccountsReceivableGet', 'apiAccountsReceivableChargeIdDelete', 'apiAccountsReceivableIdDelete']);
     const categorySpy = jasmine.createSpyObj('TransactionCategoryService', ['apiTransactionCategoryGet']);
     const nsSpy = jasmine.createSpyObj('NotificationService', ['showSuccess', 'showError', 'showWarning']);
     const subnavSpy = jasmine.createSpyObj('SubnavService', ['setTitle']);
+    const confirmSpy = jasmine.createSpyObj('ConfirmService', ['confirm']);
+    confirmSpy.confirm.and.returnValue(Promise.resolve(true));
     // page is at arg index 8 (0-based), pageSize at 9
     arSpy.apiAccountsReceivableGet.and.callFake((...args: any[]) => of(buildResponse(Number(args[8] ?? 1), Number(args[9] ?? 10))));
     categorySpy.apiTransactionCategoryGet.and.returnValue(of(MOCK_CATEGORY_RESPONSE));
@@ -50,6 +54,7 @@ describe('AccountsReceivableComponent', () => {
         { provide: TransactionCategoryService, useValue: categorySpy },
         { provide: NotificationService, useValue: nsSpy },
         { provide: SubnavService, useValue: subnavSpy },
+        { provide: ConfirmService, useValue: confirmSpy },
       ],
     }).compileComponents();
 
@@ -58,6 +63,7 @@ describe('AccountsReceivableComponent', () => {
     accountsReceivableService = TestBed.inject(AccountsReceivableService) as jasmine.SpyObj<AccountsReceivableService>;
     categoryService = TestBed.inject(TransactionCategoryService) as jasmine.SpyObj<TransactionCategoryService>;
     ns = TestBed.inject(NotificationService) as jasmine.SpyObj<NotificationService>;
+    confirmService = TestBed.inject(ConfirmService) as jasmine.SpyObj<ConfirmService>;
     fixture.detectChanges();
   });
 
@@ -104,27 +110,40 @@ describe('AccountsReceivableComponent', () => {
 
   describe('delete', () => {
     beforeEach(() => {
-      spyOn(window, 'confirm').and.returnValue(true);
+      confirmService.confirm.and.returnValue(Promise.resolve(true));
+      accountsReceivableService.apiAccountsReceivableIdDelete.and.returnValue(of(null as any));
       accountsReceivableService.apiAccountsReceivableChargeIdDelete.and.returnValue(of(null as any));
       accountsReceivableService.apiAccountsReceivableGet.calls.reset();
     });
 
-    it('should delete item and reload on confirmation', () => {
-      (component as any).delete(MOCK_ITEM);
-      expect(accountsReceivableService.apiAccountsReceivableChargeIdDelete).toHaveBeenCalledWith(MOCK_ITEM.id!);
+    // MOCK_ITEM has no contractId, so delete() routes to the standalone-entry endpoint.
+    it('should delete a standalone item (no contractId) via apiAccountsReceivableIdDelete', async () => {
+      await (component as any).delete(MOCK_ITEM);
+      expect(accountsReceivableService.apiAccountsReceivableIdDelete).toHaveBeenCalledWith(MOCK_ITEM.id!);
+      expect(accountsReceivableService.apiAccountsReceivableChargeIdDelete).not.toHaveBeenCalled();
       expect(ns.showSuccess).toHaveBeenCalled();
       expect(accountsReceivableService.apiAccountsReceivableGet).toHaveBeenCalled();
     });
 
-    it('should not delete when confirmation is cancelled', () => {
-      (window.confirm as jasmine.Spy).and.returnValue(false);
-      (component as any).delete(MOCK_ITEM);
+    // Contract-generated installments carry a contractId and must go through the charge endpoint instead.
+    it('should delete a contract-generated charge (with contractId) via apiAccountsReceivableChargeIdDelete', async () => {
+      const chargeItem = { ...MOCK_ITEM, contractId: 'contract-1' };
+      await (component as any).delete(chargeItem);
+      expect(accountsReceivableService.apiAccountsReceivableChargeIdDelete).toHaveBeenCalledWith(chargeItem.id!);
+      expect(accountsReceivableService.apiAccountsReceivableIdDelete).not.toHaveBeenCalled();
+      expect(ns.showSuccess).toHaveBeenCalled();
+    });
+
+    it('should not delete when confirmation is cancelled', async () => {
+      confirmService.confirm.and.returnValue(Promise.resolve(false));
+      await (component as any).delete(MOCK_ITEM);
+      expect(accountsReceivableService.apiAccountsReceivableIdDelete).not.toHaveBeenCalled();
       expect(accountsReceivableService.apiAccountsReceivableChargeIdDelete).not.toHaveBeenCalled();
     });
 
-    it('should show error notification on delete failure', () => {
-      accountsReceivableService.apiAccountsReceivableChargeIdDelete.and.returnValue(throwError(() => new Error()));
-      (component as any).delete(MOCK_ITEM);
+    it('should show error notification on delete failure', async () => {
+      accountsReceivableService.apiAccountsReceivableIdDelete.and.returnValue(throwError(() => new Error()));
+      await (component as any).delete(MOCK_ITEM);
       expect(ns.showError).toHaveBeenCalled();
     });
   });

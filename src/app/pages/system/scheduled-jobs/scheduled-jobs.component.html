@@ -1,0 +1,62 @@
+<section class="page-section">
+  <div class="surface-card">
+    <h5 class="mb-1">
+      <i class="bi bi-clock-history me-2"></i>Jobs Agendados
+    </h5>
+    <p class="text-muted mb-3">
+      Ative ou desative para esta academia as rotinas automáticas (geração de aulas, mensalidades, e-mails).
+      Um job desabilitado continua existindo, mas não executa nada até ser reativado.
+    </p>
+
+    @if (isLoading()) {
+      <div class="d-flex justify-content-center py-5">
+        <div class="spinner-border text-secondary" role="status"><span class="visually-hidden">Carregando...</span></div>
+      </div>
+    } @else {
+      <div class="table-responsive">
+        <table class="table align-middle">
+          <thead>
+            <tr>
+              <th>Job</th>
+              <th>Frequência</th>
+              <th>Última Execução</th>
+              <th class="text-end">Habilitado</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (job of jobs(); track job.jobKey) {
+              <tr>
+                <td>
+                  <div class="fw-semibold">{{ job.displayName }}</div>
+                  <div class="text-muted small">{{ job.description }}</div>
+                </td>
+                <td>{{ job.cronDescription }}</td>
+                <td>
+                  @if (job.lastRunAt) {
+                    <div>{{ job.lastRunAt | date:'dd/MM/yyyy HH:mm' }}</div>
+                    <div class="text-muted small">{{ job.lastRunSummary }}</div>
+                  } @else {
+                    <span class="text-muted">Nunca executado</span>
+                  }
+                </td>
+                <td class="text-end">
+                  <div class="form-check form-switch d-inline-block">
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      role="switch"
+                      [id]="'job-switch-' + job.jobKey"
+                      [checked]="job.isEnabled"
+                      [disabled]="togglingJobKey() === job.jobKey"
+                      (change)="toggle(job)"
+                    />
+                  </div>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </div>
+</section>
