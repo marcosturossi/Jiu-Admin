@@ -101,6 +101,13 @@ export interface StudentsServiceInterface {
     /**
      * 
      * 
+     * @param id 
+     */
+    apiStudentsIdResendVerificationPost(id: string, extraHttpRequestParams?: any): Observable<{}>;
+
+    /**
+     * 
+     * 
      * @param keycloakUserId 
      */
     apiStudentsKeycloakKeycloakUserIdGet(keycloakUserId: string, extraHttpRequestParams?: any): Observable<ShowStudentDTO>;

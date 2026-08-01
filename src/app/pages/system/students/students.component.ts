@@ -14,6 +14,7 @@ import { CreateStudentComponent } from './create-student/create-student.componen
 import { UpdateStudentComponent } from './update-student/update-student.component';
 import { RouterOutlet } from '@angular/router';
 import {Router, ActivatedRoute} from '@angular/router';
+import { BadgeInfo } from '../../../shared/status-badge';
 
 @Component({
   selector: 'app-students',
@@ -43,6 +44,7 @@ export class StudentsComponent {
   protected readonly openedCreate = signal(false);
   protected readonly openedUpdate = signal(false);
   protected readonly selected = signal<ShowStudentDTO | null>(null);
+  protected readonly resendingId = signal<string | null>(null);
   protected readonly currentPage = signal(1);
   protected readonly pageSize = signal(10);
   protected readonly filterText = signal<string | undefined>(undefined);
@@ -103,6 +105,26 @@ export class StudentsComponent {
         reader.readAsDataURL(blob);
       },
       error: () => {},
+    });
+  }
+
+  protected getVerificationBadge(student: ShowStudentDTO): BadgeInfo {
+    return student.emailVerifiedAt
+      ? { cssClass: 'bg-success', label: 'Confirmado' }
+      : { cssClass: 'bg-warning text-dark', label: 'Aguardando confirmação' };
+  }
+
+  protected resendVerification(item: ShowStudentDTO): void {
+    this.resendingId.set(item.id!);
+    this.studentsService.apiStudentsIdResendVerificationPost(item.id!).subscribe({
+      next: () => {
+        this.resendingId.set(null);
+        this.notificationService.showSuccess('Enviado!', 'O e-mail de confirmação foi reenviado.');
+      },
+      error: (err) => {
+        this.resendingId.set(null);
+        this.notificationService.showError('Erro ao Reenviar', extractErrorMessage(err, 'Não foi possível reenviar o e-mail de confirmação.'));
+      },
     });
   }
 

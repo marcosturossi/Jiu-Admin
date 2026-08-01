@@ -48,6 +48,8 @@ api/public.service.ts
 api/public.serviceInterface.ts
 api/publicContract.service.ts
 api/publicContract.serviceInterface.ts
+api/publicStudent.service.ts
+api/publicStudent.serviceInterface.ts
 api/scheduledJob.service.ts
 api/scheduledJob.serviceInterface.ts
 api/students.service.ts

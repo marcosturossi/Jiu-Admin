@@ -52,10 +52,21 @@
                 <i class="bi bi-telephone me-1"></i>{{ student.phoneNumber }}
               </p>
             }
+            <span [class]="'badge ' + getVerificationBadge(student).cssClass">{{ getVerificationBadge(student).label }}</span>
           </div>
 
           <!-- Actions -->
           <div class="student-card__actions" (click)="$event.stopPropagation()">
+            @if (!student.emailVerifiedAt) {
+              <button type="button" class="btn btn-sm btn-outline-secondary"
+                title="Reenviar confirmação" [disabled]="resendingId() === student.id" (click)="resendVerification(student)">
+                @if (resendingId() === student.id) {
+                  <span class="spinner-border spinner-border-sm" role="status"></span>
+                } @else {
+                  <i class="bi bi-send"></i>
+                }
+              </button>
+            }
             <button type="button" class="btn btn-sm btn-outline-info"
               title="Editar" (click)="openEdit(student)">
               <i class="bi bi-pencil"></i>
