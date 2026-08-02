@@ -22,7 +22,7 @@ import { ProblemDetails } from '../model/problemDetails';
 // @ts-ignore
 import { ShowScheduledJobDto } from '../model/showScheduledJobDto';
 // @ts-ignore
-import { ToggleScheduledJobDto } from '../model/toggleScheduledJobDto';
+import { UpdateScheduledJobDto } from '../model/updateScheduledJobDto';
 
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
@@ -159,19 +159,19 @@ export class ScheduledJobService implements ScheduledJobServiceInterface {
 
     /**
      * @param jobKey 
-     * @param toggleScheduledJobDto 
+     * @param updateScheduledJobDto 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiScheduledJobsJobKeyPatch(jobKey: string, toggleScheduledJobDto: ToggleScheduledJobDto, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any>;
-    public apiScheduledJobsJobKeyPatch(jobKey: string, toggleScheduledJobDto: ToggleScheduledJobDto, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<any>>;
-    public apiScheduledJobsJobKeyPatch(jobKey: string, toggleScheduledJobDto: ToggleScheduledJobDto, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<any>>;
-    public apiScheduledJobsJobKeyPatch(jobKey: string, toggleScheduledJobDto: ToggleScheduledJobDto, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public apiScheduledJobsJobKeyPatch(jobKey: string, updateScheduledJobDto: UpdateScheduledJobDto, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any>;
+    public apiScheduledJobsJobKeyPatch(jobKey: string, updateScheduledJobDto: UpdateScheduledJobDto, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<any>>;
+    public apiScheduledJobsJobKeyPatch(jobKey: string, updateScheduledJobDto: UpdateScheduledJobDto, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<any>>;
+    public apiScheduledJobsJobKeyPatch(jobKey: string, updateScheduledJobDto: UpdateScheduledJobDto, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         if (jobKey === null || jobKey === undefined) {
             throw new Error('Required parameter jobKey was null or undefined when calling apiScheduledJobsJobKeyPatch.');
         }
-        if (toggleScheduledJobDto === null || toggleScheduledJobDto === undefined) {
-            throw new Error('Required parameter toggleScheduledJobDto was null or undefined when calling apiScheduledJobsJobKeyPatch.');
+        if (updateScheduledJobDto === null || updateScheduledJobDto === undefined) {
+            throw new Error('Required parameter updateScheduledJobDto was null or undefined when calling apiScheduledJobsJobKeyPatch.');
         }
 
         let localVarHeaders = this.defaultHeaders;
@@ -225,7 +225,7 @@ export class ScheduledJobService implements ScheduledJobServiceInterface {
         return this.httpClient.request<any>('patch', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
-                body: toggleScheduledJobDto,
+                body: updateScheduledJobDto,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,

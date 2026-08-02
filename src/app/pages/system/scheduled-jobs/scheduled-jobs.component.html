@@ -4,8 +4,9 @@
       <i class="bi bi-clock-history me-2"></i>Jobs Agendados
     </h5>
     <p class="text-muted mb-3">
-      Ative ou desative para esta academia as rotinas automáticas (geração de aulas, mensalidades, e-mails).
-      Um job desabilitado continua existindo, mas não executa nada até ser reativado.
+      Ative ou desative para esta academia as rotinas automáticas (geração de aulas, mensalidades, e-mails)
+      e escolha o horário (UTC) em que cada uma roda. Um job desabilitado continua existindo, mas não
+      executa nada até ser reativado.
     </p>
 
     @if (isLoading()) {
@@ -18,7 +19,7 @@
           <thead>
             <tr>
               <th>Job</th>
-              <th>Frequência</th>
+              <th>Horário (UTC)</th>
               <th>Última Execução</th>
               <th class="text-end">Habilitado</th>
             </tr>
@@ -30,7 +31,41 @@
                   <div class="fw-semibold">{{ job.displayName }}</div>
                   <div class="text-muted small">{{ job.description }}</div>
                 </td>
-                <td>{{ job.cronDescription }}</td>
+                <td>
+                  <div class="d-flex gap-2 align-items-center">
+                    @if (job.cadence === Cadence.Weekly) {
+                      <select
+                        class="form-select form-select-sm w-auto"
+                        title="Dia da semana"
+                        [disabled]="savingJobKey() === job.jobKey"
+                        (change)="onDayOfWeekChange(job, $any($event.target).value)">
+                        @for (opt of dayOfWeekOptions; track opt.value) {
+                          <option [value]="opt.value" [selected]="opt.value === job.dayOfWeek">{{ opt.label }}</option>
+                        }
+                      </select>
+                    }
+                    @if (job.cadence === Cadence.Monthly) {
+                      <select
+                        class="form-select form-select-sm w-auto"
+                        title="Dia do mês"
+                        [disabled]="savingJobKey() === job.jobKey"
+                        (change)="onDayOfMonthChange(job, $any($event.target).value)">
+                        @for (day of dayOfMonthOptions; track day) {
+                          <option [value]="day" [selected]="day === job.dayOfMonth">Dia {{ day }}</option>
+                        }
+                      </select>
+                    }
+                    <select
+                      class="form-select form-select-sm w-auto"
+                      title="Hora (UTC)"
+                      [disabled]="savingJobKey() === job.jobKey"
+                      (change)="onHourChange(job, $any($event.target).value)">
+                      @for (hour of hourOptions; track hour) {
+                        <option [value]="hour" [selected]="hour === job.hourUtc">{{ hour.toString().padStart(2, '0') }}:00</option>
+                      }
+                    </select>
+                  </div>
+                </td>
                 <td>
                   @if (job.lastRunAt) {
                     <div>{{ job.lastRunAt | date:'dd/MM/yyyy HH:mm' }}</div>
@@ -47,7 +82,7 @@
                       role="switch"
                       [id]="'job-switch-' + job.jobKey"
                       [checked]="job.isEnabled"
-                      [disabled]="togglingJobKey() === job.jobKey"
+                      [disabled]="savingJobKey() === job.jobKey"
                       (change)="toggle(job)"
                     />
                   </div>
