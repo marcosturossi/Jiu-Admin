@@ -9,23 +9,12 @@
  * Do not edit the class manually.
  */
 import { ProblemDetailsStatus } from './problemDetailsStatus';
-import { ApiFrequencyGetPageParameter } from './apiFrequencyGetPageParameter';
-import { ScheduledJobCadence } from './scheduledJobCadence';
 
 
-export interface ShowScheduledJobDto { 
-    jobKey: string;
-    displayName: string;
-    description: string;
-    cadence: ScheduledJobCadence;
+export interface UpdateScheduledJobDto { 
     isEnabled: boolean;
-    hourUtc: ApiFrequencyGetPageParameter;
+    hourUtc: ProblemDetailsStatus | null;
     dayOfWeek: ProblemDetailsStatus | null;
     dayOfMonth: ProblemDetailsStatus | null;
-    lastRunAt: string | null;
-    lastRunSummary: string | null;
 }
-export namespace ShowScheduledJobDto {
-}
-
 

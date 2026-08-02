@@ -14,7 +14,7 @@ import { Observable }                                        from 'rxjs';
 
 import { ProblemDetails } from '../model/models';
 import { ShowScheduledJobDto } from '../model/models';
-import { ToggleScheduledJobDto } from '../model/models';
+import { UpdateScheduledJobDto } from '../model/models';
 
 
 import { Configuration }                                     from '../configuration';
@@ -35,8 +35,8 @@ export interface ScheduledJobServiceInterface {
      * 
      * 
      * @param jobKey 
-     * @param toggleScheduledJobDto 
+     * @param updateScheduledJobDto 
      */
-    apiScheduledJobsJobKeyPatch(jobKey: string, toggleScheduledJobDto: ToggleScheduledJobDto, extraHttpRequestParams?: any): Observable<{}>;
+    apiScheduledJobsJobKeyPatch(jobKey: string, updateScheduledJobDto: UpdateScheduledJobDto, extraHttpRequestParams?: any): Observable<{}>;
 
 }

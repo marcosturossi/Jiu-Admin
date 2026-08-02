@@ -137,6 +137,7 @@ model/problemDetails.ts
 model/problemDetailsStatus.ts
 model/publicAcademyDto.ts
 model/relationshipType.ts
+model/scheduledJobCadence.ts
 model/sendContractForConfirmationResultDTO.ts
 model/series.ts
 model/seriesDataInner.ts
@@ -175,7 +176,6 @@ model/stripesEnum.ts
 model/studentsBirthDay.ts
 model/testPaymentConnectionDto.ts
 model/testPaymentConnectionResultDto.ts
-model/toggleScheduledJobDto.ts
 model/topStudentDTO.ts
 model/transactionType.ts
 model/updateAcademyDto.ts
@@ -194,6 +194,7 @@ model/updateMedicalClearanceDto.ts
 model/updateNoticeDto.ts
 model/updateNotificationDto.ts
 model/updatePersonRelationshipDTO.ts
+model/updateScheduledJobDto.ts
 model/updateStudentDTO.ts
 model/updateSupplierDTO.ts
 model/updateTransactionCategoryDTO.ts
