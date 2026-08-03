@@ -25,6 +25,7 @@ export const NAV_SECTIONS: NavSection[] = [
       { route: '/system/student-onboarding', label: 'Cadastros', icon: 'bi bi-clipboard-check' },
       { route: '/system/students', label: 'Alunos', icon: 'bi bi-people' },
       { route: '/system/lessons', label: 'Aulas', icon: 'bi bi-calendar3' },
+      { route: '/system/lesson-schedules', label: 'Grade de Horários', icon: 'bi bi-calendar-week' },
       { route: '/system/graduations', label: 'Graduações', icon: 'bi bi-award' },
       { route: '/system/frequencies', label: 'Frequências', icon: 'bi bi-check2-square' },
       { route: '/system/belts', label: 'Faixas', icon: 'bi bi-bookmark' },
