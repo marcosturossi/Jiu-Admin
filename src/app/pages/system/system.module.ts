@@ -29,6 +29,7 @@ import { FinanceDashboardComponent } from './finance-dashboard/finance-dashboard
 import { SuppliersComponent } from './suppliers/suppliers.component';
 import { PaymentSettingsComponent } from './payment-settings/payment-settings.component';
 import { ScheduledJobsComponent } from './scheduled-jobs/scheduled-jobs.component';
+import { LessonSchedulesComponent } from './lesson-schedules/lesson-schedules.component';
 
 export const routes: Routes = [
   {
@@ -45,6 +46,7 @@ export const routes: Routes = [
       {path: 'students/details/:id', loadComponent: () => import('./students/detail-student/detail-student.component').then(m => m.DetailStudentComponent)},
 
       { path: 'lessons', component: LessonsComponent },
+      { path: 'lesson-schedules', component: LessonSchedulesComponent },
       { path: 'graduations', component: GraduationsComponent },
       { path: 'frequencies', component: FrequenciesComponent },
       { path: 'belts', component: BeltsComponent },

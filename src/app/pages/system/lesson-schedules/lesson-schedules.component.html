@@ -1,0 +1,106 @@
+<section class="page-section">
+  <div class="page-toolbar">
+    <app-filter [placeholder]="'Buscar horário'" (filterChange)="onFilterChange($event)" />
+    <button type="button" class="btn btn-primary" (click)="openCreate()">
+      <i class="bi bi-plus-lg me-1"></i>Novo Horário
+    </button>
+  </div>
+
+  @if (isLoading()) {
+    <div class="d-flex justify-content-center py-5">
+      <div class="spinner-border text-secondary" role="status">
+        <span class="visually-hidden">Carregando...</span>
+      </div>
+    </div>
+  } @else {
+    <div class="surface-card">
+      <div class="table-responsive">
+        <table class="table table-hover table-sm align-middle">
+          <thead class="table-light">
+            <tr>
+              <th>Título</th>
+              <th>Descrição</th>
+              <th>Dia da Semana</th>
+              <th>Início</th>
+              <th>Duração</th>
+              <th>Status</th>
+              <th class="text-center" style="width:8rem">Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            @if ((items()?.items ?? []).length === 0) {
+              <tr>
+                <td colspan="7" class="empty-state">
+                  <i class="bi bi-calendar-week empty-icon"></i>
+                  <p class="empty-text">Nenhum horário cadastrado.</p>
+                </td>
+              </tr>
+            }
+            @for (schedule of items()?.items ?? []; track schedule.id) {
+              <tr>
+                <td>{{ schedule.title }}</td>
+                <td>{{ schedule.description }}</td>
+                <td>{{ dayOfWeekLabel($any(schedule.dayOfWeek)) }}</td>
+                <td>{{ schedule.startTime }}</td>
+                <td>{{ schedule.duration }}</td>
+                <td>
+                  <span [class]="'badge ' + activeBadgeClass(schedule.isActive)">
+                    {{ schedule.isActive ? 'Ativo' : 'Inativo' }}
+                  </span>
+                </td>
+                <td class="text-center">
+                  <button type="button" class="btn btn-sm btn-outline-info me-1" (click)="openEdit(schedule)">
+                    <i class="bi bi-pencil"></i>
+                  </button>
+                  <button type="button" class="btn btn-sm btn-outline-danger" (click)="delete(schedule)">
+                    <i class="bi bi-trash"></i>
+                  </button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  }
+
+  <app-pagination [currentPage]="currentPage()" [totalPages]="items()?.totalPages ?? 1"
+    [pageSize]="pageSize()" [totalItems]="items()?.totalCount ?? 0"
+    (pageChange)="onPageChange($event)" (pageSizeChange)="onPageSizeChange($event)" />
+
+  @if (openedCreate()) {
+    <div class="modal-backdrop-custom" (click)="openedCreate.set(false)"></div>
+    <div class="modal show d-block" tabindex="-1" role="dialog" aria-modal="true" (document:keydown.escape)="openedCreate.set(false)">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Novo Horário</h5>
+            <button type="button" class="btn-close" (click)="openedCreate.set(false)" aria-label="Fechar"></button>
+          </div>
+          <div class="modal-body">
+            <app-create-lesson-schedule (closeEvent)="openedCreate.set(false)" (scheduleCreated)="onCreated()" />
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+
+  @if (openedUpdate()) {
+    <div class="modal-backdrop-custom" (click)="openedUpdate.set(false)"></div>
+    <div class="modal show d-block" tabindex="-1" role="dialog" aria-modal="true" (document:keydown.escape)="openedUpdate.set(false)">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Editar Horário</h5>
+            <button type="button" class="btn-close" (click)="openedUpdate.set(false)" aria-label="Fechar"></button>
+          </div>
+          <div class="modal-body">
+            @if (selected()) {
+              <app-update-lesson-schedule [schedule]="selected()!" (closeEvent)="openedUpdate.set(false)" (scheduleUpdated)="onUpdated()" />
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+</section>
