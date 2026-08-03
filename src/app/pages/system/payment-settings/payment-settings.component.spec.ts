@@ -187,4 +187,23 @@ describe('PaymentSettingsComponent', () => {
     expect((f2.componentInstance as any).isLoading()).toBeFalse();
     expect(ns.showError).toHaveBeenCalled();
   });
+
+  it('should expose the Asaas webhook URL', () => {
+    expect((component as any).webhookUrl).toContain('/api/public/webhooks/asaas');
+  });
+
+  it('should copy the webhook URL to the clipboard and notify success', async () => {
+    spyOn(navigator.clipboard, 'writeText').and.returnValue(Promise.resolve());
+    (component as any).copyWebhookUrl();
+    await fixture.whenStable();
+    expect(navigator.clipboard.writeText).toHaveBeenCalledWith((component as any).webhookUrl);
+    expect(ns.showSuccess).toHaveBeenCalled();
+  });
+
+  it('should notify an error when copying the webhook URL fails', async () => {
+    spyOn(navigator.clipboard, 'writeText').and.returnValue(Promise.reject(new Error('denied')));
+    (component as any).copyWebhookUrl();
+    await fixture.whenStable();
+    expect(ns.showError).toHaveBeenCalled();
+  });
 });

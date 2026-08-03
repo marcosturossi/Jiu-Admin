@@ -7,6 +7,7 @@ import { NotificationService } from '../../../services/notification.service';
 import { SubnavService } from '../../../services/subnav.service';
 import { extractErrorMessage } from '../../../utils/error.utils';
 import { FieldErrorComponent } from '../../../shared/field-error/field-error.component';
+import { environment } from '../../../enviroments/environment';
 
 /** Matches the PaymentProviders.Key row seeded on the backend (Backend.Modules.Authentication). */
 const ASAAS_PROVIDER_KEY = 'asaas';
@@ -36,6 +37,10 @@ export class PaymentSettingsComponent implements OnInit {
   /** The backend never returns the real API key (write-only, stored as an opaque encrypted
    *  blob) — this just tells the admin a credential is already on file. */
   protected readonly hasCredentialsConfigured = signal(false);
+
+  /** Matches PaymentWebhookController's route (`api/public/webhooks/{provider}`) — this is what
+   *  the admin pastes into Asaas' own webhook configuration screen. */
+  protected readonly webhookUrl = `${environment.server}/api/public/webhooks/${ASAAS_PROVIDER_KEY}`;
 
   protected readonly paymentGateways = [
     { label: 'Nenhum', value: NONE_PROVIDER_VALUE },
@@ -105,6 +110,13 @@ export class PaymentSettingsComponent implements OnInit {
 
   protected toggleWebhookSecretVisibility(): void {
     this.showWebhookSecret.update(v => !v);
+  }
+
+  protected copyWebhookUrl(): void {
+    navigator.clipboard.writeText(this.webhookUrl).then(
+      () => this.notificationService.showSuccess('Copiado!', 'URL do webhook copiada para a área de transferência.'),
+      () => this.notificationService.showError('Erro', 'Não foi possível copiar a URL do webhook.'),
+    );
   }
 
   protected isAsaasSelected(): boolean {
