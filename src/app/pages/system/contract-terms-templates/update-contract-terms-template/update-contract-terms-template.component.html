@@ -6,8 +6,14 @@
   </div>
   <div class="mb-3">
     <label for="text" class="form-label">Cláusulas e Termos <span class="text-danger">*</span></label>
-    <textarea class="form-control" id="text" formControlName="text" rows="10"
-      placeholder="Descreva as cláusulas e termos do contrato de prestação de serviços..."></textarea>
+    <quill-editor
+      id="text"
+      formControlName="text"
+      format="html"
+      [modules]="quillModules"
+      [styles]="{ height: '260px' }"
+      placeholder="Descreva as cláusulas e termos do contrato de prestação de serviços..."
+    />
     <app-field-error [control]="form.get('text')" />
   </div>
   <div class="d-flex gap-2 justify-content-end mt-3">

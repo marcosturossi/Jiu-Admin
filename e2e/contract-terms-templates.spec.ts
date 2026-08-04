@@ -1,9 +1,16 @@
+import { Page } from '@playwright/test';
 import { test, expect } from './coverage-fixture';
 import { waitForTableReady, openCreateModal, acceptConfirmDialog } from './helpers';
 
 const TS = Date.now();
 const TEST_NAME = `Modelo-E2E-${TS}`;
 const UPDATED_NAME = `Modelo-E2E-Edit-${TS}`;
+
+/** ngx-quill renders a contenteditable `.ql-editor` div inside the `#text` host element, not a
+ *  plain textarea — page.fill() needs to target that inner element directly. */
+async function fillQuillEditor(page: Page, text: string): Promise<void> {
+  await page.locator('#text .ql-editor').fill(text);
+}
 
 test.describe('Modelos de Contrato', () => {
   test.beforeEach(async ({ page }) => {
@@ -20,7 +27,7 @@ test.describe('Modelos de Contrato', () => {
     // CREATE
     await openCreateModal(page, /Novo Modelo/i);
     await page.fill('#name', TEST_NAME);
-    await page.fill('#text', 'Cláusulas de teste E2E.');
+    await fillQuillEditor(page, 'Cláusulas de teste E2E.');
     await page.getByRole('button', { name: /Salvar/i }).click();
     await expect(page.locator('.modal.show').first()).not.toBeVisible({ timeout: 15_000 });
     await waitForTableReady(page);
@@ -47,6 +54,39 @@ test.describe('Modelos de Contrato', () => {
     await expect(page.locator('table').getByText(UPDATED_NAME)).not.toBeVisible();
   });
 
+  test('formata texto em negrito e persiste após salvar e reabrir', async ({ page }) => {
+    const boldName = `Modelo-E2E-Bold-${TS}`;
+    await openCreateModal(page, /Novo Modelo/i);
+    await page.fill('#name', boldName);
+
+    const editor = page.locator('#text .ql-editor');
+    await editor.click();
+    await page.keyboard.type('Cláusula em negrito');
+    await editor.evaluate((el) => {
+      const range = document.createRange();
+      range.selectNodeContents(el);
+      const selection = window.getSelection();
+      selection?.removeAllRanges();
+      selection?.addRange(range);
+    });
+    await page.locator('#text .ql-toolbar button.ql-bold').click();
+
+    await page.getByRole('button', { name: /Salvar/i }).click();
+    await expect(page.locator('.modal.show').first()).not.toBeVisible({ timeout: 15_000 });
+    await waitForTableReady(page);
+
+    const row = page.locator('tr', { hasText: boldName });
+    await row.locator('button.btn-outline-info').click();
+    await expect(page.locator('.modal.show').first()).toBeVisible();
+    await expect(page.locator('#text .ql-editor strong')).toContainText('Cláusula em negrito');
+
+    // Cleanup — this test doesn't reuse TEST_NAME, so it must delete its own row.
+    await page.locator('.btn-close').click();
+    await row.locator('button.btn-outline-danger').click();
+    await acceptConfirmDialog(page);
+    await waitForTableReady(page);
+  });
+
   test('exige nome e cláusulas antes de habilitar salvar', async ({ page }) => {
     await openCreateModal(page, /Novo Modelo/i);
     const saveButton = page.getByRole('button', { name: /Salvar/i });
@@ -55,7 +95,7 @@ test.describe('Modelos de Contrato', () => {
     await page.fill('#name', 'Nome Temporário');
     await expect(saveButton).toBeDisabled();
 
-    await page.fill('#text', 'Texto temporário');
+    await fillQuillEditor(page, 'Texto temporário');
     await expect(saveButton).toBeEnabled();
   });
 
@@ -80,7 +120,7 @@ test.describe('Modelos de Contrato', () => {
     });
     await openCreateModal(page, /Novo Modelo/i);
     await page.fill('#name', TEST_NAME);
-    await page.fill('#text', 'Texto');
+    await fillQuillEditor(page, 'Texto');
     const saveButton = page.getByRole('button', { name: /Salvar/i });
     await saveButton.click();
     await expect(page.locator('.toast-error', { hasText: 'Falha simulada ao criar modelo.' })).toBeVisible({ timeout: 10_000 });
@@ -91,7 +131,7 @@ test.describe('Modelos de Contrato', () => {
   test('exibe erro quando falha ao excluir', async ({ page }) => {
     await openCreateModal(page, /Novo Modelo/i);
     await page.fill('#name', TEST_NAME);
-    await page.fill('#text', 'Texto');
+    await fillQuillEditor(page, 'Texto');
     await page.getByRole('button', { name: /Salvar/i }).click();
     await expect(page.locator('.modal.show').first()).not.toBeVisible({ timeout: 15_000 });
     await waitForTableReady(page);

@@ -1,16 +1,18 @@
 import { ChangeDetectionStrategy, Component, inject, output, signal } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
+import { QuillEditorComponent } from 'ngx-quill';
 import { ContractTermsTemplateService } from '../../../../generated_services/api/contractTermsTemplate.service';
 import { CreateContractTermsTemplateDTO } from '../../../../generated_services/model/createContractTermsTemplateDTO';
 import { ShowContractTermsTemplateDTO } from '../../../../generated_services/model/showContractTermsTemplateDTO';
 import { NotificationService } from '../../../../services/notification.service';
 import { extractErrorMessage } from '../../../../utils/error.utils';
 import { FieldErrorComponent } from '../../../../shared/field-error/field-error.component';
+import { CONTRACT_TERMS_QUILL_MODULES } from '../quill-config';
 
 @Component({
   selector: 'app-create-contract-terms-template',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ReactiveFormsModule, FieldErrorComponent],
+  imports: [ReactiveFormsModule, QuillEditorComponent, FieldErrorComponent],
   templateUrl: './create-contract-terms-template.component.html',
   styleUrl: './create-contract-terms-template.component.scss',
 })
@@ -22,6 +24,7 @@ export class CreateContractTermsTemplateComponent {
   private readonly ns = inject(NotificationService);
   private readonly fb = inject(FormBuilder);
 
+  protected readonly quillModules = CONTRACT_TERMS_QUILL_MODULES;
   protected readonly isSaving = signal(false);
 
   protected readonly form = this.fb.group({
