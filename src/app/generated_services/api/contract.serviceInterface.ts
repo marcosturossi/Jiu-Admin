@@ -92,4 +92,11 @@ export interface ContractServiceInterface {
      */
     apiContractPost(createContractDTO: CreateContractDTO, extraHttpRequestParams?: any): Observable<ShowContractDTO>;
 
+    /**
+     * 
+     * 
+     * @param versionId 
+     */
+    apiContractVersionsVersionIdDocumentGet(versionId: string, extraHttpRequestParams?: any): Observable<{}>;
+
 }

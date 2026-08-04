@@ -264,23 +264,27 @@ test.describe('Contratos', () => {
     await expect(row).toBeVisible();
     await expect(row).toContainText('Não confirmado');
 
-    // SEND FOR CONFIRMATION
-    await row.locator('button[title="Enviar para confirmação"]').click();
-    await expect(page.locator('.toast-success')).toBeVisible({ timeout: 10_000 });
-    // Sending doesn't confirm the contract by itself — badge stays "Não confirmado"
-    // until the client actually clicks the public confirmation link.
+    // Contract creation already auto-sends one confirmation (version #1) — badge stays
+    // "Não confirmado" until the client actually clicks the public confirmation link.
     await expect(row).toContainText('Não confirmado');
 
-    // VERSION HISTORY
+    // VERSION HISTORY — one version already exists from auto-send at creation.
     await row.locator('button[title="Histórico de versões"]').click();
     const modal = page.locator('.modal.show').first();
     await expect(modal).toBeVisible();
     await expect(modal.locator('table tbody tr')).toHaveCount(1);
     await expect(modal).toContainText('Aguardando confirmação');
+
+    // DOWNLOAD PDF
+    const downloadPromise = page.waitForEvent('download');
+    await modal.locator('button[title="Baixar PDF"]').click();
+    const download = await downloadPromise;
+    expect(download.suggestedFilename()).toMatch(/^contrato-.*\.pdf$/);
+
     await modal.locator('.modal-body button', { hasText: 'Fechar' }).click();
     await expect(modal).not.toBeVisible();
 
-    // Sending again creates a second version — history grows, doesn't replace.
+    // Sending explicitly creates a second version — history grows, doesn't replace.
     await row.locator('button[title="Enviar para confirmação"]').click();
     await expect(page.locator('.toast-success').first()).toBeVisible({ timeout: 10_000 });
     await row.locator('button[title="Histórico de versões"]').click();
