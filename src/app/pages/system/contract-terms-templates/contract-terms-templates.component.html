@@ -36,7 +36,7 @@
             @for (template of items()?.items ?? []; track template.id) {
               <tr>
                 <td>{{ template.name }}</td>
-                <td class="text-truncate" style="max-width: 24rem">{{ template.text }}</td>
+                <td class="text-truncate" style="max-width: 24rem">{{ stripHtml(template.text) }}</td>
                 <td>{{ template.createdAt | date:'dd/MM/yyyy HH:mm' }}</td>
                 <td class="text-center">
                   <button type="button" class="btn btn-sm btn-outline-info me-1" (click)="openEdit(template)">
@@ -61,7 +61,7 @@
   @if (openedCreate()) {
     <div class="modal-backdrop-custom" (click)="openedCreate.set(false)"></div>
     <div class="modal show d-block" tabindex="-1" role="dialog" aria-modal="true" (document:keydown.escape)="openedCreate.set(false)">
-      <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title">Novo Modelo de Contrato</h5>
@@ -78,7 +78,7 @@
   @if (openedUpdate()) {
     <div class="modal-backdrop-custom" (click)="openedUpdate.set(false)"></div>
     <div class="modal show d-block" tabindex="-1" role="dialog" aria-modal="true" (document:keydown.escape)="openedUpdate.set(false)">
-      <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title">Editar Modelo de Contrato</h5>

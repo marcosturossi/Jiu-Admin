@@ -66,6 +66,15 @@ export class ContractTermsTemplatesComponent {
     });
   }
 
+  /** Text is now HTML (rich-text editor output) — extract plain text (tags AND entities like
+   *  &nbsp;, which Quill inserts for plain spaces) for the table's preview. Only ever reads
+   *  .textContent back out, never re-inserted as HTML, so this is safe despite using innerHTML. */
+  protected stripHtml(html: string | undefined): string {
+    const div = document.createElement('div');
+    div.innerHTML = html ?? '';
+    return (div.textContent ?? '').replace(/\s+/g, ' ').trim();
+  }
+
   protected onPageChange(p: number): void { this.currentPage.set(p); this.load(); }
   protected onPageSizeChange(s: number): void { this.pageSize.set(s); this.currentPage.set(1); this.load(); }
   protected onFilterChange(output: FilterOutput): void { this.filterText.set(output.text || undefined); this.currentPage.set(1); this.load(); }

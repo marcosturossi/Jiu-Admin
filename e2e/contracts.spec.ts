@@ -78,14 +78,14 @@ test.describe('Contratos', () => {
     await waitForTableReady(page);
     await openCreateModal(page, /Novo Modelo/i);
     await page.fill('#name', olderName);
-    await page.fill('#text', 'Texto older');
+    await page.locator('#text .ql-editor').fill('Texto older');
     await page.getByRole('button', { name: /Salvar/i }).click();
     await expect(page.locator('.modal.show').first()).not.toBeVisible({ timeout: 15_000 });
     await waitForTableReady(page);
 
     await openCreateModal(page, /Novo Modelo/i);
     await page.fill('#name', newerName);
-    await page.fill('#text', 'Texto newer');
+    await page.locator('#text .ql-editor').fill('Texto newer');
     await page.getByRole('button', { name: /Salvar/i }).click();
     await expect(page.locator('.modal.show').first()).not.toBeVisible({ timeout: 15_000 });
     await waitForTableReady(page);

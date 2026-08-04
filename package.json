@@ -36,6 +36,7 @@
     "luxon": "^3.5.0",
     "ng-openapi-gen": "^0.52.0",
     "ngx-echarts": "^19.0.0",
+    "ngx-quill": "^28.0.0",
     "ngx-toastr": "^19.1.0",
     "primeicons": "^7.0.0",
     "tslib": "^2.3.0",
