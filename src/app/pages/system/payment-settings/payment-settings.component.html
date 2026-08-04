@@ -101,28 +101,6 @@
           }
         }
 
-        <hr class="my-4" />
-
-        <h5 class="settings-title">
-          <i class="bi bi-file-earmark-text me-2"></i>Termos do Contrato
-        </h5>
-        <p class="settings-subtitle">
-          Texto de cláusulas exibido no contrato em PDF e na página de confirmação enviada ao aluno.
-          Alterações não afetam contratos já enviados — cada envio grava uma cópia própria do texto.
-        </p>
-        <div class="row">
-          <div class="col-12 mb-3">
-            <label for="contractTermsTemplate" class="form-label">Cláusulas e Termos</label>
-            <textarea
-              id="contractTermsTemplate"
-              class="form-control"
-              formControlName="contractTermsTemplate"
-              rows="8"
-              placeholder="Descreva as cláusulas e termos do contrato de prestação de serviços..."
-            ></textarea>
-          </div>
-        </div>
-
         <div class="d-flex justify-content-end gap-2 mt-3">
           @if (isAsaasSelected()) {
             <button type="button" class="btn btn-outline-secondary" [disabled]="isTesting()" (click)="testConnection()">

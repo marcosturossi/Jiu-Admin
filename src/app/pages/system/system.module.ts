@@ -30,6 +30,7 @@ import { SuppliersComponent } from './suppliers/suppliers.component';
 import { PaymentSettingsComponent } from './payment-settings/payment-settings.component';
 import { ScheduledJobsComponent } from './scheduled-jobs/scheduled-jobs.component';
 import { LessonSchedulesComponent } from './lesson-schedules/lesson-schedules.component';
+import { ContractTermsTemplatesComponent } from './contract-terms-templates/contract-terms-templates.component';
 
 export const routes: Routes = [
   {
@@ -58,6 +59,7 @@ export const routes: Routes = [
       { path: 'finance-dashboard', component: FinanceDashboardComponent },
       { path: 'fee-plans', component: FeePlansComponent },
       { path: 'contracts', component: ContractsComponent },
+      { path: 'contract-terms-templates', component: ContractTermsTemplatesComponent },
       { path: 'accounts-receivable', component: AccountsReceivableComponent },
       { path: 'accounts-payable', component: AccountsPayableComponent },
       { path: 'transaction-categories', component: TransactionCategoriesComponent },

@@ -67,6 +67,42 @@ test.describe('Contratos', () => {
     // by it and the backend rejects deleting them (FK constraint on the contract).
   });
 
+  test('pré-seleciona o modelo de contrato mais recente e permite trocar', async ({ page }) => {
+    const ts = Date.now();
+    const olderName = `Modelo-Older-${ts}`;
+    const newerName = `Modelo-Newer-${ts}`;
+
+    // Create two templates via the templates page — "Newer" is created last, so it should
+    // become the default pre-selected option (CreateContractUseCase picks the most recent).
+    await page.goto('/system/contract-terms-templates');
+    await waitForTableReady(page);
+    await openCreateModal(page, /Novo Modelo/i);
+    await page.fill('#name', olderName);
+    await page.fill('#text', 'Texto older');
+    await page.getByRole('button', { name: /Salvar/i }).click();
+    await expect(page.locator('.modal.show').first()).not.toBeVisible({ timeout: 15_000 });
+    await waitForTableReady(page);
+
+    await openCreateModal(page, /Novo Modelo/i);
+    await page.fill('#name', newerName);
+    await page.fill('#text', 'Texto newer');
+    await page.getByRole('button', { name: /Salvar/i }).click();
+    await expect(page.locator('.modal.show').first()).not.toBeVisible({ timeout: 15_000 });
+    await waitForTableReady(page);
+
+    // Open the create-contract form and check the picker's default.
+    await page.goto('/system/contracts');
+    await waitForTableReady(page);
+    await openCreateModal(page, /Novo Contrato/i);
+
+    const templateField = page.locator('.mb-3', { hasText: 'Modelo de Contrato' });
+    await expect(templateField.locator('.search-select-trigger')).toContainText(newerName, { timeout: 10_000 });
+
+    // Override the default with the older template.
+    await selectFromSearchSelect(page, 'Modelo de Contrato', olderName);
+    await expect(templateField.locator('.search-select-trigger')).toContainText(olderName);
+  });
+
   test('cria plano de pagamento pelo botão "+" ao criar contrato, sem sair do formulário', async ({ page }) => {
     const student = await createTestStudent(page);
     const planName = `Plano-E2E-Contrato-${Date.now()}`;

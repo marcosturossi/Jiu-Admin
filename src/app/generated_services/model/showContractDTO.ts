@@ -30,6 +30,8 @@ export interface ShowContractDTO {
     pendingFees?: ApiFrequencyGetPageParameter;
     overdueFees?: ApiFrequencyGetPageParameter;
     acceptedVersionId?: string | null;
+    contractTermsTemplateId?: string | null;
+    contractTermsTemplateName?: string | null;
 }
 export namespace ShowContractDTO {
 }

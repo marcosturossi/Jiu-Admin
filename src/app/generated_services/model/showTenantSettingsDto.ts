@@ -14,6 +14,5 @@ export interface ShowTenantSettingsDto {
     paymentGateway: string | null;
     hasCredentialsConfigured: boolean;
     webhookSecret: string | null;
-    contractTermsTemplate: string | null;
 }
 
