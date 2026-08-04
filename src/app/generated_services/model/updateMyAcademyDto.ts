@@ -10,9 +10,8 @@
  */
 
 
-export interface UpdateAcademyDto { 
+export interface UpdateMyAcademyDto { 
     name: string | null;
-    isActive: boolean | null;
     cnpj: string | null;
     email: string | null;
     street: string | null;

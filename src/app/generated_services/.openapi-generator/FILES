@@ -40,6 +40,8 @@ api/lessonSchedule.service.ts
 api/lessonSchedule.serviceInterface.ts
 api/medicalClearance.service.ts
 api/medicalClearance.serviceInterface.ts
+api/myAcademy.service.ts
+api/myAcademy.serviceInterface.ts
 api/notices.service.ts
 api/notices.serviceInterface.ts
 api/notification.service.ts
@@ -197,6 +199,7 @@ model/updateIndividualPersonDTO.ts
 model/updateLessonDTO.ts
 model/updateLessonScheduleDTO.ts
 model/updateMedicalClearanceDto.ts
+model/updateMyAcademyDto.ts
 model/updateNoticeDto.ts
 model/updateNotificationDto.ts
 model/updatePersonRelationshipDTO.ts

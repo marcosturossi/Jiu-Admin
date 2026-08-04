@@ -1,0 +1,22 @@
+.settings-card {
+  max-width: 56rem;
+  padding: 1.5rem 2rem;
+}
+
+.settings-title {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.25rem;
+}
+
+.settings-subtitle {
+  color: var(--brand-muted);
+  font-size: 0.875rem;
+  margin-bottom: 1.5rem;
+}
+
+@media (max-width: 767px) {
+  .settings-card {
+    padding: 1.25rem;
+  }
+}
