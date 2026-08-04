@@ -16,6 +16,8 @@ api/companyPersons.service.ts
 api/companyPersons.serviceInterface.ts
 api/contract.service.ts
 api/contract.serviceInterface.ts
+api/contractTermsTemplate.service.ts
+api/contractTermsTemplate.serviceInterface.ts
 api/dashboard.service.ts
 api/dashboard.serviceInterface.ts
 api/feePlan.service.ts
@@ -86,6 +88,7 @@ model/createBeltDTO.ts
 model/createBeltDTOOrderIndex.ts
 model/createCompanyPersonDTO.ts
 model/createContractDTO.ts
+model/createContractTermsTemplateDTO.ts
 model/createFeePlanDTO.ts
 model/createFrequencyDTO.ts
 model/createGraduationDTO.ts
@@ -119,6 +122,7 @@ model/paginatedResultOfShowAccountsReceivableDTO.ts
 model/paginatedResultOfShowBeltDTO.ts
 model/paginatedResultOfShowCompanyPersonDTO.ts
 model/paginatedResultOfShowContractDTO.ts
+model/paginatedResultOfShowContractTermsTemplateDTO.ts
 model/paginatedResultOfShowFeePlanDTO.ts
 model/paginatedResultOfShowFrequencyDTO.ts
 model/paginatedResultOfShowGraduationDTO.ts
@@ -148,6 +152,7 @@ model/showAddressDTO.ts
 model/showBeltDTO.ts
 model/showCompanyPersonDTO.ts
 model/showContractDTO.ts
+model/showContractTermsTemplateDTO.ts
 model/showContractVersionDTO.ts
 model/showFeePlanDTO.ts
 model/showFrequencyDTO.ts
@@ -183,6 +188,7 @@ model/updateAddressDTO.ts
 model/updateBeltDTO.ts
 model/updateCompanyPersonDTO.ts
 model/updateContractStatusRequest.ts
+model/updateContractTermsTemplateDTO.ts
 model/updateFeePlanDTO.ts
 model/updateFrequencyDTO.ts
 model/updateGraduationDTO.ts

@@ -77,6 +77,17 @@
               </div>
               <app-field-error [control]="form.get('webhookSecret')" />
             </div>
+
+            <div class="col-md-8 mb-3">
+              <label for="webhookUrl" class="form-label">URL do Webhook (Asaas)</label>
+              <div class="input-group">
+                <input type="text" id="webhookUrl" class="form-control" [value]="webhookUrl" readonly />
+                <button type="button" class="btn btn-outline-secondary" (click)="copyWebhookUrl()" title="Copiar URL">
+                  <i class="bi bi-clipboard"></i>
+                </button>
+              </div>
+              <div class="form-text">Cole esta URL na configuração de webhooks do painel do Asaas para receber atualizações de cobranças.</div>
+            </div>
           </div>
 
           @if (testResult(); as result) {
@@ -89,28 +100,6 @@
             </div>
           }
         }
-
-        <hr class="my-4" />
-
-        <h5 class="settings-title">
-          <i class="bi bi-file-earmark-text me-2"></i>Termos do Contrato
-        </h5>
-        <p class="settings-subtitle">
-          Texto de cláusulas exibido no contrato em PDF e na página de confirmação enviada ao aluno.
-          Alterações não afetam contratos já enviados — cada envio grava uma cópia própria do texto.
-        </p>
-        <div class="row">
-          <div class="col-12 mb-3">
-            <label for="contractTermsTemplate" class="form-label">Cláusulas e Termos</label>
-            <textarea
-              id="contractTermsTemplate"
-              class="form-control"
-              formControlName="contractTermsTemplate"
-              rows="8"
-              placeholder="Descreva as cláusulas e termos do contrato de prestação de serviços..."
-            ></textarea>
-          </div>
-        </div>
 
         <div class="d-flex justify-content-end gap-2 mt-3">
           @if (isAsaasSelected()) {

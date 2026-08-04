@@ -15,5 +15,6 @@ export interface CreateContractDTO {
     feePlanId?: string;
     startDate?: string;
     notes?: string | null;
+    contractTermsTemplateId?: string | null;
 }
 

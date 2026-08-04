@@ -7,6 +7,7 @@ import { NotificationService } from '../../../services/notification.service';
 import { SubnavService } from '../../../services/subnav.service';
 import { extractErrorMessage } from '../../../utils/error.utils';
 import { FieldErrorComponent } from '../../../shared/field-error/field-error.component';
+import { environment } from '../../../enviroments/environment';
 
 /** Matches the PaymentProviders.Key row seeded on the backend (Backend.Modules.Authentication). */
 const ASAAS_PROVIDER_KEY = 'asaas';
@@ -37,6 +38,10 @@ export class PaymentSettingsComponent implements OnInit {
    *  blob) — this just tells the admin a credential is already on file. */
   protected readonly hasCredentialsConfigured = signal(false);
 
+  /** Matches PaymentWebhookController's route (`api/public/webhooks/{provider}`) — this is what
+   *  the admin pastes into Asaas' own webhook configuration screen. */
+  protected readonly webhookUrl = `${environment.server}/api/public/webhooks/${ASAAS_PROVIDER_KEY}`;
+
   protected readonly paymentGateways = [
     { label: 'Nenhum', value: NONE_PROVIDER_VALUE },
     { label: 'Asaas', value: ASAAS_PROVIDER_KEY },
@@ -54,7 +59,6 @@ export class PaymentSettingsComponent implements OnInit {
     asaasApiKey: [''],
     webhookSecret: [''],
     asaasEnvironment: ['Sandbox' as string, Validators.required],
-    contractTermsTemplate: [''],
   });
 
   ngOnInit(): void {
@@ -84,7 +88,6 @@ export class PaymentSettingsComponent implements OnInit {
         this.form.patchValue({
           paymentGateway: settings.paymentGateway ?? NONE_PROVIDER_VALUE,
           webhookSecret: settings.webhookSecret ?? '',
-          contractTermsTemplate: settings.contractTermsTemplate ?? '',
         });
         // Only fields the user actually edits after this point should be sent on save — the API
         // treats an untouched field as "leave as-is", since webhookSecret comes back masked and
@@ -105,6 +108,13 @@ export class PaymentSettingsComponent implements OnInit {
 
   protected toggleWebhookSecretVisibility(): void {
     this.showWebhookSecret.update(v => !v);
+  }
+
+  protected copyWebhookUrl(): void {
+    navigator.clipboard.writeText(this.webhookUrl).then(
+      () => this.notificationService.showSuccess('Copiado!', 'URL do webhook copiada para a área de transferência.'),
+      () => this.notificationService.showError('Erro', 'Não foi possível copiar a URL do webhook.'),
+    );
   }
 
   protected isAsaasSelected(): boolean {
@@ -161,7 +171,7 @@ export class PaymentSettingsComponent implements OnInit {
       next: (settings) => {
         this.isSaving.set(false);
         this.hasCredentialsConfigured.set(settings.hasCredentialsConfigured ?? false);
-        this.form.patchValue({ asaasApiKey: '', webhookSecret: settings.webhookSecret ?? '', contractTermsTemplate: settings.contractTermsTemplate ?? '' });
+        this.form.patchValue({ asaasApiKey: '', webhookSecret: settings.webhookSecret ?? '' });
         this.form.markAsPristine();
         this.notificationService.showSuccess('Configurações Salvas!', 'As configurações de pagamento foram atualizadas com sucesso.');
       },
@@ -184,7 +194,6 @@ export class PaymentSettingsComponent implements OnInit {
     const v = this.form.value;
     const paymentGatewayControl = this.form.get('paymentGateway');
     const webhookSecretControl = this.form.get('webhookSecret');
-    const contractTermsTemplateControl = this.form.get('contractTermsTemplate');
 
     const credentials = this.isAsaasSelected()
       ? { apiKey: (v.asaasApiKey ?? '').trim(), environment: v.asaasEnvironment ?? 'Sandbox' }
@@ -196,7 +205,6 @@ export class PaymentSettingsComponent implements OnInit {
       paymentGateway: paymentGatewayControl?.dirty ? (v.paymentGateway || null) : null,
       credentials,
       webhookSecret: webhookSecretControl?.dirty ? (v.webhookSecret || null) : null,
-      contractTermsTemplate: contractTermsTemplateControl?.dirty ? (v.contractTermsTemplate || null) : null,
     };
   }
 }

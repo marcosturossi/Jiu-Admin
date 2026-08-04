@@ -1,10 +1,12 @@
 import { ChangeDetectionStrategy, Component, DestroyRef, inject, output, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 import { Subject, debounceTime } from 'rxjs';
 import { ContractService } from '../../../../generated_services/api/contract.service';
 import { FeePlanService } from '../../../../generated_services/api/feePlan.service';
 import { StudentsService } from '../../../../generated_services/api/students.service';
+import { ContractTermsTemplateService } from '../../../../generated_services/api/contractTermsTemplate.service';
 import { ShowStudentDTO as ShowStudentDTO, ShowFeePlanDTO as ShowFeePlanDTO, ShowContractDTO as ShowContractDTO } from '../../../../generated_services';
 import { NotificationService } from '../../../../services/notification.service';
 import { extractErrorMessage } from '../../../../utils/error.utils';
@@ -16,7 +18,7 @@ import { CreateFeePlanComponent } from '../../fee-plans/create-fee-plan/create-f
 @Component({
   selector: 'app-create-contract',
   standalone: true,
-  imports: [ReactiveFormsModule, SearchSelectComponent, FieldErrorComponent, CreateFeePlanComponent],
+  imports: [ReactiveFormsModule, RouterLink, SearchSelectComponent, FieldErrorComponent, CreateFeePlanComponent],
   templateUrl: './create-contract.component.html',
   styleUrl: './create-contract.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -26,6 +28,7 @@ export class CreateContractComponent {
   private readonly contractService = inject(ContractService);
   private readonly feePlanService = inject(FeePlanService);
   private readonly studentsService = inject(StudentsService);
+  private readonly contractTermsTemplateService = inject(ContractTermsTemplateService);
   private readonly ns = inject(NotificationService);
   private readonly destroyRef = inject(DestroyRef);
 
@@ -38,19 +41,26 @@ export class CreateContractComponent {
 
   protected readonly studentOptions = signal<SearchOption[]>([]);
   protected readonly feePlanOptions = signal<SearchOption[]>([]);
+  protected readonly contractTermsTemplateOptions = signal<SearchOption[]>([]);
   protected readonly selectedStudent = signal<SearchOption | null>(null);
   protected readonly selectedFeePlan = signal<SearchOption | null>(null);
+  protected readonly selectedContractTermsTemplate = signal<SearchOption | null>(null);
   private readonly allFeePlans = signal<ShowFeePlanDTO[]>([]);
   protected readonly selectedFeePlanData = signal<ShowFeePlanDTO | null>(null);
 
   private readonly studentSearchSubject = new Subject<string>();
   private readonly feePlanSearchSubject = new Subject<string>();
+  private readonly contractTermsTemplateSearchSubject = new Subject<string>();
 
   protected readonly form = this.fb.group({
     studentId: ['', Validators.required],
     feePlanId: ['', Validators.required],
     startDate: [null as string | null, Validators.required],
     notes: [''],
+    // Optional: CreateContractUseCase defaults to the most-recently-created template server-side
+    // when this is left unset (e.g. the tenant has none yet) — the picker just pre-selects that
+    // same "most recent" choice client-side so the admin sees it and can override it.
+    contractTermsTemplateId: [''],
   });
 
   constructor() {
@@ -58,8 +68,11 @@ export class CreateContractComponent {
       .subscribe(term => this.loadStudents(term));
     this.feePlanSearchSubject.pipe(debounceTime(400), takeUntilDestroyed(this.destroyRef))
       .subscribe(term => this.loadFeePlans(term));
+    this.contractTermsTemplateSearchSubject.pipe(debounceTime(400), takeUntilDestroyed(this.destroyRef))
+      .subscribe(term => this.loadContractTermsTemplates(term));
     this.loadStudents();
     this.loadFeePlans();
+    this.loadContractTermsTemplates();
   }
 
   protected save(): void {
@@ -73,7 +86,13 @@ export class CreateContractComponent {
 
     this.isSaving.set(true);
     this.contractService
-      .apiContractPost({ personId: raw.studentId!, feePlanId: raw.feePlanId!, startDate, notes: raw.notes || null })
+      .apiContractPost({
+        personId: raw.studentId!,
+        feePlanId: raw.feePlanId!,
+        startDate,
+        notes: raw.notes || null,
+        contractTermsTemplateId: raw.contractTermsTemplateId || null,
+      })
       .subscribe({
         next: (result: ShowContractDTO) => {
           this.isSaving.set(false);
@@ -109,6 +128,15 @@ export class CreateContractComponent {
 
   protected onFeePlanSearch(term: string): void {
     this.feePlanSearchSubject.next(term);
+  }
+
+  protected onContractTermsTemplateSelected(opt: SearchOption | null): void {
+    this.selectedContractTermsTemplate.set(opt);
+    this.form.patchValue({ contractTermsTemplateId: opt?.id ?? '' });
+  }
+
+  protected onContractTermsTemplateSearch(term: string): void {
+    this.contractTermsTemplateSearchSubject.next(term);
   }
 
   protected close(): void { this.closeEvent.emit(); }
@@ -151,6 +179,23 @@ export class CreateContractComponent {
             label: `${p.name ?? ''} — R$ ${(p.price as unknown as number)?.toFixed(2) ?? '0,00'}`,
           })),
         );
+      },
+    });
+  }
+
+  private loadContractTermsTemplates(term = ''): void {
+    // Newest first, matching CreateContractUseCase's own "most recently created" default.
+    this.contractTermsTemplateService.apiContractTermsTemplateGet(term || undefined, 1, 100, 'createdat', true).subscribe({
+      next: result => {
+        const templates = result?.items ?? [];
+        const options = templates.map(t => ({ id: t.id!, label: t.name! }));
+        this.contractTermsTemplateOptions.set(options);
+        // Pre-select the most recent template only on the initial unfiltered load, and only if
+        // nothing's been picked yet — mirrors the server-side default without overriding a
+        // choice the admin already made while searching.
+        if (!term && !this.selectedContractTermsTemplate() && options.length > 0) {
+          this.onContractTermsTemplateSelected(options[0]);
+        }
       },
     });
   }

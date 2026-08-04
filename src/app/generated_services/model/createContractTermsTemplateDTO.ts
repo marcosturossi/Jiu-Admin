@@ -10,9 +10,8 @@
  */
 
 
-export interface UpsertTenantSettingsDto { 
-    paymentGateway: string | null;
-    credentials: { [key: string]: string; };
-    webhookSecret: string | null;
+export interface CreateContractTermsTemplateDTO { 
+    name: string;
+    text: string;
 }
 
