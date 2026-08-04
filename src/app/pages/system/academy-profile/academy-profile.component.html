@@ -1,0 +1,87 @@
+<section class="page-section">
+  @if (isLoading()) {
+    <div class="d-flex justify-content-center py-5">
+      <div class="spinner-border text-secondary" role="status"><span class="visually-hidden">Carregando...</span></div>
+    </div>
+  } @else {
+    <div class="surface-card settings-card">
+      <h5 class="settings-title">
+        <i class="bi bi-building me-2"></i>Dados da Academia
+      </h5>
+      <p class="settings-subtitle">Estas informações são usadas nos contratos, e-mails e documentos gerados para seus alunos.</p>
+
+      <form [formGroup]="form" (ngSubmit)="save()">
+        <div class="row">
+          <div class="col-md-8 mb-3">
+            <label for="name" class="form-label">Nome da Academia <span class="text-danger">*</span></label>
+            <input type="text" id="name" class="form-control" formControlName="name" placeholder="Ex: Carlson Gracie São Paulo" />
+            <app-field-error [control]="form.get('name')" />
+          </div>
+
+          <div class="col-md-4 mb-3">
+            <label for="cnpj" class="form-label">CNPJ</label>
+            <input type="text" id="cnpj" class="form-control" formControlName="cnpj" placeholder="00.000.000/0000-00" />
+            <app-field-error [control]="form.get('cnpj')" />
+          </div>
+
+          <div class="col-md-6 mb-3">
+            <label for="email" class="form-label">E-mail de Contato</label>
+            <input type="email" id="email" class="form-control" formControlName="email" placeholder="contato@academia.com" />
+            <app-field-error [control]="form.get('email')" />
+          </div>
+        </div>
+
+        <hr class="my-3" />
+        <h6 class="mb-3">Endereço</h6>
+
+        <div class="row">
+          <div class="col-md-3 mb-3">
+            <label for="zipCode" class="form-label">CEP</label>
+            <input type="text" id="zipCode" class="form-control" formControlName="zipCode" placeholder="00000-000" (blur)="onZipCodeChange()" />
+          </div>
+
+          <div class="col-md-7 mb-3">
+            <label for="street" class="form-label">Rua</label>
+            <input type="text" id="street" class="form-control" formControlName="street" />
+          </div>
+
+          <div class="col-md-2 mb-3">
+            <label for="number" class="form-label">Número</label>
+            <input type="text" id="number" class="form-control" formControlName="number" />
+          </div>
+
+          <div class="col-md-4 mb-3">
+            <label for="complement" class="form-label">Complemento</label>
+            <input type="text" id="complement" class="form-control" formControlName="complement" />
+          </div>
+
+          <div class="col-md-4 mb-3">
+            <label for="neighborhood" class="form-label">Bairro</label>
+            <input type="text" id="neighborhood" class="form-control" formControlName="neighborhood" />
+          </div>
+
+          <div class="col-md-3 mb-3">
+            <label for="city" class="form-label">Cidade</label>
+            <input type="text" id="city" class="form-control" formControlName="city" />
+          </div>
+
+          <div class="col-md-1 mb-3">
+            <label for="state" class="form-label">UF</label>
+            <input type="text" id="state" class="form-control" formControlName="state" maxlength="2" />
+          </div>
+        </div>
+
+        <div class="d-flex justify-content-end gap-2 mt-3">
+          <button type="submit" class="btn btn-primary" [disabled]="isSaving()">
+            @if (isSaving()) {
+              <span class="spinner-border spinner-border-sm me-1" role="status"></span>
+            } @else {
+              <i class="bi bi-check-lg me-1"></i>
+            }
+            Salvar
+          </button>
+        </div>
+      </form>
+    </div>
+  }
+</section>

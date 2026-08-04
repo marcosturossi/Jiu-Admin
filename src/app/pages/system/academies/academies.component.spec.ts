@@ -13,6 +13,15 @@ const MOCK_ACADEMY_1: ShowAcademyDto = {
   slug: 'carlson-sp',
   isActive: true,
   createdAt: '2024-01-15',
+  cnpj: null,
+  email: null,
+  street: null,
+  number: null,
+  complement: null,
+  neighborhood: null,
+  city: null,
+  state: null,
+  zipCode: null,
 };
 
 const MOCK_ACADEMY_2: ShowAcademyDto = {
@@ -21,6 +30,15 @@ const MOCK_ACADEMY_2: ShowAcademyDto = {
   slug: 'carlson-rj',
   isActive: false,
   createdAt: '2024-02-10',
+  cnpj: null,
+  email: null,
+  street: null,
+  number: null,
+  complement: null,
+  neighborhood: null,
+  city: null,
+  state: null,
+  zipCode: null,
 };
 
 const MOCK_ITEMS = Array.from({ length: 25 }, (_, i) => ({ ...MOCK_ACADEMY_1, id: `ac${i + 1}` }));

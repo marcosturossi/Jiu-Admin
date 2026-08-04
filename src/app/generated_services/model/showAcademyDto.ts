@@ -16,5 +16,14 @@ export interface ShowAcademyDto {
     slug: string;
     isActive: boolean;
     createdAt: string;
+    cnpj: string | null;
+    email: string | null;
+    street: string | null;
+    number: string | null;
+    complement: string | null;
+    neighborhood: string | null;
+    city: string | null;
+    state: string | null;
+    zipCode: string | null;
 }
 

@@ -128,6 +128,7 @@ export * from './updateIndividualPersonDTO';
 export * from './updateLessonDTO';
 export * from './updateLessonScheduleDTO';
 export * from './updateMedicalClearanceDto';
+export * from './updateMyAcademyDto';
 export * from './updateNoticeDto';
 export * from './updateNotificationDto';
 export * from './updatePersonRelationshipDTO';

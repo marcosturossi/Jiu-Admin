@@ -28,6 +28,7 @@ import { StudentOnboardingComponent } from './student-onboarding/student-onboard
 import { FinanceDashboardComponent } from './finance-dashboard/finance-dashboard.component';
 import { SuppliersComponent } from './suppliers/suppliers.component';
 import { PaymentSettingsComponent } from './payment-settings/payment-settings.component';
+import { AcademyProfileComponent } from './academy-profile/academy-profile.component';
 import { ScheduledJobsComponent } from './scheduled-jobs/scheduled-jobs.component';
 import { LessonSchedulesComponent } from './lesson-schedules/lesson-schedules.component';
 import { ContractTermsTemplatesComponent } from './contract-terms-templates/contract-terms-templates.component';
@@ -71,6 +72,7 @@ export const routes: Routes = [
       { path: 'suppliers/details/:id', loadComponent: () => import('./suppliers/detail-supplier/detail-supplier.component').then(m => m.DetailSupplierComponent) },
       // Configurações
       { path: 'academies', component: AcademiesComponent },
+      { path: 'academy-profile', component: AcademyProfileComponent },
       { path: 'payment-settings', component: PaymentSettingsComponent },
       { path: 'scheduled-jobs', component: ScheduledJobsComponent },
     ]

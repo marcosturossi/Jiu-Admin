@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { of, throwError } from 'rxjs';
 import { UpdateAcademyComponent } from './update-academy.component';
 import { AcademyService } from '../../../../generated_services/api/academy.service';
+import { AddressService } from '../../../../generated_services/api/address.service';
 import { NotificationService } from '../../../../services/notification.service';
 import { ShowAcademyDto } from '../../../../generated_services/model/showAcademyDto';
 import { ComponentRef } from '@angular/core';
@@ -12,6 +13,19 @@ const MOCK_ACADEMY: ShowAcademyDto = {
   slug: 'carlson-sp',
   isActive: true,
   createdAt: '2024-01-15',
+  cnpj: null,
+  email: null,
+  street: null,
+  number: null,
+  complement: null,
+  neighborhood: null,
+  city: null,
+  state: null,
+  zipCode: null,
+};
+
+const EMPTY_DTO_FIELDS = {
+  cnpj: null, email: null, zipCode: null, street: null, number: null, complement: null, neighborhood: null, city: null, state: null,
 };
 
 describe('UpdateAcademyComponent', () => {
@@ -19,16 +33,19 @@ describe('UpdateAcademyComponent', () => {
   let fixture: ComponentFixture<UpdateAcademyComponent>;
   let componentRef: ComponentRef<UpdateAcademyComponent>;
   let academyService: jasmine.SpyObj<AcademyService>;
+  let addressService: jasmine.SpyObj<AddressService>;
   let notificationService: jasmine.SpyObj<NotificationService>;
 
   beforeEach(async () => {
     const academySpy = jasmine.createSpyObj('AcademyService', ['apiAdminAcademiesIdPut']);
+    const addressSpy = jasmine.createSpyObj('AddressService', ['apiAddressCepGet']);
     const notifySpy = jasmine.createSpyObj('NotificationService', ['showSuccess', 'showError']);
 
     await TestBed.configureTestingModule({
       imports: [UpdateAcademyComponent],
       providers: [
         { provide: AcademyService, useValue: academySpy },
+        { provide: AddressService, useValue: addressSpy },
         { provide: NotificationService, useValue: notifySpy },
       ],
     }).compileComponents();
@@ -37,6 +54,7 @@ describe('UpdateAcademyComponent', () => {
     componentRef = fixture.componentRef;
     component = fixture.componentInstance;
     academyService = TestBed.inject(AcademyService) as jasmine.SpyObj<AcademyService>;
+    addressService = TestBed.inject(AddressService) as jasmine.SpyObj<AddressService>;
     notificationService = TestBed.inject(NotificationService) as jasmine.SpyObj<NotificationService>;
 
     componentRef.setInput('academy', MOCK_ACADEMY);
@@ -92,7 +110,43 @@ describe('UpdateAcademyComponent', () => {
     expect(academyService.apiAdminAcademiesIdPut).toHaveBeenCalledWith('abc-1', {
       name: 'Novo Nome',
       isActive: false,
+      ...EMPTY_DTO_FIELDS,
     });
+  });
+
+  it('should include cnpj, email and address fields in the DTO when filled in', () => {
+    academyService.apiAdminAcademiesIdPut.and.returnValue(of(MOCK_ACADEMY as any));
+    const form = (component as any).form;
+    form.patchValue({
+      cnpj: '12.345.678/0001-90', email: 'contato@academia.com',
+      zipCode: '01001-000', street: 'Rua A', number: '100', complement: 'Sala 2', neighborhood: 'Centro', city: 'São Paulo', state: 'SP',
+    });
+    (component as any).save();
+    expect(academyService.apiAdminAcademiesIdPut).toHaveBeenCalledWith('abc-1', {
+      name: 'Carlson Gracie SP',
+      isActive: true,
+      cnpj: '12.345.678/0001-90',
+      email: 'contato@academia.com',
+      zipCode: '01001-000',
+      street: 'Rua A',
+      number: '100',
+      complement: 'Sala 2',
+      neighborhood: 'Centro',
+      city: 'São Paulo',
+      state: 'SP',
+    });
+  });
+
+  it('should autofill address fields when a full CEP is entered', () => {
+    addressService.apiAddressCepGet.and.returnValue(of({
+      street: 'Rua Encontrada', number: null, complement: null, neighborhood: 'Bairro Novo', city: 'Rio de Janeiro', state: 'RJ', zipCode: '20000-000',
+    } as any));
+    (component as any).form.get('zipCode')?.setValue('20000000');
+
+    (component as any).onZipCodeChange();
+
+    expect(addressService.apiAddressCepGet).toHaveBeenCalledWith('20000000');
+    expect((component as any).form.value.city).toBe('Rio de Janeiro');
   });
 
   it('should emit academyUpdated and show success notification on successful save', () => {
