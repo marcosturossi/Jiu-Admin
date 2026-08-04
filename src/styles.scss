@@ -224,6 +224,51 @@ li {
   color: var(--brand-text);
 }
 
+/* Quill (ngx-quill) rich-text editor — the host element defaults to inline-block with
+   baseline vertical-align, which puts it on the same line as a preceding <label> and makes the
+   label appear pinned near the editor's bottom edge instead of stacked above it. */
+quill-editor {
+  display: block;
+  width: 100%;
+}
+
+:root.dark-mode .ql-toolbar.ql-snow,
+:root.dark-mode .ql-container.ql-snow {
+  background-color: var(--brand-border);
+  border-color: var(--brand-border);
+}
+
+:root.dark-mode .ql-editor {
+  color: var(--brand-text);
+}
+
+:root.dark-mode .ql-editor.ql-blank::before {
+  color: var(--brand-muted);
+}
+
+:root.dark-mode .ql-snow .ql-stroke,
+:root.dark-mode .ql-snow .ql-stroke-miter {
+  stroke: var(--brand-text);
+}
+
+:root.dark-mode .ql-snow .ql-fill,
+:root.dark-mode .ql-snow .ql-stroke.ql-fill {
+  fill: var(--brand-text);
+}
+
+:root.dark-mode .ql-snow .ql-picker {
+  color: var(--brand-text);
+}
+
+:root.dark-mode .ql-snow .ql-picker-options {
+  background-color: var(--brand-border);
+  border-color: var(--brand-muted);
+}
+
+:root.dark-mode .ql-snow .ql-picker.ql-expanded .ql-picker-label {
+  border-color: var(--brand-muted);
+}
+
 /* Dark mode alert styling */
 :root.dark-mode .alert {
   background-color: var(--brand-border);
