@@ -32,7 +32,7 @@ export class ScheduledJobsComponent {
   protected readonly dayOfWeekOptions = DAY_OF_WEEK_LABELS.map((label, value) => ({ value, label }));
 
   constructor() {
-    this.subnavService.setTitle('Jobs Agendados');
+    this.subnavService.setTitle('Rotinas Agendadas');
     this.load();
   }
 
@@ -52,6 +52,23 @@ export class ScheduledJobsComponent {
 
   protected toggle(job: ShowScheduledJobDto): void {
     this.update(job, { isEnabled: !job.isEnabled }, job.isEnabled ? 'desabilitado' : 'habilitado');
+  }
+
+  protected register(job: ShowScheduledJobDto): void {
+    this.savingJobKey.set(job.jobKey);
+    this.scheduledJobService.apiScheduledJobsJobKeyRegisterPost(job.jobKey).subscribe({
+      next: () => {
+        this.savingJobKey.set(null);
+        this.ns.showSuccess('Rotina Registrada', `"${job.displayName}" foi re-registrada no agendador.`);
+        // Re-fetch rather than patch isRegisteredInScheduler locally — the backend also recomputes
+        // nextRunAtUtc from Hangfire, which we can't derive on the client.
+        this.load();
+      },
+      error: (err) => {
+        this.savingJobKey.set(null);
+        this.ns.showError('Erro ao Registrar', extractErrorMessage(err, 'Não foi possível registrar o job no agendador.'));
+      },
+    });
   }
 
   protected onHourChange(job: ShowScheduledJobDto, value: string): void {
@@ -84,7 +101,7 @@ export class ScheduledJobsComponent {
         this.savingJobKey.set(null);
         this.jobs.update(list =>
           list.map(j => (j.jobKey === job.jobKey ? { ...j, isEnabled, hourUtc, dayOfWeek: dayOfWeek ?? j.dayOfWeek, dayOfMonth: dayOfMonth ?? j.dayOfMonth } : j)));
-        this.ns.showSuccess('Job Atualizado', `"${job.displayName}" foi ${verb}.`);
+        this.ns.showSuccess('Rotina Atualizada', `"${job.displayName}" foi ${verb}.`);
       },
       error: (err) => {
         this.savingJobKey.set(null);

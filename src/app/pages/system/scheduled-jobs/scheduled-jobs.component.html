@@ -1,12 +1,12 @@
 <section class="page-section">
   <div class="surface-card">
     <h5 class="mb-1">
-      <i class="bi bi-clock-history me-2"></i>Jobs Agendados
+      <i class="bi bi-clock-history me-2"></i>Rotinas Agendadas
     </h5>
     <p class="text-muted mb-3">
       Ative ou desative para esta academia as rotinas automáticas (geração de aulas, mensalidades, e-mails)
-      e escolha o horário (UTC) em que cada uma roda. Um job desabilitado continua existindo, mas não
-      executa nada até ser reativado.
+      e escolha o horário (UTC) em que cada uma roda. Uma rotina desabilitada continua existindo, mas não
+      executa nada até ser reativada.
     </p>
 
     @if (isLoading()) {
@@ -18,9 +18,10 @@
         <table class="table align-middle">
           <thead>
             <tr>
-              <th>Job</th>
+              <th>Rotina</th>
               <th>Horário (UTC)</th>
               <th>Última Execução</th>
+              <th>Status do Agendamento</th>
               <th class="text-end">Habilitado</th>
             </tr>
           </thead>
@@ -72,6 +73,25 @@
                     <div class="text-muted small">{{ job.lastRunSummary }}</div>
                   } @else {
                     <span class="text-muted">Nunca executado</span>
+                  }
+                </td>
+                <td>
+                  @if (job.isRegisteredInScheduler) {
+                    <span class="badge text-bg-success mb-1">Registrado</span>
+                    @if (job.nextRunAtUtc) {
+                      <div class="text-muted small">Próxima: {{ job.nextRunAtUtc | date:'dd/MM/yyyy HH:mm' }} UTC</div>
+                    }
+                  } @else {
+                    <span class="badge text-bg-danger mb-1">Não registrado</span>
+                    <div>
+                      <button
+                        type="button"
+                        class="btn btn-sm btn-outline-secondary mt-1"
+                        [disabled]="savingJobKey() === job.jobKey"
+                        (click)="register(job)">
+                        Registrar agora
+                      </button>
+                    </div>
                   }
                 </td>
                 <td class="text-end">

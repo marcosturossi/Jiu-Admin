@@ -39,4 +39,11 @@ export interface ScheduledJobServiceInterface {
      */
     apiScheduledJobsJobKeyPatch(jobKey: string, updateScheduledJobDto: UpdateScheduledJobDto, extraHttpRequestParams?: any): Observable<{}>;
 
+    /**
+     *
+     *
+     * @param jobKey
+     */
+    apiScheduledJobsJobKeyRegisterPost(jobKey: string, extraHttpRequestParams?: any): Observable<{}>;
+
 }
