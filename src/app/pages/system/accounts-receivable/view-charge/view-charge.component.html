@@ -1,0 +1,55 @@
+<div>
+  <p><span class="fw-bold">Aluno</span>: {{item().personName || "-"}}</p>
+  <p><span class="fw-bold">Descrição</span>: {{item().description || "-"}}</p>
+  <p><span class="fw-bold">Forma de Pagamento</span>: {{getBillingTypeLabel()}}</p>
+  <p><span class="fw-bold">ID da Cobrança</span>: <code>{{item().externalChargeId}}</code></p>
+
+  @if (item().pixQrCodeBase64) {
+    <div class="text-center mb-3">
+      <img [src]="'data:image/png;base64,' + item().pixQrCodeBase64" alt="QR Code PIX" style="max-width: 220px;" />
+    </div>
+  }
+  @if (item().pixCopyPaste) {
+    <div class="mb-3">
+      <label class="form-label">Código PIX Copia e Cola</label>
+      <div class="input-group">
+        <input type="text" class="form-control" readonly [value]="item().pixCopyPaste" />
+        <button type="button" class="btn btn-outline-secondary" (click)="copyPixCode()" title="Copiar código PIX">
+          <i class="bi bi-clipboard"></i>
+        </button>
+      </div>
+    </div>
+  }
+  @if (item().invoiceUrl) {
+    <div class="mb-3">
+      <label class="form-label">Link de Pagamento / Boleto</label>
+      <div class="input-group">
+        <input type="text" class="form-control" readonly [value]="item().invoiceUrl" />
+        <button type="button" class="btn btn-outline-secondary" (click)="copyInvoiceLink()" title="Copiar link">
+          <i class="bi bi-clipboard"></i>
+        </button>
+        <a class="btn btn-outline-secondary" [href]="item().invoiceUrl" target="_blank" rel="noopener" title="Abrir link">
+          <i class="bi bi-box-arrow-up-right"></i>
+        </a>
+      </div>
+    </div>
+  }
+
+  <div class="mb-3">
+    <button type="button" class="btn btn-sm btn-outline-info" (click)="checkStatus()" [disabled]="isChecking()">
+      @if (isChecking()) { <span class="spinner-border spinner-border-sm me-1" role="status"></span> }
+      Consultar Status no Gateway
+    </button>
+    @if (chargeStatus()) {
+      <div class="mt-2">
+        <p class="mb-1"><span class="fw-bold">Status</span>: {{chargeStatus()!.status}}</p>
+        @if (chargeStatus()!.confirmedAt) {
+          <p class="mb-1"><span class="fw-bold">Confirmado em</span>: {{chargeStatus()!.confirmedAt | date:'dd/MM/yyyy HH:mm'}}</p>
+        }
+      </div>
+    }
+  </div>
+</div>
+<div class="d-flex justify-content-end mt-3">
+  <button type="button" class="btn btn-primary" (click)="closeEvent.emit()">Fechar</button>
+</div>

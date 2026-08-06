@@ -1,0 +1,59 @@
+@if (!result()) {
+  <div>
+    <p><span class="fw-bold">Aluno</span>: {{item().personName || "-"}}</p>
+    <p><span class="fw-bold">Descrição</span>: {{item().description || "-"}}</p>
+    <p><span class="fw-bold">Valor</span>: {{item().amount || "-"}}</p>
+    <p><span class="fw-bold">Vencimento</span>: {{item().dueDate | date:'dd/MM/yyyy':'UTC'}}</p>
+
+    <div class="mb-3 mt-3">
+      <label class="form-label" for="billing-type">Forma de Pagamento</label>
+      <select id="billing-type" class="form-select" [(ngModel)]="billingType" [disabled]="isSaving()">
+        <option value="PIX">PIX</option>
+        <option value="BOLETO">Boleto</option>
+        <option value="CREDIT_CARD">Cartão de Crédito</option>
+      </select>
+    </div>
+  </div>
+  <div class="d-flex justify-content-between mt-3">
+    <button type="button" class="btn btn-danger" (click)="closeEvent.emit()">Fechar</button>
+    <button type="button" class="btn btn-primary" (click)="generate()" [disabled]="isSaving()">
+      @if (isSaving()) { <span class="spinner-border spinner-border-sm me-1" role="status"></span> }
+      Gerar Cobrança
+    </button>
+  </div>
+} @else {
+  <div>
+    <p class="text-success"><i class="bi bi-check-circle me-1"></i>Cobrança gerada com sucesso.</p>
+
+    @if (result()!.pixQrCodeBase64) {
+      <div class="text-center mb-3">
+        <img [src]="'data:image/png;base64,' + result()!.pixQrCodeBase64" alt="QR Code PIX" style="max-width: 220px;" />
+      </div>
+    }
+    @if (result()!.pixCopyPaste) {
+      <div class="mb-3">
+        <label class="form-label">Código PIX Copia e Cola</label>
+        <div class="input-group">
+          <input type="text" class="form-control" readonly [value]="result()!.pixCopyPaste" />
+          <button type="button" class="btn btn-outline-secondary" (click)="copyPixCode()" title="Copiar código PIX">
+            <i class="bi bi-clipboard"></i>
+          </button>
+        </div>
+      </div>
+    }
+    @if (result()!.invoiceUrl) {
+      <div class="mb-3">
+        <label class="form-label">Link de Pagamento</label>
+        <div class="input-group">
+          <input type="text" class="form-control" readonly [value]="result()!.invoiceUrl" />
+          <button type="button" class="btn btn-outline-secondary" (click)="copyInvoiceLink()" title="Copiar link de pagamento">
+            <i class="bi bi-clipboard"></i>
+          </button>
+        </div>
+      </div>
+    }
+  </div>
+  <div class="d-flex justify-content-end mt-3">
+    <button type="button" class="btn btn-primary" (click)="closeEvent.emit()">Fechar</button>
+  </div>
+}

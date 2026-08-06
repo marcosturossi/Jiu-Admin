@@ -18,6 +18,8 @@ import { CreateAccountsReceivableComponent } from './create-accounts-receivable/
 import { PageResult } from '../../../utils/page-result';
 import { PaymentWithMoneyComponent } from './payment-with-money/payment-with-money.component';
 import { RefundAccountsReceivableComponent } from './refund-accounts-receivable/refund-accounts-receivable.component';
+import { GenerateChargeComponent } from './generate-charge/generate-charge.component';
+import { ViewChargeComponent } from './view-charge/view-charge.component';
 import { transactionTypeBadge, feeStatusBadge } from '../../../shared/status-badge';
 
 @Component({
@@ -32,6 +34,8 @@ import { transactionTypeBadge, feeStatusBadge } from '../../../shared/status-bad
     CreateAccountsReceivableComponent,
     PaymentWithMoneyComponent,
     RefundAccountsReceivableComponent,
+    GenerateChargeComponent,
+    ViewChargeComponent,
 ],
   templateUrl: './accounts-receivable.component.html',
   styleUrl: './accounts-receivable.component.scss',
@@ -51,6 +55,8 @@ export class AccountsReceivableComponent {
   protected readonly openedCreate = signal(false);
   protected readonly openedRefund = signal(false);
   protected readonly openedPaymentWithMoney = signal(false);
+  protected readonly openedGenerateCharge = signal(false);
+  protected readonly openedViewCharge = signal(false);
   protected readonly selectedItem = signal<ShowAccountsReceivableDTO | null>(null);
   protected readonly currentPage = signal(1);
   protected readonly pageSize = signal(10);
@@ -158,6 +164,39 @@ export class AccountsReceivableComponent {
     this.openedPaymentWithMoney.set(false);
     this.selectedItem.set(null);
     this.load();
+  }
+
+  protected openGenerateCharge(item: ShowAccountsReceivableDTO): void {
+    this.selectedItem.set(item);
+    this.openedGenerateCharge.set(true);
+  }
+
+  protected onChargeGenerated(): void {
+    this.load();
+  }
+
+  protected closeGenerateCharge(): void {
+    this.openedGenerateCharge.set(false);
+    this.selectedItem.set(null);
+  }
+
+  protected openViewCharge(item: ShowAccountsReceivableDTO): void {
+    this.selectedItem.set(item);
+    this.openedViewCharge.set(true);
+  }
+
+  protected closeViewCharge(): void {
+    this.openedViewCharge.set(false);
+    this.selectedItem.set(null);
+  }
+
+  protected isChargeable(item: ShowAccountsReceivableDTO): boolean {
+    // Mirrors the backend's FinancialTransaction.IsChargeble() gate (Pending + Income/Adjustment)
+    // plus a client-side guard against re-charging: the backend endpoint doesn't reject an already
+    // charged transaction, it would just overwrite PaymentInformation with a second gateway charge.
+    return item.status === 'Pending'
+      && (item.type === TransactionType.Income || item.type === TransactionType.Adjustment)
+      && item.externalChargeId == null;
   }
 
   protected getTypeLabel(type?: number | string): string {
