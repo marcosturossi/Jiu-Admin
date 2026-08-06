@@ -1,6 +1,26 @@
 <section class="page-section">
   <div class="page-toolbar ">
     <app-filter [placeholder]="'Buscar conta a receber'" [fields]="filterFields" (filterChange)="onFilterChange($event)" />
+    <div style="min-width: 220px;">
+      <app-search-select
+        inputId="studentFilter"
+        [options]="studentOptions()"
+        [selected]="selectedStudent()"
+        placeholder="Filtrar por aluno"
+        label="Aluno"
+        (selectionChange)="onStudentSelected($event)"
+        (searchChange)="onStudentSearch($event)" />
+    </div>
+    <div class="form-check form-switch d-flex align-items-center">
+      <input
+        class="form-check-input me-2"
+        type="checkbox"
+        role="switch"
+        id="overdueOnlyToggle"
+        [(ngModel)]="overdueOnly"
+        (ngModelChange)="onOverdueOnlyChange()" />
+      <label class="form-check-label" for="overdueOnlyToggle">Somente vencidos</label>
+    </div>
     <button type="button" class="btn btn-primary" (click)="openCreate()">
       <i class="bi bi-plus-lg me-1"></i>Nova Conta a Receber
     </button>

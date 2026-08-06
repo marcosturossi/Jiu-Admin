@@ -76,6 +76,35 @@ describe('AccountsPayableComponent', () => {
     expect((component as any).items().items[0].id).toBe(MOCK_ITEMS[10].id);
   });
 
+  describe('filters', () => {
+    beforeEach(() => accountsPayableService.apiAccountsPayableGet.calls.reset());
+
+    it('should pass free text and selected status, and reset to page 1, on onFilterChange', () => {
+      (component as any).currentPage.set(3);
+      (component as any).onFilterChange({
+        text: 'aluguel',
+        conditions: [{ field: (component as any).filterFields[0], operator: 'eq', value: 'Paid' }],
+      });
+      expect((component as any).currentPage()).toBe(1);
+      const args = accountsPayableService.apiAccountsPayableGet.calls.mostRecent().args;
+      expect(args[5]).toBe('aluguel'); // description is arg index 5
+      expect(args[11]).toBe('Paid'); // status is arg index 11
+    });
+
+    it('should apply the free-text filter (regression guard: onFilterChange used to ignore its input entirely)', () => {
+      (component as any).onFilterChange({ text: 'x', conditions: [] });
+      const args = accountsPayableService.apiAccountsPayableGet.calls.mostRecent().args;
+      expect(args[5]).toBe('x');
+    });
+
+    it('should pass overdueOnly=true when the toggle is on', () => {
+      (component as any).overdueOnly.set(true);
+      (component as any).onOverdueOnlyChange();
+      const args = accountsPayableService.apiAccountsPayableGet.calls.mostRecent().args;
+      expect(args[12]).toBe(true); // overdueOnly is arg index 12
+    });
+  });
+
   describe('getCategoryName', () => {
     it('should return category name from loaded categories', () => {
       expect((component as any).getCategoryName('cat1')).toBe('Aluguel');

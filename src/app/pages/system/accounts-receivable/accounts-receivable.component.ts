@@ -1,11 +1,16 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { DatePipe, CurrencyPipe } from '@angular/common';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { RouterLink } from '@angular/router';
+import { FormsModule } from '@angular/forms';
+import { Subject, debounceTime } from 'rxjs';
 import { AccountsReceivableService } from '../../../generated_services/api/accountsReceivable.service';
 import { TransactionCategoryService } from '../../../generated_services/api/transactionCategory.service';
-import { ShowAccountsReceivableDTO, ShowTransactionCategoryDTO } from '../../../generated_services';
+import { StudentsService } from '../../../generated_services/api/students.service';
+import { ShowAccountsReceivableDTO, ShowTransactionCategoryDTO, ShowStudentDTO } from '../../../generated_services';
 import { TransactionType } from '../../../generated_services/model/transactionType';
+import { FeeStatus } from '../../../generated_services/model/feeStatus';
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
 import { ConfirmService } from '../../../services/confirm.service';
@@ -14,6 +19,8 @@ import { environment } from '../../../enviroments/environment';
 import { FilterComponent } from '../../../shared/filter/filter.component';
 import { FilterField, FilterOutput } from '../../../shared/filter/filter.types';
 import { PaginationComponent } from '../../../shared/pagination/pagination.component';
+import { SearchOption } from '../../../shared/search-select/search-option';
+import { SearchSelectComponent } from '../../../shared/search-select/search-select.component';
 import { CreateAccountsReceivableComponent } from './create-accounts-receivable/create-accounts-receivable.component';
 import { PageResult } from '../../../utils/page-result';
 import { PaymentWithMoneyComponent } from './payment-with-money/payment-with-money.component';
@@ -29,8 +36,10 @@ import { transactionTypeBadge, feeStatusBadge } from '../../../shared/status-bad
     DatePipe,
     CurrencyPipe,
     RouterLink,
+    FormsModule,
     FilterComponent,
     PaginationComponent,
+    SearchSelectComponent,
     CreateAccountsReceivableComponent,
     PaymentWithMoneyComponent,
     RefundAccountsReceivableComponent,
@@ -45,9 +54,11 @@ export class AccountsReceivableComponent {
   private readonly http = inject(HttpClient);
   private readonly accountsReceivableService = inject(AccountsReceivableService);
   private readonly categoryService = inject(TransactionCategoryService);
+  private readonly studentsService = inject(StudentsService);
   private readonly subnavService = inject(SubnavService);
   private readonly ns = inject(NotificationService);
   private readonly confirmService = inject(ConfirmService);
+  private readonly destroyRef = inject(DestroyRef);
 
   protected readonly isLoading = signal(false);
   protected readonly isDownloading = signal(false);
@@ -61,9 +72,15 @@ export class AccountsReceivableComponent {
   protected readonly currentPage = signal(1);
   protected readonly pageSize = signal(10);
   protected readonly filterType = signal<string | undefined>(undefined);
+  protected readonly filterStatus = signal<string | undefined>(undefined);
   protected readonly filterText = signal<string | undefined>(undefined);
+  protected readonly overdueOnly = signal(false);
   protected readonly categories = signal<ShowTransactionCategoryDTO[]>([]);
 
+  // Not selectable as a Status filter value on purpose: the backend never persists a transition
+  // into FeeStatus.Overdue (it's always computed live as Pending + DueDate < today), so filtering
+  // by Status == "Overdue" would silently always return zero rows. "Somente vencidos" below uses
+  // the backend's actual overdueOnly flag instead, which does that live computation correctly.
   protected readonly filterFields: FilterField[] = [
     {
       key: 'type',
@@ -75,12 +92,30 @@ export class AccountsReceivableComponent {
         { value: TransactionType.Adjustment, label: 'Ajuste' },
       ],
     },
+    {
+      key: 'status',
+      label: 'Status',
+      type: 'select',
+      options: [
+        { value: FeeStatus.Pending, label: 'Pendente' },
+        { value: FeeStatus.Paid, label: 'Pago' },
+        { value: FeeStatus.Cancelled, label: 'Cancelado' },
+        { value: FeeStatus.Refunded, label: 'Reembolsado' },
+      ],
+    },
   ];
+
+  protected readonly studentOptions = signal<SearchOption[]>([]);
+  protected readonly selectedStudent = signal<SearchOption | null>(null);
+  private readonly studentSearchSubject = new Subject<string>();
 
   constructor() {
     this.subnavService.setTitle('Contas a Receber');
     this.load();
     this.loadCategories();
+    this.studentSearchSubject.pipe(debounceTime(400), takeUntilDestroyed(this.destroyRef))
+      .subscribe(term => this.loadStudents(term));
+    this.loadStudents();
   }
 
   protected load(): void {
@@ -96,6 +131,12 @@ export class AccountsReceivableComponent {
       undefined,
       this.currentPage() as any,
       this.pageSize() as any,
+      undefined,
+      undefined,
+      this.selectedStudent()?.id,
+      undefined,
+      this.filterStatus(),
+      this.overdueOnly() || undefined,
     ).subscribe({
       next: result => {
         this.items.set({
@@ -234,9 +275,35 @@ export class AccountsReceivableComponent {
   protected onPageSizeChange(size: number): void { this.pageSize.set(size); this.currentPage.set(1); this.load(); }
   protected onFilterChange(output: FilterOutput): void {
     this.filterType.set(output.conditions.find(c => c.field.key === 'type')?.value as string | undefined);
+    this.filterStatus.set(output.conditions.find(c => c.field.key === 'status')?.value as string | undefined);
     this.filterText.set(output.text || undefined);
     this.currentPage.set(1);
     this.load();
+  }
+  protected onOverdueOnlyChange(): void {
+    this.currentPage.set(1);
+    this.load();
+  }
+  protected onStudentSelected(opt: SearchOption | null): void {
+    this.selectedStudent.set(opt);
+    this.currentPage.set(1);
+    this.load();
+  }
+  protected onStudentSearch(term: string): void {
+    this.studentSearchSubject.next(term);
+  }
+  private loadStudents(term = ''): void {
+    this.studentsService.apiStudentsGet(term || undefined, undefined, undefined, undefined, undefined, undefined, 1, 100).subscribe({
+      next: result => {
+        const students: ShowStudentDTO[] = result?.items ?? [];
+        this.studentOptions.set(
+          students.map(s => ({
+            id: s.id!,
+            label: `${s.firstName ?? ''} ${s.lastName ?? ''}`.trim() || s.userName || s.id!,
+          })),
+        );
+      },
+    });
   }
   protected onCategorySearch(term: string): void { this.loadCategories(term); }
   protected openCreate(): void { this.openedCreate.set(true); }

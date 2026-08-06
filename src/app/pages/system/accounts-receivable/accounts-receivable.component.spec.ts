@@ -9,6 +9,7 @@ import { AccountsReceivableComponent } from './accounts-receivable.component';
 registerLocaleData(localePt, 'pt-BR');
 import { AccountsReceivableService } from '../../../generated_services/api/accountsReceivable.service';
 import { TransactionCategoryService } from '../../../generated_services/api/transactionCategory.service';
+import { StudentsService } from '../../../generated_services/api/students.service';
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
 import { ConfirmService } from '../../../services/confirm.service';
@@ -37,6 +38,7 @@ describe('AccountsReceivableComponent', () => {
   beforeEach(async () => {
     const arSpy = jasmine.createSpyObj('AccountsReceivableService', ['apiAccountsReceivableGet', 'apiAccountsReceivableChargeIdDelete', 'apiAccountsReceivableIdDelete']);
     const categorySpy = jasmine.createSpyObj('TransactionCategoryService', ['apiTransactionCategoryGet']);
+    const studentsSpy = jasmine.createSpyObj('StudentsService', ['apiStudentsGet']);
     const nsSpy = jasmine.createSpyObj('NotificationService', ['showSuccess', 'showError', 'showWarning']);
     const subnavSpy = jasmine.createSpyObj('SubnavService', ['setTitle']);
     const confirmSpy = jasmine.createSpyObj('ConfirmService', ['confirm']);
@@ -44,6 +46,7 @@ describe('AccountsReceivableComponent', () => {
     // page is at arg index 8 (0-based), pageSize at 9
     arSpy.apiAccountsReceivableGet.and.callFake((...args: any[]) => of(buildResponse(Number(args[8] ?? 1), Number(args[9] ?? 10))));
     categorySpy.apiTransactionCategoryGet.and.returnValue(of(MOCK_CATEGORY_RESPONSE));
+    studentsSpy.apiStudentsGet.and.returnValue(of({ items: [], totalCount: 0, totalPages: 1 }));
 
     await TestBed.configureTestingModule({
       imports: [AccountsReceivableComponent],
@@ -52,6 +55,7 @@ describe('AccountsReceivableComponent', () => {
         { provide: LOCALE_ID, useValue: 'pt-BR' },
         { provide: AccountsReceivableService, useValue: arSpy },
         { provide: TransactionCategoryService, useValue: categorySpy },
+        { provide: StudentsService, useValue: studentsSpy },
         { provide: NotificationService, useValue: nsSpy },
         { provide: SubnavService, useValue: subnavSpy },
         { provide: ConfirmService, useValue: confirmSpy },
@@ -87,6 +91,42 @@ describe('AccountsReceivableComponent', () => {
     expect((component as any).currentPage()).toBe(1);
     expect(accountsReceivableService.apiAccountsReceivableGet).toHaveBeenCalled();
     expect((component as any).items().items.length).toBe(20);
+  });
+
+  describe('filters', () => {
+    beforeEach(() => accountsReceivableService.apiAccountsReceivableGet.calls.reset());
+
+    it('should pass the selected status and reset to page 1 on onFilterChange', () => {
+      (component as any).currentPage.set(3);
+      (component as any).onFilterChange({
+        text: '',
+        conditions: [{ field: (component as any).filterFields[1], operator: 'eq', value: 'Paid' }],
+      });
+      expect((component as any).currentPage()).toBe(1);
+      const args = accountsReceivableService.apiAccountsReceivableGet.calls.mostRecent().args;
+      expect(args[14]).toBe('Paid'); // status is arg index 14
+    });
+
+    it('should pass the selected student id on onStudentSelected', () => {
+      (component as any).onStudentSelected({ id: 'student-1', label: 'Fulano' });
+      expect((component as any).currentPage()).toBe(1);
+      const args = accountsReceivableService.apiAccountsReceivableGet.calls.mostRecent().args;
+      expect(args[12]).toBe('student-1'); // studentId is arg index 12
+    });
+
+    it('should pass overdueOnly=true when the toggle is on', () => {
+      (component as any).overdueOnly.set(true);
+      (component as any).onOverdueOnlyChange();
+      const args = accountsReceivableService.apiAccountsReceivableGet.calls.mostRecent().args;
+      expect(args[15]).toBe(true); // overdueOnly is arg index 15
+    });
+
+    it('should omit overdueOnly when the toggle is off', () => {
+      (component as any).overdueOnly.set(false);
+      (component as any).onOverdueOnlyChange();
+      const args = accountsReceivableService.apiAccountsReceivableGet.calls.mostRecent().args;
+      expect(args[15]).toBeUndefined();
+    });
   });
 
   describe('getTypeLabel', () => {
