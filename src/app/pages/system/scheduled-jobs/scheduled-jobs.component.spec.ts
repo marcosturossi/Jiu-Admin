@@ -18,6 +18,8 @@ const MOCK_JOBS: ShowScheduledJobDto[] = [
     dayOfMonth: null,
     lastRunAt: null,
     lastRunSummary: null,
+    isRegisteredInScheduler: true,
+    nextRunAtUtc: null,
   },
   {
     jobKey: 'birthday-greetings',
@@ -30,6 +32,8 @@ const MOCK_JOBS: ShowScheduledJobDto[] = [
     dayOfMonth: null,
     lastRunAt: '2026-08-01T08:00:00Z',
     lastRunSummary: '2 sent, 0 failed',
+    isRegisteredInScheduler: true,
+    nextRunAtUtc: null,
   },
   {
     jobKey: 'contract-renewal-warnings',
@@ -42,6 +46,8 @@ const MOCK_JOBS: ShowScheduledJobDto[] = [
     dayOfMonth: null,
     lastRunAt: null,
     lastRunSummary: null,
+    isRegisteredInScheduler: true,
+    nextRunAtUtc: null,
   },
   {
     jobKey: 'monthly-fee-generation',
@@ -54,6 +60,8 @@ const MOCK_JOBS: ShowScheduledJobDto[] = [
     dayOfMonth: 1,
     lastRunAt: null,
     lastRunSummary: null,
+    isRegisteredInScheduler: true,
+    nextRunAtUtc: null,
   },
 ];
 
