@@ -76,7 +76,9 @@ export class CashflowChartComponent implements AfterViewInit, OnDestroy {
           this.chart.setOption(this.buildOptions());
           window.addEventListener('resize', this.resize);
         })
-        .catch(() => {});
+        .catch(() => {
+          // echarts not available — fail silently
+        });
     };
 
     const el = this.chartEl?.nativeElement as HTMLElement;

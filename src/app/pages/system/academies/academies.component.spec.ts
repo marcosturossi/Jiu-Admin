@@ -24,23 +24,6 @@ const MOCK_ACADEMY_1: ShowAcademyDto = {
   zipCode: null,
 };
 
-const MOCK_ACADEMY_2: ShowAcademyDto = {
-  id: 'abc-2',
-  name: 'Carlson Gracie RJ',
-  slug: 'carlson-rj',
-  isActive: false,
-  createdAt: '2024-02-10',
-  cnpj: null,
-  email: null,
-  street: null,
-  number: null,
-  complement: null,
-  neighborhood: null,
-  city: null,
-  state: null,
-  zipCode: null,
-};
-
 const MOCK_ITEMS = Array.from({ length: 25 }, (_, i) => ({ ...MOCK_ACADEMY_1, id: `ac${i + 1}` }));
 const buildResponse = (page = 1, pageSize = 10) => ({
   items: MOCK_ITEMS.slice((page - 1) * pageSize, page * pageSize),
@@ -53,7 +36,6 @@ describe('AcademiesComponent', () => {
   let fixture: ComponentFixture<AcademiesComponent>;
   let academyService: jasmine.SpyObj<AcademyService>;
   let notificationService: jasmine.SpyObj<NotificationService>;
-  let subnavService: jasmine.SpyObj<SubnavService>;
   let confirmService: jasmine.SpyObj<ConfirmService>;
 
   beforeEach(async () => {
@@ -85,7 +67,6 @@ describe('AcademiesComponent', () => {
     component = fixture.componentInstance;
     academyService = TestBed.inject(AcademyService) as jasmine.SpyObj<AcademyService>;
     notificationService = TestBed.inject(NotificationService) as jasmine.SpyObj<NotificationService>;
-    subnavService = TestBed.inject(SubnavService) as jasmine.SpyObj<SubnavService>;
     confirmService = TestBed.inject(ConfirmService) as jasmine.SpyObj<ConfirmService>;
     fixture.detectChanges();
   });

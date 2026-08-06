@@ -145,7 +145,7 @@ export class PaymentSettingsComponent implements OnInit {
     const dto: TestPaymentConnectionDto = apiKey
       ? { paymentGateway: ASAAS_PROVIDER_KEY, credentials: { apiKey, environment: this.form.value.asaasEnvironment ?? 'Sandbox' } }
       // Both null tells the backend to test the already-saved credentials instead of ad-hoc ones.
-      : { paymentGateway: null, credentials: null as unknown as { [key: string]: string } };
+      : { paymentGateway: null, credentials: null as unknown as Record<string, string> };
 
     this.tenantSettingsService.apiSettingsTestConnectionPost(dto).subscribe({
       next: (result) => {
@@ -199,7 +199,7 @@ export class PaymentSettingsComponent implements OnInit {
       ? { apiKey: (v.asaasApiKey ?? '').trim(), environment: v.asaasEnvironment ?? 'Sandbox' }
       // The generated type doesn't reflect that Credentials is nullable server-side (leaving it
       // untouched when no gateway is selected) — cast needed to send a real `null` over the wire.
-      : (null as unknown as { [key: string]: string });
+      : (null as unknown as Record<string, string>);
 
     return {
       paymentGateway: paymentGatewayControl?.dirty ? (v.paymentGateway || null) : null,

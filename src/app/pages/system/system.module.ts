@@ -1,13 +1,8 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { SystemComponent } from "./system.component";
-import { RouterModule, RouterOutlet, Routes } from "@angular/router";
-import { SidebarComponent } from "../../shared/sidebar/sidebar.component";
-import { FilterComponent } from "../../shared/filter/filter.component";
+import { RouterModule, Routes } from "@angular/router";
 import { AuthGuard } from "../../guard/auth.guard";
-import { NavbarComponent } from "../../shared/navbar/navbar.component";
 import { HomeComponent } from "./home/home.component";
-import { SubnavComponent } from "../../shared/subnav/subnav.component";
 import { StudentsComponent } from './students/students.component';
 import { LessonsComponent } from './lessons/lessons.component';
 import { GraduationsComponent } from './graduations/graduations.component';
@@ -80,20 +75,10 @@ export const routes: Routes = [
 ];
 
 @NgModule({
-  declarations: [
-    SystemComponent,
-  ],
   imports: [
-    CommonModule,
-    RouterOutlet,
     RouterModule.forChild(routes),
-    SidebarComponent,
-    NavbarComponent,
-    FilterComponent,
-    SubnavComponent,
   ],
   exports: [
-    SystemComponent,
     RouterModule,
   ]
 })

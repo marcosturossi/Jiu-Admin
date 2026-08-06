@@ -1,22 +1,22 @@
-import { Component, Input, OnChanges, OnDestroy, SimpleChanges } from '@angular/core';
+import { Component, Input, OnChanges, OnDestroy, SimpleChanges, inject } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
-import { CommonModule } from '@angular/common';
+
 
 @Component({
   selector: 'app-blob-viewer',
   templateUrl: './blob-viewer.component.html',
   styleUrls: ['./blob-viewer.component.scss'],
   standalone: true,
-  imports: [CommonModule]
+  imports: []
 })
 export class BlobViewerComponent implements OnChanges, OnDestroy {
+  private sanitizer = inject(DomSanitizer);
+
   @Input() blob?: Blob | string;
   @Input() mimeType?: string;
 
   protected safeBlobUrl: SafeResourceUrl | null = null;
   private objectUrl: string | null = null;
-
-  constructor(private sanitizer: DomSanitizer) {}
 
   ngOnChanges(changes: SimpleChanges): void {
     if ('blob' in changes) {

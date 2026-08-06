@@ -30,9 +30,7 @@ describe('ContractsComponent', () => {
   let component: ContractsComponent;
   let fixture: ComponentFixture<ContractsComponent>;
   let contractService: jasmine.SpyObj<ContractService>;
-  let studentsService: jasmine.SpyObj<StudentsService>;
   let ns: jasmine.SpyObj<NotificationService>;
-  let subnavService: jasmine.SpyObj<SubnavService>;
   let confirmService: jasmine.SpyObj<ConfirmService>;
 
   beforeEach(async () => {
@@ -61,9 +59,7 @@ describe('ContractsComponent', () => {
     fixture = TestBed.createComponent(ContractsComponent);
     component = fixture.componentInstance;
     contractService = TestBed.inject(ContractService) as jasmine.SpyObj<ContractService>;
-    studentsService = TestBed.inject(StudentsService) as jasmine.SpyObj<StudentsService>;
     ns = TestBed.inject(NotificationService) as jasmine.SpyObj<NotificationService>;
-    subnavService = TestBed.inject(SubnavService) as jasmine.SpyObj<SubnavService>;
     confirmService = TestBed.inject(ConfirmService) as jasmine.SpyObj<ConfirmService>;
     fixture.detectChanges();
   });

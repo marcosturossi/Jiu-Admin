@@ -31,7 +31,6 @@ describe('AccountsReceivableComponent', () => {
   let component: AccountsReceivableComponent;
   let fixture: ComponentFixture<AccountsReceivableComponent>;
   let accountsReceivableService: jasmine.SpyObj<AccountsReceivableService>;
-  let categoryService: jasmine.SpyObj<TransactionCategoryService>;
   let ns: jasmine.SpyObj<NotificationService>;
   let confirmService: jasmine.SpyObj<ConfirmService>;
 
@@ -65,7 +64,6 @@ describe('AccountsReceivableComponent', () => {
     fixture = TestBed.createComponent(AccountsReceivableComponent);
     component = fixture.componentInstance;
     accountsReceivableService = TestBed.inject(AccountsReceivableService) as jasmine.SpyObj<AccountsReceivableService>;
-    categoryService = TestBed.inject(TransactionCategoryService) as jasmine.SpyObj<TransactionCategoryService>;
     ns = TestBed.inject(NotificationService) as jasmine.SpyObj<NotificationService>;
     confirmService = TestBed.inject(ConfirmService) as jasmine.SpyObj<ConfirmService>;
     fixture.detectChanges();

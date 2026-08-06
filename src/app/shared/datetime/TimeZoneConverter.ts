@@ -8,7 +8,7 @@ export class TimeZoneConverter {
   private static readonly DEFAULT_TIME_ZONE = 'utc';
 
   // Constructor with optional time zone parameter
-  constructor(timeZone: string = 'America/Sao_Paulo') {
+  constructor(timeZone = 'America/Sao_Paulo') {
     this.TIME_ZONE = timeZone;
   }
 
