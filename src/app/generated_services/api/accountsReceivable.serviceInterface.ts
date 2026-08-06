@@ -100,11 +100,12 @@ export interface AccountsReceivableServiceInterface {
     apiAccountsReceivableIdChargeStatusGet(id: string, extraHttpRequestParams?: any): Observable<ChargeStatus>;
 
     /**
-     * 
-     * 
-     * @param id 
+     *
+     *
+     * @param id
+     * @param payAccountsReceivableDTO
      */
-    apiAccountsReceivableIdConfirmPaymentMoneyPatch(id: string, extraHttpRequestParams?: any): Observable<{}>;
+    apiAccountsReceivableIdConfirmPaymentMoneyPatch(id: string, payAccountsReceivableDTO?: PayAccountsReceivableDTO, extraHttpRequestParams?: any): Observable<{}>;
 
     /**
      * 
