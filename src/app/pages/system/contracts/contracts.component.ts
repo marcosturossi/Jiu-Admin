@@ -123,9 +123,17 @@ export class ContractsComponent {
   protected sendForConfirmation(item: ShowContractDTO): void {
     this.sendingId.set(item.id!);
     this.contractService.apiContractIdSendForConfirmationPost(item.id!).subscribe({
-      next: () => {
+      next: (result) => {
         this.sendingId.set(null);
-        this.ns.showSuccess('Enviado!', 'O contrato foi enviado para confirmação do aluno por e-mail.');
+        const link = result?.confirmationUrl;
+        if (link) {
+          navigator.clipboard.writeText(link).then(
+            () => this.ns.showSuccess('Enviado!', 'O contrato foi enviado por e-mail e o link de confirmação foi copiado para a área de transferência.'),
+            () => this.ns.showSuccess('Enviado!', 'O contrato foi enviado para confirmação do aluno por e-mail.'),
+          );
+        } else {
+          this.ns.showSuccess('Enviado!', 'O contrato foi enviado para confirmação do aluno por e-mail.');
+        }
       },
       error: (err) => {
         this.sendingId.set(null);
@@ -134,12 +142,16 @@ export class ContractsComponent {
     });
   }
 
+  // Backend-wise this is a soft cancel (CancelContractUseCase, DELETE /{id}): the contract row and
+  // its history are preserved, only its Status flips to Cancelled and its pending fees are cancelled
+  // along with it — never a destructive hard delete. Labeled "Cancelar" (not "Excluir") to match.
   protected async delete(item: ShowContractDTO): Promise<void> {
-    const ok = await this.confirmService.confirm('Tem certeza que deseja excluir este contrato?');
+    const ok = await this.confirmService.confirm(
+      'Tem certeza que deseja cancelar este contrato? As mensalidades pendentes deste contrato também serão canceladas.');
     if (!ok) return;
     this.contractService.apiContractIdDelete(item.id!).subscribe({
-      next: () => { this.ns.showSuccess('Contrato Excluído!', 'Excluído com sucesso.'); this.load(); },
-      error: (err) => { this.ns.showError('Erro ao Excluir!', extractErrorMessage(err, 'Não foi possível excluir.')); },
+      next: () => { this.ns.showSuccess('Contrato Cancelado!', 'O contrato e suas mensalidades pendentes foram cancelados.'); this.load(); },
+      error: (err) => { this.ns.showError('Erro ao Cancelar!', extractErrorMessage(err, 'Não foi possível cancelar o contrato.')); },
     });
   }
 }

@@ -36,7 +36,7 @@ describe('ContractsComponent', () => {
   let confirmService: jasmine.SpyObj<ConfirmService>;
 
   beforeEach(async () => {
-    const contractSpy = jasmine.createSpyObj('ContractService', ['apiContractGet', 'apiContractIdDelete']);
+    const contractSpy = jasmine.createSpyObj('ContractService', ['apiContractGet', 'apiContractIdDelete', 'apiContractIdSendForConfirmationPost']);
     const studentsSpy = jasmine.createSpyObj('StudentsService', ['apiStudentsGet']);
     const nsSpy = jasmine.createSpyObj('NotificationService', ['showSuccess', 'showError']);
     const subnavSpy = jasmine.createSpyObj('SubnavService', ['setTitle']);
@@ -132,6 +132,31 @@ describe('ContractsComponent', () => {
     it('should show error notification on delete failure', async () => {
       contractService.apiContractIdDelete.and.returnValue(throwError(() => new Error()));
       await (component as any).delete(MOCK_CONTRACT);
+      expect(ns.showError).toHaveBeenCalled();
+    });
+  });
+
+  describe('sendForConfirmation', () => {
+    let clipboardSpy: jasmine.Spy;
+
+    beforeEach(() => {
+      clipboardSpy = spyOn(navigator.clipboard, 'writeText').and.returnValue(Promise.resolve());
+    });
+
+    it('should copy the confirmation link to the clipboard on success', async () => {
+      contractService.apiContractIdSendForConfirmationPost.and.returnValue(
+        of({ contractVersionId: 'v1', sentAt: '2026-08-01T00:00:00Z', confirmationUrl: 'https://x/api/public/contracts/abc' }) as any);
+
+      (component as any).sendForConfirmation(MOCK_CONTRACT);
+      await fixture.whenStable();
+
+      expect(clipboardSpy).toHaveBeenCalledWith('https://x/api/public/contracts/abc');
+      expect(ns.showSuccess).toHaveBeenCalled();
+    });
+
+    it('should show error notification on failure', () => {
+      contractService.apiContractIdSendForConfirmationPost.and.returnValue(throwError(() => new Error()));
+      (component as any).sendForConfirmation(MOCK_CONTRACT);
       expect(ns.showError).toHaveBeenCalled();
     });
   });
