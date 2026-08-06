@@ -24,6 +24,8 @@ export interface ShowScheduledJobDto {
     dayOfMonth: ProblemDetailsStatus | null;
     lastRunAt: string | null;
     lastRunSummary: string | null;
+    isRegisteredInScheduler: boolean;
+    nextRunAtUtc: string | null;
 }
 export namespace ShowScheduledJobDto {
 }
