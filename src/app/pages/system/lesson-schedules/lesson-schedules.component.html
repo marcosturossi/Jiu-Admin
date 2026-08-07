@@ -1,6 +1,14 @@
 <section class="page-section">
   <div class="page-toolbar">
     <app-filter [placeholder]="'Buscar horário'" (filterChange)="onFilterChange($event)" />
+    <div class="btn-group" role="group" aria-label="Modo de exibição">
+      <button type="button" class="btn btn-sm" [class.btn-primary]="viewMode() === 'table'" [class.btn-outline-primary]="viewMode() !== 'table'" (click)="setViewMode('table')">
+        <i class="bi bi-table me-1"></i>Tabela
+      </button>
+      <button type="button" class="btn btn-sm" [class.btn-primary]="viewMode() === 'week'" [class.btn-outline-primary]="viewMode() !== 'week'" (click)="setViewMode('week')">
+        <i class="bi bi-calendar-week me-1"></i>Semana
+      </button>
+    </div>
     <button type="button" class="btn btn-primary" (click)="openCreate()">
       <i class="bi bi-plus-lg me-1"></i>Novo Horário
     </button>
@@ -12,6 +20,8 @@
         <span class="visually-hidden">Carregando...</span>
       </div>
     </div>
+  } @else if (viewMode() === 'week') {
+    <app-week-schedule-grid [schedules]="items()?.items ?? []" (editSchedule)="openEdit($event)" />
   } @else {
     <div class="surface-card">
       <div class="table-responsive">
@@ -64,9 +74,11 @@
     </div>
   }
 
-  <app-pagination [currentPage]="currentPage()" [totalPages]="items()?.totalPages ?? 1"
-    [pageSize]="pageSize()" [totalItems]="items()?.totalCount ?? 0"
-    (pageChange)="onPageChange($event)" (pageSizeChange)="onPageSizeChange($event)" />
+  @if (viewMode() === 'table') {
+    <app-pagination [currentPage]="currentPage()" [totalPages]="items()?.totalPages ?? 1"
+      [pageSize]="pageSize()" [totalItems]="items()?.totalCount ?? 0"
+      (pageChange)="onPageChange($event)" (pageSizeChange)="onPageSizeChange($event)" />
+  }
 
   @if (openedCreate()) {
     <div class="modal-backdrop-custom" (click)="openedCreate.set(false)"></div>

@@ -13,6 +13,15 @@ import { PaginationComponent } from '../../../shared/pagination/pagination.compo
 import { PageResult } from '../../../utils/page-result';
 import { activeBadge } from '../../../shared/status-badge';
 import { dayOfWeekLabel } from './day-of-week-options';
+import { WeekScheduleGridComponent } from './week-schedule-grid/week-schedule-grid.component';
+
+/** No pagination in week view — the grid wants the whole week at once, and a school's schedule
+ *  is small enough (dozens of classes) that one page covers it. 100 is the backend's hard cap
+ *  (LessonScheduleFilterDTO throws above that) — it's also comfortably more than any real gym's
+ *  weekly class count. */
+const WEEK_VIEW_PAGE_SIZE = 100;
+
+export type ScheduleViewMode = 'table' | 'week';
 
 @Component({
   selector: 'app-lesson-schedules',
@@ -22,6 +31,7 @@ import { dayOfWeekLabel } from './day-of-week-options';
     PaginationComponent,
     CreateLessonScheduleComponent,
     UpdateLessonScheduleComponent,
+    WeekScheduleGridComponent,
   ],
   templateUrl: './lesson-schedules.component.html',
   styleUrl: './lesson-schedules.component.scss',
@@ -42,6 +52,7 @@ export class LessonSchedulesComponent {
   protected readonly currentPage = signal(1);
   protected readonly pageSize = signal(10);
   protected readonly filterText = signal<string | undefined>(undefined);
+  protected readonly viewMode = signal<ScheduleViewMode>('table');
 
   constructor() {
     this.subnavService.setTitle('Grade de Horários');
@@ -50,7 +61,10 @@ export class LessonSchedulesComponent {
 
   protected load(): void {
     this.isLoading.set(true);
-    this.lessonScheduleService.apiLessonScheduleGet(this.filterText(), undefined, this.currentPage(), this.pageSize()).subscribe({
+    const isWeekView = this.viewMode() === 'week';
+    const page = isWeekView ? 1 : this.currentPage();
+    const pageSize = isWeekView ? WEEK_VIEW_PAGE_SIZE : this.pageSize();
+    this.lessonScheduleService.apiLessonScheduleGet(this.filterText(), undefined, page, pageSize).subscribe({
       next: result => {
         this.items.set({
           items: result?.items ?? [],
@@ -64,6 +78,12 @@ export class LessonSchedulesComponent {
         this.notificationService.showError('Erro ao Carregar!', 'Não foi possível carregar a grade de horários. Tente novamente.');
       },
     });
+  }
+
+  protected setViewMode(mode: ScheduleViewMode): void {
+    if (this.viewMode() === mode) return;
+    this.viewMode.set(mode);
+    this.load();
   }
 
   protected onPageChange(p: number): void { this.currentPage.set(p); this.load(); }
