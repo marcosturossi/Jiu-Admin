@@ -12,6 +12,7 @@ import { FilterComponent } from '../../../shared/filter/filter.component';
 import { FilterOutput } from '../../../shared/filter/filter.types';
 import { PaginationComponent } from '../../../shared/pagination/pagination.component';
 import { PageResult } from '../../../utils/page-result';
+import { BlobViewerComponent } from '../../../shared/blob-viewer/blob-viewer.component';
 
 @Component({
   selector: 'app-contract-terms-templates',
@@ -22,6 +23,7 @@ import { PageResult } from '../../../utils/page-result';
     PaginationComponent,
     CreateContractTermsTemplateComponent,
     UpdateContractTermsTemplateComponent,
+    BlobViewerComponent,
   ],
   templateUrl: './contract-terms-templates.component.html',
   styleUrl: './contract-terms-templates.component.scss',
@@ -36,7 +38,11 @@ export class ContractTermsTemplatesComponent {
   protected readonly items = signal<PageResult<ShowContractTermsTemplateDTO> | null>(null);
   protected readonly openedCreate = signal(false);
   protected readonly openedUpdate = signal(false);
+  protected readonly openedPreview = signal(false);
   protected readonly selected = signal<ShowContractTermsTemplateDTO | null>(null);
+  protected readonly previewing = signal<ShowContractTermsTemplateDTO | null>(null);
+  protected readonly previewLoading = signal(false);
+  protected readonly previewBlob = signal<Blob | undefined>(undefined);
   protected readonly currentPage = signal(1);
   protected readonly pageSize = signal(10);
   protected readonly filterText = signal<string | undefined>(undefined);
@@ -66,15 +72,6 @@ export class ContractTermsTemplatesComponent {
     });
   }
 
-  /** Text is now HTML (rich-text editor output) — extract plain text (tags AND entities like
-   *  &nbsp;, which Quill inserts for plain spaces) for the table's preview. Only ever reads
-   *  .textContent back out, never re-inserted as HTML, so this is safe despite using innerHTML. */
-  protected stripHtml(html: string | undefined): string {
-    const div = document.createElement('div');
-    div.innerHTML = html ?? '';
-    return (div.textContent ?? '').replace(/\s+/g, ' ').trim();
-  }
-
   protected onPageChange(p: number): void { this.currentPage.set(p); this.load(); }
   protected onPageSizeChange(s: number): void { this.pageSize.set(s); this.currentPage.set(1); this.load(); }
   protected onFilterChange(output: FilterOutput): void { this.filterText.set(output.text || undefined); this.currentPage.set(1); this.load(); }
@@ -82,6 +79,34 @@ export class ContractTermsTemplatesComponent {
   protected openEdit(item: ShowContractTermsTemplateDTO): void { this.selected.set(item); this.openedUpdate.set(true); }
   protected onCreated(): void { this.openedCreate.set(false); this.load(); }
   protected onUpdated(): void { this.openedUpdate.set(false); this.load(); }
+  protected openPreview(item: ShowContractTermsTemplateDTO): void {
+    if (!item.id) return;
+    this.previewing.set(item);
+    this.openedPreview.set(true);
+    this.previewLoading.set(true);
+    this.previewBlob.set(undefined);
+    // Renders through the same IContractPdfService pipeline a real contract uses, so the preview
+    // always matches exactly what a student would receive — no separate rendering logic to keep
+    // in sync between the two.
+    this.contractTermsTemplateService.apiContractTermsTemplateIdPreviewGet(
+      item.id, 'body', false, { httpHeaderAccept: 'application/pdf' },
+    ).subscribe({
+      next: (blob: any) => {
+        this.previewBlob.set(blob.type === 'application/pdf' ? blob : new Blob([blob], { type: 'application/pdf' }));
+        this.previewLoading.set(false);
+      },
+      error: (err) => {
+        this.previewLoading.set(false);
+        this.notificationService.showError('Erro', extractErrorMessage(err, 'Não foi possível gerar a pré-visualização do contrato.'));
+      },
+    });
+  }
+
+  protected closePreview(): void {
+    this.openedPreview.set(false);
+    this.previewing.set(null);
+    this.previewBlob.set(undefined);
+  }
 
   protected async delete(item: ShowContractTermsTemplateDTO): Promise<void> {
     const ok = await this.confirmService.confirm(`Tem certeza que deseja excluir o modelo "${item.name}"?`);

@@ -29,7 +29,7 @@ describe('ContractTermsTemplatesComponent', () => {
   let confirmService: jasmine.SpyObj<ConfirmService>;
 
   beforeEach(async () => {
-    const serviceSpy = jasmine.createSpyObj('ContractTermsTemplateService', ['apiContractTermsTemplateGet', 'apiContractTermsTemplateIdDelete']);
+    const serviceSpy = jasmine.createSpyObj('ContractTermsTemplateService', ['apiContractTermsTemplateGet', 'apiContractTermsTemplateIdDelete', 'apiContractTermsTemplateIdPreviewGet']);
     const nsSpy = jasmine.createSpyObj('NotificationService', ['showSuccess', 'showError']);
     const subnavSpy = jasmine.createSpyObj('SubnavService', ['setTitle']);
     const confirmSpy = jasmine.createSpyObj('ConfirmService', ['confirm']);
@@ -83,6 +83,43 @@ describe('ContractTermsTemplatesComponent', () => {
     expect((component as any).pageSize()).toBe(20);
     expect((component as any).currentPage()).toBe(1);
     expect((component as any).items().items.length).toBe(20);
+  });
+
+  describe('preview', () => {
+    it('should open the dialog, fetch the rendered PDF and stop loading', () => {
+      const pdfBlob = new Blob(['fake-pdf'], { type: 'application/pdf' });
+      contractTermsTemplateService.apiContractTermsTemplateIdPreviewGet.and.returnValue(of(pdfBlob) as any);
+
+      (component as any).openPreview(MOCK_TEMPLATE);
+
+      expect((component as any).openedPreview()).toBeTrue();
+      expect((component as any).previewing()).toEqual(MOCK_TEMPLATE);
+      expect(contractTermsTemplateService.apiContractTermsTemplateIdPreviewGet).toHaveBeenCalledWith(
+        MOCK_TEMPLATE.id!, 'body' as any, false, { httpHeaderAccept: 'application/pdf' },
+      );
+      expect((component as any).previewLoading()).toBeFalse();
+      expect((component as any).previewBlob()).toBe(pdfBlob);
+    });
+
+    it('should show an error notification when the preview fails to generate', () => {
+      contractTermsTemplateService.apiContractTermsTemplateIdPreviewGet.and.returnValue(throwError(() => new Error()));
+
+      (component as any).openPreview(MOCK_TEMPLATE);
+
+      expect((component as any).previewLoading()).toBeFalse();
+      expect(ns.showError).toHaveBeenCalled();
+    });
+
+    it('should close the dialog and clear the preview blob', () => {
+      contractTermsTemplateService.apiContractTermsTemplateIdPreviewGet.and.returnValue(of(new Blob()) as any);
+      (component as any).openPreview(MOCK_TEMPLATE);
+
+      (component as any).closePreview();
+
+      expect((component as any).openedPreview()).toBeFalse();
+      expect((component as any).previewing()).toBeNull();
+      expect((component as any).previewBlob()).toBeUndefined();
+    });
   });
 
   describe('delete', () => {

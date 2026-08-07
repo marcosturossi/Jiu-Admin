@@ -7,7 +7,7 @@ import { ShowContractTermsTemplateDTO } from '../../../../generated_services/mod
 import { NotificationService } from '../../../../services/notification.service';
 import { extractErrorMessage } from '../../../../utils/error.utils';
 import { FieldErrorComponent } from '../../../../shared/field-error/field-error.component';
-import { CONTRACT_TERMS_QUILL_MODULES } from '../quill-config';
+import { CONTRACT_TERMS_QUILL_FORMATS, CONTRACT_TERMS_QUILL_MODULES } from '../quill-config';
 
 @Component({
   selector: 'app-create-contract-terms-template',
@@ -25,6 +25,7 @@ export class CreateContractTermsTemplateComponent {
   private readonly fb = inject(FormBuilder);
 
   protected readonly quillModules = CONTRACT_TERMS_QUILL_MODULES;
+  protected readonly quillFormats = CONTRACT_TERMS_QUILL_FORMATS;
   protected readonly isSaving = signal(false);
 
   protected readonly form = this.fb.group({
