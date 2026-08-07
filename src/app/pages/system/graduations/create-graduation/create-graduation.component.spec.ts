@@ -100,4 +100,31 @@ describe('CreateGraduationComponent', () => {
     fixture.detectChanges();
     expect(ns.showError).toHaveBeenCalled();
   });
+
+  it('should pre-select the student and skip the student search when presetStudent is set', () => {
+    studentsService.apiStudentsGet.calls.reset();
+    const preset = { id: 'stu-preset', firstName: 'Maria', lastName: 'Souza', email: 'maria@test.com' } as any;
+    const f2 = TestBed.createComponent(CreateGraduationComponent);
+    f2.componentRef.setInput('presetStudent', preset);
+    f2.detectChanges();
+
+    expect(studentsService.apiStudentsGet).not.toHaveBeenCalled();
+    expect((f2.componentInstance as any).form.value.studentId).toBe('stu-preset');
+    expect((f2.componentInstance as any).selectedStudent()?.label).toContain('Maria Souza');
+  });
+
+  it('should allow saving directly with a preset student once a belt is chosen', () => {
+    graduationService.apiGraduationPost.and.returnValue(of({} as any));
+    const preset = { id: 'stu-preset', firstName: 'Maria', lastName: 'Souza', email: 'maria@test.com' } as any;
+    const f2 = TestBed.createComponent(CreateGraduationComponent);
+    f2.componentRef.setInput('presetStudent', preset);
+    f2.detectChanges();
+
+    (f2.componentInstance as any).form.patchValue({ beltId: 'belt1', graduationDate: '2024-03-01' });
+    (f2.componentInstance as any).save();
+
+    expect(graduationService.apiGraduationPost).toHaveBeenCalledWith(
+      jasmine.objectContaining({ studentId: 'stu-preset', beltId: 'belt1' }),
+    );
+  });
 });

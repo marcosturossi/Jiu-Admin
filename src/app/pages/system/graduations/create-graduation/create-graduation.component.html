@@ -1,15 +1,19 @@
 <form [formGroup]="form">
   <div class="mb-3">
     <label for="studentId" class="form-label">Aluno <span class="text-danger">*</span></label>
-    <app-search-select
-      inputId="studentId"
-      [options]="studentOptions()"
-      [selected]="selectedStudent()"
-      placeholder="Selecione um aluno"
-      label="Aluno"
-      (selectionChange)="onStudentSelected($event)"
-      (searchChange)="onStudentSearch($event)" />
-    <app-field-error [control]="form.get('studentId')" />
+    @if (presetStudent()) {
+      <input type="text" class="form-control" [value]="selectedStudent()?.label" readonly disabled />
+    } @else {
+      <app-search-select
+        inputId="studentId"
+        [options]="studentOptions()"
+        [selected]="selectedStudent()"
+        placeholder="Selecione um aluno"
+        label="Aluno"
+        (selectionChange)="onStudentSelected($event)"
+        (searchChange)="onStudentSearch($event)" />
+      <app-field-error [control]="form.get('studentId')" />
+    }
   </div>
   <div class="mb-3">
     <label for="beltId" class="form-label">Faixa <span class="text-danger">*</span></label>

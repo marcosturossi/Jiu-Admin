@@ -23,11 +23,12 @@ import { contractStatusBadge as getContractStatusBadge, feeStatusBadge as getFee
 import { GenerateChargeComponent } from '../../accounts-receivable/generate-charge/generate-charge.component';
 import { ViewChargeComponent } from '../../accounts-receivable/view-charge/view-charge.component';
 import { PaymentWithMoneyComponent } from '../../accounts-receivable/payment-with-money/payment-with-money.component';
+import { CreateGraduationComponent } from '../../graduations/create-graduation/create-graduation.component';
 
 @Component({
   selector: 'app-detail-student',
   standalone: true,
-  imports: [DatePipe, CurrencyPipe, UpdateStudentComponent, GenerateChargeComponent, ViewChargeComponent, PaymentWithMoneyComponent],
+  imports: [DatePipe, CurrencyPipe, UpdateStudentComponent, GenerateChargeComponent, ViewChargeComponent, PaymentWithMoneyComponent, CreateGraduationComponent],
   templateUrl: './detail-student.component.html',
   styleUrl: './detail-student.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -60,6 +61,8 @@ export class DetailStudentComponent implements OnInit {
   protected readonly openedViewCharge = signal(false);
   protected readonly openedPaymentWithMoney = signal(false);
   protected readonly selectedFee = signal<ShowAccountsReceivableDTO | null>(null);
+
+  protected readonly openedCreateGraduation = signal(false);
 
   protected readonly openedPhotoEditor = signal(false);
   protected readonly photoPreview = signal<string | null>(null);
@@ -202,6 +205,19 @@ export class DetailStudentComponent implements OnInit {
           this.isLoadingGraduations.set(false);
         },
       });
+  }
+
+  protected openCreateGraduation(): void {
+    this.openedCreateGraduation.set(true);
+  }
+
+  protected closeCreateGraduation(): void {
+    this.openedCreateGraduation.set(false);
+  }
+
+  protected onGraduationCreated(): void {
+    this.openedCreateGraduation.set(false);
+    this.loadGraduations();
   }
 
   protected loadFees(): void {
