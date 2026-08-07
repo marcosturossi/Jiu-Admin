@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, computed, inject, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, OnInit, computed, inject, input, output, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { Subject, debounceTime } from 'rxjs';
@@ -21,7 +21,12 @@ import { CreateBeltComponent } from '../../belts/create-belt/create-belt.compone
   templateUrl: './create-graduation.component.html',
   styleUrl: './create-graduation.component.scss',
 })
-export class CreateGraduationComponent {
+export class CreateGraduationComponent implements OnInit {
+  /** When set (e.g. opened from a student's own detail page), the student is pre-selected and the
+   *  search field is hidden instead of making the admin re-search for the student they're already
+   *  looking at. */
+  readonly presetStudent = input<ShowStudentDTO | null>(null);
+
   readonly closeEvent = output<void>();
   readonly graduationCreated = output<void>();
 
@@ -58,7 +63,17 @@ export class CreateGraduationComponent {
       next: r => this.belts.set(r?.items ?? []),
       error: () => this.ns.showError('Erro ao Carregar Faixas', 'Não foi possível carregar a lista de faixas.'),
     });
-    this.loadStudents();
+  }
+
+  ngOnInit(): void {
+    const preset = this.presetStudent();
+    if (preset?.id) {
+      this.students.set([preset]);
+      this.selectedStudent.set({ id: preset.id, label: `${preset.firstName} ${preset.lastName} (${preset.email})` });
+      this.form.patchValue({ studentId: preset.id });
+    } else {
+      this.loadStudents();
+    }
   }
 
   protected close(): void { this.closeEvent.emit(); }

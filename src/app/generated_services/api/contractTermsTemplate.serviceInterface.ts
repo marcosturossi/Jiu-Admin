@@ -57,6 +57,13 @@ export interface ContractTermsTemplateServiceInterface {
      * 
      * 
      * @param id 
+     */
+    apiContractTermsTemplateIdPreviewGet(id: string, extraHttpRequestParams?: any): Observable<{}>;
+
+    /**
+     * 
+     * 
+     * @param id 
      * @param updateContractTermsTemplateDTO 
      */
     apiContractTermsTemplateIdPut(id: string, updateContractTermsTemplateDTO: UpdateContractTermsTemplateDTO, extraHttpRequestParams?: any): Observable<ShowContractTermsTemplateDTO>;

@@ -209,5 +209,20 @@ describe('DetailStudentComponent', () => {
     (component as any).onPaymentWithMoney();
     expect(accountsReceivableSpy.apiAccountsReceivableStudentStudentIdGet).toHaveBeenCalledTimes(2);
   });
+
+  it('should open and close the create-graduation dialog', () => {
+    (component as any).openCreateGraduation();
+    expect((component as any).openedCreateGraduation()).toBeTrue();
+    (component as any).closeCreateGraduation();
+    expect((component as any).openedCreateGraduation()).toBeFalse();
+  });
+
+  it('should close the dialog and reload graduations when a graduation is created', () => {
+    graduationSpy.apiGraduationGet.calls.reset();
+    (component as any).openCreateGraduation();
+    (component as any).onGraduationCreated();
+    expect((component as any).openedCreateGraduation()).toBeFalse();
+    expect(graduationSpy.apiGraduationGet).toHaveBeenCalled();
+  });
 });
 
