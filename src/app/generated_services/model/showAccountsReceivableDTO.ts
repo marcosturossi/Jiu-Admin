@@ -24,7 +24,6 @@ export interface ShowAccountsReceivableDTO {
     pixQrCodeBase64?: string | null;
     pixCopyPaste?: string | null;
     externalChargeId?: string | null;
-    dueDate?: string;
     type?: TransactionType;
     transactionCategoryId?: string | null;
     contractId?: string | null;
@@ -32,6 +31,7 @@ export interface ShowAccountsReceivableDTO {
     personId?: string;
     paidAt?: string | null;
     paidAmount?: ChargeStatusConfirmedValue | null;
+    dueDate?: string;
     description?: string;
     amount?: ApiAccountsPayableGetAmountMinParameter;
     transactionDate?: string;

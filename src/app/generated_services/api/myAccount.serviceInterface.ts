@@ -12,38 +12,23 @@ import { HttpHeaders }                                       from '@angular/comm
 
 import { Observable }                                        from 'rxjs';
 
+import { ChangePasswordDto } from '../model/models';
 import { ProblemDetails } from '../model/models';
-import { ShowScheduledJobDto } from '../model/models';
-import { UpdateScheduledJobDto } from '../model/models';
 
 
 import { Configuration }                                     from '../configuration';
 
 
 
-export interface ScheduledJobServiceInterface {
+export interface MyAccountServiceInterface {
     defaultHeaders: HttpHeaders;
     configuration: Configuration;
 
     /**
      * 
      * 
+     * @param changePasswordDto 
      */
-    apiScheduledJobsGet(extraHttpRequestParams?: any): Observable<Array<ShowScheduledJobDto>>;
-
-    /**
-     * 
-     * 
-     * @param jobKey 
-     * @param updateScheduledJobDto 
-     */
-    apiScheduledJobsJobKeyPatch(jobKey: string, updateScheduledJobDto: UpdateScheduledJobDto, extraHttpRequestParams?: any): Observable<{}>;
-
-    /**
-     * 
-     * 
-     * @param jobKey 
-     */
-    apiScheduledJobsJobKeyRegisterPost(jobKey: string, extraHttpRequestParams?: any): Observable<{}>;
+    apiAccountMeChangePasswordPost(changePasswordDto: ChangePasswordDto, extraHttpRequestParams?: any): Observable<{}>;
 
 }

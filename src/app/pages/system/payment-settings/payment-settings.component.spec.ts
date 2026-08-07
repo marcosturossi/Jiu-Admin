@@ -5,8 +5,8 @@ import { TenantSettingsService } from '../../../generated_services/api/tenantSet
 import { NotificationService } from '../../../services/notification.service';
 import { SubnavService } from '../../../services/subnav.service';
 
-const MOCK_SETTINGS_NONE = { paymentGateway: null, hasCredentialsConfigured: false, webhookSecret: null } as any;
-const MOCK_SETTINGS_ASAAS = { paymentGateway: 'asaas', hasCredentialsConfigured: true, webhookSecret: '****abcd' } as any;
+const MOCK_SETTINGS_NONE = { paymentGateway: null, hasCredentialsConfigured: false, webhookSecret: null, environment: null } as any;
+const MOCK_SETTINGS_ASAAS = { paymentGateway: 'asaas', hasCredentialsConfigured: true, webhookSecret: '****abcd', environment: 'Production' } as any;
 
 describe('PaymentSettingsComponent', () => {
   let component: PaymentSettingsComponent;
@@ -42,6 +42,17 @@ describe('PaymentSettingsComponent', () => {
     expect((component as any).form.value.paymentGateway).toBe('');
     expect((component as any).hasCredentialsConfigured()).toBeFalse();
     expect((component as any).form.get('asaasApiKey')?.valid).toBeTrue();
+  });
+
+  it('should populate the saved environment (Production) instead of always defaulting to Sandbox', () => {
+    tenantSettingsService.apiSettingsGet.and.returnValue(of(MOCK_SETTINGS_ASAAS));
+    const f2 = TestBed.createComponent(PaymentSettingsComponent);
+    f2.detectChanges();
+    expect((f2.componentInstance as any).form.value.asaasEnvironment).toBe('Production');
+  });
+
+  it('should default to Sandbox when no environment is saved yet', () => {
+    expect((component as any).form.value.asaasEnvironment).toBe('Sandbox');
   });
 
   it('should require an API key once Asaas is selected', () => {
@@ -95,7 +106,9 @@ describe('PaymentSettingsComponent', () => {
     const sentDto = tenantSettingsService.apiSettingsPatch.calls.mostRecent().args[0];
     expect(sentDto.paymentGateway).toBeNull();
     expect(sentDto.webhookSecret).toBeNull();
-    expect(sentDto.credentials).toEqual({ apiKey: '$aact_123', environment: 'Sandbox' });
+    // Environment was loaded as 'Production' (MOCK_SETTINGS_ASAAS) and never touched by the user,
+    // so it's resent as-is — same "always resend the whole credentials bag" rule as apiKey.
+    expect(sentDto.credentials).toEqual({ apiKey: '$aact_123', environment: 'Production' });
   });
 
   it('should send credentials as null when "Nenhum" is selected', () => {

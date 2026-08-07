@@ -42,6 +42,8 @@ api/medicalClearance.service.ts
 api/medicalClearance.serviceInterface.ts
 api/myAcademy.service.ts
 api/myAcademy.serviceInterface.ts
+api/myAccount.service.ts
+api/myAccount.serviceInterface.ts
 api/notices.service.ts
 api/notices.serviceInterface.ts
 api/notification.service.ts
@@ -77,6 +79,7 @@ model/apiDashboardAttendanceGetDaysParameter.ts
 model/apiFrequencyGetPageParameter.ts
 model/apiMedicalClearanceIdAttachmentUrlGetExpiryHoursParameter.ts
 model/barChartDataDTO.ts
+model/changePasswordDto.ts
 model/chargeResult.ts
 model/chargeStatus.ts
 model/chargeStatusConfirmedValue.ts
@@ -179,7 +182,7 @@ model/showSupplierDTO.ts
 model/showTenantSettingsDto.ts
 model/showTransactionCategoryDTO.ts
 model/stringSegment.ts
-model/stripesEnum.ts
+model/stripes.ts
 model/studentsBirthDay.ts
 model/testPaymentConnectionDto.ts
 model/testPaymentConnectionResultDto.ts

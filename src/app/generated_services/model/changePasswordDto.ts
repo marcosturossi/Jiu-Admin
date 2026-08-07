@@ -8,16 +8,10 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { Stripes } from './stripes';
 
 
-export interface UpdateGraduationDTO { 
-    studentId: string;
-    beltId: string;
-    graduationDate: string;
-    stripes?: Stripes;
+export interface ChangePasswordDto { 
+    currentPassword: string;
+    newPassword: string;
 }
-export namespace UpdateGraduationDTO {
-}
-
 

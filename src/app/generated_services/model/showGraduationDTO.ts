@@ -9,7 +9,7 @@
  * Do not edit the class manually.
  */
 import { ShowBeltDTO } from './showBeltDTO';
-import { StripesEnum } from './stripesEnum';
+import { Stripes } from './stripes';
 
 
 export interface ShowGraduationDTO { 
@@ -20,7 +20,7 @@ export interface ShowGraduationDTO {
     studentId: string;
     beltId: string;
     graduationDate: string;
-    stripes?: StripesEnum;
+    stripes?: Stripes;
 }
 export namespace ShowGraduationDTO {
 }

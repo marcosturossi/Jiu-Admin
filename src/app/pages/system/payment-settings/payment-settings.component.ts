@@ -88,6 +88,7 @@ export class PaymentSettingsComponent implements OnInit {
         this.form.patchValue({
           paymentGateway: settings.paymentGateway ?? NONE_PROVIDER_VALUE,
           webhookSecret: settings.webhookSecret ?? '',
+          asaasEnvironment: settings.environment ?? 'Sandbox',
         });
         // Only fields the user actually edits after this point should be sent on save — the API
         // treats an untouched field as "leave as-is", since webhookSecret comes back masked and
@@ -171,7 +172,11 @@ export class PaymentSettingsComponent implements OnInit {
       next: (settings) => {
         this.isSaving.set(false);
         this.hasCredentialsConfigured.set(settings.hasCredentialsConfigured ?? false);
-        this.form.patchValue({ asaasApiKey: '', webhookSecret: settings.webhookSecret ?? '' });
+        this.form.patchValue({
+          asaasApiKey: '',
+          webhookSecret: settings.webhookSecret ?? '',
+          asaasEnvironment: settings.environment ?? 'Sandbox',
+        });
         this.form.markAsPristine();
         this.notificationService.showSuccess('Configurações Salvas!', 'As configurações de pagamento foram atualizadas com sucesso.');
       },

@@ -8,16 +8,15 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { Stripes } from './stripes';
 
 
-export interface UpdateGraduationDTO { 
-    studentId: string;
-    beltId: string;
-    graduationDate: string;
-    stripes?: Stripes;
-}
-export namespace UpdateGraduationDTO {
-}
+export type Stripes = 'None' | 'One' | 'Two' | 'Three' | 'Four';
 
+export const Stripes = {
+    None: 'None' as Stripes,
+    One: 'One' as Stripes,
+    Two: 'Two' as Stripes,
+    Three: 'Three' as Stripes,
+    Four: 'Four' as Stripes
+};
 

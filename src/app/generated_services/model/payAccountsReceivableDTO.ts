@@ -11,7 +11,7 @@
 import { ChargeStatusConfirmedValue } from './chargeStatusConfirmedValue';
 
 
-export interface PayAccountsReceivableDTO {
+export interface PayAccountsReceivableDTO { 
     paidAmount?: ChargeStatusConfirmedValue | null;
     paidAt?: string | null;
     notes?: string | null;
