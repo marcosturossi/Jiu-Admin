@@ -24,6 +24,7 @@ import { FinanceDashboardComponent } from './finance-dashboard/finance-dashboard
 import { SuppliersComponent } from './suppliers/suppliers.component';
 import { PaymentSettingsComponent } from './payment-settings/payment-settings.component';
 import { AcademyProfileComponent } from './academy-profile/academy-profile.component';
+import { ChangePasswordComponent } from './change-password/change-password.component';
 import { ScheduledJobsComponent } from './scheduled-jobs/scheduled-jobs.component';
 import { LessonSchedulesComponent } from './lesson-schedules/lesson-schedules.component';
 import { ContractTermsTemplatesComponent } from './contract-terms-templates/contract-terms-templates.component';
@@ -68,6 +69,7 @@ export const routes: Routes = [
       // Configurações
       { path: 'academies', component: AcademiesComponent },
       { path: 'academy-profile', component: AcademyProfileComponent },
+      { path: 'change-password', component: ChangePasswordComponent },
       { path: 'payment-settings', component: PaymentSettingsComponent },
       { path: 'scheduled-jobs', component: ScheduledJobsComponent },
     ]

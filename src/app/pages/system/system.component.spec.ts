@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { RouterModule } from '@angular/router';
+import { RouterModule, provideRouter } from '@angular/router';
 import { provideHttpClient } from '@angular/common/http';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import Keycloak from 'keycloak-js';
@@ -19,7 +19,9 @@ describe('SystemComponent', () => {
 
     await TestBed.configureTestingModule({
       imports: [SystemComponent, RouterModule],
-      providers: [provideHttpClient(), { provide: Keycloak, useValue: keycloakStub }],
+      // provideRouter (not just RouterModule) is needed now that NavbarComponent uses routerLink —
+      // the RouterLink directive injects ActivatedRoute, which only a configured router provides.
+      providers: [provideHttpClient(), provideRouter([]), { provide: Keycloak, useValue: keycloakStub }],
       schemas: [NO_ERRORS_SCHEMA]
     })
     .compileComponents();
