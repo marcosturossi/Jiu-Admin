@@ -9,6 +9,7 @@ import { DetailStudentComponent } from './detail-student.component';
 import { StudentsService } from '../../../../generated_services/api/students.service';
 import { ContractService } from '../../../../generated_services/api/contract.service';
 import { GraduationService } from '../../../../generated_services/api/graduation.service';
+import { AccountsReceivableService } from '../../../../generated_services/api/accountsReceivable.service';
 import { NotificationService } from '../../../../services/notification.service';
 import { SubnavService } from '../../../../services/subnav.service';
 
@@ -19,6 +20,7 @@ describe('DetailStudentComponent', () => {
   let studentsSpy: jasmine.SpyObj<StudentsService>;
   let contractSpy: jasmine.SpyObj<ContractService>;
   let graduationSpy: jasmine.SpyObj<GraduationService>;
+  let accountsReceivableSpy: jasmine.SpyObj<AccountsReceivableService>;
   let notifySpy: jasmine.SpyObj<NotificationService>;
   let subnavSpy: jasmine.SpyObj<SubnavService>;
   let httpMock: HttpTestingController;
@@ -44,12 +46,14 @@ describe('DetailStudentComponent', () => {
     (studentsSpy as any).configuration = { basePath: 'http://localhost:8080' };
     contractSpy = jasmine.createSpyObj('ContractService', ['apiContractGet']);
     graduationSpy = jasmine.createSpyObj('GraduationService', ['apiGraduationGet']);
+    accountsReceivableSpy = jasmine.createSpyObj('AccountsReceivableService', ['apiAccountsReceivableStudentStudentIdGet']);
     notifySpy = jasmine.createSpyObj('NotificationService', ['showError', 'showSuccess']);
     subnavSpy = jasmine.createSpyObj('SubnavService', ['setTitle']);
 
     studentsSpy.apiStudentsIdGet.and.returnValue(of(mockStudent) as any);
     contractSpy.apiContractGet.and.returnValue(of({ items: [], totalItems: 0, totalPages: 0 }) as any);
     graduationSpy.apiGraduationGet.and.returnValue(of({ items: [], totalItems: 0, totalPages: 0 }) as any);
+    accountsReceivableSpy.apiAccountsReceivableStudentStudentIdGet.and.returnValue(of({ items: [], totalCount: 0, totalPages: 0 }) as any);
 
     await TestBed.configureTestingModule({
       imports: [DetailStudentComponent],
@@ -60,6 +64,7 @@ describe('DetailStudentComponent', () => {
         { provide: StudentsService,    useValue: studentsSpy },
         { provide: ContractService,    useValue: contractSpy },
         { provide: GraduationService,  useValue: graduationSpy },
+        { provide: AccountsReceivableService, useValue: accountsReceivableSpy },
         { provide: NotificationService, useValue: notifySpy },
         { provide: SubnavService,      useValue: subnavSpy },
         {
@@ -164,6 +169,45 @@ describe('DetailStudentComponent', () => {
     studentsSpy.apiStudentsIdPhotoDelete.and.returnValue(throwError(() => new Error()));
     (component as any).removePhoto();
     expect(notifySpy.showError).toHaveBeenCalledWith('Erro ao Remover Foto', jasmine.any(String));
+  });
+
+  it('should load the student\'s fees on init', () => {
+    expect(accountsReceivableSpy.apiAccountsReceivableStudentStudentIdGet).toHaveBeenCalledWith(
+      'test-id', undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, 1, 50,
+    );
+    expect((component as any).isLoadingFees()).toBeFalse();
+  });
+
+  it('should show error notification when fee load fails', () => {
+    accountsReceivableSpy.apiAccountsReceivableStudentStudentIdGet.and.returnValue(throwError(() => new Error()));
+    (component as any).loadFees();
+    expect(notifySpy.showError).toHaveBeenCalledWith('Erro', 'Não foi possível carregar as contas a receber do aluno.');
+  });
+
+  it('should consider a Pending Income fee with no charge yet as chargeable', () => {
+    const chargeable = (component as any).isChargeable({ status: 'Pending', type: 'Income', externalChargeId: null });
+    const alreadyCharged = (component as any).isChargeable({ status: 'Pending', type: 'Income', externalChargeId: 'ext-1' });
+    const paid = (component as any).isChargeable({ status: 'Paid', type: 'Income', externalChargeId: null });
+    expect(chargeable).toBeTrue();
+    expect(alreadyCharged).toBeFalse();
+    expect(paid).toBeFalse();
+  });
+
+  it('should open and close the generate-charge dialog', () => {
+    const fee = { id: 'fee-1', status: 'Pending', type: 'Income' };
+    (component as any).openGenerateCharge(fee);
+    expect((component as any).openedGenerateCharge()).toBeTrue();
+    expect((component as any).selectedFee()).toEqual(fee);
+    (component as any).closeGenerateCharge();
+    expect((component as any).openedGenerateCharge()).toBeFalse();
+    expect((component as any).selectedFee()).toBeNull();
+  });
+
+  it('should reload fees after a charge is generated or a payment is recorded', () => {
+    accountsReceivableSpy.apiAccountsReceivableStudentStudentIdGet.calls.reset();
+    (component as any).onChargeGenerated();
+    (component as any).onPaymentWithMoney();
+    expect(accountsReceivableSpy.apiAccountsReceivableStudentStudentIdGet).toHaveBeenCalledTimes(2);
   });
 });
 
