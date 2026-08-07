@@ -104,7 +104,9 @@ export class StudentsComponent {
         reader.onload = e => this.photoUrls.update(urls => ({ ...urls, [studentId]: e.target?.result as string }));
         reader.readAsDataURL(blob);
       },
-      error: () => {},
+      error: () => {
+        // No photo on file — leave the placeholder, not worth surfacing as an error.
+      },
     });
   }
 

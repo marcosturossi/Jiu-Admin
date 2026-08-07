@@ -1,13 +1,8 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { SystemComponent } from "./system.component";
-import { RouterModule, RouterOutlet, Routes } from "@angular/router";
-import { SidebarComponent } from "../../shared/sidebar/sidebar.component";
-import { FilterComponent } from "../../shared/filter/filter.component";
+import { RouterModule, Routes } from "@angular/router";
 import { AuthGuard } from "../../guard/auth.guard";
-import { NavbarComponent } from "../../shared/navbar/navbar.component";
 import { HomeComponent } from "./home/home.component";
-import { SubnavComponent } from "../../shared/subnav/subnav.component";
 import { StudentsComponent } from './students/students.component';
 import { LessonsComponent } from './lessons/lessons.component';
 import { GraduationsComponent } from './graduations/graduations.component';
@@ -29,6 +24,7 @@ import { FinanceDashboardComponent } from './finance-dashboard/finance-dashboard
 import { SuppliersComponent } from './suppliers/suppliers.component';
 import { PaymentSettingsComponent } from './payment-settings/payment-settings.component';
 import { AcademyProfileComponent } from './academy-profile/academy-profile.component';
+import { ChangePasswordComponent } from './change-password/change-password.component';
 import { ScheduledJobsComponent } from './scheduled-jobs/scheduled-jobs.component';
 import { LessonSchedulesComponent } from './lesson-schedules/lesson-schedules.component';
 import { ContractTermsTemplatesComponent } from './contract-terms-templates/contract-terms-templates.component';
@@ -73,6 +69,7 @@ export const routes: Routes = [
       // Configurações
       { path: 'academies', component: AcademiesComponent },
       { path: 'academy-profile', component: AcademyProfileComponent },
+      { path: 'change-password', component: ChangePasswordComponent },
       { path: 'payment-settings', component: PaymentSettingsComponent },
       { path: 'scheduled-jobs', component: ScheduledJobsComponent },
     ]
@@ -80,20 +77,10 @@ export const routes: Routes = [
 ];
 
 @NgModule({
-  declarations: [
-    SystemComponent,
-  ],
   imports: [
-    CommonModule,
-    RouterOutlet,
     RouterModule.forChild(routes),
-    SidebarComponent,
-    NavbarComponent,
-    FilterComponent,
-    SubnavComponent,
   ],
   exports: [
-    SystemComponent,
     RouterModule,
   ]
 })

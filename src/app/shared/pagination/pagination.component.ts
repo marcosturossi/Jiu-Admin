@@ -8,8 +8,8 @@ import { CommonModule } from '@angular/common';
   template: `
     <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mt-3">
       <div class="d-flex align-items-center gap-2">
-        <label class="text-muted small mb-0">Itens por página:</label>
-        <select class="form-select form-select-sm" style="width:auto"
+        <label class="text-muted small mb-0" for="page-size-select">Itens por página:</label>
+        <select id="page-size-select" class="form-select form-select-sm" style="width:auto"
           [value]="pageSize()"
           (change)="onSizeChange($any($event.target).value)">
           <option value="10">10</option>

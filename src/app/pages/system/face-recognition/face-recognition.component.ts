@@ -64,7 +64,7 @@ export class FaceRecognitionComponent {
   protected openCreate(): void { this.openedCreate.set(true); }
   protected onPersonCreated(): void { this.openedCreate.set(false); this.load(); }
   protected openEdit(person: PersonDetailResponse): void { this.selected.set(person); this.openedUpdate.set(true); }
-  protected onPersonUpdated(updated: PersonDetailResponse): void { this.openedUpdate.set(false); this.selected.set(null); this.load(); }
+  protected onPersonUpdated(): void { this.openedUpdate.set(false); this.selected.set(null); this.load(); }
 
   protected async deletePerson(person: PersonDetailResponse): Promise<void> {
     const ok = await this.confirmService.confirm(`Tem certeza que deseja excluir a pessoa "${person.name}"?`);

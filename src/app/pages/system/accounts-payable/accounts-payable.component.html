@@ -1,6 +1,16 @@
 <section class="page-section">
   <div class="page-toolbar ">
-    <app-filter [placeholder]="'Buscar conta a pagar'" (filterChange)="onFilterChange($event)" />
+    <app-filter [placeholder]="'Buscar conta a pagar'" [fields]="filterFields" (filterChange)="onFilterChange($event)" />
+    <div class="form-check form-switch d-flex align-items-center">
+      <input
+        class="form-check-input me-2"
+        type="checkbox"
+        role="switch"
+        id="payableOverdueOnlyToggle"
+        [(ngModel)]="overdueOnly"
+        (ngModelChange)="onOverdueOnlyChange()" />
+      <label class="form-check-label" for="payableOverdueOnlyToggle">Somente vencidos</label>
+    </div>
     <button type="button" class="btn btn-primary" (click)="openCreate()">
       <i class="bi bi-plus-lg me-1"></i>Nova Conta a Pagar
     </button>

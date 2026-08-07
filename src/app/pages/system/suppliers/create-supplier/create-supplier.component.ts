@@ -112,7 +112,7 @@ export class CreateSupplierComponent {
     });
   }
 
-  private logInvalidControls(form: FormGroup | FormArray, path: string = ''): void {
+  private logInvalidControls(form: FormGroup | FormArray, path = ''): void {
     Object.keys(form.controls).forEach((key) => {
       const control = form.get(key);
       const controlPath = path ? `${path}.${key}` : key;

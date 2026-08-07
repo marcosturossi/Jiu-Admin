@@ -605,13 +605,14 @@ export class AccountsReceivableService implements AccountsReceivableServiceInter
 
     /**
      * @param id 
+     * @param payAccountsReceivableDTO 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiAccountsReceivableIdConfirmPaymentMoneyPatch(id: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any>;
-    public apiAccountsReceivableIdConfirmPaymentMoneyPatch(id: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<any>>;
-    public apiAccountsReceivableIdConfirmPaymentMoneyPatch(id: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<any>>;
-    public apiAccountsReceivableIdConfirmPaymentMoneyPatch(id: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public apiAccountsReceivableIdConfirmPaymentMoneyPatch(id: string, payAccountsReceivableDTO?: PayAccountsReceivableDTO, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any>;
+    public apiAccountsReceivableIdConfirmPaymentMoneyPatch(id: string, payAccountsReceivableDTO?: PayAccountsReceivableDTO, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<any>>;
+    public apiAccountsReceivableIdConfirmPaymentMoneyPatch(id: string, payAccountsReceivableDTO?: PayAccountsReceivableDTO, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<any>>;
+    public apiAccountsReceivableIdConfirmPaymentMoneyPatch(id: string, payAccountsReceivableDTO?: PayAccountsReceivableDTO, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         if (id === null || id === undefined) {
             throw new Error('Required parameter id was null or undefined when calling apiAccountsReceivableIdConfirmPaymentMoneyPatch.');
         }
@@ -641,6 +642,17 @@ export class AccountsReceivableService implements AccountsReceivableServiceInter
         }
 
 
+        // to determine the Content-Type header
+        const consumes: string[] = [
+            'application/json',
+            'text/json',
+            'application/*+json'
+        ];
+        const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
+        if (httpContentTypeSelected !== undefined) {
+            localVarHeaders = localVarHeaders.set('Content-Type', httpContentTypeSelected);
+        }
+
         let responseType_: 'text' | 'json' | 'blob' = 'json';
         if (localVarHttpHeaderAcceptSelected) {
             if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
@@ -656,6 +668,7 @@ export class AccountsReceivableService implements AccountsReceivableServiceInter
         return this.httpClient.request<any>('patch', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
+                body: payAccountsReceivableDTO,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,

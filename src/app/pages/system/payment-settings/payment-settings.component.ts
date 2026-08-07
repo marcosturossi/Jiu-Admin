@@ -88,6 +88,7 @@ export class PaymentSettingsComponent implements OnInit {
         this.form.patchValue({
           paymentGateway: settings.paymentGateway ?? NONE_PROVIDER_VALUE,
           webhookSecret: settings.webhookSecret ?? '',
+          asaasEnvironment: settings.environment ?? 'Sandbox',
         });
         // Only fields the user actually edits after this point should be sent on save — the API
         // treats an untouched field as "leave as-is", since webhookSecret comes back masked and
@@ -145,7 +146,7 @@ export class PaymentSettingsComponent implements OnInit {
     const dto: TestPaymentConnectionDto = apiKey
       ? { paymentGateway: ASAAS_PROVIDER_KEY, credentials: { apiKey, environment: this.form.value.asaasEnvironment ?? 'Sandbox' } }
       // Both null tells the backend to test the already-saved credentials instead of ad-hoc ones.
-      : { paymentGateway: null, credentials: null as unknown as { [key: string]: string } };
+      : { paymentGateway: null, credentials: null as unknown as Record<string, string> };
 
     this.tenantSettingsService.apiSettingsTestConnectionPost(dto).subscribe({
       next: (result) => {
@@ -171,7 +172,11 @@ export class PaymentSettingsComponent implements OnInit {
       next: (settings) => {
         this.isSaving.set(false);
         this.hasCredentialsConfigured.set(settings.hasCredentialsConfigured ?? false);
-        this.form.patchValue({ asaasApiKey: '', webhookSecret: settings.webhookSecret ?? '' });
+        this.form.patchValue({
+          asaasApiKey: '',
+          webhookSecret: settings.webhookSecret ?? '',
+          asaasEnvironment: settings.environment ?? 'Sandbox',
+        });
         this.form.markAsPristine();
         this.notificationService.showSuccess('Configurações Salvas!', 'As configurações de pagamento foram atualizadas com sucesso.');
       },
@@ -199,7 +204,7 @@ export class PaymentSettingsComponent implements OnInit {
       ? { apiKey: (v.asaasApiKey ?? '').trim(), environment: v.asaasEnvironment ?? 'Sandbox' }
       // The generated type doesn't reflect that Credentials is nullable server-side (leaving it
       // untouched when no gateway is selected) — cast needed to send a real `null` over the wire.
-      : (null as unknown as { [key: string]: string });
+      : (null as unknown as Record<string, string>);
 
     return {
       paymentGateway: paymentGatewayControl?.dirty ? (v.paymentGateway || null) : null,

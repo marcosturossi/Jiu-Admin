@@ -8,15 +8,17 @@ import { ThemeService } from '../../../services/theme.service';
   styleUrls: ['./frequencies-belt-distribution.component.scss']
 })
 export class FrequenciesBeltDistributionComponent implements AfterViewInit, OnDestroy {
+  private dashboardService = inject(DashboardService);
+
   @ViewChild('chart', { static: true }) chartEl!: ElementRef;
   private chart: any;
   private resizeObserver?: ResizeObserver;
-  private data: Array<{ name: string; value: number }> = [];
+  private data: { name: string; value: number }[] = [];
   private themeService = inject(ThemeService);
 
   private palette = ['#2f80ed', '#34c38f', '#f6c343', '#f66d9b'];
 
-  constructor(private dashboardService: DashboardService) {
+  constructor() {
     // Re-render chart when theme changes
     effect(() => {
       const _ = this.themeService.currentTheme();
@@ -81,7 +83,7 @@ export class FrequenciesBeltDistributionComponent implements AfterViewInit, OnDe
           loadAndInit();
         }
       }, 1000);
-    } catch (e) {
+    } catch {
       setTimeout(() => {
         loadAndInit();
       }, 200);
@@ -109,7 +111,7 @@ export class FrequenciesBeltDistributionComponent implements AfterViewInit, OnDe
         const hasSeries = data.series && Array.isArray(data.series);
         const hasCategories = data.categories && Array.isArray(data.categories);
         if (hasSeries && hasCategories) {
-          const series = data.series.map((s: any, idx: number) => ({
+          const series = data.series.map((s: any, _idx: number) => ({
             name: s.name,
             type: 'bar',
             data: s.data || [],
@@ -121,7 +123,7 @@ export class FrequenciesBeltDistributionComponent implements AfterViewInit, OnDe
             xAxis: { type: 'category', data: data.categories },
             series
           };
-          this.chart && this.chart.setOption(option);
+          if (this.chart) this.chart.setOption(option);
           return;
         }
 
@@ -135,7 +137,7 @@ export class FrequenciesBeltDistributionComponent implements AfterViewInit, OnDe
             option.series = [{ type: 'bar', data: this.data.map(d => d.value), label: { show: true, position: 'top' }, itemStyle: { borderRadius: [6,6,0,0] } }];
             this.chart.setOption(option);
           }
-        } catch (e) {
+        } catch {
           // ignore
         }
       },
@@ -149,7 +151,7 @@ export class FrequenciesBeltDistributionComponent implements AfterViewInit, OnDe
     if (this.chart) this.chart.resize();
   };
 
-  private getBaseOptions(title: string) {
+  private getBaseOptions(_title: string) {
     const theme = this.themeService.getChartTheme();
     return {
       color: theme.color,

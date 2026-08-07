@@ -114,7 +114,7 @@
         </div>
         <div class="modal-body">
           @if (selected()) {
-            <app-update-persons [person]="selected()!" (closeEvent)="openedUpdate.set(false)" (personUpdated)="onPersonUpdated($event)" />
+            <app-update-persons [person]="selected()!" (closeEvent)="openedUpdate.set(false)" (personUpdated)="onPersonUpdated()" />
           }
         </div>
       </div>

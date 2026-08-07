@@ -1,5 +1,5 @@
 <!-- Loading global overlay -->
-@if (isLoadingStudent() || isLoadingContracts() || isLoadingGraduations()) {
+@if (isLoadingStudent() || isLoadingContracts() || isLoadingGraduations() || isLoadingFees()) {
   <div class="global-loading d-flex justify-content-center align-items-center py-4">
     <div class="spinner-border text-secondary" role="status">
       <span class="visually-hidden">Carregando...</span>
@@ -181,6 +181,59 @@
       }
     </div>
 
+    <!-- Financeiro -->
+    <div class="section-card mb-4">
+      <h5 class="section-title"><i class="bi bi-cash-coin me-2"></i>Financeiro</h5>
+      @if (isLoadingFees()) {
+        <div class="d-flex justify-content-center py-3">
+          <div class="spinner-border spinner-border-sm text-secondary" role="status"></div>
+        </div>
+      } @else if ((fees()?.items ?? []).length === 0) {
+        <p class="text-muted fst-italic mb-0">Nenhuma conta a receber encontrada.</p>
+      } @else {
+        <div class="table-responsive">
+          <table class="table table-sm align-middle">
+            <thead>
+              <tr>
+                <th>Descrição</th>
+                <th>Vencimento</th>
+                <th>Valor</th>
+                <th>Status</th>
+                <th class="text-end">Ações</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (fee of fees()?.items ?? []; track fee.id) {
+                <tr>
+                  <td>{{ fee.description || '—' }}</td>
+                  <td>{{ fee.dueDate ? (fee.dueDate | date:'dd/MM/yyyy':'UTC') : '—' }}</td>
+                  <td>{{ ($any(fee.amount) ?? 0) | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}</td>
+                  <td><span class="badge {{ feeStatusBadge(fee.status) }}">{{ feeStatusLabel(fee.status) }}</span></td>
+                  <td class="text-end">
+                    @if (isChargeable(fee)) {
+                      <button type="button" class="btn btn-sm btn-outline-primary me-1" title="Gerar cobrança" (click)="openGenerateCharge(fee)">
+                        <i class="bi bi-credit-card"></i>
+                      </button>
+                    }
+                    @if (fee.externalChargeId) {
+                      <button type="button" class="btn btn-sm btn-outline-info me-1" title="Ver cobrança" (click)="openViewCharge(fee)">
+                        <i class="bi bi-eye"></i>
+                      </button>
+                    }
+                    @if (fee.status === 'Pending') {
+                      <button type="button" class="btn btn-sm btn-outline-success" title="Registrar pagamento em dinheiro" (click)="openPaymentWithMoney(fee)">
+                        <i class="bi bi-cash"></i>
+                      </button>
+                    }
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    </div>
+
     <!-- Graduações -->
     <div class="section-card mb-4">
       <h5 class="section-title"><i class="bi bi-award me-2"></i>Graduações</h5>
@@ -266,6 +319,65 @@
             [student]="student()!"
             (closeEvent)="openedUpdate.set(false)"
             (studentUpdated)="onStudentUpdated()" />
+        </div>
+      </div>
+    </div>
+  </div>
+}
+
+@if (openedGenerateCharge() && selectedFee()) {
+  <div class="modal-backdrop-custom" (click)="closeGenerateCharge()"></div>
+  <div class="modal show d-block" tabindex="-1" role="dialog" aria-modal="true" (document:keydown.escape)="closeGenerateCharge()">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Gerar Cobrança</h5>
+          <button type="button" class="btn-close" (click)="closeGenerateCharge()" aria-label="Fechar"></button>
+        </div>
+        <div class="modal-body">
+          <app-generate-charge
+            [item]="selectedFee()!"
+            (itemUpdated)="onChargeGenerated()"
+            (closeEvent)="closeGenerateCharge()" />
+        </div>
+      </div>
+    </div>
+  </div>
+}
+
+@if (openedViewCharge() && selectedFee()) {
+  <div class="modal-backdrop-custom" (click)="closeViewCharge()"></div>
+  <div class="modal show d-block" tabindex="-1" role="dialog" aria-modal="true" (document:keydown.escape)="closeViewCharge()">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Detalhes da Cobrança</h5>
+          <button type="button" class="btn-close" (click)="closeViewCharge()" aria-label="Fechar"></button>
+        </div>
+        <div class="modal-body">
+          <app-view-charge
+            [item]="selectedFee()!"
+            (closeEvent)="closeViewCharge()" />
+        </div>
+      </div>
+    </div>
+  </div>
+}
+
+@if (openedPaymentWithMoney() && selectedFee()) {
+  <div class="modal-backdrop-custom" (click)="closePaymentWithMoney()"></div>
+  <div class="modal show d-block" tabindex="-1" role="dialog" aria-modal="true" (document:keydown.escape)="closePaymentWithMoney()">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Informar Pagamento em Dinheiro</h5>
+          <button type="button" class="btn-close" (click)="closePaymentWithMoney()" aria-label="Fechar"></button>
+        </div>
+        <div class="modal-body">
+          <app-payment-with-money
+            [item]="selectedFee()!"
+            (itemUpdated)="onPaymentWithMoney()"
+            (closeEvent)="closePaymentWithMoney()" />
         </div>
       </div>
     </div>

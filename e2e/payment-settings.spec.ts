@@ -64,6 +64,20 @@ test.describe('Configurações de Pagamento', () => {
     const page = await context.newPage();
     await page.goto('/system/payment-settings');
     await waitForFormReady(page);
+
+    // The real API key is write-only and never read back (readSettings() always sees an empty
+    // #asaasApiKey) — if the tenant already had Asaas configured before this file ran, there's no
+    // faithful way to restore it, and resaving with a blank key would just fail client-side
+    // validation without ever reaching the backend. Skip the restore in that case rather than
+    // leave every subsequent run stuck on a failing afterAll.
+    if (original.paymentGateway === 'asaas' && !original.asaasApiKey) {
+      console.warn(
+        '[payment-settings.spec.ts] Original Asaas API key is write-only and cannot be restored — leaving the settings as this run left them.',
+      );
+      await context.close();
+      return;
+    }
+
     await applySettings(page, original);
     await save(page);
     await expect(page.locator('.toast-success')).toBeVisible({ timeout: 10_000 });

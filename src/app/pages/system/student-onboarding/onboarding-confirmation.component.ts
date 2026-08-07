@@ -301,7 +301,6 @@ export class OnboardingConfirmationComponent {
   readonly feePlans = input<ShowFeePlanDTO[]>([]);
   readonly medicalDataChange = output<Partial<StudentMedicalInfo>>();
   readonly termsChange = output<boolean>();
-  readonly submit = output<void>();
 
   protected termsAccepted = false;
 

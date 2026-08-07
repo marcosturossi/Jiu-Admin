@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { of, throwError } from 'rxjs';
+import { of } from 'rxjs';
 import { ComponentRef } from '@angular/core';
 import { UpdatePersonsComponent } from './update-persons.component';
 import { PersonsService } from '../../../../generated_services/api2/api/persons.service';

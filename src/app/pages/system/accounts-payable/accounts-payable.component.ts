@@ -1,14 +1,16 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { DatePipe, CurrencyPipe } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { AccountsPayableService } from '../../../generated_services/api/accountsPayable.service';
 import { TransactionCategoryService } from '../../../generated_services/api/transactionCategory.service';
 import { ShowAccountsPayableDTO, ShowTransactionCategoryDTO } from '../../../generated_services';
+import { FeeStatus } from '../../../generated_services/model/feeStatus';
 import { SubnavService } from '../../../services/subnav.service';
 import { NotificationService } from '../../../services/notification.service';
 import { ConfirmService } from '../../../services/confirm.service';
 import { extractErrorMessage } from '../../../utils/error.utils';
 import { FilterComponent } from '../../../shared/filter/filter.component';
-import { FilterOutput } from '../../../shared/filter/filter.types';
+import { FilterField, FilterOutput } from '../../../shared/filter/filter.types';
 import { PaginationComponent } from '../../../shared/pagination/pagination.component';
 import { CreateAccountsPayableComponent } from './create-accounts-payable/create-accounts-payable.component';
 import { PayAccountsPayableComponent } from './pay-accounts-payable/pay-accounts-payable.component';
@@ -21,6 +23,7 @@ import { feeStatusBadge } from '../../../shared/status-badge';
   imports: [
     DatePipe,
     CurrencyPipe,
+    FormsModule,
     FilterComponent,
     PaginationComponent,
     CreateAccountsPayableComponent,
@@ -45,6 +48,25 @@ export class AccountsPayableComponent {
   protected readonly currentPage = signal(1);
   protected readonly pageSize = signal(10);
   protected readonly categories = signal<ShowTransactionCategoryDTO[]>([]);
+  protected readonly filterText = signal<string | undefined>(undefined);
+  protected readonly filterStatus = signal<string | undefined>(undefined);
+  protected readonly overdueOnly = signal(false);
+
+  // Same rationale as the Accounts Receivable list: "Overdue" is never a persisted Status, only a
+  // live computed filter (see overdueOnly below) — offering it as a Status option would always
+  // return zero rows.
+  protected readonly filterFields: FilterField[] = [
+    {
+      key: 'status',
+      label: 'Status',
+      type: 'select',
+      options: [
+        { value: FeeStatus.Pending, label: 'Pendente' },
+        { value: FeeStatus.Paid, label: 'Pago' },
+        { value: FeeStatus.Cancelled, label: 'Cancelado' },
+      ],
+    },
+  ];
 
   constructor() {
     this.subnavService.setTitle('Contas a Pagar');
@@ -60,10 +82,14 @@ export class AccountsPayableComponent {
       undefined,
       undefined,
       undefined,
-      undefined,
+      this.filterText(),
       undefined,
       this.currentPage() as any,
       this.pageSize() as any,
+      undefined,
+      undefined,
+      this.filterStatus(),
+      this.overdueOnly() || undefined,
     ).subscribe({
       next: result => {
         this.items.set({
@@ -105,6 +131,12 @@ export class AccountsPayableComponent {
   protected onPageChange(page: number): void { this.currentPage.set(page); this.load(); }
   protected onPageSizeChange(size: number): void { this.pageSize.set(size); this.currentPage.set(1); this.load(); }
   protected onFilterChange(output: FilterOutput): void {
+    this.filterText.set(output.text || undefined);
+    this.filterStatus.set(output.conditions.find(c => c.field.key === 'status')?.value as string | undefined);
+    this.currentPage.set(1);
+    this.load();
+  }
+  protected onOverdueOnlyChange(): void {
     this.currentPage.set(1);
     this.load();
   }

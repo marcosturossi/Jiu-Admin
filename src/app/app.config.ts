@@ -47,7 +47,7 @@ export const appConfig: ApplicationConfig = {
     },
     {
       provide: APP_INITIALIZER,
-      useFactory: (themeService: ThemeService) => () => {
+      useFactory: (_themeService: ThemeService) => () => {
         // Theme service initializes itself on instantiation
         return Promise.resolve();
       },

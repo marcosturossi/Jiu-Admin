@@ -7,9 +7,47 @@
     <p><span class="fw-bold">Mensalidade</span>: {{item().contractId != null ? "Sim" : "Não"}}</p>
     <p><span class="fw-bold">Status</span>: {{item().status || "-"}}</p>
     <p><span class="fw-bold">Descrição</span>: {{item().description || "-"}}</p>
-    <p><span class="fw-bold">Valor</span>: {{item().amount || "-"}}</p>
-    <p><span class="fw-bold">Data da Transação</span>: {{item().transactionDate || "-"}}</p>
-    <p><span class="fw-bold">Notas</span>: {{item().notes || "-"}}</p>
+    <p><span class="fw-bold">Valor Total</span>: {{fullAmount() | number:'1.2-2'}}</p>
+
+    <div class="row g-2 mt-2">
+      <div class="col-6">
+        <label class="form-label" for="paid-amount">Valor Pago</label>
+        <input id="paid-amount" type="number" step="0.01" min="0" class="form-control" [(ngModel)]="paidAmount" [disabled]="isSaving()" />
+      </div>
+      <div class="col-6">
+        <label class="form-label" for="paid-at">Data do Pagamento</label>
+        <input id="paid-at" type="date" class="form-control" [(ngModel)]="paidAt" [disabled]="isSaving()" />
+      </div>
+    </div>
+
+    <div class="mb-3 mt-2">
+      <label class="form-label" for="discount">Desconto (opcional)</label>
+      <input id="discount" type="number" step="0.01" min="0" class="form-control" [(ngModel)]="discount" [disabled]="isSaving()" />
+    </div>
+
+    @if (hasRemainder()) {
+      <div class="mb-3 alert alert-warning py-2">
+        <p class="mb-2">
+          Saldo restante de <strong>{{ (fullAmount() - paidAmount() - discount()) | number:'1.2-2' }}</strong> será criado como uma nova conta pendente.
+        </p>
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="remainder-due-option" id="due-same" value="same" [(ngModel)]="remainderDueOption" [disabled]="isSaving()" />
+          <label class="form-check-label" for="due-same">Mesmo vencimento ({{item().dueDate | date:'dd/MM/yyyy':'UTC'}})</label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="remainder-due-option" id="due-custom" value="custom" [(ngModel)]="remainderDueOption" [disabled]="isSaving()" />
+          <label class="form-check-label" for="due-custom">Nova data de vencimento</label>
+        </div>
+        @if (remainderDueOption() === 'custom') {
+          <input type="date" class="form-control mt-2" [(ngModel)]="remainderDueDate" [disabled]="isSaving()" />
+        }
+      </div>
+    }
+
+    <div class="mb-3">
+      <label class="form-label" for="notes">Notas (opcional)</label>
+      <textarea id="notes" class="form-control" rows="2" [(ngModel)]="notes" [disabled]="isSaving()"></textarea>
+    </div>
 </div>
 <div class="d-flex justify-content-between mt-3">
 <button type="button" class="btn btn-danger" (click)="closeEvent.emit()">Fechar</button>

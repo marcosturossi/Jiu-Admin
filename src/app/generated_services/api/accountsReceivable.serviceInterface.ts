@@ -103,8 +103,9 @@ export interface AccountsReceivableServiceInterface {
      * 
      * 
      * @param id 
+     * @param payAccountsReceivableDTO 
      */
-    apiAccountsReceivableIdConfirmPaymentMoneyPatch(id: string, extraHttpRequestParams?: any): Observable<{}>;
+    apiAccountsReceivableIdConfirmPaymentMoneyPatch(id: string, payAccountsReceivableDTO?: PayAccountsReceivableDTO, extraHttpRequestParams?: any): Observable<{}>;
 
     /**
      * 

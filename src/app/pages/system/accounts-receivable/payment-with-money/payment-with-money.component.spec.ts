@@ -24,7 +24,7 @@ describe('PaymentWithMoneyComponent', () => {
 
     fixture = TestBed.createComponent(PaymentWithMoneyComponent);
     component = fixture.componentRef.instance;
-    fixture.componentRef.setInput('item', { id: 'ar1', amount: 100 as any });
+    fixture.componentRef.setInput('item', { id: 'ar1', amount: 100 as any, dueDate: '2026-08-10' });
     fixture.detectChanges();
   });
 
@@ -37,7 +37,8 @@ describe('PaymentWithMoneyComponent', () => {
     let emitted = false;
     component.itemUpdated.subscribe(() => (emitted = true));
     (component as any).save();
-    expect(arSpy.apiAccountsReceivableIdConfirmPaymentMoneyPatch).toHaveBeenCalledWith('ar1');
+    expect(arSpy.apiAccountsReceivableIdConfirmPaymentMoneyPatch)
+      .toHaveBeenCalledWith('ar1', jasmine.objectContaining({ paidAmount: 100 }));
     expect(notifySpy.showSuccess).toHaveBeenCalled();
     expect(emitted).toBeTrue();
   });

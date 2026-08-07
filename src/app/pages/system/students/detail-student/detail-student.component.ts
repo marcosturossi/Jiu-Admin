@@ -6,21 +6,28 @@ import { HttpClient } from '@angular/common/http';
 import { StudentsService } from '../../../../generated_services/api/students.service';
 import { ContractService } from '../../../../generated_services/api/contract.service';
 import { GraduationService } from '../../../../generated_services/api/graduation.service';
+import { AccountsReceivableService } from '../../../../generated_services/api/accountsReceivable.service';
 import {
   ShowStudentDTO,
   PaginatedResultOfShowContractDTO,
   PaginatedResultOfShowGraduationDTO,
+  PaginatedResultOfShowAccountsReceivableDTO,
+  ShowAccountsReceivableDTO,
 } from '../../../../generated_services';
+import { TransactionType } from '../../../../generated_services/model/transactionType';
 import { NotificationService } from '../../../../services/notification.service';
 import { extractErrorMessage } from '../../../../utils/error.utils';
 import { SubnavService } from '../../../../services/subnav.service';
 import { UpdateStudentComponent } from '../update-student/update-student.component';
-import { contractStatusBadge as getContractStatusBadge } from '../../../../shared/status-badge';
+import { contractStatusBadge as getContractStatusBadge, feeStatusBadge as getFeeStatusBadge } from '../../../../shared/status-badge';
+import { GenerateChargeComponent } from '../../accounts-receivable/generate-charge/generate-charge.component';
+import { ViewChargeComponent } from '../../accounts-receivable/view-charge/view-charge.component';
+import { PaymentWithMoneyComponent } from '../../accounts-receivable/payment-with-money/payment-with-money.component';
 
 @Component({
   selector: 'app-detail-student',
   standalone: true,
-  imports: [DatePipe, CurrencyPipe, UpdateStudentComponent],
+  imports: [DatePipe, CurrencyPipe, UpdateStudentComponent, GenerateChargeComponent, ViewChargeComponent, PaymentWithMoneyComponent],
   templateUrl: './detail-student.component.html',
   styleUrl: './detail-student.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -32,6 +39,7 @@ export class DetailStudentComponent implements OnInit {
   private readonly studentsService = inject(StudentsService);
   private readonly contractService = inject(ContractService);
   private readonly graduationService = inject(GraduationService);
+  private readonly accountsReceivableService = inject(AccountsReceivableService);
   private readonly notificationService = inject(NotificationService);
   private readonly subnavService = inject(SubnavService);
 
@@ -40,11 +48,18 @@ export class DetailStudentComponent implements OnInit {
   protected readonly student = signal<ShowStudentDTO | null>(null);
   protected readonly contracts = signal<PaginatedResultOfShowContractDTO | null>(null);
   protected readonly graduations = signal<PaginatedResultOfShowGraduationDTO | null>(null);
+  protected readonly fees = signal<PaginatedResultOfShowAccountsReceivableDTO | null>(null);
   protected readonly isLoadingStudent = signal(false);
   protected readonly isLoadingContracts = signal(false);
   protected readonly isLoadingGraduations = signal(false);
+  protected readonly isLoadingFees = signal(false);
   protected readonly photoUrl = signal<string | null>(null);
   protected readonly openedUpdate = signal(false);
+
+  protected readonly openedGenerateCharge = signal(false);
+  protected readonly openedViewCharge = signal(false);
+  protected readonly openedPaymentWithMoney = signal(false);
+  protected readonly selectedFee = signal<ShowAccountsReceivableDTO | null>(null);
 
   protected readonly openedPhotoEditor = signal(false);
   protected readonly photoPreview = signal<string | null>(null);
@@ -57,6 +72,7 @@ export class DetailStudentComponent implements OnInit {
     this.loadStudent();
     this.loadContracts();
     this.loadGraduations();
+    this.loadFees();
   }
 
   protected loadStudent(): void {
@@ -186,6 +202,78 @@ export class DetailStudentComponent implements OnInit {
           this.isLoadingGraduations.set(false);
         },
       });
+  }
+
+  protected loadFees(): void {
+    this.isLoadingFees.set(true);
+    this.accountsReceivableService
+      .apiAccountsReceivableStudentStudentIdGet(this.id, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, 1, 50)
+      .subscribe({
+        next: (data) => {
+          this.fees.set(data);
+          this.isLoadingFees.set(false);
+        },
+        error: () => {
+          this.notificationService.showError('Erro', 'Não foi possível carregar as contas a receber do aluno.');
+          this.isLoadingFees.set(false);
+        },
+      });
+  }
+
+  protected feeStatusBadge(status: string | undefined): string {
+    return getFeeStatusBadge(status).cssClass;
+  }
+
+  protected feeStatusLabel(status: string | undefined): string {
+    return getFeeStatusBadge(status).label;
+  }
+
+  protected isChargeable(fee: ShowAccountsReceivableDTO): boolean {
+    // Mirrors AccountsReceivableComponent.isChargeable — same client-side guard against
+    // re-charging an already-charged transaction (see that component for the full rationale).
+    return fee.status === 'Pending'
+      && (fee.type === TransactionType.Income || fee.type === TransactionType.Adjustment)
+      && fee.externalChargeId == null;
+  }
+
+  protected openGenerateCharge(fee: ShowAccountsReceivableDTO): void {
+    this.selectedFee.set(fee);
+    this.openedGenerateCharge.set(true);
+  }
+
+  protected closeGenerateCharge(): void {
+    this.openedGenerateCharge.set(false);
+    this.selectedFee.set(null);
+  }
+
+  protected onChargeGenerated(): void {
+    this.loadFees();
+  }
+
+  protected openViewCharge(fee: ShowAccountsReceivableDTO): void {
+    this.selectedFee.set(fee);
+    this.openedViewCharge.set(true);
+  }
+
+  protected closeViewCharge(): void {
+    this.openedViewCharge.set(false);
+    this.selectedFee.set(null);
+  }
+
+  protected openPaymentWithMoney(fee: ShowAccountsReceivableDTO): void {
+    this.selectedFee.set(fee);
+    this.openedPaymentWithMoney.set(true);
+  }
+
+  protected onPaymentWithMoney(): void {
+    this.openedPaymentWithMoney.set(false);
+    this.selectedFee.set(null);
+    this.loadFees();
+  }
+
+  protected closePaymentWithMoney(): void {
+    this.openedPaymentWithMoney.set(false);
+    this.selectedFee.set(null);
   }
 
   protected openUpdate(): void {

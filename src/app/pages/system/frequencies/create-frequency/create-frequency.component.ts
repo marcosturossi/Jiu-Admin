@@ -235,7 +235,7 @@ export class CreateFrequencyComponent {
       return;
     }
     this.isCreating.set(true);
-    const lessonId = this.frequencyForm.get('lessonId')?.value!;
+    const lessonId = this.frequencyForm.get('lessonId')!.value;
     const requests: Observable<any>[] = this.getSelectedStudents().map(student =>
       this.frequencyService.apiFrequencyPost({ studentId: student.id!, lessonId } as CreateFrequencyDTO)
     );

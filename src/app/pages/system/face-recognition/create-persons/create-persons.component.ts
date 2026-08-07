@@ -89,7 +89,7 @@ export class CreatePersonsComponent {
       }
       return;
     }
-    const studentId = this.personForm.get('studentId')?.value!;
+    const studentId = this.personForm.get('studentId')?.value;
     const images = this.selectedFiles();
     if (!studentId || !images.length) {
       this.ns.showError('Campos Obrigatórios', 'Preencha todos os campos obrigatórios.'); return;
