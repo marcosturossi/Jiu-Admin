@@ -71,7 +71,7 @@ export const NAV_SECTIONS: NavSection[] = [
     items: [
       { route: '/system/academy-profile', label: 'Dados da Academia', icon: 'bi bi-building' },
       { route: '/system/payment-settings', label: 'Pagamentos', icon: 'bi bi-credit-card', adminOnly: true },
-      { route: '/system/scheduled-jobs', label: 'Rotinas Agendadas', icon: 'bi bi-clock-history' },
+      { route: '/system/scheduled-jobs', label: 'Rotinas Agendadas', icon: 'bi bi-clock-history', adminOnly: true },
     ]
   },
 ];

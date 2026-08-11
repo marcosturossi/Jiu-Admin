@@ -72,7 +72,7 @@ export const routes: Routes = [
       { path: 'academy-profile', component: AcademyProfileComponent },
       { path: 'change-password', component: ChangePasswordComponent },
       { path: 'payment-settings', component: PaymentSettingsComponent, canActivate: [TenantAdminGuard] },
-      { path: 'scheduled-jobs', component: ScheduledJobsComponent },
+      { path: 'scheduled-jobs', component: ScheduledJobsComponent, canActivate: [TenantAdminGuard] },
     ]
   }
 ];
