@@ -92,6 +92,33 @@ describe('LessonSchedulesComponent', () => {
     expect((component as any).dayOfWeekLabel(DayOfWeek.Monday)).toBe('Segunda-feira');
   });
 
+  describe('view mode', () => {
+    it('should default to table view', () => {
+      expect((component as any).viewMode()).toBe('table');
+    });
+
+    it('should switch to week view and reload with a single large page instead of pagination', () => {
+      lessonScheduleService.apiLessonScheduleGet.calls.reset();
+      (component as any).setViewMode('week');
+      expect((component as any).viewMode()).toBe('week');
+      expect(lessonScheduleService.apiLessonScheduleGet).toHaveBeenCalledWith(undefined, undefined, 1, 100);
+      expect((component as any).items().items.length).toBe(25);
+    });
+
+    it('should not reload when setting the view mode to the mode already active', () => {
+      lessonScheduleService.apiLessonScheduleGet.calls.reset();
+      (component as any).setViewMode('table');
+      expect(lessonScheduleService.apiLessonScheduleGet).not.toHaveBeenCalled();
+    });
+
+    it('should go back to normal pagination when switching back to table view', () => {
+      (component as any).setViewMode('week');
+      lessonScheduleService.apiLessonScheduleGet.calls.reset();
+      (component as any).setViewMode('table');
+      expect(lessonScheduleService.apiLessonScheduleGet).toHaveBeenCalledWith(undefined, undefined, 1, 10);
+    });
+  });
+
   describe('delete', () => {
     beforeEach(() => {
       confirmService.confirm.and.returnValue(Promise.resolve(true));

@@ -3,7 +3,8 @@ import { Router, RouterModule, NavigationEnd } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { filter } from 'rxjs/operators';
-import { NAV_SECTIONS, NavSection } from '../nav-config';
+import { NAV_SECTIONS, NavItem, NavSection } from '../nav-config';
+import { AuthServiceService } from '../../services/auth-service.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -15,6 +16,7 @@ import { NAV_SECTIONS, NavSection } from '../nav-config';
 })
 export class SidebarComponent implements OnInit, OnDestroy {
   private readonly router = inject(Router);
+  private readonly authService = inject(AuthServiceService);
   protected readonly sidebarExpanded = signal(false);
   protected readonly openSections = signal<Set<string>>(new Set());
 
@@ -66,6 +68,10 @@ export class SidebarComponent implements OnInit, OnDestroy {
 
   protected isActive(route: string): boolean {
     return this.router.url.startsWith(route);
+  }
+
+  protected isVisible(item: NavItem): boolean {
+    return !item.adminOnly || this.authService.isTenantAdmin();
   }
 
   protected navigate(route: string): void {

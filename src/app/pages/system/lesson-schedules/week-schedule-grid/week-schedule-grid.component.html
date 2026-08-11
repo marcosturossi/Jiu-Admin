@@ -1,0 +1,48 @@
+@if (schedules().length === 0) {
+  <div class="surface-card">
+    <div class="empty-state py-5">
+      <i class="bi bi-calendar-week empty-icon"></i>
+      <p class="empty-text">Nenhum horário cadastrado.</p>
+    </div>
+  </div>
+} @else {
+  <div class="surface-card week-grid-wrapper">
+    <div class="week-grid">
+      <div class="week-grid__time-header"></div>
+      @for (day of days; track day.value) {
+        <div class="week-grid__day-header">{{ day.label }}</div>
+      }
+
+      <div class="week-grid__time-axis" [style.height.px]="gridHeight()">
+        @for (mark of hourMarks(); track mark.hour) {
+          <span class="week-grid__hour-label" [style.top.px]="mark.offsetPx">
+            {{ mark.hour.toString().padStart(2, '0') }}:00
+          </span>
+        }
+      </div>
+      @for (day of days; track day.value) {
+        <div class="week-grid__day-column" [style.height.px]="gridHeight()">
+          @for (mark of hourMarks(); track mark.hour) {
+            <div class="week-grid__hour-line" [style.top.px]="mark.offsetPx"></div>
+          }
+          @for (evt of eventsFor(day.value); track evt.schedule.id) {
+            <button
+              type="button"
+              class="week-grid__event"
+              [class]="evt.colorClass"
+              [class.week-grid__event--inactive]="evt.schedule.isActive === false"
+              [style.top.px]="evt.top"
+              [style.height.px]="evt.height"
+              [style.left]="(100 / evt.columnCount) * evt.columnIndex + '%'"
+              [style.width]="100 / evt.columnCount + '%'"
+              (click)="onEventClick(evt.schedule)"
+              [title]="evt.schedule.title + ' — ' + formatTime(evt.schedule.startTime)">
+              <span class="week-grid__event-title">{{ evt.schedule.title }}</span>
+              <span class="week-grid__event-time">{{ formatTime(evt.schedule.startTime) }}</span>
+            </button>
+          }
+        </div>
+      }
+    </div>
+  </div>
+}

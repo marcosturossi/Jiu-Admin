@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { SystemComponent } from "./system.component";
 import { RouterModule, Routes } from "@angular/router";
 import { AuthGuard } from "../../guard/auth.guard";
+import { TenantAdminGuard } from "../../guard/tenant-admin.guard";
 import { HomeComponent } from "./home/home.component";
 import { StudentsComponent } from './students/students.component';
 import { LessonsComponent } from './lessons/lessons.component';
@@ -70,7 +71,7 @@ export const routes: Routes = [
       { path: 'academies', component: AcademiesComponent },
       { path: 'academy-profile', component: AcademyProfileComponent },
       { path: 'change-password', component: ChangePasswordComponent },
-      { path: 'payment-settings', component: PaymentSettingsComponent },
+      { path: 'payment-settings', component: PaymentSettingsComponent, canActivate: [TenantAdminGuard] },
       { path: 'scheduled-jobs', component: ScheduledJobsComponent },
     ]
   }

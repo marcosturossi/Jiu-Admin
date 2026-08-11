@@ -2,6 +2,9 @@ export interface NavItem {
   route: string;
   label: string;
   icon: string;
+  /** Hidden from the sidebar unless AuthServiceService.isTenantAdmin() — see tenant-admin.guard.ts,
+   *  the route-level counterpart that also blocks direct navigation. */
+  adminOnly?: boolean;
 }
 
 export interface NavSection {
@@ -67,7 +70,7 @@ export const NAV_SECTIONS: NavSection[] = [
     groupIcon: 'bi bi-gear',
     items: [
       { route: '/system/academy-profile', label: 'Dados da Academia', icon: 'bi bi-building' },
-      { route: '/system/payment-settings', label: 'Pagamentos', icon: 'bi bi-credit-card' },
+      { route: '/system/payment-settings', label: 'Pagamentos', icon: 'bi bi-credit-card', adminOnly: true },
       { route: '/system/scheduled-jobs', label: 'Rotinas Agendadas', icon: 'bi bi-clock-history' },
     ]
   },

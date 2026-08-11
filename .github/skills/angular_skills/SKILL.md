@@ -1,16 +1,19 @@
 ---
 name: angular-skills
-description: Angular 19 architecture and coding practices for the Jiu-Admin project. Use this skill when implementing, reviewing, or refactoring Angular code to ensure consistency with signals, standalone components, Bootstrap 5, ng-bootstrap, and the existing project conventions.
+description: Angular 20 architecture and coding practices for the Jiu-Admin project. Use this skill when implementing, reviewing, or refactoring Angular code to ensure consistency with signals, standalone components, Bootstrap 5, ng-bootstrap, and the existing project conventions.
 ---
 
-# Copilot Skills & Coding Guidelines
+# Angular Coding Guidelines
 
 This document defines the conventions, patterns, and guidelines for AI-assisted development
 in the **Jiu-Admin** project. Follow these rules when generating or reviewing code.
 
+Mirrored at `.github/skills/angular_skills/SKILL.md` for GitHub Copilot — keep both in sync when
+either changes.
+
 ---
 
-## Angular 19 Conventions
+## Angular 20 Conventions
 
 ### Standalone components (always)
 
@@ -117,6 +120,11 @@ Signals update the view automatically — no `markForCheck()` needed.
 ## Bootstrap 5 Patterns
 
 ### Tables
+
+This is the common pattern for most list pages (e.g. `belts.component.html`) — but not
+universal: `students.component.html` itself renders a card grid (`.students-grid` /
+`.student-card`) instead of a table, since photos matter more there. Pick whichever fits the
+data; don't force a table where a grid reads better.
 
 ```html
 @if (isLoading()) {
@@ -252,6 +260,7 @@ Use Bootstrap Icons (`bi bi-*`). Common icons:
 | Users | `bi bi-people` |
 | Calendar | `bi bi-calendar3` |
 | File | `bi bi-file-earmark-text` |
+| Preview | `bi bi-eye` |
 | Arrow right | `bi bi-arrow-right` |
 | Filter | `bi bi-funnel` |
 
@@ -259,7 +268,7 @@ Use Bootstrap Icons (`bi bi-*`). Common icons:
 
 ## Notification Service
 
-Always use `NotificationService` (wrapper around PrimeNG `MessageService`):
+Always use `NotificationService` (wrapper around `ngx-toastr`):
 
 ```ts
 private readonly notify = inject(NotificationService);
@@ -292,33 +301,41 @@ students/
     update-student.component.ts  ← form for editing, input() for selected item
     update-student.component.html
     update-student.component.scss
+  detail-student/                ← optional: a full detail/profile sub-page (own route via
+    detail-student.component.ts    RouterOutlet on the parent), not a modal — used when an item
+    ...                             has enough content to warrant its own page instead of a dialog
 ```
 
-**List component signals:**
+**List component signals** (`students.component.ts:41-61` is the reference example):
 
 ```ts
 protected readonly isLoading    = signal(false);
-protected readonly items        = signal<PaginationDTO | null>(null);
+protected readonly items        = signal<PageResult<ItemDTO> | null>(null); // { items, totalCount, totalPages } — src/app/utils/page-result.ts
 protected readonly openedCreate = signal(false);
 protected readonly openedUpdate = signal(false);
 protected readonly selected     = signal<ItemDTO | null>(null);
 protected readonly currentPage  = signal(1);
 protected readonly pageSize     = signal(10);
-protected readonly filterText   = signal('');
+protected readonly filterText   = signal<string | undefined>(undefined);
+protected readonly filterFields: FilterField[] = [ /* see Filter Component below */ ];
 ```
+
+There is no `PaginationDTO` type anywhere in the codebase — list responses are `PageResult<T>`.
 
 ---
 
 ## Subnav (Page Title)
 
-Call `setTitle()` in every page component's `ngOnInit`:
+Call `setTitle()` in every page component. The **constructor** is actually the more common
+place for it in this codebase (most page components don't otherwise need `ngOnInit`) — use
+`ngOnInit` only if the component already has one for other setup:
 
 ```ts
 private readonly subnavService = inject(SubnavService);
 
-ngOnInit(): void {
+constructor() {
   this.subnavService.setTitle('Alunos');
-  this.loadItems();
+  this.load();
 }
 ```
 
@@ -329,12 +346,15 @@ ngOnInit(): void {
 ```html
 <app-pagination
   [currentPage]="currentPage()"
-  [totalPages]="items()?.totalPages ?? 0"
+  [totalPages]="items()?.totalPages ?? 1"
   [pageSize]="pageSize()"
-  [totalItems]="items()?.totalItems ?? 0"
+  [totalItems]="items()?.totalCount ?? 0"
   (pageChange)="onPageChange($event)"
   (pageSizeChange)="onPageSizeChange($event)" />
 ```
+
+Note the field-name mismatch: `PageResult<T>` calls it `totalCount`, but `PaginationComponent`'s
+input is named `totalItems` — map `totalCount` → `[totalItems]`, don't assume the names line up.
 
 ```ts
 protected onPageChange(page: number): void {
@@ -353,12 +373,39 @@ protected onPageSizeChange(size: number): void {
 
 ## Filter Component
 
+`FilterComponent` (`src/app/shared/filter/filter.component.ts`) is a debounced text search plus
+an optional "advanced filter" condition-builder modal — not a plain text-only filter. It takes a
+`placeholder` string and a `fields: FilterField[]` describing which columns can be filtered, and
+emits one `filterChange` event carrying both the free-text search and any structured conditions:
+
 ```html
 <app-filter
-  [filterText]="filterText()"
-  (filterChange)="onFilter($event)"
-  (filterReset)="onFilterReset()" />
+  [placeholder]="'Buscar por nome...'"
+  [fields]="filterFields"
+  (filterChange)="onFilterChange($event)" />
 ```
+
+```ts
+import { FilterField, FilterOutput } from '../../../shared/filter/filter.types';
+
+protected readonly filterFields: FilterField[] = [
+  { key: 'isActive', label: 'Status', type: 'select', options: [
+    { value: 'true', label: 'Ativo' },
+    { value: 'false', label: 'Inativo' },
+  ] },
+];
+
+protected onFilterChange(output: FilterOutput): void {
+  this.filterText.set(output.text || undefined);
+  this.currentPage.set(1);
+  this.load();
+}
+```
+
+`FilterField.type` is `'text' | 'number' | 'date' | 'select'` — each type gets its own set of
+operators (contains/equals for text, comparison operators for number/date) defined in
+`filter.types.ts`. There is no `[filterText]` input or `(filterReset)` output — those don't
+exist on the real component.
 
 ---
 
@@ -366,27 +413,50 @@ protected onPageSizeChange(size: number): void {
 
 ### Reading user info
 
+Don't call `inject(Keycloak)` directly in feature code — go through `AuthServiceService`
+(`src/app/services/auth-service.service.ts`), which wraps the raw Keycloak instance:
+
 ```ts
-private readonly keycloak = inject(Keycloak);
+private readonly authService = inject(AuthServiceService);
 
-// Username
-const username = this.keycloak.tokenParsed?.['preferred_username'];
-
-// Check role
-const isAdmin = this.keycloak.hasRealmRole('manage-users');
-
-// Logout
-this.keycloak.logout({ redirectUri: window.location.origin });
+this.authService.isLoggedIn();               // boolean
+this.authService.getUsernameFromToken();      // string | null, from preferred_username
+this.authService.getRoles();                  // realm + resource roles, deduped
+this.authService.hasRole('some-role');
+this.authService.hasAnyRole(['role-a', 'role-b']);
+this.authService.isTenantAdmin();             // true if the token's `groups` claim includes `/admin`
+                                               // — mirrors the backend's ITenantContext.IsAdmin
+await this.authService.logout();
 ```
 
 ### AuthGuard
 
-`AuthGuard` extends `createAuthGuard()` from `keycloak-angular` and requires both
-`manage-realm` and `manage-users` realm roles. Apply it to protected routes:
+`AuthGuard` (`src/app/guard/auth.guard.ts`) is built with `createAuthGuard()` from
+`keycloak-angular`. It only checks that the user is **authenticated** — it does not require any
+specific realm/resource role. (`manage-realm`/`manage-users` show up only in
+`auth-service.service.spec.ts` test fixtures, not in any real guard — don't reintroduce that as
+a real requirement without checking first.)
 
 ```ts
 { path: 'students', component: StudentsComponent, canActivate: [AuthGuard] }
 ```
+
+### TenantAdminGuard
+
+For pages that must be admin-only (e.g. payment settings), use `TenantAdminGuard`
+(`src/app/guard/tenant-admin.guard.ts`) — a functional guard that calls
+`authService.isTenantAdmin()` and redirects to `/system/home` on failure. This is the frontend
+counterpart to the backend's `TenantAdmin` authorization policy; use both together when adding a
+new admin-only feature (backend policy + frontend guard), not just one:
+
+```ts
+{ path: 'payment-settings', component: PaymentSettingsComponent, canActivate: [TenantAdminGuard] }
+```
+
+Sidebar entries also need to be hidden for non-admins, not just route-guarded — add
+`adminOnly: true` to the `NavItem` in `src/app/shared/nav-config.ts`; `SidebarComponent` filters
+those out via `isVisible(item)` in both its expanded and collapsed rendering (`sidebar.component.html`
+has two separate `@for` loops — remember to gate both).
 
 ---
 
@@ -417,20 +487,41 @@ loadStudents(): void {
 }
 ```
 
+The generator occasionally emits a bogus `import { Null } from './null';` in a model file when a
+DTO has a nullable `Dictionary<string,string>?`-shaped property. There's no `null.ts` file, so it's
+a dead import — delete the line manually after regenerating (this is the one accepted exception to
+"never edit generated_services by hand").
+
 ---
 
 ## Layout & Styling
 
-- **CSS Grid** for page layouts (not Bootstrap rows/cols)
-- **CSS custom properties** for brand colors (defined in `styles.scss`):
+- **CSS Grid** for page layouts (not Bootstrap `row`/`col-*` utility classes) — Bootstrap 5
+  components (buttons, modals, tables, badges, forms — see above) are still used everywhere else.
+- **CSS custom properties** for brand colors (`:root` block, `src/styles.scss:7-26`):
   - `--brand-sidebar-bg: #1a1f37` — dark navy sidebar
-  - `--brand-sidebar-text: #a8b5d8`
-  - `--brand-sidebar-active: #4a90d9`
-  - `--brand-primary: #3f51b5`
-  - `--brand-surface: #ffffff`
+  - `--brand-sidebar-text: #ced4da`
+  - `--brand-sidebar-active: #2e3759`
+  - `--brand-sidebar-accent: #5c8df5`
+  - `--brand-primary: #383838`
+  - `--brand-surface: #fbfdff`
+  - `--brand-bg: #f3f6f9`, `--brand-text: #101434`, `--brand-muted: #6c757d`, `--brand-border: #e9ecef`
+  - `--brand-danger` / `--brand-success` / `--brand-warning` / `--brand-info` — standard semantic colors
+  - Every one of these (plus several `--bs-*` overrides) gets redefined in the `:root.dark-mode` block right below (`styles.scss:29-` onward) — see "Dark mode" below before assuming a color is static.
 - **Per-component SCSS** (`.component.scss`) for component-specific styles
-- **No Bootstrap classes** anywhere (fully removed)
 - **No inline styles** in templates — use component SCSS or global CSS tokens
+
+### Dark mode
+
+Theme switching is custom (`ThemeService`, `src/app/services/theme.service.ts`) — it toggles a
+`.dark-mode` class + `data-theme` attribute on `<html>`, **not** Bootstrap's own `data-bs-theme`
+mechanism. This means Bootstrap components only look right in dark mode for the specific
+`--bs-*` CSS variables that have been explicitly overridden inside the `:root.dark-mode { ... }`
+block in `src/styles.scss`. If a Bootstrap class looks wrong in dark mode (e.g. `.form-text`
+staying light-colored), the fix is almost always a missing `--bs-*` variable override in that
+block, not a per-component style — check which Bootstrap CSS variable the class actually reads
+(inspect the Bootstrap source or computed style) and add it next to the existing
+`--bs-body-color`/`--bs-secondary-color` overrides there.
 
 ---
 
@@ -441,10 +532,11 @@ loadStudents(): void {
 - ❌ Do not inject via constructor — use `inject()`
 - ❌ Do not use PrimeNG components (`p-table`, `p-button`, `p-dialog`, etc.)
 - ❌ Do not call `ToastrService` directly from components — use `NotificationService`
-- ❌ Do not edit `src/app/generated_services/` manually
+- ❌ Do not edit `src/app/generated_services/` manually (except deleting the stray `Null` import above)
 - ❌ Do not create components without `changeDetection: ChangeDetectionStrategy.OnPush`
 - ❌ Do not use `alert()` or `console.log()` for user feedback
 - ❌ Do not write user-facing text in English — use Brazilian Portuguese
+- ❌ Do not use Bootstrap `row`/`col-*` grid classes for page layout — use CSS Grid
 
 ---
 
@@ -468,4 +560,3 @@ Either (a) fix the implementation so the test still passes, or (b) update the te
 - Always provide `provideHttpClient()` when the component or service makes HTTP calls
 - Use `fixture.componentRef.setInput('inputName', value)` before `detectChanges()` for required `input()` signals (avoids NG0950)
 - Use `jasmine.createSpyObj` to mock services; provide them via `{ provide: ServiceClass, useValue: spy }`
-- Extract `window.location.href` assignments into a protected method so tests can spy on them without triggering real navigation
