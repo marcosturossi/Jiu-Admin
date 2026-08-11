@@ -24,6 +24,11 @@
         </div>
 
         @if (isAsaasSelected()) {
+          @if (credentialsLocked()) {
+            <div class="alert alert-warning" role="alert">
+              <i class="bi bi-lock-fill me-1"></i>Credenciais bloqueadas — a chave de API e o ambiente não podem mais ser alterados por este formulário (isso acontece automaticamente após a primeira cobrança em produção, ou manualmente). O segredo do webhook ainda pode ser atualizado.
+            </div>
+          }
           <div class="row">
             <div class="col-md-8 mb-3">
               <label for="asaasApiKey" class="form-label">Chave de API (Asaas) <span class="text-danger">*</span></label>
@@ -102,6 +107,16 @@
         }
 
         <div class="d-flex justify-content-end gap-2 mt-3">
+          @if (isAsaasSelected() && hasCredentialsConfigured() && !credentialsLocked()) {
+            <button type="button" class="btn btn-outline-secondary" [disabled]="isLocking()" (click)="lockCredentials()" title="Impede que a chave de API seja alterada por qualquer pessoa a partir de agora">
+              @if (isLocking()) {
+                <span class="spinner-border spinner-border-sm me-1" role="status"></span>
+              } @else {
+                <i class="bi bi-lock me-1"></i>
+              }
+              Bloquear Credenciais
+            </button>
+          }
           @if (isAsaasSelected()) {
             <button type="button" class="btn btn-outline-secondary" [disabled]="isTesting()" (click)="testConnection()">
               @if (isTesting()) {

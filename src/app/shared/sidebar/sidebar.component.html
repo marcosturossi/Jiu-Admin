@@ -12,17 +12,19 @@
           </button>
           <div class="sidebar-section-items" [class.open]="isSectionOpen(section.title)">
             @for (item of section.items; track item.route) {
-              <a
-                class="sidebar-link"
-                [class.active]="isActive(item.route)"
-                (click)="navigate(item.route)"
-                role="button"
-                tabindex="0"
-                (keydown.enter)="navigate(item.route)"
-              >
-                <i [class]="item.icon" class="sidebar-icon"></i>
-                <span class="sidebar-label">{{ item.label }}</span>
-              </a>
+              @if (isVisible(item)) {
+                <a
+                  class="sidebar-link"
+                  [class.active]="isActive(item.route)"
+                  (click)="navigate(item.route)"
+                  role="button"
+                  tabindex="0"
+                  (keydown.enter)="navigate(item.route)"
+                >
+                  <i [class]="item.icon" class="sidebar-icon"></i>
+                  <span class="sidebar-label">{{ item.label }}</span>
+                </a>
+              }
             }
           </div>
         </div>
@@ -31,17 +33,19 @@
       @for (section of sections; track section.title) {
         <div class="sidebar-section-collapsed">
           @for (item of section.items; track item.route) {
-            <a
-              class="sidebar-link"
-              [class.active]="isActive(item.route)"
-              (click)="navigate(item.route)"
-              [attr.title]="item.label"
-              role="button"
-              tabindex="0"
-              (keydown.enter)="navigate(item.route)"
-            >
-              <i [class]="item.icon" class="sidebar-icon"></i>
-            </a>
+            @if (isVisible(item)) {
+              <a
+                class="sidebar-link"
+                [class.active]="isActive(item.route)"
+                (click)="navigate(item.route)"
+                [attr.title]="item.label"
+                role="button"
+                tabindex="0"
+                (keydown.enter)="navigate(item.route)"
+              >
+                <i [class]="item.icon" class="sidebar-icon"></i>
+              </a>
+            }
           }
         </div>
       }

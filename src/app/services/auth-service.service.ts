@@ -30,6 +30,13 @@ export class AuthServiceService {
     return roles.some(r => this.hasRole(r));
   }
 
+  /** Mirrors the backend's ITenantContext.IsAdmin — true when the Keycloak token's `groups`
+   *  claim includes `/admin` (an academy admin, not the platform-wide `/api/admin` superadmin). */
+  isTenantAdmin(): boolean {
+    const groups = (this.keycloak.tokenParsed?.['groups'] as string[] | undefined) ?? [];
+    return groups.includes('/admin');
+  }
+
   async logout(): Promise<void> {
     await this.keycloak.logout({ redirectUri: window.location.origin });
   }

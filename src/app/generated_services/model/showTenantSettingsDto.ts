@@ -10,10 +10,11 @@
  */
 
 
-export interface ShowTenantSettingsDto { 
+export interface ShowTenantSettingsDto {
     paymentGateway: string | null;
     hasCredentialsConfigured: boolean;
     webhookSecret: string | null;
     environment: string | null;
+    credentialsLocked: boolean;
 }
 

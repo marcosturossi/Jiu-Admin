@@ -34,11 +34,17 @@ export interface TenantSettingsServiceInterface {
     apiSettingsGet(extraHttpRequestParams?: any): Observable<ShowTenantSettingsDto>;
 
     /**
-     * 
-     * 
-     * @param upsertTenantSettingsDto 
+     *
+     *
+     * @param upsertTenantSettingsDto
      */
     apiSettingsPatch(upsertTenantSettingsDto: UpsertTenantSettingsDto, extraHttpRequestParams?: any): Observable<ShowTenantSettingsDto>;
+
+    /**
+     *
+     *
+     */
+    apiSettingsLockCredentialsPost(extraHttpRequestParams?: any): Observable<any>;
 
     /**
      * 

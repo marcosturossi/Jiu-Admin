@@ -30,6 +30,7 @@ export class PaymentSettingsComponent implements OnInit {
   protected readonly isLoading = signal(false);
   protected readonly isSaving = signal(false);
   protected readonly isTesting = signal(false);
+  protected readonly isLocking = signal(false);
   protected readonly showApiKey = signal(false);
   protected readonly showWebhookSecret = signal(false);
   protected readonly testResult = signal<{ success: boolean; error: string | null } | null>(null);
@@ -37,6 +38,11 @@ export class PaymentSettingsComponent implements OnInit {
   /** The backend never returns the real API key (write-only, stored as an opaque encrypted
    *  blob) — this just tells the admin a credential is already on file. */
   protected readonly hasCredentialsConfigured = signal(false);
+
+  /** Once locked (automatically after the first production charge, or manually below), the API
+   *  key/environment can no longer be changed via this form — see CredentialsLockedAt on the
+   *  backend. The webhook secret can still be rotated even while locked. */
+  protected readonly credentialsLocked = signal(false);
 
   /** Matches PaymentWebhookController's route (`api/public/webhooks/{provider}`) — this is what
    *  the admin pastes into Asaas' own webhook configuration screen. */
@@ -85,6 +91,7 @@ export class PaymentSettingsComponent implements OnInit {
     this.tenantSettingsService.apiSettingsGet().subscribe({
       next: (settings) => {
         this.hasCredentialsConfigured.set(settings.hasCredentialsConfigured ?? false);
+        this.applyCredentialsLockState(settings.credentialsLocked ?? false);
         this.form.patchValue({
           paymentGateway: settings.paymentGateway ?? NONE_PROVIDER_VALUE,
           webhookSecret: settings.webhookSecret ?? '',
@@ -101,6 +108,23 @@ export class PaymentSettingsComponent implements OnInit {
         this.notificationService.showError('Erro de Carregamento', extractErrorMessage(err, 'Não foi possível carregar as configurações de pagamento.'));
       },
     });
+  }
+
+  /** Disables the API key/environment fields once credentials are locked — matches the backend
+   *  rejecting any Credentials change (409) once TenantSettings.CredentialsLockedAt is set. The
+   *  webhook secret field stays editable, since rotating it is still allowed while locked. */
+  private applyCredentialsLockState(locked: boolean): void {
+    this.credentialsLocked.set(locked);
+    const apiKeyControl = this.form.get('asaasApiKey');
+    const environmentControl = this.form.get('asaasEnvironment');
+    if (locked) {
+      apiKeyControl?.disable();
+      environmentControl?.disable();
+    } else {
+      apiKeyControl?.enable();
+      environmentControl?.enable();
+      this.updateAsaasKeyValidator(this.form.value.paymentGateway ?? NONE_PROVIDER_VALUE);
+    }
   }
 
   protected toggleApiKeyVisibility(): void {
@@ -172,6 +196,7 @@ export class PaymentSettingsComponent implements OnInit {
       next: (settings) => {
         this.isSaving.set(false);
         this.hasCredentialsConfigured.set(settings.hasCredentialsConfigured ?? false);
+        this.applyCredentialsLockState(settings.credentialsLocked ?? false);
         this.form.patchValue({
           asaasApiKey: '',
           webhookSecret: settings.webhookSecret ?? '',
@@ -183,6 +208,24 @@ export class PaymentSettingsComponent implements OnInit {
       error: (err) => {
         this.isSaving.set(false);
         this.notificationService.showError('Erro ao Salvar', extractErrorMessage(err, 'Não foi possível salvar as configurações de pagamento. Tente novamente.'));
+      },
+    });
+  }
+
+  /** Lets an admin lock credentials proactively instead of waiting for the automatic lock on the
+   *  first production charge. One-way — there is no unlock button, matching the backend. */
+  protected lockCredentials(): void {
+    this.isLocking.set(true);
+    this.tenantSettingsService.apiSettingsLockCredentialsPost().subscribe({
+      next: () => {
+        this.isLocking.set(false);
+        this.applyCredentialsLockState(true);
+        this.form.patchValue({ asaasApiKey: '' });
+        this.notificationService.showSuccess('Credenciais Bloqueadas', 'A chave de API não poderá mais ser alterada por este formulário.');
+      },
+      error: (err) => {
+        this.isLocking.set(false);
+        this.notificationService.showError('Erro ao Bloquear', extractErrorMessage(err, 'Não foi possível bloquear as credenciais. Tente novamente.'));
       },
     });
   }
@@ -200,10 +243,11 @@ export class PaymentSettingsComponent implements OnInit {
     const paymentGatewayControl = this.form.get('paymentGateway');
     const webhookSecretControl = this.form.get('webhookSecret');
 
-    const credentials = this.isAsaasSelected()
+    const credentials = this.isAsaasSelected() && !this.credentialsLocked()
       ? { apiKey: (v.asaasApiKey ?? '').trim(), environment: v.asaasEnvironment ?? 'Sandbox' }
       // The generated type doesn't reflect that Credentials is nullable server-side (leaving it
-      // untouched when no gateway is selected) — cast needed to send a real `null` over the wire.
+      // untouched when no gateway is selected, or when locked) — cast needed to send a real
+      // `null` over the wire.
       : (null as unknown as Record<string, string>);
 
     return {
