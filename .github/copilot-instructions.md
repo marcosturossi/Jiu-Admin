@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-Admin panel for a Jiu-Jitsu school (Carlson Gracie), built with **Angular 19**. The app communicates with two backends and all user-facing text is in **Brazilian Portuguese**.
+Admin panel for a Jiu-Jitsu school (Carlson Gracie), built with **Angular 20**. The app communicates with two backends and all user-facing text is in **Brazilian Portuguese**.
 
 ## Commands
 
@@ -38,9 +38,10 @@ To run a single test, use `fdescribe` / `fit` in the spec file (Jasmine focused 
 
 ### Authentication
 
-- **Keycloak Authorization Code + PKCE** flow via `keycloak-angular@19`.
+- **Keycloak Authorization Code + PKCE** flow via `keycloak-angular@20`.
 - Bearer token attachment and auto-refresh are handled by `keycloak-angular` — no manual token management.
-- `AuthGuard` uses `createAuthGuard()` from `keycloak-angular` and requires roles `manage-realm` AND `manage-users`.
+- `AuthGuard` uses `createAuthGuard()` from `keycloak-angular` and only checks that the user is authenticated — it does not require any specific realm/resource role.
+- `TenantAdminGuard` (`src/app/guard/tenant-admin.guard.ts`) additionally restricts admin-only pages (e.g. payment settings) via `AuthServiceService.isTenantAdmin()`, which reads the token's `groups` claim for `/admin` — the frontend counterpart to the backend's `TenantAdmin` authorization policy.
 - Unauthenticated users are redirected to Keycloak automatically (no custom login page).
 
 ### Environment
@@ -60,7 +61,7 @@ export const environment = {
 };
 ```
 
-## Angular 19 Conventions
+## Angular 20 Conventions
 
 - **`inject()` only** — never inject via constructor parameters
 - **Signals for all state** — `signal()`, `computed()`, `effect()`
@@ -103,7 +104,8 @@ this.notificationService.showInfo('Título', 'Mensagem.');
 
 ### Page title
 
-Call `this.subnavService.setTitle("Nome da Página")` in `ngOnInit` of every page component.
+Call `this.subnavService.setTitle("Nome da Página")` in every page component — the constructor
+is actually the more common place for it in this codebase, not `ngOnInit`.
 
 ### Create/Update dialog pattern
 
@@ -118,12 +120,14 @@ Use the shared `PaginationComponent`:
 ```html
 <app-pagination
   [currentPage]="currentPage()"
-  [totalPages]="items()?.totalPages ?? 0"
+  [totalPages]="items()?.totalPages ?? 1"
   [pageSize]="pageSize()"
-  [totalItems]="items()?.totalItems ?? 0"
+  [totalItems]="items()?.totalCount ?? 0"
   (pageChange)="onPageChange($event)"
   (pageSizeChange)="onPageSizeChange($event)" />
 ```
+
+(Field-name mismatch: the list response calls it `totalCount`, the component's input is named `totalItems`.)
 
 ### Layout
 
@@ -133,4 +137,5 @@ Use the shared `PaginationComponent`:
 
 ## Full Guidelines
 
-See `.github/skills.md` for detailed component patterns, examples, and do/don't rules.
+See `.github/skills/angular_skills/SKILL.md` for detailed component patterns, examples, and
+do/don't rules (mirrored at `.claude/skills/angular-skills/SKILL.md` — keep both in sync).

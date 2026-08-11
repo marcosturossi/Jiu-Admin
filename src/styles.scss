@@ -50,6 +50,9 @@
   --bs-modal-bg:               #1a202c;
   --bs-modal-border-color:     #374151;
   --bs-body-color:             #e5e7eb;
+  /* Bootstrap's own muted-text variable (used by .form-text, .text-body-secondary, etc.) — left
+     at its light-mode default otherwise, making form help text unreadable in dark mode. */
+  --bs-secondary-color:        var(--brand-muted);
   
   /* Table colors */
   --bs-table-bg:               #1a202c;
