@@ -27,7 +27,7 @@ import { PaymentWithMoneyComponent } from './payment-with-money/payment-with-mon
 import { RefundAccountsReceivableComponent } from './refund-accounts-receivable/refund-accounts-receivable.component';
 import { GenerateChargeComponent } from './generate-charge/generate-charge.component';
 import { ViewChargeComponent } from './view-charge/view-charge.component';
-import { transactionTypeBadge, feeStatusBadge } from '../../../shared/status-badge';
+import { transactionTypeBadge, receivableStatusBadge, BadgeInfo } from '../../../shared/status-badge';
 
 @Component({
   selector: 'app-accounts-receivable',
@@ -183,7 +183,10 @@ export class AccountsReceivableComponent {
   }
 
   protected readonly getTypeBadge = transactionTypeBadge;
-  protected readonly getFeeStatusBadge = feeStatusBadge;
+
+  protected getStatusBadge(item: ShowAccountsReceivableDTO): BadgeInfo {
+    return receivableStatusBadge(item.status, item.externalChargeId);
+  }
 
   protected openRefund(item: ShowAccountsReceivableDTO): void {
     this.selectedItem.set(item);
