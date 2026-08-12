@@ -40,6 +40,16 @@ export function feeStatusBadge(status: FeeStatus | string | undefined): BadgeInf
   return FEE_STATUS_BADGES[status as FeeStatus] ?? { cssClass: 'bg-secondary', label: status ?? '—' };
 }
 
+// A charge (cobrança) can be generated for a Pending receivable, but the FeeStatus itself only
+// moves to Paid once the gateway confirms payment — so a generated-but-unpaid charge still reads
+// "Pendente" today. Surface that distinct state instead of the generic Pending badge.
+export function receivableStatusBadge(status: FeeStatus | string | undefined, externalChargeId?: string | null): BadgeInfo {
+  if (status === FeeStatus.Pending && externalChargeId != null) {
+    return { cssClass: 'bg-info text-dark', label: 'Cobrança Gerada' };
+  }
+  return feeStatusBadge(status);
+}
+
 const TRANSACTION_TYPE_BADGES: Record<TransactionType, BadgeInfo> = {
   Income: { cssClass: 'bg-success', label: 'Receita' },
   Expense: { cssClass: 'bg-danger', label: 'Despesa' },

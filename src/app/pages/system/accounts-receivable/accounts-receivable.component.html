@@ -79,7 +79,7 @@
               <td>{{ item.dueDate | date:'dd/MM/yyyy':'UTC' }}</td>
               <td>{{ item.reference || '—' }}</td>
               <td>
-                <span [class]="'badge ' + getFeeStatusBadge(item.status).cssClass">{{ getFeeStatusBadge(item.status).label }}</span>
+                <span [class]="'badge ' + getStatusBadge(item).cssClass">{{ getStatusBadge(item).label }}</span>
               </td>
               <td class="text-center">
                 @if (item.status === "Paid") {
