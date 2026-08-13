@@ -30,11 +30,17 @@ export class AuthServiceService {
     return roles.some(r => this.hasRole(r));
   }
 
-  /** Mirrors the backend's ITenantContext.IsAdmin — true when the Keycloak token's `groups`
-   *  claim includes `/admin` (an academy admin, not the platform-wide `/api/admin` superadmin). */
+  /** Mirrors the backend's ITenantContext.IsAdmin — true when the Keycloak token's realm_access
+   *  roles include "admin" (an academy admin, not the platform-wide /api/admin superadmin).
+   *  Tier lives in roles now, not groups — groups is reserved for tenant membership. */
   isTenantAdmin(): boolean {
-    const groups = (this.keycloak.tokenParsed?.['groups'] as string[] | undefined) ?? [];
-    return groups.includes('/admin');
+    return this.hasRole('admin');
+  }
+
+  /** Mirrors the backend's ITenantContext.IsManager — day-to-day academy operations, but not
+   *  admin-only settings (payment gateway config, scheduler). */
+  isManager(): boolean {
+    return this.hasRole('manager');
   }
 
   async logout(): Promise<void> {
