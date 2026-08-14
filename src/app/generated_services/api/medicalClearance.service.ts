@@ -20,7 +20,7 @@ import { Observable }                                        from 'rxjs';
 // @ts-ignore
 import { ApiFrequencyGetPageParameter } from '../model/apiFrequencyGetPageParameter';
 // @ts-ignore
-import { ApiMedicalClearanceIdAttachmentUrlGetExpiryHoursParameter } from '../model/apiMedicalClearanceIdAttachmentUrlGetExpiryHoursParameter';
+import { ApiSettingsAuditHistoryGetPageParameter } from '../model/apiSettingsAuditHistoryGetPageParameter';
 // @ts-ignore
 import { CreateMedicalClearanceDto } from '../model/createMedicalClearanceDto';
 // @ts-ignore
@@ -616,10 +616,10 @@ export class MedicalClearanceService implements MedicalClearanceServiceInterface
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiMedicalClearanceIdAttachmentUrlGet(id: string, expiryHours?: ApiMedicalClearanceIdAttachmentUrlGetExpiryHoursParameter, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any>;
-    public apiMedicalClearanceIdAttachmentUrlGet(id: string, expiryHours?: ApiMedicalClearanceIdAttachmentUrlGetExpiryHoursParameter, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<any>>;
-    public apiMedicalClearanceIdAttachmentUrlGet(id: string, expiryHours?: ApiMedicalClearanceIdAttachmentUrlGetExpiryHoursParameter, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<any>>;
-    public apiMedicalClearanceIdAttachmentUrlGet(id: string, expiryHours?: ApiMedicalClearanceIdAttachmentUrlGetExpiryHoursParameter, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public apiMedicalClearanceIdAttachmentUrlGet(id: string, expiryHours?: ApiSettingsAuditHistoryGetPageParameter, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any>;
+    public apiMedicalClearanceIdAttachmentUrlGet(id: string, expiryHours?: ApiSettingsAuditHistoryGetPageParameter, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<any>>;
+    public apiMedicalClearanceIdAttachmentUrlGet(id: string, expiryHours?: ApiSettingsAuditHistoryGetPageParameter, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<any>>;
+    public apiMedicalClearanceIdAttachmentUrlGet(id: string, expiryHours?: ApiSettingsAuditHistoryGetPageParameter, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         if (id === null || id === undefined) {
             throw new Error('Required parameter id was null or undefined when calling apiMedicalClearanceIdAttachmentUrlGet.');
         }

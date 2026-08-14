@@ -10,8 +10,6 @@
  */
 
 
-export interface TestPaymentConnectionResultDto { 
-    success: boolean;
-    error: string | null;
+export interface ApiSettingsAuditHistoryGetPageSizeParameter { 
 }
 

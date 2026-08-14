@@ -8,9 +8,14 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { ChargeStatusConfirmedValue } from './chargeStatusConfirmedValue';
 
 
-export interface UpsertTenantSettingsDto { 
+export interface UpsertAcademyPaymentSettingsDto { 
+    asaasWalletId: string;
+    splitType: string;
+    splitPercentualValue: ChargeStatusConfirmedValue | null;
+    splitFixedValue: ChargeStatusConfirmedValue | null;
     defaultBillingType: string | null;
 }
 

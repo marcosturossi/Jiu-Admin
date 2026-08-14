@@ -13,7 +13,7 @@ import { HttpHeaders }                                       from '@angular/comm
 import { Observable }                                        from 'rxjs';
 
 import { ApiFrequencyGetPageParameter } from '../model/models';
-import { ApiMedicalClearanceIdAttachmentUrlGetExpiryHoursParameter } from '../model/models';
+import { ApiSettingsAuditHistoryGetPageParameter } from '../model/models';
 import { CreateMedicalClearanceDto } from '../model/models';
 import { FileResult } from '../model/models';
 import { MedicalClearanceAttachmentResponseDto } from '../model/models';
@@ -100,7 +100,7 @@ export interface MedicalClearanceServiceInterface {
      * @param id 
      * @param expiryHours 
      */
-    apiMedicalClearanceIdAttachmentUrlGet(id: string, expiryHours?: ApiMedicalClearanceIdAttachmentUrlGetExpiryHoursParameter, extraHttpRequestParams?: any): Observable<any>;
+    apiMedicalClearanceIdAttachmentUrlGet(id: string, expiryHours?: ApiSettingsAuditHistoryGetPageParameter, extraHttpRequestParams?: any): Observable<any>;
 
     /**
      * 

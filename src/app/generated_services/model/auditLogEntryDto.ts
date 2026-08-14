@@ -10,7 +10,14 @@
  */
 
 
-export interface UpsertTenantSettingsDto { 
-    defaultBillingType: string | null;
+export interface AuditLogEntryDto { 
+    id: string;
+    entityName: string;
+    entityId: string;
+    action: string;
+    changedByUserId: string | null;
+    changedAt: string;
+    oldValuesJson: string | null;
+    newValuesJson: string | null;
 }
 
