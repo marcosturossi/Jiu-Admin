@@ -102,7 +102,9 @@
                 @if (item.externalChargeId != null) {
                 <button type="button" class="btn btn-sm btn-outline-info me-1" title="Ver Cobrança" (click)="openViewCharge(item)"><i class="bi bi-qr-code"></i></button>
                 }
+                @if (isDeletable(item)) {
                 <button type="button" class="btn btn-sm btn-outline-danger me-1" (click)="delete(item)"><i class="bi bi-trash"></i></button>
+                }
               </td>
             </tr>
           }

@@ -253,6 +253,12 @@ export class AccountsReceivableComponent {
     }
   }
 
+  protected isDeletable(item: ShowAccountsReceivableDTO): boolean {
+    // Once a payment has been received, deleting must not be an option — only a refund can
+    // reverse it. Deleting a paid entry would drop our record while Asaas still shows it paid.
+    return item.status !== 'Paid';
+  }
+
   protected isRefundable(item: ShowAccountsReceivableDTO): boolean {
     // The refund endpoint only reverses gateway-processed charges (backend:
     // "FinancialTransaction ... is not refundable" for anything else) —
