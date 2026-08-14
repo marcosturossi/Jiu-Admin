@@ -1,0 +1,61 @@
+@if (isLoading()) {
+  <div class="d-flex justify-content-center py-5">
+    <div class="spinner-border text-secondary" role="status"><span class="visually-hidden">Carregando...</span></div>
+  </div>
+} @else {
+  <form [formGroup]="form" (ngSubmit)="save()">
+    <div class="mb-3">
+      <label for="asaasWalletId" class="form-label">Carteira Asaas (Wallet ID) <span class="text-danger">*</span></label>
+      <input type="text" id="asaasWalletId" class="form-control" formControlName="asaasWalletId" />
+      <div class="form-text">Identificador da carteira Asaas da academia, usado como destino do split de pagamento. Não é um dado sigiloso.</div>
+      <app-field-error [control]="form.get('asaasWalletId')" />
+    </div>
+
+    <div class="row">
+      <div class="col-md-6 mb-3">
+        <label for="splitType" class="form-label">Tipo de Split <span class="text-danger">*</span></label>
+        <select id="splitType" formControlName="splitType" class="form-select">
+          @for (item of splitTypes; track item.value) {
+            <option [value]="item.value">{{ item.label }}</option>
+          }
+        </select>
+      </div>
+
+      @if (isPercentageSelected()) {
+        <div class="col-md-6 mb-3">
+          <label for="splitPercentualValue" class="form-label">Percentual (%) <span class="text-danger">*</span></label>
+          <input type="number" id="splitPercentualValue" class="form-control" formControlName="splitPercentualValue" step="0.01" min="0" max="100" />
+          <app-field-error [control]="form.get('splitPercentualValue')" />
+        </div>
+      } @else {
+        <div class="col-md-6 mb-3">
+          <label for="splitFixedValue" class="form-label">Valor Fixo (R$) <span class="text-danger">*</span></label>
+          <input type="number" id="splitFixedValue" class="form-control" formControlName="splitFixedValue" step="0.01" min="0" />
+          <app-field-error [control]="form.get('splitFixedValue')" />
+        </div>
+      }
+    </div>
+
+    <div class="mb-3">
+      <label for="defaultBillingType" class="form-label">Forma de Pagamento Padrão</label>
+      <select id="defaultBillingType" formControlName="defaultBillingType" class="form-select">
+        @for (item of billingTypes; track item.value) {
+          <option [value]="item.value">{{ item.label }}</option>
+        }
+      </select>
+      <div class="form-text">Usada quando uma cobrança não especifica uma forma de pagamento e o aluno também não tem uma configurada.</div>
+    </div>
+
+    <div class="d-flex justify-content-end gap-2 mt-3">
+      <button type="button" class="btn btn-outline-secondary" (click)="close()">Cancelar</button>
+      <button type="submit" class="btn btn-primary" [disabled]="isSaving()">
+        @if (isSaving()) {
+          <span class="spinner-border spinner-border-sm me-1" role="status"></span>
+        } @else {
+          <i class="bi bi-check-lg me-1"></i>
+        }
+        Salvar
+      </button>
+    </div>
+  </form>
+}

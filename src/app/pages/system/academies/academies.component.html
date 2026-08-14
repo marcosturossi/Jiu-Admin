@@ -35,7 +35,7 @@
               <th>Slug</th>
               <th class="text-center">Status</th>
               <th>Criado em</th>
-              <th class="text-center" style="width: 8rem">Ações</th>
+              <th class="text-center" style="width: 10rem">Ações</th>
             </tr>
           </thead>
           <tbody>
@@ -62,6 +62,9 @@
                 <td class="text-center">
                   <button type="button" class="btn btn-sm btn-outline-info" (click)="openEdit(academy)" title="Editar">
                     <i class="bi bi-pencil"></i>
+                  </button>
+                  <button type="button" class="btn btn-sm btn-outline-secondary" (click)="openPaymentSettings(academy)" title="Configurações de Pagamento">
+                    <i class="bi bi-credit-card"></i>
                   </button>
                   <button type="button" class="btn btn-sm btn-outline-danger" (click)="delete(academy)" title="Excluir">
                     <i class="bi bi-trash"></i>
@@ -120,6 +123,28 @@
               [academy]="selected()!"
               (closeEvent)="openedUpdate.set(false)"
               (academyUpdated)="onUpdated()"
+            />
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+}
+
+@if (openedPaymentSettings()) {
+  <div class="modal-backdrop-custom" (click)="onPaymentSettingsClosed()"></div>
+  <div class="modal show d-block" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Configurações de Pagamento — {{ selected()?.name }}</h5>
+          <button type="button" class="btn-close" (click)="onPaymentSettingsClosed()" aria-label="Fechar"></button>
+        </div>
+        <div class="modal-body">
+          @if (selected()) {
+            <app-academy-payment-settings
+              [academy]="selected()!"
+              (closeEvent)="onPaymentSettingsClosed()"
             />
           }
         </div>

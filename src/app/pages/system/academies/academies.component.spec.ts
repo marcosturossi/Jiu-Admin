@@ -42,7 +42,11 @@ describe('AcademiesComponent', () => {
     const academySpy = jasmine.createSpyObj('AcademyService', [
       'apiAdminAcademiesGet',
       'apiAdminAcademiesIdDelete',
+      'apiAdminAcademiesIdPaymentSettingsGet',
     ]);
+    academySpy.apiAdminAcademiesIdPaymentSettingsGet.and.returnValue(of({
+      academyId: MOCK_ACADEMY_1.id, asaasWalletId: null, splitType: null, splitPercentualValue: null, splitFixedValue: null,
+    } as any));
     const notifySpy = jasmine.createSpyObj('NotificationService', [
       'showSuccess',
       'showError',
@@ -126,6 +130,26 @@ describe('AcademiesComponent', () => {
         'Erro ao Excluir',
         'Não foi possível excluir a academia. Tente novamente.',
       );
+    });
+  });
+
+  describe('payment settings modal', () => {
+    it('should select the academy and open the modal', () => {
+      (component as any).openPaymentSettings(MOCK_ACADEMY_1);
+      expect((component as any).selected()).toBe(MOCK_ACADEMY_1);
+      expect((component as any).openedPaymentSettings()).toBeTrue();
+    });
+
+    it('should close the modal', () => {
+      (component as any).openedPaymentSettings.set(true);
+      (component as any).onPaymentSettingsClosed();
+      expect((component as any).openedPaymentSettings()).toBeFalse();
+    });
+
+    it('should render the child component and load its settings once opened', () => {
+      (component as any).openPaymentSettings(MOCK_ACADEMY_1);
+      fixture.detectChanges();
+      expect(academyService.apiAdminAcademiesIdPaymentSettingsGet).toHaveBeenCalledWith(MOCK_ACADEMY_1.id!);
     });
   });
 
