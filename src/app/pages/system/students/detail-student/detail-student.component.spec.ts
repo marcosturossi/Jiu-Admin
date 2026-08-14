@@ -101,6 +101,15 @@ describe('DetailStudentComponent', () => {
     expect(component['student']()).toEqual(mockStudent);
   });
 
+  it('should label billing types in Portuguese and fall back to the academy default for null/undefined', () => {
+    expect((component as any).billingTypeLabel('PIX')).toBe('PIX');
+    expect((component as any).billingTypeLabel('BOLETO')).toBe('Boleto');
+    expect((component as any).billingTypeLabel('CREDIT_CARD')).toBe('Cartão de Crédito');
+    expect((component as any).billingTypeLabel('MONEY')).toBe('Dinheiro');
+    expect((component as any).billingTypeLabel(null)).toBe('Padrão da academia');
+    expect((component as any).billingTypeLabel(undefined)).toBe('Padrão da academia');
+  });
+
   it('should show error notification when student load fails', async () => {
     studentsSpy.apiStudentsIdGet.and.returnValue(throwError(() => new Error('server error')));
 

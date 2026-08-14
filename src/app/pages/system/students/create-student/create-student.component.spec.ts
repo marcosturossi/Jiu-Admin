@@ -41,6 +41,28 @@ describe('CreateStudentComponent', () => {
     expect((component as any).form.valid).toBeTrue();
   });
 
+  it('should default defaultBillingType to the academy-default option and send null when saving', () => {
+    studentsService.apiStudentsPost.and.returnValue(of({} as any));
+    expect((component as any).form.value.defaultBillingType).toBe('');
+    (component as any).form.patchValue({
+      userName: 'joao', email: 'joao@test.com', phoneNumber: '11999999999',
+      firstName: 'João', lastName: 'Silva', birthDay: '2000-01-01', cpf: '12345678901',
+    });
+    (component as any).save();
+    expect(studentsService.apiStudentsPost).toHaveBeenCalledWith(jasmine.objectContaining({ defaultBillingType: null }));
+  });
+
+  it('should send the selected defaultBillingType override when saving', () => {
+    studentsService.apiStudentsPost.and.returnValue(of({} as any));
+    (component as any).form.patchValue({
+      userName: 'joao', email: 'joao@test.com', phoneNumber: '11999999999',
+      firstName: 'João', lastName: 'Silva', birthDay: '2000-01-01', cpf: '12345678901',
+      defaultBillingType: 'PIX',
+    });
+    (component as any).save();
+    expect(studentsService.apiStudentsPost).toHaveBeenCalledWith(jasmine.objectContaining({ defaultBillingType: 'PIX' }));
+  });
+
   it('should reject invalid email', () => {
     (component as any).form.patchValue({ userName: 'joao', email: 'not-an-email' });
     expect((component as any).form.get('email')?.errors?.['email']).toBeTruthy();

@@ -37,6 +37,14 @@
         <input id="phoneNumber" type="text" class="form-control" formControlName="phoneNumber"
           placeholder="(00) 00000-0000">
       </div>
+      <div class="col-md-6 mb-3">
+        <label for="defaultBillingType" class="form-label">Forma de Pagamento Padrão</label>
+        <select id="defaultBillingType" class="form-select" formControlName="defaultBillingType">
+          @for (item of billingTypes; track item.value) {
+            <option [value]="item.value">{{ item.label }}</option>
+          }
+        </select>
+      </div>
       <div class="col-md-6 mb-3 d-flex align-items-end pb-1">
         <div class="form-check">
           <input id="isActive" type="checkbox" class="form-check-input" formControlName="isActive">

@@ -236,6 +236,16 @@ export class DetailStudentComponent implements OnInit {
       });
   }
 
+  protected billingTypeLabel(billingType: string | null | undefined): string {
+    switch (billingType) {
+      case 'PIX': return 'PIX';
+      case 'BOLETO': return 'Boleto';
+      case 'CREDIT_CARD': return 'Cartão de Crédito';
+      case 'MONEY': return 'Dinheiro';
+      default: return 'Padrão da academia';
+    }
+  }
+
   protected feeStatusBadge(status: string | undefined): string {
     return getFeeStatusBadge(status).cssClass;
   }
