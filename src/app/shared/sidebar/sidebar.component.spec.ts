@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { SidebarComponent } from './sidebar.component';
 import { Router } from '@angular/router';
 import { EMPTY } from 'rxjs';
+import Keycloak from 'keycloak-js';
 import { NAV_SECTIONS } from '../nav-config';
 
 describe('SidebarComponent', () => {
@@ -12,9 +13,17 @@ describe('SidebarComponent', () => {
   function setup(url = '/system/students'): void {
     routerStub = { url, events: EMPTY, navigate: jasmine.createSpy('navigate') };
 
+    // isVisible() gates adminOnly nav items on AuthServiceService.isTenantAdmin() (realmAccess
+    // roles), which needs a Keycloak instance — the tests below assume every item is visible
+    // (including adminOnly ones like payment-settings), so the stub carries the "admin" role.
+    const keycloakStub: Partial<Keycloak> = { realmAccess: { roles: ['admin'] }, tokenParsed: {} };
+
     TestBed.configureTestingModule({
       imports: [SidebarComponent],
-      providers: [{ provide: Router, useValue: routerStub }],
+      providers: [
+        { provide: Router, useValue: routerStub },
+        { provide: Keycloak, useValue: keycloakStub },
+      ],
     });
 
     fixture = TestBed.createComponent(SidebarComponent);
