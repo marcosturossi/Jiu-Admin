@@ -3,6 +3,7 @@ import { SystemComponent } from "./system.component";
 import { RouterModule, Routes } from "@angular/router";
 import { AuthGuard } from "../../guard/auth.guard";
 import { TenantAdminGuard } from "../../guard/tenant-admin.guard";
+import { SuperAdminHomeRedirectGuard } from "../../guard/superadmin-home-redirect.guard";
 import { HomeComponent } from "./home/home.component";
 import { StudentsComponent } from './students/students.component';
 import { LessonsComponent } from './lessons/lessons.component';
@@ -37,7 +38,7 @@ export const routes: Routes = [
     canActivate: [AuthGuard],
     children: [
       { path: '', redirectTo: 'home', pathMatch: 'full' },
-      { path: 'home', component: HomeComponent },
+      { path: 'home', component: HomeComponent, canActivate: [SuperAdminHomeRedirectGuard] },
       // Acadêmico
       { path: 'student-onboarding', component: StudentOnboardingComponent },
       { path: 'students', component: StudentsComponent},
