@@ -264,7 +264,13 @@ export class AccountsReceivableComponent {
     // "FinancialTransaction ... is not refundable" for anything else) —
     // manual cash payments (payment-with-money) never get an externalChargeId,
     // so the button must stay hidden for those or every click would 400.
-    return item.type === TransactionType.Income && item.status === 'Paid' && item.externalChargeId != null;
+    // Asaas only supports refunding PIX/credit-card charges, not boleto — same restriction as
+    // the backend's RefundAccountsReceivableUseCase (RefundableBillingTypes).
+    const billingType = item.paymentInformation?.billingType;
+    return item.type === TransactionType.Income
+      && item.status === 'Paid'
+      && item.externalChargeId != null
+      && (billingType === 'PIX' || billingType === 'CREDIT_CARD');
   }
 
   protected isPositiveType(type?: number | string): boolean {
