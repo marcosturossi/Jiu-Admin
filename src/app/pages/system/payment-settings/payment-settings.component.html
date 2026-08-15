@@ -6,127 +6,26 @@
   } @else {
     <div class="surface-card settings-card">
       <h5 class="settings-title">
-        <i class="bi bi-credit-card me-2"></i>Gateway de Pagamento
+        <i class="bi bi-credit-card me-2"></i>Forma de Pagamento Padrão
       </h5>
-      <p class="settings-subtitle">Configure o provedor de pagamentos utilizado para cobranças e mensalidades.</p>
+      <p class="settings-subtitle">
+        Usada quando uma cobrança não especifica uma forma de pagamento e o aluno também não tem uma
+        configurada. A carteira Asaas e a configuração de split são gerenciadas pela plataforma.
+      </p>
 
       <form [formGroup]="form" (ngSubmit)="save()">
         <div class="row">
           <div class="col-md-6 mb-3">
-            <label for="paymentGateway" class="form-label">Provedor de Pagamento</label>
-            <select id="paymentGateway" formControlName="paymentGateway" class="form-select">
-              @for (item of paymentGateways; track item.value) {
+            <label for="defaultBillingType" class="form-label">Forma de Pagamento Padrão</label>
+            <select id="defaultBillingType" formControlName="defaultBillingType" class="form-select">
+              @for (item of billingTypes; track item.value) {
                 <option [value]="item.value">{{ item.label }}</option>
               }
             </select>
-            <app-field-error [control]="form.get('paymentGateway')" />
           </div>
         </div>
 
-        @if (isAsaasSelected()) {
-          @if (credentialsLocked()) {
-            <div class="alert alert-warning" role="alert">
-              <i class="bi bi-lock-fill me-1"></i>Credenciais bloqueadas — a chave de API e o ambiente não podem mais ser alterados por este formulário (isso acontece automaticamente após a primeira cobrança em produção, ou manualmente). O segredo do webhook ainda pode ser atualizado.
-            </div>
-          }
-          <div class="row">
-            <div class="col-md-8 mb-3">
-              <label for="asaasApiKey" class="form-label">Chave de API (Asaas) <span class="text-danger">*</span></label>
-              <div class="input-group">
-                <input
-                  [type]="showApiKey() ? 'text' : 'password'"
-                  id="asaasApiKey"
-                  class="form-control"
-                  formControlName="asaasApiKey"
-                  placeholder="$aact_..."
-                  autocomplete="off"
-                />
-                <button type="button" class="btn btn-outline-secondary" (click)="toggleApiKeyVisibility()" title="Mostrar/Ocultar">
-                  <i class="bi" [class.bi-eye]="!showApiKey()" [class.bi-eye-slash]="showApiKey()"></i>
-                </button>
-              </div>
-              @if (hasCredentialsConfigured()) {
-                <div class="form-text text-success">
-                  <i class="bi bi-check-circle-fill me-1"></i>Já configurada. Por segurança, o valor não é exibido — informe-a novamente para alterar qualquer configuração do Asaas (incluindo o ambiente).
-                </div>
-              } @else {
-                <div class="form-text">Nenhuma chave configurada ainda.</div>
-              }
-              <app-field-error [control]="form.get('asaasApiKey')" />
-            </div>
-
-            <div class="col-md-4 mb-3">
-              <label for="asaasEnvironment" class="form-label">Ambiente <span class="text-danger">*</span></label>
-              <select id="asaasEnvironment" formControlName="asaasEnvironment" class="form-select">
-                @for (item of asaasEnvironments; track item.value) {
-                  <option [value]="item.value">{{ item.label }}</option>
-                }
-              </select>
-              <app-field-error [control]="form.get('asaasEnvironment')" />
-            </div>
-
-            <div class="col-md-8 mb-3">
-              <label for="webhookSecret" class="form-label">Segredo do Webhook (Asaas)</label>
-              <div class="input-group">
-                <input
-                  [type]="showWebhookSecret() ? 'text' : 'password'"
-                  id="webhookSecret"
-                  class="form-control"
-                  formControlName="webhookSecret"
-                  placeholder="Opcional"
-                  autocomplete="off"
-                />
-                <button type="button" class="btn btn-outline-secondary" (click)="toggleWebhookSecretVisibility()" title="Mostrar/Ocultar Segredo">
-                  <i class="bi" [class.bi-eye]="!showWebhookSecret()" [class.bi-eye-slash]="showWebhookSecret()"></i>
-                </button>
-              </div>
-              <app-field-error [control]="form.get('webhookSecret')" />
-            </div>
-
-            <div class="col-md-8 mb-3">
-              <label for="webhookUrl" class="form-label">URL do Webhook (Asaas)</label>
-              <div class="input-group">
-                <input type="text" id="webhookUrl" class="form-control" [value]="webhookUrl" readonly />
-                <button type="button" class="btn btn-outline-secondary" (click)="copyWebhookUrl()" title="Copiar URL">
-                  <i class="bi bi-clipboard"></i>
-                </button>
-              </div>
-              <div class="form-text">Cole esta URL na configuração de webhooks do painel do Asaas para receber atualizações de cobranças.</div>
-            </div>
-          </div>
-
-          @if (testResult(); as result) {
-            <div class="alert" [class.alert-success]="result.success" [class.alert-danger]="!result.success" role="alert">
-              @if (result.success) {
-                <i class="bi bi-check-circle-fill me-1"></i>Conexão bem-sucedida! As credenciais funcionam com a API do Asaas.
-              } @else {
-                <i class="bi bi-x-circle-fill me-1"></i>Falha na conexão: {{ result.error }}
-              }
-            </div>
-          }
-        }
-
         <div class="d-flex justify-content-end gap-2 mt-3">
-          @if (isAsaasSelected() && hasCredentialsConfigured() && !credentialsLocked()) {
-            <button type="button" class="btn btn-outline-secondary" [disabled]="isLocking()" (click)="lockCredentials()" title="Impede que a chave de API seja alterada por qualquer pessoa a partir de agora">
-              @if (isLocking()) {
-                <span class="spinner-border spinner-border-sm me-1" role="status"></span>
-              } @else {
-                <i class="bi bi-lock me-1"></i>
-              }
-              Bloquear Credenciais
-            </button>
-          }
-          @if (isAsaasSelected()) {
-            <button type="button" class="btn btn-outline-secondary" [disabled]="isTesting()" (click)="testConnection()">
-              @if (isTesting()) {
-                <span class="spinner-border spinner-border-sm me-1" role="status"></span>
-              } @else {
-                <i class="bi bi-plug me-1"></i>
-              }
-              Testar Conexão
-            </button>
-          }
           <button type="submit" class="btn btn-primary" [disabled]="isSaving()">
             @if (isSaving()) {
               <span class="spinner-border spinner-border-sm me-1" role="status"></span>
@@ -137,6 +36,72 @@
           </button>
         </div>
       </form>
+    </div>
+
+    <div class="surface-card settings-card mt-3">
+      <h5 class="settings-title">
+        <i class="bi bi-clock-history me-2"></i>Histórico de Alterações
+      </h5>
+      <p class="settings-subtitle">Alterações feitas nas configurações de pagamento desta academia.</p>
+
+      @if (isLoadingHistory()) {
+        <div class="d-flex justify-content-center py-4">
+          <div class="spinner-border text-secondary" role="status"><span class="visually-hidden">Carregando...</span></div>
+        </div>
+      } @else {
+        <div class="table-responsive">
+          <table class="table table-hover table-sm align-middle">
+            <thead class="table-light">
+              <tr>
+                <th>Data</th>
+                <th>Ação</th>
+                <th>Campo</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              @if ((history()?.items ?? []).length === 0) {
+                <tr><td colspan="4" class="text-center py-5 text-muted">Nenhuma alteração registrada.</td></tr>
+              }
+              @for (entry of history()?.items ?? []; track entry.id) {
+                <tr>
+                  <td>{{ entry.changedAt | date: 'dd/MM/yyyy HH:mm' }}</td>
+                  <td>{{ entry.action }}</td>
+                  <td>{{ entry.entityName }}</td>
+                  <td class="text-end">
+                    <button type="button" class="btn btn-sm btn-outline-secondary" (click)="toggleExpanded(entry.id!)">
+                      <i class="bi" [class.bi-chevron-down]="expandedEntryId() !== entry.id" [class.bi-chevron-up]="expandedEntryId() === entry.id"></i>
+                    </button>
+                  </td>
+                </tr>
+                @if (expandedEntryId() === entry.id) {
+                  <tr>
+                    <td colspan="4">
+                      <div class="row">
+                        <div class="col-md-6">
+                          <div class="form-text mb-1">Valores anteriores</div>
+                          <pre class="audit-json">{{ entry.oldValuesJson ?? '—' }}</pre>
+                        </div>
+                        <div class="col-md-6">
+                          <div class="form-text mb-1">Valores novos</div>
+                          <pre class="audit-json">{{ entry.newValuesJson ?? '—' }}</pre>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                }
+              }
+            </tbody>
+          </table>
+        </div>
+        <app-pagination
+          [currentPage]="currentPage()"
+          [totalPages]="history()?.totalPages ?? 1"
+          [pageSize]="pageSize()"
+          [totalItems]="history()?.totalCount ?? 0"
+          (pageChange)="onPageChange($event)"
+          (pageSizeChange)="onPageSizeChange($event)" />
+      }
     </div>
   }
 </section>

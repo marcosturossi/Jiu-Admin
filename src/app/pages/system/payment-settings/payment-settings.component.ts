@@ -1,22 +1,21 @@
 import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
-import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
+import { DatePipe } from '@angular/common';
+import { ReactiveFormsModule, FormBuilder } from '@angular/forms';
 import { TenantSettingsService } from '../../../generated_services/api/tenantSettings.service';
-import { UpsertTenantSettingsDto } from '../../../generated_services/model/upsertTenantSettingsDto';
-import { TestPaymentConnectionDto } from '../../../generated_services/model/testPaymentConnectionDto';
+import { AuditLogEntryDto } from '../../../generated_services/model/auditLogEntryDto';
 import { NotificationService } from '../../../services/notification.service';
 import { SubnavService } from '../../../services/subnav.service';
 import { extractErrorMessage } from '../../../utils/error.utils';
-import { FieldErrorComponent } from '../../../shared/field-error/field-error.component';
-import { environment } from '../../../enviroments/environment';
+import { PageResult } from '../../../utils/page-result';
+import { PaginationComponent } from '../../../shared/pagination/pagination.component';
 
-/** Matches the PaymentProviders.Key row seeded on the backend (Backend.Modules.Authentication). */
-const ASAAS_PROVIDER_KEY = 'asaas';
-const NONE_PROVIDER_VALUE = '';
+/** Matches Backend.Shared.Domain.Enums.BillingType. */
+const NONE_BILLING_TYPE = '';
 
 @Component({
   selector: 'app-payment-settings',
   standalone: true,
-  imports: [ReactiveFormsModule, FieldErrorComponent],
+  imports: [ReactiveFormsModule, DatePipe, PaginationComponent],
   templateUrl: './payment-settings.component.html',
   styleUrl: './payment-settings.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -29,231 +28,93 @@ export class PaymentSettingsComponent implements OnInit {
 
   protected readonly isLoading = signal(false);
   protected readonly isSaving = signal(false);
-  protected readonly isTesting = signal(false);
-  protected readonly isLocking = signal(false);
-  protected readonly showApiKey = signal(false);
-  protected readonly showWebhookSecret = signal(false);
-  protected readonly testResult = signal<{ success: boolean; error: string | null } | null>(null);
+  protected readonly isLoadingHistory = signal(false);
+  protected readonly history = signal<PageResult<AuditLogEntryDto> | null>(null);
+  protected readonly expandedEntryId = signal<string | null>(null);
+  protected readonly currentPage = signal(1);
+  protected readonly pageSize = signal(10);
 
-  /** The backend never returns the real API key (write-only, stored as an opaque encrypted
-   *  blob) — this just tells the admin a credential is already on file. */
-  protected readonly hasCredentialsConfigured = signal(false);
-
-  /** Once locked (automatically after the first production charge, or manually below), the API
-   *  key/environment can no longer be changed via this form — see CredentialsLockedAt on the
-   *  backend. The webhook secret can still be rotated even while locked. */
-  protected readonly credentialsLocked = signal(false);
-
-  /** Matches PaymentWebhookController's route (`api/public/webhooks/{provider}`) — this is what
-   *  the admin pastes into Asaas' own webhook configuration screen. */
-  protected readonly webhookUrl = `${environment.server}/api/public/webhooks/${ASAAS_PROVIDER_KEY}`;
-
-  protected readonly paymentGateways = [
-    { label: 'Nenhum', value: NONE_PROVIDER_VALUE },
-    { label: 'Asaas', value: ASAAS_PROVIDER_KEY },
-  ];
-
-  protected readonly asaasEnvironments = [
-    { label: 'Sandbox (testes)', value: 'Sandbox' },
-    { label: 'Produção', value: 'Production' },
+  protected readonly billingTypes = [
+    { label: 'Sem padrão (usa PIX)', value: NONE_BILLING_TYPE },
+    { label: 'PIX', value: 'PIX' },
+    { label: 'Boleto', value: 'BOLETO' },
+    { label: 'Cartão de Crédito', value: 'CREDIT_CARD' },
+    { label: 'Dinheiro', value: 'MONEY' },
   ];
 
   protected readonly form = this.fb.group({
-    // No Validators.required here: "Nenhum" (the empty-string sentinel) is itself a valid,
-    // selectable choice meaning "no gateway configured" — it must never fail validation.
-    paymentGateway: [NONE_PROVIDER_VALUE as string],
-    asaasApiKey: [''],
-    webhookSecret: [''],
-    asaasEnvironment: ['Sandbox' as string, Validators.required],
+    defaultBillingType: [NONE_BILLING_TYPE as string],
   });
 
   ngOnInit(): void {
-    this.subnavService.setTitle('Configurações de Pagamento');
-    this.updateAsaasKeyValidator(this.form.value.paymentGateway ?? NONE_PROVIDER_VALUE);
-    this.form.get('paymentGateway')?.valueChanges.subscribe(value => this.updateAsaasKeyValidator(value));
-    // A stale "conexão bem-sucedida" banner would be misleading once the admin changes anything.
-    this.form.valueChanges.subscribe(() => this.testResult.set(null));
+    this.subnavService.setTitle('Configurações de Cobrança');
     this.load();
-  }
-
-  private updateAsaasKeyValidator(paymentGateway: string | null | undefined): void {
-    const control = this.form.get('asaasApiKey');
-    if (paymentGateway === ASAAS_PROVIDER_KEY) {
-      control?.setValidators([Validators.required]);
-    } else {
-      control?.clearValidators();
-    }
-    control?.updateValueAndValidity();
+    this.loadHistory();
   }
 
   protected load(): void {
     this.isLoading.set(true);
     this.tenantSettingsService.apiSettingsGet().subscribe({
       next: (settings) => {
-        this.hasCredentialsConfigured.set(settings.hasCredentialsConfigured ?? false);
-        this.applyCredentialsLockState(settings.credentialsLocked ?? false);
-        this.form.patchValue({
-          paymentGateway: settings.paymentGateway ?? NONE_PROVIDER_VALUE,
-          webhookSecret: settings.webhookSecret ?? '',
-          asaasEnvironment: settings.environment ?? 'Sandbox',
-        });
-        // Only fields the user actually edits after this point should be sent on save — the API
-        // treats an untouched field as "leave as-is", since webhookSecret comes back masked and
-        // must never be echoed back as if it were a real value.
+        this.form.patchValue({ defaultBillingType: settings.defaultBillingType ?? NONE_BILLING_TYPE });
         this.form.markAsPristine();
         this.isLoading.set(false);
       },
       error: (err) => {
         this.isLoading.set(false);
-        this.notificationService.showError('Erro de Carregamento', extractErrorMessage(err, 'Não foi possível carregar as configurações de pagamento.'));
-      },
-    });
-  }
-
-  /** Disables the API key/environment fields once credentials are locked — matches the backend
-   *  rejecting any Credentials change (409) once TenantSettings.CredentialsLockedAt is set. The
-   *  webhook secret field stays editable, since rotating it is still allowed while locked. */
-  private applyCredentialsLockState(locked: boolean): void {
-    this.credentialsLocked.set(locked);
-    const apiKeyControl = this.form.get('asaasApiKey');
-    const environmentControl = this.form.get('asaasEnvironment');
-    if (locked) {
-      apiKeyControl?.disable();
-      environmentControl?.disable();
-    } else {
-      apiKeyControl?.enable();
-      environmentControl?.enable();
-      this.updateAsaasKeyValidator(this.form.value.paymentGateway ?? NONE_PROVIDER_VALUE);
-    }
-  }
-
-  protected toggleApiKeyVisibility(): void {
-    this.showApiKey.update(v => !v);
-  }
-
-  protected toggleWebhookSecretVisibility(): void {
-    this.showWebhookSecret.update(v => !v);
-  }
-
-  protected copyWebhookUrl(): void {
-    navigator.clipboard.writeText(this.webhookUrl).then(
-      () => this.notificationService.showSuccess('Copiado!', 'URL do webhook copiada para a área de transferência.'),
-      () => this.notificationService.showError('Erro', 'Não foi possível copiar a URL do webhook.'),
-    );
-  }
-
-  protected isAsaasSelected(): boolean {
-    return this.form.value.paymentGateway === ASAAS_PROVIDER_KEY;
-  }
-
-  /**
-   * Calls POST /api/settings/test-connection, a dry-run that hits the real gateway API without
-   * charging anything or persisting credentials — so an admin can check a setup works before (or
-   * instead of) saving it.
-   *
-   * If an API key was just typed in, it's tested as-is (ad-hoc, unsaved). If the key field is
-   * blank, the backend falls back to testing whatever is already saved — that only makes sense
-   * when something is actually on file, so this requires `hasCredentialsConfigured()` first.
-   */
-  protected testConnection(): void {
-    if (!this.isAsaasSelected()) return;
-
-    const apiKey = (this.form.value.asaasApiKey ?? '').trim();
-    if (!apiKey && !this.hasCredentialsConfigured()) {
-      this.form.get('asaasApiKey')?.markAsTouched();
-      this.notificationService.showError('Nada para testar', 'Informe a chave de API ou salve uma configuração antes de testar.');
-      return;
-    }
-
-    this.testResult.set(null);
-    this.isTesting.set(true);
-    const dto: TestPaymentConnectionDto = apiKey
-      ? { paymentGateway: ASAAS_PROVIDER_KEY, credentials: { apiKey, environment: this.form.value.asaasEnvironment ?? 'Sandbox' } }
-      // Both null tells the backend to test the already-saved credentials instead of ad-hoc ones.
-      : { paymentGateway: null, credentials: null as unknown as Record<string, string> };
-
-    this.tenantSettingsService.apiSettingsTestConnectionPost(dto).subscribe({
-      next: (result) => {
-        this.isTesting.set(false);
-        this.testResult.set({ success: result.success, error: result.error ?? null });
-      },
-      error: (err) => {
-        this.isTesting.set(false);
-        this.testResult.set({ success: false, error: extractErrorMessage(err, 'Não foi possível testar a conexão.') });
+        this.notificationService.showError('Erro de Carregamento', extractErrorMessage(err, 'Não foi possível carregar as configurações de cobrança.'));
       },
     });
   }
 
   protected save(): void {
-    if (this.form.invalid) {
-      this.form.markAllAsTouched();
-      this.notificationService.showError('Formulário Inválido', 'Por favor, preencha todos os campos obrigatórios.');
-      return;
-    }
-    this.testResult.set(null);
     this.isSaving.set(true);
-    this.tenantSettingsService.apiSettingsPatch(this.toDTO()).subscribe({
+    const v = this.form.value;
+    this.tenantSettingsService.apiSettingsPatch({ defaultBillingType: v.defaultBillingType || null }).subscribe({
       next: (settings) => {
         this.isSaving.set(false);
-        this.hasCredentialsConfigured.set(settings.hasCredentialsConfigured ?? false);
-        this.applyCredentialsLockState(settings.credentialsLocked ?? false);
-        this.form.patchValue({
-          asaasApiKey: '',
-          webhookSecret: settings.webhookSecret ?? '',
-          asaasEnvironment: settings.environment ?? 'Sandbox',
-        });
+        this.form.patchValue({ defaultBillingType: settings.defaultBillingType ?? NONE_BILLING_TYPE });
         this.form.markAsPristine();
-        this.notificationService.showSuccess('Configurações Salvas!', 'As configurações de pagamento foram atualizadas com sucesso.');
+        this.notificationService.showSuccess('Configurações Salvas!', 'A forma de pagamento padrão foi atualizada com sucesso.');
+        this.loadHistory();
       },
       error: (err) => {
         this.isSaving.set(false);
-        this.notificationService.showError('Erro ao Salvar', extractErrorMessage(err, 'Não foi possível salvar as configurações de pagamento. Tente novamente.'));
+        this.notificationService.showError('Erro ao Salvar', extractErrorMessage(err, 'Não foi possível salvar as configurações de cobrança. Tente novamente.'));
       },
     });
   }
 
-  /** Lets an admin lock credentials proactively instead of waiting for the automatic lock on the
-   *  first production charge. One-way — there is no unlock button, matching the backend. */
-  protected lockCredentials(): void {
-    this.isLocking.set(true);
-    this.tenantSettingsService.apiSettingsLockCredentialsPost().subscribe({
-      next: () => {
-        this.isLocking.set(false);
-        this.applyCredentialsLockState(true);
-        this.form.patchValue({ asaasApiKey: '' });
-        this.notificationService.showSuccess('Credenciais Bloqueadas', 'A chave de API não poderá mais ser alterada por este formulário.');
+  protected loadHistory(): void {
+    this.isLoadingHistory.set(true);
+    this.tenantSettingsService.apiSettingsAuditHistoryGet(this.currentPage(), this.pageSize()).subscribe({
+      next: (result) => {
+        this.history.set({
+          items: result?.items ?? [],
+          totalCount: (result?.totalCount as unknown as number) ?? 0,
+          totalPages: (result?.totalPages as unknown as number) ?? 1,
+        });
+        this.isLoadingHistory.set(false);
       },
       error: (err) => {
-        this.isLocking.set(false);
-        this.notificationService.showError('Erro ao Bloquear', extractErrorMessage(err, 'Não foi possível bloquear as credenciais. Tente novamente.'));
+        this.isLoadingHistory.set(false);
+        this.notificationService.showError('Erro de Carregamento', extractErrorMessage(err, 'Não foi possível carregar o histórico de alterações.'));
       },
     });
   }
 
-  /** Untouched top-level fields are sent as `null`, which the API treats as "leave unchanged".
-   *
-   *  Credentials work differently: the backend stores them as a single opaque JSON blob and
-   *  fully REPLACES it on every write — it can't merge in just the one key the admin changed.
-   *  Sending `{ environment: "Production" }` alone would wipe out the previously stored API key.
-   *  Since apiKey is required whenever Asaas is selected (see updateAsaasKeyValidator), it's safe
-   *  to always resend the whole credentials object together rather than tracking dirtiness per
-   *  sub-field — the validator already guarantees a real value is present at submit time. */
-  private toDTO(): UpsertTenantSettingsDto {
-    const v = this.form.value;
-    const paymentGatewayControl = this.form.get('paymentGateway');
-    const webhookSecretControl = this.form.get('webhookSecret');
+  protected onPageChange(page: number): void {
+    this.currentPage.set(page);
+    this.loadHistory();
+  }
 
-    const credentials = this.isAsaasSelected() && !this.credentialsLocked()
-      ? { apiKey: (v.asaasApiKey ?? '').trim(), environment: v.asaasEnvironment ?? 'Sandbox' }
-      // The generated type doesn't reflect that Credentials is nullable server-side (leaving it
-      // untouched when no gateway is selected, or when locked) — cast needed to send a real
-      // `null` over the wire.
-      : (null as unknown as Record<string, string>);
+  protected onPageSizeChange(size: number): void {
+    this.pageSize.set(size);
+    this.currentPage.set(1);
+    this.loadHistory();
+  }
 
-    return {
-      paymentGateway: paymentGatewayControl?.dirty ? (v.paymentGateway || null) : null,
-      credentials,
-      webhookSecret: webhookSecretControl?.dirty ? (v.webhookSecret || null) : null,
-    };
+  protected toggleExpanded(entryId: string): void {
+    this.expandedEntryId.set(this.expandedEntryId() === entryId ? null : entryId);
   }
 }

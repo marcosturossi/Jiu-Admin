@@ -12,6 +12,6 @@
 
 export interface ChargeTransactionDTO { 
     financialTransactionId?: string;
-    billingType?: string;
+    billingType?: string | null;
 }
 

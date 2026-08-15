@@ -15,6 +15,7 @@ import { extractErrorMessage } from '../../../utils/error.utils';
 import { PaginationComponent } from '../../../shared/pagination/pagination.component';
 import { CreateAcademyComponent } from './create-academy/create-academy.component';
 import { UpdateAcademyComponent } from './update-academy/update-academy.component';
+import { AcademyPaymentSettingsComponent } from './academy-payment-settings/academy-payment-settings.component';
 import { activeBadge } from '../../../shared/status-badge';
 
 @Component({
@@ -25,6 +26,7 @@ import { activeBadge } from '../../../shared/status-badge';
     PaginationComponent,
     CreateAcademyComponent,
     UpdateAcademyComponent,
+    AcademyPaymentSettingsComponent,
   ],
   templateUrl: './academies.component.html',
   styleUrl: './academies.component.scss',
@@ -40,6 +42,7 @@ export class AcademiesComponent {
   protected readonly items = signal<PageResult<ShowAcademyDto> | null>(null);
   protected readonly openedCreate = signal(false);
   protected readonly openedUpdate = signal(false);
+  protected readonly openedPaymentSettings = signal(false);
   protected readonly selected = signal<ShowAcademyDto | null>(null);
   protected readonly activeBadgeClass = (isActive: boolean | undefined) => activeBadge(isActive).cssClass;
   protected readonly currentPage = signal(1);
@@ -101,6 +104,11 @@ export class AcademiesComponent {
     this.openedUpdate.set(true);
   }
 
+  protected openPaymentSettings(item: ShowAcademyDto): void {
+    this.selected.set(item);
+    this.openedPaymentSettings.set(true);
+  }
+
   protected onCreated(): void {
     this.openedCreate.set(false);
     this.load();
@@ -109,6 +117,10 @@ export class AcademiesComponent {
   protected onUpdated(): void {
     this.openedUpdate.set(false);
     this.load();
+  }
+
+  protected onPaymentSettingsClosed(): void {
+    this.openedPaymentSettings.set(false);
   }
 
   protected async delete(item: ShowAcademyDto): Promise<void> {

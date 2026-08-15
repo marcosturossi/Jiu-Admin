@@ -5,7 +5,7 @@ import { UpdateStudentComponent } from './update-student.component';
 import { StudentsService, ShowStudentDTO as ShowStudentDTO } from '../../../../generated_services';
 import { NotificationService } from '../../../../services/notification.service';
 
-const MOCK_STUDENT: ShowStudentDTO = { id: 's1', userName: 'joao', cpf: null, email: 'joao@test.com', firstName: 'João', lastName: 'Silva', isActive: true };
+const MOCK_STUDENT: ShowStudentDTO = { id: 's1', userName: 'joao', cpf: null, email: 'joao@test.com', firstName: 'João', lastName: 'Silva', isActive: true, defaultBillingType: 'PIX' };
 
 describe('UpdateStudentComponent', () => {
   let component: UpdateStudentComponent;
@@ -42,6 +42,21 @@ describe('UpdateStudentComponent', () => {
 
   it('should have valid form after input is set', () => {
     expect((component as any).form.valid).toBeTrue();
+  });
+
+  it('should patch defaultBillingType from the student and fall back to the academy-default option when null', () => {
+    expect((component as any).form.get('defaultBillingType')?.value).toBe('PIX');
+
+    componentRef.setInput('student', { ...MOCK_STUDENT, defaultBillingType: null });
+    fixture.detectChanges();
+    expect((component as any).form.get('defaultBillingType')?.value).toBe('');
+  });
+
+  it('should send the updated defaultBillingType, or null when reset to the academy-default option', () => {
+    studentsService.apiStudentsIdPut.and.returnValue(of({} as any));
+    (component as any).form.get('defaultBillingType')?.setValue('');
+    (component as any).save();
+    expect(studentsService.apiStudentsIdPut).toHaveBeenCalledWith('s1', jasmine.objectContaining({ defaultBillingType: null }));
   });
 
   it('should emit closeEvent when close() is called', () => {

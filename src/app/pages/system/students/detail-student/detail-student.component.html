@@ -71,6 +71,7 @@
       } @else {
         <div class="info-row"><span class="info-label">E-mail</span><span>{{ student()?.email ?? '—' }}</span></div>
         <div class="info-row"><span class="info-label">Telefone</span><span>{{ student()?.phoneNumber ?? '—' }}</span></div>
+        <div class="info-row"><span class="info-label">Forma de Pagamento Padrão</span><span>{{ billingTypeLabel(student()?.defaultBillingType) }}</span></div>
         <div class="info-row">
           <span class="info-label">Data de Nascimento</span>
           <span>{{ student()?.birthDay ? (student()!.birthDay! | date:'dd/MM/yyyy':'UTC') : '—' }}</span>

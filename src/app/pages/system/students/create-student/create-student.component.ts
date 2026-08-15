@@ -12,6 +12,9 @@ import { ResponsibleFormComponent, buildResponsibleFormGroup } from '../responsi
 import { isMinor } from '../../../../utils/date.utils';
 import { FieldErrorComponent } from '../../../../shared/field-error/field-error.component';
 
+/** Matches Backend.Shared.Domain.Enums.BillingType. Empty = no override, use the academy's default. */
+const NONE_BILLING_TYPE = '';
+
 @Component({
   selector: 'app-create-student',
   imports: [ReactiveFormsModule, AddressFormComponent, ResponsibleFormComponent, FieldErrorComponent],
@@ -27,6 +30,14 @@ export class CreateStudentComponent {
   private readonly studentsService = inject(StudentsService);
   private readonly notificationService = inject(NotificationService);
 
+  protected readonly billingTypes = [
+    { label: 'Padrão da academia', value: NONE_BILLING_TYPE },
+    { label: 'PIX', value: 'PIX' },
+    { label: 'Boleto', value: 'BOLETO' },
+    { label: 'Cartão de Crédito', value: 'CREDIT_CARD' },
+    { label: 'Dinheiro', value: 'MONEY' },
+  ];
+
   protected readonly form = this.fb.group({
     userName: ['', Validators.required],
     email: ['', [Validators.required, Validators.email]],
@@ -36,6 +47,7 @@ export class CreateStudentComponent {
     birthDay: [null as string | null, Validators.required],
     cpf: [null as string | null, Validators.required],
     isActive: [true],
+    defaultBillingType: [NONE_BILLING_TYPE as string],
     addresses: this.fb.array([]),
     responsibles: this.fb.array([]),
   });
@@ -100,6 +112,7 @@ export class CreateStudentComponent {
       birthDay: v.birthDay!,
       cpf: v.cpf!,
       isActive: v.isActive!,
+      defaultBillingType: v.defaultBillingType || null,
 
       addresses: ((v.addresses ?? []) as CreateAddressDTO[]).map(address => ({
         street: address.street,

@@ -23,5 +23,6 @@ export interface CreateStudentDTO {
     lastName?: string | null;
     birthDay?: string | null;
     isActive?: boolean;
+    defaultBillingType?: string | null;
 }
 

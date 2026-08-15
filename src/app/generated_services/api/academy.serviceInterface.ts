@@ -17,7 +17,9 @@ import { CreateAcademyDto } from '../model/models';
 import { PaginatedResultOfShowAcademyDto } from '../model/models';
 import { ProblemDetails } from '../model/models';
 import { ShowAcademyDto } from '../model/models';
+import { ShowAcademyPaymentSettingsDto } from '../model/models';
 import { UpdateAcademyDto } from '../model/models';
+import { UpsertAcademyPaymentSettingsDto } from '../model/models';
 
 
 import { Configuration }                                     from '../configuration';
@@ -53,6 +55,21 @@ export interface AcademyServiceInterface {
      * @param id 
      */
     apiAdminAcademiesIdGet(id: string, extraHttpRequestParams?: any): Observable<ShowAcademyDto>;
+
+    /**
+     * 
+     * 
+     * @param id 
+     */
+    apiAdminAcademiesIdPaymentSettingsGet(id: string, extraHttpRequestParams?: any): Observable<ShowAcademyPaymentSettingsDto>;
+
+    /**
+     * 
+     * 
+     * @param id 
+     * @param upsertAcademyPaymentSettingsDto 
+     */
+    apiAdminAcademiesIdPaymentSettingsPut(id: string, upsertAcademyPaymentSettingsDto: UpsertAcademyPaymentSettingsDto, extraHttpRequestParams?: any): Observable<ShowAcademyPaymentSettingsDto>;
 
     /**
      * 

@@ -86,4 +86,19 @@ describe('AuthServiceService', () => {
     setup({ realmAccess: { roles: ['user'] } });
     expect(service.hasAnyRole(['admin', 'superuser'])).toBeFalse();
   });
+
+  it('isSuperAdmin() returns true when the token has no /tenant/* group', () => {
+    setup({ tokenParsed: { groups: ['/some-other-group'] } as any });
+    expect(service.isSuperAdmin()).toBeTrue();
+  });
+
+  it('isSuperAdmin() returns true when the token has no groups claim at all', () => {
+    setup({ tokenParsed: {} });
+    expect(service.isSuperAdmin()).toBeTrue();
+  });
+
+  it('isSuperAdmin() returns false when the token has a /tenant/* group', () => {
+    setup({ tokenParsed: { groups: ['/tenant/rx-juveve'] } as any });
+    expect(service.isSuperAdmin()).toBeFalse();
+  });
 });

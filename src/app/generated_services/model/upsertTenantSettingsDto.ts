@@ -8,9 +8,9 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-export interface UpsertTenantSettingsDto {
-    paymentGateway: string | null;
-    credentials: { [key: string]: string; };
-    webhookSecret: string | null;
+
+
+export interface UpsertTenantSettingsDto { 
+    defaultBillingType: string | null;
 }
 

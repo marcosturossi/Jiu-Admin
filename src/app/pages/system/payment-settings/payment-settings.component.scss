@@ -2,6 +2,21 @@
   max-width: 48rem;
   margin-inline: auto;
   padding: 1.5rem 2rem;
+
+  &:has(table) {
+    max-width: 64rem;
+  }
+}
+
+.audit-json {
+  background: var(--brand-bg);
+  border: 1px solid var(--brand-border);
+  border-radius: 0.25rem;
+  padding: 0.5rem;
+  font-size: 0.75rem;
+  white-space: pre-wrap;
+  word-break: break-word;
+  margin-bottom: 0;
 }
 
 .settings-title {

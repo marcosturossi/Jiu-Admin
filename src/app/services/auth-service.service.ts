@@ -43,6 +43,15 @@ export class AuthServiceService {
     return this.hasRole('manager');
   }
 
+  /** Mirrors the backend's TenantResolverMiddleware superadmin check — true when the token has no
+   *  /tenant/<slug> group claim at all. This is the platform-wide persona that manages academies
+   *  themselves (see AcademyController's /api/admin/* routes), distinct from an academy's own
+   *  "admin" role (isTenantAdmin()), which requires tenant membership. */
+  isSuperAdmin(): boolean {
+    const groups = (this.keycloak.tokenParsed?.['groups'] as string[] | undefined) ?? [];
+    return !groups.some(g => g.startsWith('/tenant/'));
+  }
+
   async logout(): Promise<void> {
     await this.keycloak.logout({ redirectUri: window.location.origin });
   }

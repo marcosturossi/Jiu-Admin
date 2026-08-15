@@ -49,6 +49,15 @@
               placeholder="(00) 00000-0000">
             <app-field-error [control]="form.get('phoneNumber')" />
           </div>
+
+          <div class="col-md-4 mb-3">
+            <label for="defaultBillingType" class="form-label">Forma de Pagamento Padrão</label>
+            <select id="defaultBillingType" class="form-select" formControlName="defaultBillingType">
+              @for (item of billingTypes; track item.value) {
+                <option [value]="item.value">{{ item.label }}</option>
+              }
+            </select>
+          </div>
         </div>
       </div>
     </div>

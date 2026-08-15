@@ -20,7 +20,7 @@ import { Observable }                                        from 'rxjs';
 // @ts-ignore
 import { ApiDashboardAttendanceGetDaysParameter } from '../model/apiDashboardAttendanceGetDaysParameter';
 // @ts-ignore
-import { ApiMedicalClearanceIdAttachmentUrlGetExpiryHoursParameter } from '../model/apiMedicalClearanceIdAttachmentUrlGetExpiryHoursParameter';
+import { ApiSettingsAuditHistoryGetPageParameter } from '../model/apiSettingsAuditHistoryGetPageParameter';
 // @ts-ignore
 import { BarChartDataDTO } from '../model/barChartDataDTO';
 // @ts-ignore
@@ -312,10 +312,10 @@ export class DashboardService implements DashboardServiceInterface {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public apiDashboardNewStudentsGet(months?: ApiMedicalClearanceIdAttachmentUrlGetExpiryHoursParameter, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<MonthlyNewStudentsDTO>;
-    public apiDashboardNewStudentsGet(months?: ApiMedicalClearanceIdAttachmentUrlGetExpiryHoursParameter, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<MonthlyNewStudentsDTO>>;
-    public apiDashboardNewStudentsGet(months?: ApiMedicalClearanceIdAttachmentUrlGetExpiryHoursParameter, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<MonthlyNewStudentsDTO>>;
-    public apiDashboardNewStudentsGet(months?: ApiMedicalClearanceIdAttachmentUrlGetExpiryHoursParameter, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public apiDashboardNewStudentsGet(months?: ApiSettingsAuditHistoryGetPageParameter, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<MonthlyNewStudentsDTO>;
+    public apiDashboardNewStudentsGet(months?: ApiSettingsAuditHistoryGetPageParameter, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<MonthlyNewStudentsDTO>>;
+    public apiDashboardNewStudentsGet(months?: ApiSettingsAuditHistoryGetPageParameter, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<MonthlyNewStudentsDTO>>;
+    public apiDashboardNewStudentsGet(months?: ApiSettingsAuditHistoryGetPageParameter, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
 
         let localVarQueryParameters = new HttpParams({encoder: this.encoder});
         if (months !== undefined && months !== null) {

@@ -1,8 +1,45 @@
-import { Page, expect } from '@playwright/test';
+import { Browser, Page, expect } from '@playwright/test';
 
 export async function waitForTableReady(page: Page) {
   await expect(page.locator('.spinner-border')).not.toBeVisible({ timeout: 10_000 });
   await expect(page.locator('table')).toBeVisible();
+}
+
+/**
+ * Logs into Keycloak as the cross-tenant superadmin test account (E2E_SUPERADMIN_USER /
+ * E2E_SUPERADMIN_PASSWORD in e2e/.env — a user with no /tenant/* group membership) into a brand
+ * new browser context, separate from the suite-wide E2E_USER session in e2e/.auth/state.json.
+ *
+ * Only /api/admin/* routes (e.g. the Academias page's own admin actions and its
+ * payment-settings modal) need this — most pages assume a normal in-tenant admin, and
+ * tenant-scoped writes fail outright for a user with no tenant to write to, so never use this as
+ * the default session for a whole spec file.
+ *
+ * Caller owns the returned page/context and must call `context.close()` when done.
+ */
+export async function loginAsSuperAdmin(browser: Browser): Promise<{ page: Page; close: () => Promise<void> }> {
+  const user = process.env['E2E_SUPERADMIN_USER'];
+  const password = process.env['E2E_SUPERADMIN_PASSWORD'];
+  if (!user || !password) {
+    throw new Error(
+      'E2E_SUPERADMIN_USER e E2E_SUPERADMIN_PASSWORD são obrigatórias para testes que exigem a conta superadmin — veja e2e/.env.example.'
+    );
+  }
+
+  // The chromium project's default `storageState` (e2e/.auth/state.json, the tenant-admin
+  // E2E_USER session) would otherwise be inherited here — start from a genuinely blank context so
+  // this really re-authenticates as the superadmin instead of silently reusing that session.
+  const context = await browser.newContext({ storageState: { cookies: [], origins: [] } });
+  const page = await context.newPage();
+
+  await page.goto('/system');
+  await page.waitForURL(/localhost:8082/, { timeout: 15_000 });
+  await page.fill('#username', user);
+  await page.fill('#password', password);
+  await page.click('[type=submit]');
+  await page.waitForURL(/localhost:4200\/system/, { timeout: 15_000 });
+
+  return { page, close: () => context.close() };
 }
 
 /**

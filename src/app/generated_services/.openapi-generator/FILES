@@ -77,7 +77,9 @@ model/addressType.ts
 model/apiAccountsPayableGetAmountMinParameter.ts
 model/apiDashboardAttendanceGetDaysParameter.ts
 model/apiFrequencyGetPageParameter.ts
-model/apiMedicalClearanceIdAttachmentUrlGetExpiryHoursParameter.ts
+model/apiSettingsAuditHistoryGetPageParameter.ts
+model/apiSettingsAuditHistoryGetPageSizeParameter.ts
+model/auditLogEntryDto.ts
 model/barChartDataDTO.ts
 model/changePasswordDto.ts
 model/chargeResult.ts
@@ -121,6 +123,7 @@ model/models.ts
 model/monthlyNewStudentsDTO.ts
 model/notificationStatsDto.ts
 model/notificationType.ts
+model/paginatedResultOfAuditLogEntryDto.ts
 model/paginatedResultOfShowAcademyDto.ts
 model/paginatedResultOfShowAccountsPayableDTO.ts
 model/paginatedResultOfShowAccountsReceivableDTO.ts
@@ -151,6 +154,7 @@ model/sendContractForConfirmationResultDTO.ts
 model/series.ts
 model/seriesDataInner.ts
 model/showAcademyDto.ts
+model/showAcademyPaymentSettingsDto.ts
 model/showAccountsPayableDTO.ts
 model/showAccountsReceivableDTO.ts
 model/showAddressDTO.ts
@@ -184,8 +188,6 @@ model/showTransactionCategoryDTO.ts
 model/stringSegment.ts
 model/stripes.ts
 model/studentsBirthDay.ts
-model/testPaymentConnectionDto.ts
-model/testPaymentConnectionResultDto.ts
 model/topStudentDTO.ts
 model/transactionType.ts
 model/updateAcademyDto.ts
@@ -211,6 +213,7 @@ model/updateStudentDTO.ts
 model/updateSupplierDTO.ts
 model/updateTransactionCategoryDTO.ts
 model/uploadPhotoBase64DTO.ts
+model/upsertAcademyPaymentSettingsDto.ts
 model/upsertTenantSettingsDto.ts
 model/validationProblemDetails.ts
 param.ts

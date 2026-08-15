@@ -13,7 +13,7 @@ import { HttpHeaders }                                       from '@angular/comm
 import { Observable }                                        from 'rxjs';
 
 import { ApiDashboardAttendanceGetDaysParameter } from '../model/models';
-import { ApiMedicalClearanceIdAttachmentUrlGetExpiryHoursParameter } from '../model/models';
+import { ApiSettingsAuditHistoryGetPageParameter } from '../model/models';
 import { BarChartDataDTO } from '../model/models';
 import { DashboardSummaryDTO } from '../model/models';
 import { MonthlyNewStudentsDTO } from '../model/models';
@@ -55,7 +55,7 @@ export interface DashboardServiceInterface {
      * 
      * @param months 
      */
-    apiDashboardNewStudentsGet(months?: ApiMedicalClearanceIdAttachmentUrlGetExpiryHoursParameter, extraHttpRequestParams?: any): Observable<MonthlyNewStudentsDTO>;
+    apiDashboardNewStudentsGet(months?: ApiSettingsAuditHistoryGetPageParameter, extraHttpRequestParams?: any): Observable<MonthlyNewStudentsDTO>;
 
     /**
      * 

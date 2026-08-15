@@ -12,10 +12,10 @@ import { HttpHeaders }                                       from '@angular/comm
 
 import { Observable }                                        from 'rxjs';
 
-import { ProblemDetails } from '../model/models';
+import { ApiSettingsAuditHistoryGetPageParameter } from '../model/models';
+import { ApiSettingsAuditHistoryGetPageSizeParameter } from '../model/models';
+import { PaginatedResultOfAuditLogEntryDto } from '../model/models';
 import { ShowTenantSettingsDto } from '../model/models';
-import { TestPaymentConnectionDto } from '../model/models';
-import { TestPaymentConnectionResultDto } from '../model/models';
 import { UpsertTenantSettingsDto } from '../model/models';
 
 
@@ -30,27 +30,22 @@ export interface TenantSettingsServiceInterface {
     /**
      * 
      * 
+     * @param page 
+     * @param pageSize 
+     */
+    apiSettingsAuditHistoryGet(page?: ApiSettingsAuditHistoryGetPageParameter, pageSize?: ApiSettingsAuditHistoryGetPageSizeParameter, extraHttpRequestParams?: any): Observable<PaginatedResultOfAuditLogEntryDto>;
+
+    /**
+     * 
+     * 
      */
     apiSettingsGet(extraHttpRequestParams?: any): Observable<ShowTenantSettingsDto>;
 
     /**
-     *
-     *
-     * @param upsertTenantSettingsDto
+     * 
+     * 
+     * @param upsertTenantSettingsDto 
      */
     apiSettingsPatch(upsertTenantSettingsDto: UpsertTenantSettingsDto, extraHttpRequestParams?: any): Observable<ShowTenantSettingsDto>;
-
-    /**
-     *
-     *
-     */
-    apiSettingsLockCredentialsPost(extraHttpRequestParams?: any): Observable<any>;
-
-    /**
-     * 
-     * 
-     * @param testPaymentConnectionDto 
-     */
-    apiSettingsTestConnectionPost(testPaymentConnectionDto?: TestPaymentConnectionDto, extraHttpRequestParams?: any): Observable<TestPaymentConnectionResultDto>;
 
 }
