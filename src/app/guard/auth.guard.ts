@@ -14,7 +14,8 @@ const isAccessAllowed = async (
     return false;
   }
 
-  if (!inject(AuthServiceService).hasAnyRole(['manager', 'admin'])) {
+  const authService = inject(AuthServiceService);
+  if (!authService.hasAnyRole(['manager', 'admin']) && !authService.isSuperAdmin()) {
     inject(Router).navigate(['/forbidden']);
     return false;
   }
